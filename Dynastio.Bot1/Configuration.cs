@@ -23,20 +23,20 @@ namespace Dynastio.Bot
 
         public static Configuration Get(string debugPath)
         {
-            //if (Program.IsDebug())
-            //{
-            //    var configuration = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(debugPath));
-            //    return configuration;
-            //}
+            if (Program.IsDebug())
+            {
+                var configuration = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(debugPath));
+                return configuration;
+            }
 
 
-            //string path = Environment.GetEnvironmentVariable("path");
-            //if (!string.IsNullOrEmpty(path))
-            //    return JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(path));
+            string path = Environment.GetEnvironmentVariable("path");
+            if (!string.IsNullOrEmpty(path))
+                return JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(path));
 
-            //string config = Environment.GetEnvironmentVariable("config");
-            //if (!string.IsNullOrEmpty(config))
-            //    return JsonConvert.DeserializeObject<Configuration>(config);
+            string config = Environment.GetEnvironmentVariable("config");
+            if (!string.IsNullOrEmpty(config))
+                return JsonConvert.DeserializeObject<Configuration>(config);
 
 
             string key = Environment.GetEnvironmentVariable("config-key");
