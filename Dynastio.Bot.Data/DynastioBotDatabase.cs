@@ -14,6 +14,7 @@ namespace Dynastio.Bot.Data
 
         }
         public enum DatabasesInstances { Mongodb }
+       
         public async Task<IDynastioBotDatabase> GetInstanseAsync(string connection, DatabasesInstances instances = DatabasesInstances.Mongodb)
         {
             if (instances is DatabasesInstances.Mongodb)

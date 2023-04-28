@@ -11,13 +11,13 @@ namespace Dynastio.Bot.Data
     {
         Task InitializeAsync();
 
-        Task<Guild> GetAsync(Expression<Func<Guild, bool>> expression);
+        Task<Guild> GetGuildAsync(Expression<Func<Guild, bool>> expression);
         Task<bool> UpdateAsync(Guild guild);
         Task<bool> InsertAsync(Guild guild);
 
 
 
-        Task<User> GetAsync(Expression<Func<User, bool>> expression);
+        Task<User> GetUserAsync(Expression<Func<User, bool>> expression);
         Task<bool> InsertAsync(User Buser);
         Task<bool> UpdateAsync(User Buser);
 

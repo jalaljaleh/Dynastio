@@ -14,12 +14,12 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-preview.5.22301.12" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.16.1" />
 		<PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
-		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
 		<PackageReference Include="MongoDB.Bson" Version="2.17.0" />
 		<PackageReference Include="MongoDB.Driver" Version="2.17.0" />
 		<PackageReference Include="Google.Apis.YouTube.v3" Version="1.57.0.2756" />
-
+		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
 		<Content Include="Resources\**" CopyToOutputDirectory="Always" />
+
 
 	</ItemGroup>
 

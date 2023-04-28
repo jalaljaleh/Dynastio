@@ -1,6 +1,7 @@
 ﻿using Dynastio.Bot.Global;
 using MongoDB.Driver;
 using System.Linq.Expressions;
+using System.Net;
 
 namespace Dynastio.Bot.Data
 {
@@ -14,7 +15,11 @@ namespace Dynastio.Bot.Data
         {
             Main.Log("Mongodb", "Initialize Async..");
 
-            _db = new MongoClient(mongoConnection);
+            var settings = MongoClientSettings.FromConnectionString(mongoConnection);
+            settings.ServerApi = new ServerApi(ServerApiVersion.V1);
+
+            _db = new MongoClient(settings);
+
             _dynastio = _db.GetDatabase(Main.IsDebug() ? "Dynastio_Debug" : "Dynastio");
 
             Main.Log("Mongodb", "Initialized");
@@ -26,16 +31,16 @@ namespace Dynastio.Bot.Data
                 Main.Log("Mongodb", "Start Session Async ..");
 
                 await _db.StartSessionAsync();
-
+                
                 Main.Log("Mongodb", "Session Started.");
             }
             catch
             {
-                Console.WriteLine("Mongodb is not connected.");
+                Main.Log("Mongodb", "db is not connected.",ConsoleColor.Red);
             }
         }
 
-        public async Task<Guild> GetAsync(Expression<Func<Guild, bool>> expression)
+        public async Task<Guild> GetGuildAsync(Expression<Func<Guild, bool>> expression)
         {
             var result = _guilds.Find(expression).FirstOrDefault();
             return await Task.FromResult(result);
@@ -54,7 +59,7 @@ namespace Dynastio.Bot.Data
 
 
 
-        public async Task<User> GetAsync(Expression<Func<User, bool>> expression)
+        public async Task<User> GetUserAsync(Expression<Func<User, bool>> expression)
         {
             var result = _users.Find(expression).FirstOrDefault();
             return await Task.FromResult(result);
@@ -105,6 +110,6 @@ namespace Dynastio.Bot.Data
             _users.DeleteOne(a => a.Id == user.Id);
             return await Task.FromResult(true);
         }
-       
+
     }
 }

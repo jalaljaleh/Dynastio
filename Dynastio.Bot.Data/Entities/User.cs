@@ -18,7 +18,10 @@ namespace Dynastio.Bot.Data
         public DateTime LastHonorGift { get; set; }
 
         public List<UserAccount> Accounts { get; set; } = new();
-
+        public UserAccount GetAccount(string Id)
+        {
+            return Accounts.FirstOrDefault(a => a.Id.Equals(Id));
+        }
     }
 
 

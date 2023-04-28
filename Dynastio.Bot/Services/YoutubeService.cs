@@ -1,0 +1,68 @@
+﻿using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Dynastio.Bot
+{
+    public class YoutubeService
+    {
+        private YouTubeService youtube;
+
+        public YoutubeService(IServiceProvider services)
+        {
+            var config = services.GetRequiredService<Configuration>();
+            if (config.YoutubeApi == null)
+            {
+                Global.Main.Log("Youtube Service", "Api key not found.", ConsoleColor.Red);
+                return;
+            }
+
+            youtube = new YouTubeService(new Google.Apis.Services.BaseClientService.Initializer()
+            {
+                ApiKey = config.YoutubeApi
+            });
+        }
+
+        public Task<List<SearchResult>> GetAllChannelVideos(string channelId)
+        {
+            List<SearchResult> res = new List<SearchResult>();
+
+            string nextpagetoken = " ";
+
+            while (nextpagetoken != null)
+            {
+                var searchListRequest = youtube.Search.List("snippet");
+                searchListRequest.MaxResults = 50;
+                searchListRequest.ChannelId = channelId;
+                searchListRequest.PageToken = nextpagetoken;
+                searchListRequest.Type = "video";
+
+                // Call the search.list method to retrieve results matching the specified query term.
+                var searchListResponse = searchListRequest.Execute();
+
+                // Process  the video responses 
+                res.AddRange(searchListResponse.Items);
+
+                nextpagetoken = searchListResponse.NextPageToken;
+
+            }
+            return Task.FromResult(res);
+        }
+        public Task<List<SearchResult>> SearchVideoByKeyword(string keyword)
+        {
+            var searchListRequest = youtube.Search.List("snippet");
+            searchListRequest.MaxResults = 50;
+            searchListRequest.Q = keyword;
+            searchListRequest.Type = "video";
+
+            var searchListResponse = searchListRequest.Execute();
+            return Task.FromResult(searchListResponse.Items.ToList());
+        }
+
+    }
+}
