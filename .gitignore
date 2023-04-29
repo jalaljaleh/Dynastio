@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Dynastio.Bot/Resources/debug-config.json
+/Dynastio.Bot/Resources/config-key.txt
