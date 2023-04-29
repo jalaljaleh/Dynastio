@@ -1,5 +1,6 @@
 ﻿using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,41 +12,22 @@ namespace Dynastio.Bot
     public class YoutubeService
     {
         private YouTubeService youtube;
-        private readonly string mainChannelId;
-        private readonly string apiKey;
-        public List<SearchResult> Videos { get; set; }
-        public YoutubeService(string apiKey, string mainChannelId)
-        {
-            if (apiKey == null || mainChannelId == null)
-            {
-                Program.Log("YoutubeService", "api key not found.", ConsoleColor.Red);
-                return;
-            }
-            this.apiKey = apiKey;
-            this.mainChannelId = mainChannelId;
-        }
-        public async Task InitializeAsync()
-        {
-            if (Program.IsDebug())
-            {
-                Program.Log("YoutubeService", "Disabled in debug mode.", ConsoleColor.DarkYellow);
-                return;
-            }
 
-            Program.Log("YoutubeService", "Initializing..");
+        public YoutubeService(IServiceProvider services)
+        {
+            var config = services.GetRequiredService<Configuration>();
+            if (config.YoutubeApi == null)
+            {
+                Global.Main.Log("Youtube Service", "Api key not found.", ConsoleColor.Red);
+                return;
+            }
 
             youtube = new YouTubeService(new Google.Apis.Services.BaseClientService.Initializer()
             {
-                ApiKey = apiKey
+                ApiKey = config.YoutubeApi
             });
-
-            Program.Log("YoutubeService", "Get channel videos..");
-
-            Videos = await GetAllChannelVideos(mainChannelId);
-            Program.IsYoutubeServiceInitialized = true;
-
-            Program.Log("YoutubeService", "Initialized.");
         }
+
         public Task<List<SearchResult>> GetAllChannelVideos(string channelId)
         {
             List<SearchResult> res = new List<SearchResult>();

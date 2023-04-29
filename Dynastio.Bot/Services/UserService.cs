@@ -6,71 +6,103 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
-using Dynastio.Data;
+using Dynastio.Bot.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Dynastio.Bot
 {
     public class UserService
     {
-        private readonly ConcurrentBag<User> users;
-        private readonly IDatabaseContext db;
-        private readonly DynastioClient dynastioClient;
-        public UserService(IDatabaseContext db, DynastioClient dynastioClient)
+        private readonly ConcurrentBag<User> _users;
+        private readonly DynastioClient _dynastioClient;
+        private readonly IDynastioBotDatabase _db;
+        private readonly IServiceProvider _services;
+        public UserService(IServiceProvider services)
         {
-            Program.Log("UserService", "StartAsync");
+            Global.Main.Log("User Service", "Start Async");
 
-            users = new();
-            this.db = db;
-            this.dynastioClient = dynastioClient;
+            this._dynastioClient = services.GetRequiredService<DynastioClient>();
+            this._db = services.GetRequiredService<IDynastioBotDatabase>();
+            this._services = services;
 
+            this._users = new();
         }
-        public int GetCacheCount() => users.Count;
+
         public void ClearCache()
         {
-            users.Clear();
+            _users.Clear();
         }
         public async Task<bool> UpdateAsync(User user)
         {
-            await db.UpdateAsync(user);
-            return true;
+            return await _db.UpdateAsync(user);
         }
-        private bool _Is10TopHonorUpdated = false;
+
+        private bool _isHonorLeaderboardCached = false;
         public async Task<List<User>> Get10TopHonor()
         {
-            if (_Is10TopHonorUpdated)
-                return this.users.OrderByDescending(a => a.Honor).Take(10).ToList();
+            if (_isHonorLeaderboardCached)
+                return this._users.OrderByDescending(a => a.Honor).Take(10).ToList();
 
-            var users = await this.db.Get10TopHonor(10);
+            var users = await this._db.GetHonorLeaderboardAsync(10);
             foreach (var user in users)
             {
-                if (IsCached(user.Id) is false) Cache(user);
+                if (IsCached(user.Id) is false)
+                    Cache(user);
             }
-            _Is10TopHonorUpdated = true;
+            _isHonorLeaderboardCached = true;
             return users;
         }
         public async Task<User> GetUserAsync(ulong Id, bool New = true)
         {
-            User user = users.FirstOrDefault(x => x.Id == Id);
+            User user = _users.FirstOrDefault(x => x.Id == Id);
             if (user is null)
             {
-                user = await db.GetUserAsync(Id);
+                user = await _db.GetUserAsync(x => x.Id == Id);
 
                 if (user is null && New is true)
                 {
                     user = await GetNewUserAsync(Id);
-                    await db.InsertAsync(user);
+
+                    await _db.InsertAsync(user);
                 }
                 if (user != null)
                     Cache(user);
             }
             return user;
         }
-        public async Task<User> GetUserByGameAccountIdAsync(string accountId)
+        async Task<User> GetNewUserAsync(ulong id)
         {
-            User user = users.FirstOrDefault(x => x.GetAccount(accountId) != null);
+            var user = new User()
+            {
+                Id = id,
+                Honor = 0,
+                Accounts = new(),
+                LastHonorGift = DateTime.MinValue,
+            };
+
+            var profile = await _dynastioClient.GetUserProfileAsync("discord:" + id);
+            if (profile is not null)
+            {
+                var account = new UserAccount()
+                {
+                    Id = "discord:" + id,
+                    AddedAt = DateTime.UtcNow,
+                    Nickname = "Discord",
+                    IsDefault = true,
+                    Reminder = "none",
+                };
+                user.Accounts.Add(account);
+            }
+
+            return user;
+        }
+
+        public async Task<User> GetUserByAccountIdAsync(string accountId)
+        {
+            User user = _users.FirstOrDefault(x => x.GetAccount(accountId) != null);
             if (user is null)
             {
-                user = await db.GetUserByAccountIdAsync(accountId);
+                user = await _db.GetUserByAccountIdAsync(accountId);
                 if (user != null)
                     Cache(user);
             }
@@ -78,33 +110,12 @@ namespace Dynastio.Bot
         }
         public void Cache(User user)
         {
-            users.Add(user);
+            _users.Add(user);
         }
         public bool IsCached(ulong Id)
         {
-            return this.users.FirstOrDefault(x => x.Id == Id) != null;
+            return this._users.FirstOrDefault(x => x.Id == Id) != null;
         }
-        async Task<User> GetNewUserAsync(ulong id)
-        {
-            bool result = await dynastioClient.Main.IsUserAccountExistAsync("discord:" + id);
-            var user = new User()
-            {
-                Id = id,
-                Honor = 0,
-                Accounts = new()
-            };
-            if (result)
-            {
-                var account = new UserAccount()
-                {
-                    Id = "discord:" + id,
-                    AddedAt = DateTime.UtcNow,
-                    Nickname = "Discord",
-                    IsDefault = true
-                };
-                user.Accounts.Add(account);
-            }
-            return user;
-        }
+
     }
 }

@@ -19,7 +19,7 @@ namespace Dynastio.Bot.Interactions.Modules.Shard
         public async Task close()
         {
             await DeferAsync();
-            await ModifyToClosed();
+      
         }
         [ComponentInteraction("shared.remove:*")]
         public async Task remove(string value)
@@ -28,7 +28,7 @@ namespace Dynastio.Bot.Interactions.Modules.Shard
             switch (value)
             {
                 case "component":
-                    await ToNoComponent();
+                 
                     break;
             }
         }

@@ -1,130 +1,87 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.Interactions;
-using Discord.WebSocket;
-using Dynastio.Bot;
-using Dynastio.Data;
-using Dynastio.Net;
-using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Discord.Interactions
+﻿/*!
+ * Discord Template By (https://jalaljaleh.github.io/)
+ * Copyright 2021-2022 Jalal Jaleh
+ * Licensed under MIT (https://github.com/jalaljaleh/Template.Discord.Bot/blob/master/LICENSE.txt)
+ * Project Url (https://github.com/jalaljaleh/Template.Discord.Bot/)
+ */
+namespace Dynastio.Bot.Interactions
 {
+    using Discord;
+    using Discord.Interactions;
+    using Discord.WebSocket;
+    using Dynastio.Bot.Data;
+    using Dynastio.Bot.Globalization;
+    using Microsoft.Extensions.DependencyInjection;
 
-    //
-    // Summary:
-    //     Represents a Web-Socket based context of an Discord.IDiscordInteraction
-    public class CustomSocketInteractionContext : CustomSocketInteractionContext<SocketInteraction>
+    public class CustomSocketInteractionContext : SocketInteractionContext
     {
-        //
-        // Summary:
-        //     Initializes a new Discord.Interactions.SocketInteractionContext
-        //
-        // Parameters:
-        //   client:
-        //     The underlying client
-        //
-        //   interaction:
-        //     The underlying interaction
-        public CustomSocketInteractionContext(DiscordSocketClient client, SocketInteraction interaction, User user, Locale Locale, Guild BotGuild)
-            : base(client, interaction, user, Locale, BotGuild)
+        private readonly UserService _userService;
+        private readonly GuildService _guildService;
+        private readonly GlobalizationService _globalizationService;
+        private readonly IServiceProvider _services;
+        public CustomSocketInteractionContext(DiscordSocketClient client, SocketInteraction interaction, IServiceProvider services, User user = null, Guild guild = null) : base(client, interaction)
         {
+            _services = services;
+            _userService = _services.GetRequiredService<UserService>();
+            _guildService = _services.GetRequiredService<GuildService>();
+            _globalizationService = _services.GetRequiredService<GlobalizationService>();
+
+            if (user != null) _user = user;
+            if (guild != null) _guild = guild;
         }
-    }
-    //
-    // Summary:
-    //     Represents the context of an Interaction.
-    public interface ICustomInteractionContext : IInteractionContext
-    {
-        Guild BotGuild { get; }
-        User BotUser { get; }
-        Locale Locale { get; }
-        SocketInteraction OverridenInteraction { get; set; }
-    }
-    //
-    // Summary:
-    //     Represents a Web-Socket based context of an Discord.IDiscordInteraction.
-    public class CustomSocketInteractionContext<TInteraction> : ICustomInteractionContext, IRouteMatchContainer where TInteraction : SocketInteraction
-    {
-        public Guild BotGuild { get; }
+        public SocketInteraction OverridedInteraction { get; set; }
+        public object CustomData { get; set; }
 
-        public User BotUser { get; }
-        //
-        // Summary:
-        //     Gets the Discord.WebSocket.DiscordSocketClient that the command will be executed
-        //     with.
-        public DiscordSocketClient Client { get; }
-        public SocketInteraction OverridenInteraction { get; set; }
-        //
-        // Summary:
-        //     Gets the Discord.WebSocket.SocketGuild the command originated from.
-        //
-        // Remarks:
-        //     Will be null if the command is from a DM Channel.
-        public SocketGuild Guild { get; }
+        private User _user;
+        private Guild _guild;
+        private Locale _userLocale;
+        private Locale _guildLocale;
 
-        //
-        // Summary:
-        //     Gets the Discord.WebSocket.ISocketMessageChannel the command originated from.
-        public ISocketMessageChannel Channel { get; }
-
-        //
-        // Summary:
-        //     Gets the Discord.WebSocket.SocketUser who executed the command.
-        public SocketUser User { get; }
-
-        //
-        // Summary:
-        //     Gets the Discord.WebSocket.SocketInteraction the command was recieved with.
-        public TInteraction Interaction { get; }
-
-        public IReadOnlyCollection<IRouteSegmentMatch> SegmentMatches { get; private set; }
-
-        IEnumerable<IRouteSegmentMatch> IRouteMatchContainer.SegmentMatches => SegmentMatches;
-
-        IDiscordClient IInteractionContext.Client => Client;
-
-        IGuild IInteractionContext.Guild => Guild;
-
-        IMessageChannel IInteractionContext.Channel => Channel;
-
-        IUser IInteractionContext.User => User;
-
-        IDiscordInteraction IInteractionContext.Interaction => Interaction;
-
-        public Locale Locale { get; }
-
-        //
-        // Summary:
-        //     Initializes a new Discord.Interactions.SocketInteractionContext`1.
-        //
-        // Parameters:
-        //   client:
-        //     The underlying client.
-        //
-        //   interaction:
-        //     The underlying interaction.
-        public CustomSocketInteractionContext(DiscordSocketClient client, TInteraction interaction, User botUser, Locale locale, Guild botGuild)
+        public User BotUser
         {
-            Client = client;
-            Channel = interaction.Channel;
-            Guild = (interaction.User as SocketGuildUser)?.Guild;
-            User = interaction.User;
-            Interaction = interaction;
-            BotUser = botUser;
-            Locale = locale;
-            BotGuild = botGuild;
+            get
+            {
+                if (_user is null)
+                {
+                    _user = _userService.GetUserAsync(this.User.Id, true).Result;
+                }
+                return _user;
+            }
+        }
+        public Guild BotGuild
+        {
+            get
+            {
+                if (_guild is null)
+                {
+                    _guild = _guildService.GetGuildAsync(this.Guild.Id).Result;
+                }
+                return _guild;
+            }
+        }
+        public Locale GuildLocale
+        {
+            get
+            {
+                if (_guildLocale is null)
+                {
+                    _guildLocale = _globalizationService.GetOrDefault(this.Guild.PreferredLocale);
+                }
+                return _guildLocale;
+            }
+        }
+        public Locale UserLocale
+        {
+            get
+            {
+                if (_userLocale is null)
+                {
+                    _userLocale = _globalizationService.GetOrDefault((this.Interaction.UserLocale));
+                }
+                return _userLocale;
+            }
         }
 
-        public void SetSegmentMatches(IEnumerable<IRouteSegmentMatch> segmentMatches)
-        {
-            SegmentMatches = segmentMatches.ToImmutableArray();
-        }
-    }
 
+    }
 }

@@ -13,7 +13,6 @@ namespace Dynastio.Bot
 {
     public class LocaleService
     {
-        public Dictionary<string, Locale> Languages { get; set; } = new();
         public LocaleService()
         {
             Program.Log("LocaleService", "Started");
@@ -96,51 +95,5 @@ namespace Dynastio.Bot
         }
 
     }
-    public class Locale
-    {
-        public readonly Dictionary<string, string> Words;
-        public Locale(Dictionary<string, string> Words)
-        {
-            this.Words = Words;
-        }
-        public void WriteInConsole()
-        {
-            foreach (var i in Words.Keys) Console.WriteLine(i);
-        }
-
-        public string this[string key]
-        {
-            get
-            {
-                string result;
-                if (Words.TryGetValue(key, out string value))
-                {
-                    result = value;
-                }
-                else
-                {
-                    result = key;
-                };
-                return result;
-            }
-        }
-        public string this[string key, string param1]
-        {
-            get
-            {
-                string result;
-                if (Words.TryGetValue(key, out string value))
-                {
-                    result = value;
-                }
-                else
-                {
-                    result = key;
-                };
-                var regex = new Regex(Regex.Escape("[x]"));
-                return regex.Replace(result, param1, 1);
-            }
-        }
-        public string this[string key, int param1] { get => this[key, param1.ToString()]; }
-    }
+  
 }

@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using Dynastio.Net;
 using Dynastio.Data;
 
-namespace Dynastio.Bot.Interactions
+namespace Dynastio.Bot
 {
     public class InteractionHandler
     {
@@ -20,7 +20,7 @@ namespace Dynastio.Bot.Interactions
         private readonly Configuration _configuration;
         private readonly UserService userService;
         private readonly LocaleService localeService;
-        private readonly IDatabaseContext _db;
+        private readonly DynastioBotDatabase _db;
         private readonly GuildService _guildservice;
 
         public DynastioClient _dynastClient { get; set; }

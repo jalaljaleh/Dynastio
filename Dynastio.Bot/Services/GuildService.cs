@@ -1,4 +1,7 @@
-﻿using Dynastio.Data;
+﻿using Dynastio.Bot.Data;
+using Dynastio.Bot.Global;
+using Dynastio.Net;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,36 +13,41 @@ namespace Dynastio.Bot
 {
     public class GuildService
     {
-        private readonly ConcurrentBag<Guild> guilds;
-        private readonly IDatabaseContext db;
-        public GuildService(IDatabaseContext mongo)
+        private readonly ConcurrentBag<Guild> _guilds;
+        private readonly DynastioClient _dynastioClient;
+        private readonly IDynastioBotDatabase _db;
+        private readonly IServiceProvider _services;
+        public GuildService(IServiceProvider services)
         {
-            Program.Log("GuildService", "StartAsync");
+            Main.Log("Guild Service", "Start Async");
 
-            guilds = new();
-            this.db = mongo;
+            this._dynastioClient = services.GetRequiredService<DynastioClient>();
+            this._db = services.GetRequiredService<IDynastioBotDatabase>();
+            this._services = services;
+
+            this._guilds = new();
         }
         public async Task<Guild> GetGuildAsync(ulong id)
         {
-            Guild guild = guilds.FirstOrDefault(a => a.Id == id);
+            Guild guild = _guilds.FirstOrDefault(a => a.Id == id);
             if (guild == null || guild == default)
             {
-                guild = await db.GetGuildAsync(id);
+                guild = await _db.GetGuildAsync(x=>x.Id == id);
                 if (guild == null || guild == default)
                 {
                     guild = new Guild()
                     {
                         Id = id,
                     };
-                    await db.InsertAsync(guild);
+                    await _db.InsertAsync(guild);
                 }
-                guilds.Add(guild);
+                _guilds.Add(guild);
             }
             return guild;
         }
         public async Task<bool> UpdateAsync(Guild guild)
         {
-            await db.UpdateAsync(guild);
+            await _db.UpdateAsync(guild);
             return true;
         }
     }

@@ -1,22 +1,18 @@
-﻿using Discord;
-using Discord.Commands;
-using System.IO;
+﻿using Discord.Commands;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Commands.Modules
+namespace Dynastio.Bot.Modules
 {
-    // Modules must be public and inherit from an IModuleBase
-    public class PublicModule : ModuleBase<CustomSocketCommandContext>
+    public class Public : ModuleBase<CommandContext>
     {
-
         [Command("ping")]
-        [Alias("pong", "hello")]
-        public async Task PingAsync()
+        public async Task ping()
         {
-            await ReplyAsync("pong!");
-
+            await ReplyAsync("Pong !");
         }
-
-
     }
 }

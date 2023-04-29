@@ -2,132 +2,99 @@
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Dynastio.Bot.Interactions;
-using Dynastio.Data;
+using Dynastio.Bot.Data;
+using Dynastio.Bot.Globalization;
+using Dynastio.Bot.Managers;
+using Dynastio.Bot.Services;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SixLabors.ImageSharp;
+using System.Runtime.CompilerServices;
 
 namespace Dynastio.Bot
 {
-    public class Program
+    internal class Program
     {
-        public const int ImageOnlyChannelsSlowMode = 30;
-        public static Random Random = new Random();
-        public static DateTime StartUp { get; } = DateTime.UtcNow;
-        public const string FilePathConfigurationMain = @"C:\Users\Jalal Jaleh\OneDrive\Members\Jaleh Jalal\projects\Dynastio\dynastio.json";
-        public const string FilePathConfigurationDebug = @"C:\Users\Jalal Jaleh\OneDrive\Members\Jaleh Jalal\projects\Dynastio\dynastio.debug.json";
-        public static bool IsYoutubeServiceInitialized = false;
-        public static void Main(string[] arg) => new Program().MainAsync().GetAwaiter().GetResult();
-        public async Task MainAsync()
+        public static void Main(string[] arg)
         {
-            Program.Log("Main Async", "Started");
-
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
             };
 
-            var configuration = Configuration.Get(false ? FilePathConfigurationMain : FilePathConfigurationDebug);
+            new Program().MainAsync().GetAwaiter().GetResult();
+        }
 
-            //LocaleService.StartTranslateProccess();
-            var languages = new LocaleService();
+        public async Task MainAsync()
+        {
+            Global.Main.Log("Main Async", "Started");
 
-            var graphicService = new GraphicService().Initialize();
+            var configuration = Configuration.LoadConfiguration();
 
-            IDatabaseContext db = configuration.DatabaseConnectionString.IsNullOrEmpty()
-                ? new DirectoryDbContext(configuration.DatabaseConnectionString)
-                : configuration.DatabaseConnectionString.Contains("mongodb")
-                        ? new MongoDbContext(configuration.DatabaseConnectionString)
-                        : new DirectoryDbContext(configuration.DatabaseConnectionString);
+            var _db = new DynastioBotDatabase();
+            var db = await _db.GetInstanseAsync(configuration.MongodbConnection, DynastioBotDatabase.DatabasesInstances.Mongodb);
 
-            db = await db.InitializeAsync();
-
-            var dynastClient = new DynastioClient(configuration.DynastioApi);
-
-            var userService = new UserService(db, dynastClient);
-
-            var guildService = new GuildService(db);
-
-            var youtubeService = new YoutubeService(configuration.YoutubeApiKey, configuration.DynastioYoutubeChannelId);
-            await youtubeService.InitializeAsync();
-                      
             var services = new ServiceCollection()
-                .AddSingleton(configuration)
-                .AddSingleton(dynastClient)
-                .AddSingleton((IDatabaseContext)db)
-                .AddSingleton(userService)
-                .AddSingleton(guildService)
-                .AddSingleton(graphicService)
-                .AddSingleton(youtubeService)
-                .AddSingleton(_socketConfig)
-                .AddSingleton(languages)
-                .AddSingleton<DiscordSocketClient>()
-                .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
-                .AddSingleton<InteractionHandler>()
-                .AddSingleton<CommandService>()
-                .AddSingleton<CommandHandler>()
-                .AddSingleton<EventHandler>()
-                .BuildServiceProvider();
+               .AddSingleton(configuration)
+               .AddSingleton<DynastioBotDatabase>(_db)
+               .AddSingleton<IDynastioBotDatabase>(db)
+               .AddSingleton<DiscordSocketClient>(x => new DiscordSocketClient(new()
+               {
+                   GatewayIntents = GatewayIntents.All,
+                   AlwaysDownloadUsers = true,
+                   AlwaysDownloadDefaultStickers = false,
+                   DefaultRetryMode = RetryMode.AlwaysRetry,
+               }))
+
+               .AddSingleton<InteractionService>(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
+               .AddSingleton<DiscordEventService>()
+               .AddSingleton<CommandService>()
+               .AddSingleton<InteractionsHandler>()
+               .AddSingleton<CommandsHandler>()
+               .AddSingleton<MessageHandler>()
+
+
+               .AddSingleton<DynastioClient>(x => new DynastioClient(configuration.DynastioApi))
+               
+               .AddSingleton<UserService>()
+               .AddSingleton<GuildService>()
+
+               .AddSingleton<GlobalizationService>()
+               .AddSingleton<YoutubeService>()
+               .BuildServiceProvider();
+
 
             await RunAsync(services);
-        }
-        private readonly DiscordSocketConfig _socketConfig = new()
-        {
-            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.GuildMessages,
-            AlwaysDownloadUsers = true,
-            AlwaysDownloadDefaultStickers = false,
-            DefaultRetryMode = RetryMode.AlwaysRetry,
 
-        };
+        }
         public async Task RunAsync(IServiceProvider _services)
         {
             var client = _services.GetRequiredService<DiscordSocketClient>();
 
-            client.Log += LogAsync;
+            client.Log += (LogMessage arg) =>
+            {
+                Console.WriteLine(arg.ToString());
+                return Task.CompletedTask;
+            };
 
-            _services.GetRequiredService<EventHandler>().Initialize();
-            // Here we can initialize the service that will register and execute our commands
-            await _services.GetRequiredService<InteractionHandler>().InitializeAsync();
-            await _services.GetRequiredService<CommandHandler>().InitializeAsync();
+            _services.GetRequiredService<GlobalizationService>().LoadDirectory(FileManager.ToResourcePath("globalization"));
+            _services.GetRequiredService<YoutubeService>();
 
-            // Bot token can be provided from the Configuration object we set up earlier
+            _services.GetRequiredService<DiscordEventService>();
+            _services.GetRequiredService<MessageHandler>();
+
+            await _services.GetRequiredService<InteractionsHandler>().InitializeAsync();
+            await _services.GetRequiredService<CommandsHandler>().InitializeAsync();
+
+
             await client.LoginAsync(TokenType.Bot, _services.GetRequiredService<Configuration>().BotToken);
             await client.StartAsync();
 
-            // Never quit the program until manually forced to.
             await Task.Delay(Timeout.Infinite);
+        }
 
-        }
-        private Task LogAsync(LogMessage message)
-        {
-            Console.WriteLine(message.ToString());
-            return Task.CompletedTask;
-        }
-        public static void Log(string service, string text)
-        {
-            Console.WriteLine(DateTime.UtcNow.ToString("T") + " " + service.PadRight(20) + text);
-        }
-        public static void Log(string service, string text, ConsoleColor color)
-        {
-            Console.ForegroundColor = color;
-            Console.WriteLine(DateTime.UtcNow.ToString("T") + " " + service.PadRight(20) + text);
-            Console.ResetColor();
-        }
-        public static bool IsDebug()
-        {
-#if DEBUG
-            return true;
-#else
-                return false;
-#endif
-        }
+
     }
 }

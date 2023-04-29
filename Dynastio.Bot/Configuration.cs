@@ -1,5 +1,4 @@
-﻿using Dynastio.Net;
-
+﻿using Dynastio.Bot.Managers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,53 +8,42 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot
 {
-    public class Configuration
+    internal class Configuration
     {
-        public string BotStatus { get; set; }
         public string BotToken { get; set; }
         public string DynastioApi { get; set; }
-        public string YoutubeApiKey { get; set; }
-        public string DynastioYoutubeChannelId { get; set; }
-        public string DatabaseConnectionString { get; set; }
+        public string YoutubeApi { get; set; }
+        public string MongodbConnection { get; set; }
+        public string Prefix { get; set; }
+
         public ulong OwnerId { get; set; }
-        public GuildsConfiguration Guilds { get; set; }
-        public ChannelsConfiguration Channels { get; set; }
+        public ulong DebugServerId { get; set; }
 
-        public static Configuration Get(string debugPath)
+
+        public static Configuration LoadConfiguration()
         {
-            //if (Program.IsDebug())
-            //{
-            //    var configuration = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(debugPath));
-            //    return configuration;
-            //}
+            if (Global.Main.IsDebug())
+            {
+                var file = File.ReadAllText(FileManager.ToResourcePath(@"debug-config.json"));
+                return JsonConvert.DeserializeObject<Configuration>(file);
+            }
 
+            string? key = Environment.GetEnvironmentVariable("config-key");
+            if (key is null)
+            {
+                throw new Exception(" Config-Key not found from environment variables.");
+            }
 
-            //string path = Environment.GetEnvironmentVariable("path");
-            //if (!string.IsNullOrEmpty(path))
-            //    return JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(path));
+            string encryptedvalue = File.ReadAllText(FileManager.ToResourcePath(@"configuration"));
+            string clearValue = Encryption.Decrypt(encryptedvalue, key);
 
-            //string config = Environment.GetEnvironmentVariable("config");
-            //if (!string.IsNullOrEmpty(config))
-            //    return JsonConvert.DeserializeObject<Configuration>(config);
+            var value = JsonConvert.DeserializeObject<Configuration>(clearValue);
+            if (value is null)
+            {
+                throw new Exception($" Configuration value is null.");
+            }
 
-
-            string key = Environment.GetEnvironmentVariable("config-key");
-            string encryptedvalue = File.ReadAllText(@"config.d".ResourcesPath());
-            string value = Encryption.Decrypt(encryptedvalue, key);
-            return JsonConvert.DeserializeObject<Configuration>(value);
+            return value;
         }
-    }
-    public class GuildsConfiguration
-    {
-        public ulong MainServer { get; set; }
-        public ulong DebugServer { get; set; }
-        public string MainGuildInviteLink { get; set; }
-    }
-    public class ChannelsConfiguration
-    {
-        public ulong JoinLeftLoggerChannel { get; set; }
-        public ulong ErrorLoggerChannel { get; set; }
-        public ulong HonorChannel { get; set; }
-        public ulong UploadsChannel { get; set; }
     }
 }
