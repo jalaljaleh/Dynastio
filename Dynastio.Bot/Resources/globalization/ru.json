@@ -1,3 +1,7 @@
 {
-  "hello": "Hello"
+  "server": "Сервер",
+  "score": "Очки",
+  "level": "Уровень",
+  "team": "Команда",
+  "nickname": "Никнейм"
 }

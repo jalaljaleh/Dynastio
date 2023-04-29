@@ -1,3 +1,7 @@
 {
-  "hello": "Hello"
+  "server": "Server",
+  "score": "Score",
+  "level": "Level",
+  "team": "Team",
+  "nickname": "Nickname"
 }

@@ -24,13 +24,6 @@
  
   </ItemGroup>
 
-  
-  <ItemGroup>
-    <None Remove="Resources\debug-config.json" />
-    <None Remove="Resources\globalization\en.json" />
-    <None Remove="Resources\globalization\ru.json" />
-  </ItemGroup>
-
 
 	<ItemGroup>
 		<None Include="..\.dockerignore" Link=".dockerignore">

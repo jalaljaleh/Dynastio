@@ -25,6 +25,7 @@ namespace Dynastio.Bot
             if (Global.Main.IsDebug())
             {
                 var file = File.ReadAllText(FileManager.ToResourcePath(@"debug-config.json"));
+                
                 return JsonConvert.DeserializeObject<Configuration>(file);
             }
 

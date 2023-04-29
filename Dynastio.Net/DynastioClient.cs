@@ -74,26 +74,22 @@ namespace Dynastio.Net
                 _ => ""
             };
 
-            var result = await GetAsync("https://announcement-amsterdam-0-alpaca.dynast.cloud/" + url + "?random=" + Main.Random.Next());
+            var result = await GetAsync("https://announcement-amsterdam-0-alpaca.dynast.cloud/" + url + "&random=" + Main.Random.Next());
             var data = JsonConvert.DeserializeObject<DataType<List<Server>>>(result);
             return data.Servers;
         }
-        public Task<List<Player>> GetPlayersAsync()
-        {
-            var re = _servers.Value.SelectMany(a => a.GetPlayers() ?? null).ToList();
-            return Task.FromResult(re);
-        }
+        public async Task<List<Player>> GetPlayersAsync()
+            => await Task.FromResult(_servers.Value.SelectMany(a => a.GetPlayers() ?? null).ToList());
+
         public async Task<Version> GetVersionAsync()
         {
-            var result = await GetAsync("https://dynast.io/version.json" + "?random=" + Main.Random.Next());
-            var data = JsonConvert.DeserializeObject<DataType<Version>>(result);
-            return data.data;
+            var result = await GetAsync("https://dynast.io/version.json");
+            return JsonConvert.DeserializeObject<Version>(result);
         }
         public async Task<string> GetChangeLogAsync()
         {
-            var result = await GetAsync("https://dynast.io/changelog.txt" + "?random=" + Main.Random.Next());
-            var data = JsonConvert.DeserializeObject<DataType<string>>(result);
-            return data.data;
+            var result = await GetAsync("https://dynast.io/changelog.txt");
+            return JsonConvert.DeserializeObject<string>(result);
         }
         public async Task<List<Leaderboardcoin>> GetLeaderboardcoinsAsync()
         {

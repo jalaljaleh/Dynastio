@@ -42,30 +42,16 @@ namespace Dynastio.Bot.Interactions.Modules.Dynastio
                 a.Parent.Label.ToLower().Contains(server)
                 ).ToList();
 
-            switch (sort)
+            players = sort switch
             {
-                default:
-                case ToplistSortType.Score:
-                    players.OrderByDescending(a => a.Score).ToList();
-                    break;
-
-                case ToplistSortType.Level:
-                    players.OrderByDescending(a => a.Level).ToList();
-                    break;
-                case ToplistSortType.Nickname:
-                    players.OrderByDescending(a => a.Nickname).ToList();
-                    break;
-                case ToplistSortType.Team:
-                    players.OrderByDescending(a => a.Team).ToList();
-                    break;
-                case ToplistSortType.Location:
-                    players.OrderByDescending(a => a.X * a.Y).ToList();
-                    break;
-                case ToplistSortType.ServerNickname:
-                    players.OrderByDescending(a => a.Parent.Label).ToList();
-                    break;
-            }
-
+                ToplistSortType.Score => players.OrderByDescending(a => a.Score).ToList(),
+                ToplistSortType.Level => players.OrderByDescending(a => a.Level).ToList(),
+                ToplistSortType.Nickname => players.OrderByDescending(a => a.Nickname).ToList(),
+                ToplistSortType.Team => players.OrderByDescending(a => a.Team).ToList(),
+                ToplistSortType.ServerName => players.OrderByDescending(a => a.Parent.Label).ToList(),
+                ToplistSortType.Location => players.OrderByDescending(a => a.X * a.Y).ToList(),
+                _ => players.OrderByDescending(a => a.Score).ToList()
+            };
 
             var players1 = players.Skip((page - 1) * take).Take(take).ToList();
             var content = players1.ToStringTable(new[] { "#", this.Context.UserLocale["server"], this.Context.UserLocale["score"], this.Context.UserLocale["level"], this.Context.UserLocale["team"], this.Context.UserLocale["nickname"] },
@@ -95,8 +81,8 @@ namespace Dynastio.Bot.Interactions.Modules.Dynastio
             Nickname,
             Team,
             Location,
-            [ChoiceDisplay("Server Nickname")]
-            ServerNickname
+            [ChoiceDisplay("Server Name")]
+            ServerName
         }
 
     }
