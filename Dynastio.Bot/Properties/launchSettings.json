@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Dynastio.Bot": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
