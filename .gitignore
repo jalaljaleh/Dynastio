@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /Dynastio.Bot/Resources/debug-config.json
 /Dynastio.Bot/Resources/config-key.txt
+/Dynastio.Bot/Resources/release-config.json
