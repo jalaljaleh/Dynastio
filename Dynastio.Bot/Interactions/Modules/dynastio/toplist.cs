@@ -30,7 +30,7 @@ namespace Dynastio.Bot.Interactions.Modules.Dynastio
               int page = 1)
         {
             await DeferAsync();
-
+            
             var players = Dynastio.OnlinePlayers.Where(a => !a.Parent.IsPrivate).ToList() ?? null;
             if (players == null)
             {
@@ -59,8 +59,8 @@ namespace Dynastio.Bot.Interactions.Modules.Dynastio
                 a => a.Parent.Label.TrySubstring(16),
                 a => a.Score.Metric(),
                 a => a.Level.Metric(),
-                a => a.Team.RemoveLines().TrySubstring(10),
-                a => a.Nickname.RemoveLines().TrySubstring(16))
+                a => a.Team.RemoveLines().TrySubstring(6),
+                a => a.Nickname.RemoveLines().TrySubstring(12))
                 .ToMarkdown();
 
            // var map = Map == Map.Enable ? GraphicService.GetMap(players1) : null;

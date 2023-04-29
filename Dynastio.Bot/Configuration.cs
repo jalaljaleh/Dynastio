@@ -20,13 +20,26 @@ namespace Dynastio.Bot
         public ulong DebugServerId { get; set; }
 
 
+
+
         public static Configuration LoadConfiguration()
         {
             if (Global.Main.IsDebug())
             {
                 var file = File.ReadAllText(FileManager.ToResourcePath(@"debug-config.json"));
-                
                 return JsonConvert.DeserializeObject<Configuration>(file);
+            }
+
+            if (File.Exists(FileManager.ToResourcePath(@"release-config.json")))
+            {
+                var txtConfig = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(FileManager.ToResourcePath(@"release-config.json")));
+
+                var configKey = File.ReadAllText(FileManager.ToResourcePath(@"config-key.txt"));
+                var encryptedConfig = Encryption.Encrypt(JsonConvert.SerializeObject(txtConfig),configKey);
+
+                File.WriteAllText(FileManager.ToResourcePath(@"../../../../Resources/configuration"), encryptedConfig);
+
+                Environment.SetEnvironmentVariable("config-key", configKey);
             }
 
             string? key = Environment.GetEnvironmentVariable("config-key");
