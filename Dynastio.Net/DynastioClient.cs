@@ -46,6 +46,7 @@ namespace Dynastio.Net
         public Version Version { get => _version.Value; }
         public string Changelog { get => _changelog.Value; }
         public List<Leaderboardcoin> Leaderboardcoins { get => _leaderboardcoin.Value; }
+
         public List<Leaderboardscore> LeaderboardscoresDaily { get => _leaderboardscore.Value.ToArray()[0].ToList(); }
         public List<Leaderboardscore> LeaderboardscoresWeekly { get => _leaderboardscore.Value.ToArray()[1].ToList(); }
         public List<Leaderboardscore> LeaderboardscoresMonthly { get => _leaderboardscore.Value.ToArray()[2].ToList(); }

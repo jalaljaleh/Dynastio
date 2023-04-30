@@ -8,6 +8,16 @@ namespace Dynastio.Bot
 {
     public static class IntegerExtensions
     {
+        public static string ToRegularCounter(this int number)
+        {
+            string result = $"{number}";
+            if (number < 10)
+            {
+                result = "0" + number;
+            }
+
+            return result;
+        }
         public static string ToDiscordUnixTimeFromat(this int Value)
         {
             return $"<t:{(DateTime.UtcNow + TimeSpan.FromSeconds(Value)).ToUnixTimestamp()}:R>";
