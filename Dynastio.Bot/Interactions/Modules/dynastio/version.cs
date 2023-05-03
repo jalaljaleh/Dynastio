@@ -26,9 +26,9 @@ namespace Dynastio.Bot.Interactions.Modules.Guild
             var version = Dynastio.Version;
             var message = await FollowupAsync(
                 embed: (
-                $"Dynastio Current Version Is **{version.CurrentVersion}**" +
+                $"Dynastio Current deleteMessage Is **{version.CurrentVersion}**" +
                 $"\n[Download]({version.DownloadUrl})"
-                ).ToEmbed("Dynastio Version", Context.Client.CurrentUser.GetAvatarUrl()));
+                ).ToEmbed("Dynastio deleteMessage", Context.Client.CurrentUser.GetAvatarUrl()));
         }
     }
 }

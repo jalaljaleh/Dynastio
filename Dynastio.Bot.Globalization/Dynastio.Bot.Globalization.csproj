@@ -6,26 +6,12 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-	  <Content Include="Resources\**" CopyToOutputDirectory="Always" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Resources\globalization\en.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\globalization\ru.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Dynastio.Bot.Global\Dynastio.Bot.Global.csproj" />
     <ProjectReference Include="..\Dynastio.Bot.Test\Dynastio.Bot.Test.csproj" />
+	  <Content Include="Resources\**" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>

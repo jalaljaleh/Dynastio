@@ -15,6 +15,18 @@ namespace Dynastio.Bot.Data
 
         [BsonId]
         public ulong Id { get; set; }
+        public ConcurrentDictionary<LoggerChannelType, ulong> LoggerChannels { get; set; } = new();
 
     }
+    public enum LoggerChannelType
+    {
+        DeletedMessages,
+        Moderation,
+        UserJoined,
+        UserLeave,
+        Giveaway
+    }
+
 }
+
+

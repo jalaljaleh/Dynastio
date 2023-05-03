@@ -3,5 +3,6 @@
   "score": "Score",
   "level": "Level",
   "team": "Team",
-  "nickname": "Nickname"
+  "nickname": "Nickname",
+  "accounts.require.default": "You have no any default account, select one then try again."
 }

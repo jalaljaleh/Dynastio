@@ -104,9 +104,9 @@ namespace Dynastio.Net
             var data = JsonConvert.DeserializeObject<DataType<Leaderboardscore[][]>>(result);
             return data.data;
         }
-        public async Task<UserRank> GetUserRanAsync(string playerId)
+        public async Task<UserRank> GetUserRankAsync(string playerId)
         {
-            var result = await GetAsync("https://auth.dynast.io/leaderboard/position?uid=" + playerId);
+            var result = await GetAsync("https://auth.dynast.io/api/get_user_rank?uid=" + playerId);
             var data = JsonConvert.DeserializeObject<DataType<List<int>>>(result);
             return new UserRank(data.data);
         }

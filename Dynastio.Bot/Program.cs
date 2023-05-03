@@ -61,6 +61,8 @@ namespace Dynastio.Bot
                .AddSingleton<UserService>()
                .AddSingleton<GuildService>()
 
+               .AddSingleton<GraphicService>()
+
                .AddSingleton<GlobalizationService>()
                .AddSingleton<YoutubeService>()
                .BuildServiceProvider();
@@ -81,6 +83,7 @@ namespace Dynastio.Bot
 
             _services.GetRequiredService<GlobalizationService>().LoadDirectory(FileManager.ToResourcePath("globalization"));
             _services.GetRequiredService<YoutubeService>();
+            _services.GetRequiredService<GraphicService>().Initialize();
 
             _services.GetRequiredService<DiscordEventService>();
             _services.GetRequiredService<MessageHandler>();

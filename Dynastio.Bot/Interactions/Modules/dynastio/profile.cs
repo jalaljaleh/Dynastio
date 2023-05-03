@@ -20,18 +20,18 @@ namespace Dynastio.Bot.Interactions.Modules.Dynastio
     public class ProfileModule : CustomInteractionModuleBase<CustomSocketInteractionContext>
     {
         public DynastioClient Dynastio { get; set; }
+        public GraphicService GraphicService { get; set; }
 
         [RateLimit(30, 2, RateLimit.RateLimitType.User)]
         [SlashCommand("profile", "your dynastio profile")]
         public async Task profile()
         {
             await DeferAsync();
+            var account = Context.BotUser.GetDefaultAccount();
+            var profile = await Dynastio.GetUserProfileAsync(account.Id);
 
-            string accountId = Context.BotUser.Accounts.FirstOrDefault().Id;
-
-            var result = await Dynastio.GetUserProfileAsync(accountId);
-
-            var msg = await FollowupAsync(Context.User.Id.ToUserMention() + $"Conis: " + result.Coins);
+             var image = GraphicService.GetProfile(profile);
+            await DiscordStream.FollowupWithFileAsync(Context, image, $"profile-{Context.User.Id}.png", $"");
         }
 
 

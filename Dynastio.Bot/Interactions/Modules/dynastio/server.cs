@@ -66,7 +66,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild
                 $"**CustomMode**: {result.CustomMode}\n" +
                 $"**GameMode**: {result.GameMode}\n" +
                 $"**Lifetime**: {result.Lifetime}\n" +
-                $"**Version**: {result.Version}")
+                $"**deleteMessage**: {result.Version}")
                 .WithIsInline(true),
 
 

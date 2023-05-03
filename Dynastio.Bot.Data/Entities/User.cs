@@ -22,6 +22,10 @@ namespace Dynastio.Bot.Data
         {
             return Accounts.FirstOrDefault(a => a.Id.Equals(Id));
         }
+        public UserAccount GetDefaultAccount()
+        {
+            return Accounts.FirstOrDefault(a => a.IsDefault);
+        }
     }
 
 
