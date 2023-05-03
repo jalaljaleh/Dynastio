@@ -57,7 +57,7 @@ namespace Dynastio.Bot
             User user = _users.FirstOrDefault(x => x.Id == Id);
             if (user is null)
             {
-                user = await _db.GetUserAsync(x => x.Id == Id);
+                user = await _db.GetUserAsync(Id);
 
                 if (user is null && New is true)
                 {

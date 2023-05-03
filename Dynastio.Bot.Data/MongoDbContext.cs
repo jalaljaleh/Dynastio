@@ -40,9 +40,9 @@ namespace Dynastio.Bot.Data
             }
         }
 
-        public async Task<Guild> GetGuildAsync(Expression<Func<Guild, bool>> expression)
+        public async Task<Guild> GetGuildAsync(ulong Id)
         {
-            var result = _guilds.Find(expression).FirstOrDefault();
+            var result = _guilds.Find(x=> x.Id == Id).FirstOrDefault();
             return await Task.FromResult(result);
         }
         public async Task<bool> InsertAsync(Guild guild)
@@ -59,9 +59,9 @@ namespace Dynastio.Bot.Data
 
 
 
-        public async Task<User> GetUserAsync(Expression<Func<User, bool>> expression)
+        public async Task<User> GetUserAsync(ulong Id)
         {
-            var result = _users.Find(expression).FirstOrDefault();
+            var result = _users.Find(x => x.Id == Id).FirstOrDefault();
             return await Task.FromResult(result);
         }
         public async Task<bool> InsertAsync(User Buser)
