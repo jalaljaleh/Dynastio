@@ -16,6 +16,7 @@ namespace Dynastio.Bot.Data
         public ulong Id { get; set; }
         public int Honor { get; set; }
         public DateTime LastHonorGift { get; set; }
+        public DateTime LastBoostGift { get; set; }
 
         public List<UserAccount> Accounts { get; set; } = new();
         public UserAccount GetAccount(string Id)

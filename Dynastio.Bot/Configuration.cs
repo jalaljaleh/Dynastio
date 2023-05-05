@@ -16,7 +16,6 @@ namespace Dynastio.Bot
         public string MongodbConnection { get; set; }
         public string Prefix { get; set; }
 
-        public ulong OwnerId { get; set; }
         public ulong DebugServerId { get; set; }
 
 

@@ -227,7 +227,7 @@ namespace Dynastio.Bot
                 return Task.CompletedTask;
             }
         }
-        public const string CustomId = "discord-input: ";
+        public const string CustomId = "_discord-input: ";
         public static string GenerateCustomId(string customId) => CustomId + customId;
         public static string GetCustomId(string customId) => CustomId + customId;
         public static bool IsFromDiscordInput(SocketInteraction interaction)

@@ -4,6 +4,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Dynastio.Bot.Data;
 using Dynastio.Bot.Globalization;
+using Dynastio.Bot.Handlers;
 using Dynastio.Bot.Managers;
 using Dynastio.Bot.Services;
 using Dynastio.Net;
@@ -49,7 +50,7 @@ namespace Dynastio.Bot
                }))
 
                .AddSingleton<InteractionService>(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
-               .AddSingleton<DiscordEventService>()
+               .AddSingleton<Handlers.EventHandler>()
                .AddSingleton<CommandService>()
                .AddSingleton<InteractionsHandler>()
                .AddSingleton<CommandsHandler>()
@@ -65,6 +66,7 @@ namespace Dynastio.Bot
 
                .AddSingleton<GlobalizationService>()
                .AddSingleton<YoutubeService>()
+               .AddSingleton<InternetService>()
                .BuildServiceProvider();
 
 
@@ -85,7 +87,7 @@ namespace Dynastio.Bot
             _services.GetRequiredService<YoutubeService>();
             _services.GetRequiredService<GraphicService>().Initialize();
 
-            _services.GetRequiredService<DiscordEventService>();
+            _services.GetRequiredService<Handlers.EventHandler>();
             _services.GetRequiredService<MessageHandler>();
 
             await _services.GetRequiredService<InteractionsHandler>().InitializeAsync();

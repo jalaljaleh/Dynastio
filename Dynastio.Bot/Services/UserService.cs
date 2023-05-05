@@ -80,12 +80,18 @@ namespace Dynastio.Bot
                 LastHonorGift = DateTime.MinValue,
             };
 
-            var profile = await _dynastioClient.GetUserProfileAsync("discord:" + id);
+            Profile profile;
+            try { profile = await _dynastioClient.GetUserProfileAsync("_discord:" + id); }
+            catch
+            {
+                profile = null;
+            }
+
             if (profile is not null)
             {
                 var account = new UserAccount()
                 {
-                    Id = "discord:" + id,
+                    Id = "_discord:" + id,
                     AddedAt = DateTime.UtcNow,
                     Nickname = "Discord",
                     IsDefault = true,

@@ -7,29 +7,20 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Net;
 
-namespace Dynastio.Bot.Interactions.Modules.Guild
+namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
 {
-    [EnabledInDm(false)]
-    [RequireContext(ContextType.Guild)]
-    [RequireBotPermission(ChannelPermission.SendMessages)]
-    [Group("leaderboard", "dynast.io leaderboard")]
-    public class Leaderboard : CustomInteractionModuleBase<CustomSocketInteractionContext>
+    public partial class DynastioModule
     {
-        public UserService UserService { get; set; }
-        public DynastioClient Dynastio { get; set; }
-
-
-        [RateLimit(3)]
-        [SlashCommand("score", "leaderboard score")]
+        [SlashCommand("leaderboard-score", "leaderboard score")]
         public async Task LeaderboardScore(LeaderboardType leaderboard = LeaderboardType.Monthly)
         {
             await DeferAsync();
 
             var leaderboardContent = leaderboard switch
             {
-                LeaderboardType.Monthly => Dynastio.LeaderboardscoresMonthly,
-                LeaderboardType.Weekly => Dynastio.LeaderboardscoresWeekly,
-                LeaderboardType.Daily => Dynastio.LeaderboardscoresDaily,
+                LeaderboardType.Monthly => _dynastio.LeaderboardscoresMonthly,
+                LeaderboardType.Weekly => _dynastio.LeaderboardscoresWeekly,
+                LeaderboardType.Daily => _dynastio.LeaderboardscoresDaily,
                 _ => throw new NotImplementedException(),
             };
             leaderboardContent = leaderboardContent.OrderByDescending(a => a.Score).ToList();
@@ -42,13 +33,12 @@ namespace Dynastio.Bot.Interactions.Modules.Guild
                 a => $"{a.Nickname.RemoveLines()}");
             await FollowupAsync(Context.User.Id.ToUserMention(), embed: content.ToMarkdown().ToEmbed(Context.UserLocale["leaderboard"] + " " + Context.UserLocale[leaderboard.ToString().ToLower()]));
         }
-        [RateLimit(10)]
-        [SlashCommand("coin", "leaderboard coin")]
+        [SlashCommand("leaderboard-coin", "leaderboard coin")]
         public async Task leaderboard_coin()
         {
             await DeferAsync();
 
-            var coinboard = Dynastio.Leaderboardcoins;
+            var coinboard = _dynastio.Leaderboardcoins;
             string content = coinboard.ToStringTable(new[] { "#", Context.UserLocale["index"], Context.UserLocale["coin"], Context.UserLocale["nickname"] },
                  a => coinboard.IndexOf(a) < 5 ? "🏆" : "",
                  a => $"{(coinboard.IndexOf(a) + 1).ToRegularCounter()}",

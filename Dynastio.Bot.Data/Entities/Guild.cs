@@ -12,20 +12,42 @@ namespace Dynastio.Bot.Data
     public class Guild
     {
         public Guild() { }
-
-        [BsonId]
         public ulong Id { get; set; }
-        public ConcurrentDictionary<LoggerChannelType, ulong> LoggerChannels { get; set; } = new();
-
+        public Dictionary<BotGuildRoleType, ulong> Roles { get; set; } = new();
+        public bool IsOfficialServer { get; set; } = false;
+        public ulong GetRoleId(BotGuildRoleType role)
+        {
+            if (Roles.TryGetValue(role, out ulong id))
+            {
+                return id;
+            }
+            return 0;
+        }
+        public void AddOrUpdateRoleId(BotGuildRoleType role, ulong Id)
+        {
+            if (Roles.ContainsKey(role))
+            {
+                Roles[role] = Id;
+            }
+            else
+            {
+                Roles.Add(role, Id);
+            }
+        }
+        public enum BotGuildRoleType
+        {
+            Developer
+        }
+        public enum LoggerChannelType
+        {
+            DeletedMessages,
+            Moderation,
+            UserJoined,
+            UserLeave,
+            Giveaway
+        }
     }
-    public enum LoggerChannelType
-    {
-        DeletedMessages,
-        Moderation,
-        UserJoined,
-        UserLeave,
-        Giveaway
-    }
+  
 
 }
 

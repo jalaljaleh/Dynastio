@@ -1,7 +1,10 @@
 ﻿using Dynastio.Bot.Global;
 using MongoDB.Driver;
+using System;
 using System.Linq.Expressions;
 using System.Net;
+using MongoDB;
+using MongoDB.Bson;
 
 namespace Dynastio.Bot.Data
 {
@@ -10,6 +13,8 @@ namespace Dynastio.Bot.Data
         private IMongoDatabase _dynastio;
         private IMongoCollection<User> _users => _dynastio.GetCollection<User>("Users");
         private IMongoCollection<Guild> _guilds => _dynastio.GetCollection<Guild>("Guilds");
+        private IMongoCollection<RedeemCode> _redeemCodes => _dynastio.GetCollection<RedeemCode>("RedeemCodes");
+
         private MongoClient _db { get; set; }
         public MongoDbContext(string mongoConnection)
         {
@@ -31,18 +36,28 @@ namespace Dynastio.Bot.Data
                 Main.Log("Mongodb", "Start Session Async ..");
 
                 await _db.StartSessionAsync();
-                
+
                 Main.Log("Mongodb", "Session Started.");
             }
             catch
             {
-                Main.Log("Mongodb", "db is not connected.",ConsoleColor.Red);
+                Main.Log("Mongodb", "db is not connected.", ConsoleColor.Red);
             }
         }
 
         public async Task<Guild> GetGuildAsync(ulong Id)
         {
-            var result = _guilds.Find(x=> x.Id == Id).FirstOrDefault();
+            var result = _guilds.AsQueryable()
+                  .Where(a => a.Id == Id)
+                  .FirstOrDefault();
+            return await Task.FromResult(result);
+        }
+        public async Task<Guild> GetOfficialGuildAsync()
+        {
+            var result = _guilds.AsQueryable()
+                  .Where(a => a.IsOfficialServer)
+                  .FirstOrDefault();
+
             return await Task.FromResult(result);
         }
         public async Task<bool> InsertAsync(Guild guild)
@@ -61,7 +76,10 @@ namespace Dynastio.Bot.Data
 
         public async Task<User> GetUserAsync(ulong Id)
         {
-            var result = _users.Find(x => x.Id == Id).FirstOrDefault();
+            var result = _users.AsQueryable()
+                .Where(a => a.Id == Id)
+                .FirstOrDefault();
+
             return await Task.FromResult(result);
         }
         public async Task<bool> InsertAsync(User Buser)
@@ -80,7 +98,6 @@ namespace Dynastio.Bot.Data
                 .ElemMatch(o => o.Accounts, Builders<UserAccount>.Filter.Where(a => a.Id == Id));
 
             var result = _users.Find(filter).FirstOrDefault();
-
             return await Task.FromResult(result);
         }
         public async Task<List<User>> GetHonorLeaderboardAsync(int count = 10)
@@ -111,5 +128,33 @@ namespace Dynastio.Bot.Data
             return await Task.FromResult(true);
         }
 
+        public async Task<RedeemCode> GetRedeemCodeAsync(RedeemCode.RedeemType type)
+        {
+            var result = this._redeemCodes.AsQueryable()
+                       .Where(a => a.Type == type)
+                       .FirstOrDefault();
+            return await Task.FromResult(result);
+        }
+        public async Task<List<RedeemCode>> GetRedeemCodesAsync()
+        {
+            var result = this._redeemCodes.AsQueryable()
+                        .ToList();
+            return await Task.FromResult(result);
+        }
+        public async Task<bool> InsertAsync(RedeemCode redeemCode)
+        {
+            _redeemCodes.InsertOne(redeemCode);
+            return await Task.FromResult(true);
+        }
+        public async Task<bool> InsertManyAsync(List<RedeemCode> redeemCodes)
+        {
+            _redeemCodes.InsertMany(redeemCodes);
+            return await Task.FromResult(true);
+        }
+        public async Task<bool> DeleteAsync(RedeemCode redeemCodes)
+        {
+            _redeemCodes.DeleteOne(a => a.Id == redeemCodes.Id);
+            return await Task.FromResult(true);
+        }
     }
 }

@@ -6,28 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Dynastio.Net;
-
 using Discord.WebSocket;
 using Dynastio.Bot.Interactions.Modules.Shard;
 
-namespace Dynastio.Bot.Interactions.Modules.Guild
+namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
 {
-    [EnabledInDm(false)]
-    [RequireContext(ContextType.Guild)]
-    [RequireBotPermission(ChannelPermission.AttachFiles)]
-    [RequireBotPermission(ChannelPermission.SendMessages)]
-    [Group("servers", "dyanstio server")]
-    public class ServerModule : CustomInteractionModuleBase<CustomSocketInteractionContext>
+    public partial class DynastioModule
     {
-        public DynastioClient Dynastio { get; set; }
-
-        [RateLimit(10, 2, RateLimit.RateLimitType.User)]
-        [SlashCommand("find", "get server information")]
+        [SlashCommand("servers-find", "get server information")]
         public async Task server(
             [Autocomplete(typeof(SharedAutocompleteHandler.OnlineServersAutocompleteHandler))] string server)
         {
             await DeferAsync();
-            var result = Dynastio.OnlineServers.FirstOrDefault(a => a.Label.ToLower().Contains(server));
+            var result = _dynastio.OnlineServers.FirstOrDefault(a => a.Label.ToLower().Contains(server));
             if (result == null)
             {
                 await FollowupAsync(embed: $"Server `{server}` not found.".ToEmbed("not found", color: Color.Orange));

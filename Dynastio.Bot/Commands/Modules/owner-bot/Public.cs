@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Modules
 {
-    public class Publica : ModuleBase<CommandContext>
+    public class Public : ModuleBase<CommandContext>
     {
         [Command("ping")]
         public async Task ping()
