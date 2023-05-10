@@ -88,38 +88,10 @@ I have tried to implement all the available Apis in the bot, The bot uses a free
 ## Getting Started
 - Meet the prerequisites.
 
-#### Configuration & Environment Variable
-| Environment Key  |  Value | Description |
-| ------------- | ------------- | ------------- |
-| path  | [File_Path]  | If your configuration is a file, use this one only |
-| config  | [Json Config] | If you want to config the bot from json, use this one only |
 
 
 
 
-1. Bot configuration example:
-  
-```json
-{
-  "BotToken": "Discord_Bot_Token",
-  "DynastioApi":"Dynastio_Api_Token",
-  "YoutubeApiKey":"Youtube_Api_Key",    // Optional
-  "DynastioYoutubeChannelId":"UCW0PmC1B8jjhpKLHciFp0xA",   // Optional
-  "DatabaseConnectionString": "Your_Database_String_Connection", // Directory Path  Or  MongoDB ConnectionString
-  "BotStatus":"In Development",                     
-  "OwnerId":805534924622004274,                                  //your discord user id
-  "Guilds": {
-    "MainServer": 875716592770637824,                        // your discord server id
-    "DebugServer": 941235983284830208,                       // your discord server id
-	"MainGuildInviteLink":"https://discord.gg/GVUXMNv7vV",   // your discord server
-  },
-  "Channels": {
-    "JoinLeftLoggerChannel": 918560623573495918, // discord channel id
-	"ErrorLoggerChannel":948672329813209118,     // discord channel id
-	"HonorChannel":939878098873233438,           // discord channel id
-  }
-}
-```
   
 
 ### Prerequisites
