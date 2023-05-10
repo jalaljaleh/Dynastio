@@ -42,6 +42,7 @@
 
 	
   <ItemGroup>
+    <Folder Include="Commands\Modules\admin\" />
     <Folder Include="Handlers\Events\" />
   </ItemGroup>
 

@@ -12,7 +12,7 @@ using Discord.WebSocket;
 
 namespace Dynastio.Bot.Interactions.Modules.Shard
 {
-    public class SharedModule : CustomInteractionModuleBase<CustomSocketInteractionContext>
+    public class SharedModule : CustomInteractionModuleBase
     {
 
         [ComponentInteraction("shared.close")]

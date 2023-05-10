@@ -15,7 +15,7 @@ namespace Dynastio.Bot.Interactions.Modules.Moderation
     [RequireContext(ContextType.Guild)]
     [RequireBotPermission(ChannelPermission.SendMessages)]
     [RateLimit(60, 2, RateLimit.RateLimitType.User)]
-    public class deleteMessage : CustomInteractionModuleBase<CustomSocketInteractionContext>
+    public class deleteMessage : CustomInteractionModuleBase
     {
         public DynastioClient Dynastio { get; set; }
 

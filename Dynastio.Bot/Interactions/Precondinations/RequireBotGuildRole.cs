@@ -12,23 +12,23 @@ using static Dynastio.Bot.Data.Guild;
 
 namespace Discord.Interactions
 {
-    public class RequireBotGuildRoleAttribute : PreconditionAttribute
-    {
-        private BotGuildRoleType role;
-        public RequireBotGuildRoleAttribute(BotGuildRoleType role)
-        {
-            this.role = role;
-        }
-        public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
-        {
-            var roleId = (context as CustomSocketInteractionContext).BotGuild.GetRoleId(role);
+    //public class RequireUserBotGuildRoleAttribute : PreconditionAttribute
+    //{
+    //    private BotGuildRoleType role;
+    //    public RequireUserBotGuildRoleAttribute(BotGuildRoleType role)
+    //    {
+    //        this.role = role;
+    //    }
+    //    public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
+    //    {
+    //        var roleId = (context as CustomSocketInteractionContext).BotGuild.GetRoleId(role);
 
-            if (roleId is 0 || !(context.User as IGuildUser).RoleIds.Contains(roleId))
-            {
-                return Task.FromResult(PreconditionResult.FromError(this.ErrorMessage ?? ((CustomSocketInteractionContext)context).UserLocale["require.role.developer"]));
-            }
-            return Task.FromResult(PreconditionResult.FromSuccess());
+    //        if (roleId is 0 || !(context.User as IGuildUser).RoleIds.Contains(roleId))
+    //        {
+    //            return Task.FromResult(PreconditionResult.FromError(this.ErrorMessage ?? ((CustomSocketInteractionContext)context).UserLocale["require.role.developer"]));
+    //        }
+    //        return Task.FromResult(PreconditionResult.FromSuccess());
 
-        }
-    }
+    //    }
+    //}
 }

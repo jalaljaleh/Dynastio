@@ -7,35 +7,56 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dynastio.Bot.Interactions;
+using Dynastio.Bot.Data;
 
 namespace Dynastio.Bot.Interactions.Modules.Shard
 {
     public class SharedAutocompleteHandler
     {
-        //public class AccountAutocompleteHandler : AutocompleteHandler
-        //{
-        //    public UserService UserService { get; set; }
-        //    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider _services)
-        //    {
-        //        List<AutocompleteResult> results;
+        public class AccountAutocompleteHandler : AutocompleteHandler
+        {
+            public UserService UserService { get; set; }
+            public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
+            {
+                List<AutocompleteResult> results;
 
-        //        string match = autocompleteInteraction.Data.Current.Value.ToString();
-        //        var all = autocompleteInteraction.Data.Options.Where(a => a.Name == "all").FirstOrDefault();
-        //        var userParam = autocompleteInteraction.Data.Options.Where(a => a.Name == "user").FirstOrDefault();
+                string match = autocompleteInteraction.Data.Current.Value.ToString();
+                var all = autocompleteInteraction.Data.Options.Where(a => a.Name == "all").FirstOrDefault();
+                var userParam = autocompleteInteraction.Data.Options.Where(a => a.Name == "user").FirstOrDefault();
 
-        //        User user = userParam == null || string.IsNullOrEmpty((string)userParam.Value)
-        //            ? (context as ICustomInteractionContext).BotUser
-        //            : await UserService.GetUserAsync(ulong.Parse((string)userParam.Value));
+                User user = userParam is null || string.IsNullOrEmpty((string)userParam.Value)
+                    ? (context as CustomSocketInteractionContext).BotUser
+                    : await UserService.GetUserAsync(ulong.Parse((string)userParam.Value));
 
 
-        //        results = all == null || (bool)all.Value == false
-        //         ? AutocompleteUtilities.Parse(user.Accounts.Where(a => a.Nickname.Contains(match)).ToList())
-        //         : new List<AutocompleteResult>() { new AutocompleteResult() { Name = "All", Value = "0" } };
+                results = all is null || (bool)all.Value == false
+                 ? Parse(user.Accounts.Where(a => a.Reminder.Contains(match)).ToList())
+                 : new List<AutocompleteResult>() {
+                     new AutocompleteResult()
+                     {
+                         Name = "All",
+                         Value = "0"
+                     }
+                 };
 
-        //        // max - 25 suggestions at a time (API limit)
-        //        return await Task.FromResult(AutocompletionResult.FromSuccess(results.Take(25)));
-        //    }
-        //}
+                // max - 25 suggestions at a time (API limit)
+                return await Task.FromResult(AutocompletionResult.FromSuccess(results.Take(25)));
+            }
+            private List<AutocompleteResult> Parse(List<UserAccount> accounts)
+            {
+                var result = new List<AutocompleteResult>();
+                foreach (var account in accounts)
+                {
+                    result.Add(new AutocompleteResult()
+                    {
+                        Name = account.Reminder,
+                        Value = account.GetHashCode().ToString()
+                    });
+                }
+                return result;
+            }
+        }
+
 
         public class OnlineServersAutocompleteHandler : AutocompleteHandler
         {
@@ -117,7 +138,7 @@ namespace Dynastio.Bot.Interactions.Modules.Shard
                 return await Task.FromResult(AutocompletionResult.FromSuccess(results));
             }
         }
-     
+
 
 
     }

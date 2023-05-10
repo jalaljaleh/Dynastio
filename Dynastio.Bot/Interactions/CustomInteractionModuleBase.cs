@@ -8,14 +8,21 @@ namespace Dynastio.Bot.Interactions
 {
     using Discord;
     using Discord.Interactions;
+    using Dynastio.Bot.Globalization;
 
-    public class CustomInteractionModuleBase<T> : InteractionModuleBase<T> where T : class, IInteractionContext
+    public class CustomInteractionModuleBase : InteractionModuleBase<CustomSocketInteractionContext>
     {
-       
+
         public CustomInteractionModuleBase() : base()
         {
-            
+
         }
+        public string userMention => Context.User.Id.ToUserMention();
+        public Locale thisG { get => this.Context.GuildLocale; }
+        public Locale thisU { get => this.Context.UserLocale; }
+        public string this[string key] { get => Context.UserLocale[key]; }
+        public string this[string key, params object[] @params] { get => Context.UserLocale[key, @params]; }
 
     }
+
 }

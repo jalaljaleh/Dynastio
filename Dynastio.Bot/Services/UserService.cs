@@ -81,7 +81,7 @@ namespace Dynastio.Bot
             };
 
             Profile profile;
-            try { profile = await _dynastioClient.GetUserProfileAsync("_discord:" + id); }
+            try { profile = await _dynastioClient.GetUserProfileAsync("discord:" + id); }
             catch
             {
                 profile = null;
@@ -91,11 +91,11 @@ namespace Dynastio.Bot
             {
                 var account = new UserAccount()
                 {
-                    Id = "_discord:" + id,
+                    Id = "discord:" + id,
                     AddedAt = DateTime.UtcNow,
-                    Nickname = "Discord",
+                    PinCode = "none",
                     IsDefault = true,
-                    Reminder = "none",
+                    Reminder = "discord",
                 };
                 user.Accounts.Add(account);
             }

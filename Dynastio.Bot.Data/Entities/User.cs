@@ -17,15 +17,20 @@ namespace Dynastio.Bot.Data
         public int Honor { get; set; }
         public DateTime LastHonorGift { get; set; }
         public DateTime LastBoostGift { get; set; }
-
         public List<UserAccount> Accounts { get; set; } = new();
+
         public UserAccount GetAccount(string Id)
         {
             return Accounts.FirstOrDefault(a => a.Id.Equals(Id));
         }
         public UserAccount GetDefaultAccount()
         {
-            return Accounts.FirstOrDefault(a => a.IsDefault);
+            return Accounts.FirstOrDefault(a => a.IsDefault) ?? Accounts.FirstOrDefault();
+        }
+        public void SwitchAccount(UserAccount userAccount)
+        {
+            Accounts.ForEach(a => a.IsDefault = false);
+            userAccount.IsDefault = true;
         }
     }
 

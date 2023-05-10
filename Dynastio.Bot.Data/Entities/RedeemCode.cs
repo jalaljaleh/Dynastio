@@ -20,7 +20,6 @@ namespace Dynastio.Bot.Data
         {
             Default,
             BoostServer,
-            CoinRandom,
             Coin100 = 50,
             Coin200,
             Coin300,

@@ -15,7 +15,7 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
     [RequireContext(ContextType.Guild)]
     [RequireBotPermission(ChannelPermission.SendMessages)]
     [RateLimit(10, 4, RateLimit.RateLimitType.User)]
-    public partial class DynastioModule : CustomInteractionModuleBase<CustomSocketInteractionContext>
+    public partial class DynastioModule : CustomInteractionModuleBase
     {
         public DynastioClient _dynastio { get; set; }
         public GraphicService _graphicService { get; set; }

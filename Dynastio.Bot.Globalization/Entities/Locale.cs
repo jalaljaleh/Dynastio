@@ -31,7 +31,7 @@ namespace Dynastio.Bot.Globalization
                 return result;
             }
         }
-        public string this[string key, params string[] param]
+        public string this[string key, params object[] param]
         {
             get
             {
@@ -47,7 +47,7 @@ namespace Dynastio.Bot.Globalization
                 var regex = new Regex(Regex.Escape("[x]"));
 
                 for (int i = 0; i <= param.Length; i++)
-                    result = regex.Replace(result, param[i], 1);
+                    result = regex.Replace(result, (string)param[i], 1);
 
                 return result;
             }

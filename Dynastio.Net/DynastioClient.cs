@@ -98,6 +98,12 @@ namespace Dynastio.Net
             var data = JsonConvert.DeserializeObject<DataType<Leaderboardcoin[]>>(result);
             return data.data.ToList();
         }
+        public async Task<bool> GetUserPincodeStatusAsync(string Id,string pincode)
+        {
+            var result = await GetAsync($"https://auth.dynast.io/api/check_pincode?uid={Id}&pin={pincode}");
+            var data = JsonConvert.DeserializeObject<DataType<bool>>(result);
+            return data.data;
+        }
         public async Task<Leaderboardscore[][]> GetLeaderboardscoresAsync()
         {
             var result = await GetAsync("https://auth.dynast.io/leaderboard/list_all");
