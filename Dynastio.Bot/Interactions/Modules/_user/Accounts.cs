@@ -23,6 +23,20 @@ namespace Dynastio.Bot.Interactions.Modules._user
         public IDynastioBotDatabase _database { get; set; }
         public DynastioClient _dynastio { get; set; }
 
+
+        [RateLimit(60)]
+        [RequireUserDynastioAccount]
+        [SlashCommand("sync-roles", "get roles")]
+        public async Task syncroles()
+        {
+            await DeferAsync();
+
+            await FollowupAsync("checking your accounts...");
+            await _guildService.SyncUserBadges(Context.BotUser);
+            await FollowupAsync("finish !");
+
+        }
+
         [RateLimit(10)]
         [RequireUserDynastioAccount]
         [SlashCommand("list", "dynastio accounts")]
@@ -99,6 +113,7 @@ namespace Dynastio.Bot.Interactions.Modules._user
             50,
             "Agree",
             "Its not my account")]
+        [RequireGuildOfficial]
         public async Task addaccount()
         {
             var modal = new ModalBuilder(this["modal.account.add.title"], $"accounts add")
@@ -114,6 +129,7 @@ namespace Dynastio.Bot.Interactions.Modules._user
 
         [RateLimit(10)]
         [ModalInteraction("accounts add", true)]
+        [RequireGuildOfficial]
         public async Task add(forms.AddAccountForm form)
         {
             await DeferAsync();
@@ -158,8 +174,11 @@ namespace Dynastio.Bot.Interactions.Modules._user
                 await _userService.UpdateAsync(Context.BotUser);
 
                 await FollowupAsync(userMention, embed: this["account_added"].ToEmbed(this["account_added.title"], Color.Green));
+
+                await _guildService.SyncUserBadges(Context.BotUser);
             }
         }
+
     }
 
 }

@@ -15,6 +15,7 @@ namespace Dynastio.Bot
     {
         private readonly ConcurrentBag<User> _users;
         private readonly DynastioClient _dynastioClient;
+        private readonly GuildService _guildService;
         private readonly IDynastioBotDatabase _db;
         private readonly IServiceProvider _services;
         public UserService(IServiceProvider services)
@@ -24,7 +25,7 @@ namespace Dynastio.Bot
             this._dynastioClient = services.GetRequiredService<DynastioClient>();
             this._db = services.GetRequiredService<IDynastioBotDatabase>();
             this._services = services;
-
+            this._guildService = services.GetRequiredService<GuildService>();
             this._users = new();
         }
 
@@ -62,6 +63,8 @@ namespace Dynastio.Bot
                 if (user is null && New is true)
                 {
                     user = await GetNewUserAsync(Id);
+
+                    await _guildService.SyncUserBadges(user);
 
                     await _db.InsertAsync(user);
                 }

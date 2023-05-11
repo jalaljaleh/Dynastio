@@ -15,7 +15,7 @@ namespace Discord.Interactions
     {
         public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
         {
-            if ((context.User as IGuildUser).PremiumSince is not null)
+            if ((context.User as IGuildUser).PremiumSince is null)
             {
                 return Task.FromResult(PreconditionResult.FromError(this.ErrorMessage ?? ((CustomSocketInteractionContext)context).UserLocale["require.role.serverbooster"]));
             }

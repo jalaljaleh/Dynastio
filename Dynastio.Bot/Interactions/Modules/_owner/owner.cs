@@ -32,9 +32,10 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
                 await DeferAsync();
 
                 var txt = await _internetService.GetAsync(txtFile.Url);
+                
                 string[] codes = txt.Contains(",")
                     ? txt.Split(new string[] { "," }, StringSplitOptions.TrimEntries)
-                    : txt.Split(new string[] { "\n", "\r", "\n\r", "\r\n" }, StringSplitOptions.TrimEntries);
+                    : txt.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
                 List<RedeemCode> redeemCodes = new();
                 foreach (var code in codes)
@@ -90,7 +91,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
             [SlashCommand("set", "mark this server as official guild")]
             public async Task set()
             {
-                await DeferAsync();
+                await Context.OverridedInteraction.DeferAsync();
                 await _guildService.SetOfficialGuildAsync(Context.Guild.Id);
                 await FollowupAsync(true ? "done, the official server is this guild now !" : "There is a problem.");
             }
