@@ -23,7 +23,7 @@ namespace Dynastio.Bot.Data
         Task<bool> UpdateAsync(User Buser);
 
         Task<List<User>> GetHonorLeaderboardAsync(int count = 10);
-        Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 10);
+        Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 15);
         Task<User> GetUserByAccountIdAsync(string Id);
         Task<bool> UpdateManyAsync(List<User> users);
         Task<bool> DeleteAsync(User user);

@@ -104,7 +104,7 @@ namespace Dynastio.Bot.Data
             });
             return result.ToList();
         }
-        public async Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 10)
+        public async Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 15)
         {
             var filter = Builders<User>.Filter.Empty;
             var sort = Builders<User>.Sort.Descending(a => a.activiy_score);

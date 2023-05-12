@@ -40,10 +40,12 @@ namespace Dynastio.Bot
         public async Task SyncRankRoles()
         {
             var guild = _discord.GetGuild(GuildService._officialGuildId);
+            if (guild is null) return;
+
             var role = guild.GetRole(_active_role);
             var roleMembers = role.Members.Select(a => a.Id);
 
-            var _topMembers = await _database.GetActivityScoreLeaderboardAsync(10);
+            var _topMembers = await _userService.GetActivityScoreLeaderboardAsync(10);
             var topMembers = _topMembers.Select(a => a.Id);
 
             foreach (var t in topMembers)

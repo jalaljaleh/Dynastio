@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using Dynastio.Bot.Data;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 
 namespace Dynastio.Bot
 {
@@ -36,6 +37,22 @@ namespace Dynastio.Bot
         public async Task<bool> UpdateAsync(User user)
         {
             return await _db.UpdateAsync(user);
+        }
+        private bool _isActivityLeaderboardCached = false;
+        public async Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 15)
+        {
+            if (_isActivityLeaderboardCached)
+                return this._users.OrderByDescending(a => a.activiy_score).Take(count).ToList();
+
+            var users = await this._db.GetActivityScoreLeaderboardAsync(count);
+            foreach (var user in users)
+            {
+                if (IsCached(user.Id) is false)
+                    Cache(user);
+            }
+            _isActivityLeaderboardCached = true;
+
+            return users;
         }
 
         private bool _isHonorLeaderboardCached = false;
