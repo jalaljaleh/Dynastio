@@ -14,6 +14,7 @@ using Dynastio.Bot.Interactions.Modules.Shard;
 namespace Dynastio.Bot.Interactions.Modules._user
 {
 
+    [RequireGuildOfficial]
     [Group("accounts", "manage your game accounts")]
     public class AccountsModule : CustomInteractionModuleBase
     {
@@ -31,9 +32,31 @@ namespace Dynastio.Bot.Interactions.Modules._user
         {
             await DeferAsync();
 
-            await FollowupAsync("checking your accounts...");
-            await _guildService.SyncUserBadges(Context.BotUser);
-            await FollowupAsync("finish !");
+            var message = await FollowUpToLoading(this["accounts.sync-roles.checking.title"]);
+
+            await Task.Delay(3000);
+
+            var result = await _guildService.SyncUserBadges(Context.BotUser);
+
+            await message.ModifyAsync(a => a.Embed = new Optional<Embed>(new EmbedBuilder()
+            {
+                Title = this["accounts.syc-roles.successful.title"],
+                Description = this["accounts.syc-roles.successful.description"],
+                Fields = new List<EmbedFieldBuilder> {
+                    new EmbedFieldBuilder() {
+                        IsInline = true,
+                        Name = this["added_roles"],
+                        Value = result.addedRoles.Length < 1 ? "` none `": string.Join("\n",result.addedRoles.Select(a=> $"<@&{a}>"))
+                    },
+                    new EmbedFieldBuilder() {
+                        IsInline = true,
+                        Name = this["removed_roles"],
+                        Value =result.removedRoles.Length < 1 ?"` none `": string.Join("\n",result.removedRoles.Select(a=> $"<@&{a}>"))
+                    },
+                },
+                ThumbnailUrl = "https://cdn.discordapp.com/attachments/1098332386674085988/1106646704662528030/download.png",
+                Color = Color.DarkGreen
+            }.Build()));
 
         }
 
@@ -113,7 +136,6 @@ namespace Dynastio.Bot.Interactions.Modules._user
             50,
             "Agree",
             "Its not my account")]
-        [RequireGuildOfficial]
         public async Task addaccount()
         {
             var modal = new ModalBuilder(this["modal.account.add.title"], $"accounts add")
@@ -129,7 +151,6 @@ namespace Dynastio.Bot.Interactions.Modules._user
 
         [RateLimit(10)]
         [ModalInteraction("accounts add", true)]
-        [RequireGuildOfficial]
         public async Task add(forms.AddAccountForm form)
         {
             await DeferAsync();

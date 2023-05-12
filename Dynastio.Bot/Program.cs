@@ -62,6 +62,7 @@ namespace Dynastio.Bot
                .AddSingleton<UserService>()
                .AddSingleton<GuildService>()
 
+               .AddSingleton<RankService>()
                .AddSingleton<GraphicService>()
 
                .AddSingleton<GlobalizationService>()

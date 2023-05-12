@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -17,16 +18,21 @@ namespace Dynastio.Bot
         private readonly IServiceProvider _services;
         private readonly DiscordSocketClient _discord;
         private readonly CommandsHandler _commandHandler;
+        private readonly UserService _userService;
+        private readonly RankService _rankService;
 
         public MessageHandler(IServiceProvider services)
         {
             _services = services;
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _commandHandler = services.GetRequiredService<CommandsHandler>();
+            _userService = services.GetRequiredService<UserService>();
+            _rankService = services.GetRequiredService<RankService>();
 
             _discord.MessageReceived += _discord_MessageReceived;
         }
 
+       
         private async Task _discord_MessageReceived(SocketMessage rawMessage)
         {
             if (!(rawMessage is SocketUserMessage message))
@@ -35,9 +41,16 @@ namespace Dynastio.Bot
             if (message.Source != Discord.MessageSource.User)
                 return;
 
-            var commandResult = await _commandHandler.HandleCommand(message);
-            if (commandResult is null) return;
+            try
+            {
+                var commandResult = await _commandHandler.HandleCommand(message);
+            }
+            catch
+            {
 
+            }
+
+            await _rankService.AddMessageScoreAsync(message);
         }
     }
 }

@@ -52,14 +52,7 @@ namespace Dynastio.Bot.Data
                   .FirstOrDefault();
             return await Task.FromResult(result);
         }
-        public async Task<Guild> GetOfficialGuildAsync()
-        {
-            var result = _guilds.AsQueryable()
-                  .Where(a => a.IsOfficialServer)
-                  .FirstOrDefault();
 
-            return await Task.FromResult(result);
-        }
         public async Task<bool> InsertAsync(Guild guild)
         {
             _guilds.InsertOne(guild);
@@ -104,6 +97,17 @@ namespace Dynastio.Bot.Data
         {
             var filter = Builders<User>.Filter.Empty;
             var sort = Builders<User>.Sort.Descending(a => a.Honor);
+            var result = await _users.FindAsync(filter, new FindOptions<User, User>()
+            {
+                Sort = sort,
+                Limit = count,
+            });
+            return result.ToList();
+        }
+        public async Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 10)
+        {
+            var filter = Builders<User>.Filter.Empty;
+            var sort = Builders<User>.Sort.Descending(a => a.activiy_score);
             var result = await _users.FindAsync(filter, new FindOptions<User, User>()
             {
                 Sort = sort,

@@ -8,6 +8,7 @@ using Discord.WebSocket;
 using Discord;
 using Dynastio;
 using Dynastio.Bot.Interactions;
+using Dynastio.Bot;
 
 namespace Discord.Interactions
 {
@@ -15,12 +16,9 @@ namespace Discord.Interactions
     {
         public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
         {
-            var isOfficialServer = (context as CustomSocketInteractionContext).BotGuild.IsOfficialServer;
-
-            if (isOfficialServer is false)
-            {
+            if (context.Guild.Id != GuildService._officialGuildId)
                 return Task.FromResult(PreconditionResult.FromError(this.ErrorMessage ?? ((CustomSocketInteractionContext)context).UserLocale["require.role.developer"]));
-            }
+
             return Task.FromResult(PreconditionResult.FromSuccess());
 
         }

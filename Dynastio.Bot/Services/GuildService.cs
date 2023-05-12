@@ -34,7 +34,8 @@ namespace Dynastio.Bot
 
             this._guilds = new();
         }
-        static Dictionary<BadgeType, ulong> _roles = new Dictionary<BadgeType, ulong>()
+        public const ulong _officialGuildId = 480416088312774657;
+        static Dictionary<BadgeType, ulong> _roles = new()
         {
             { BadgeType.Developer, 1100680838678581269},
             { BadgeType.Monthly, 1098272223116148796},
@@ -54,16 +55,16 @@ namespace Dynastio.Bot
             { BadgeType.YoutuberSilver, 1106218154365034606},
             { BadgeType.Void, 1100741981812051998},
         };
-        public async Task SyncUserBadges(User buser)
+        public async Task<(ulong[] addedRoles, ulong[] removedRoles)> SyncUserBadges(User buser)
         {
             var officialGuild = await GetOfficialGuildAsync();
-            if (officialGuild is null) return;
+            if (officialGuild is null) return default;
 
             var guild = _discord.GetGuild(officialGuild.Id);
-            if (guild is null) return;
+            if (guild is null) return default;
 
             var user = guild.GetUser(buser.Id);
-            if (user is null) return;
+            if (user is null) return default;
 
             List<Profile> profiles = new List<Profile>();
             foreach (var a in buser.Accounts)
@@ -73,10 +74,7 @@ namespace Dynastio.Bot
                     var p = await _dynastioClient.GetUserProfileAsync(a.Id);
                     profiles.Add(p);
                 }
-                catch
-                {
-                    continue;
-                }
+                catch { continue; }
             }
             var badges = profiles.SelectMany(a => a.Badges);
             var userRoles = user.Roles.Select(a => a.Id);
@@ -100,34 +98,11 @@ namespace Dynastio.Bot
 
             if (rolesToRemove.Count > 0)
                 await user.RemoveRolesAsync(rolesToRemove);
+
+            return (rolesToAdd.ToArray(), rolesToRemove.ToArray());
         }
-        public async Task SetOfficialGuildAsync(ulong Id)
-        {
-            if (!_discord.Guilds.Any(a => a.Id == Id))
-                throw new Exception("oldOfficialGuild.unavailable");
 
-            var oldOfficialGuild = await GetOfficialGuildAsync();
-            if (oldOfficialGuild is not null)
-            {
-                await UpdateAsync(oldOfficialGuild, x => x.IsOfficialServer = false);
-            }
-
-            var newOfficialGuild = await GetGuildAsync(Id, false);
-
-            if (newOfficialGuild is not null)
-                await UpdateAsync(newOfficialGuild, x => x.IsOfficialServer = true);
-
-            newOfficialGuild = await GetGuildAsync(Id, true, x => x.IsOfficialServer = true);
-        }
-        public async Task<Guild> GetOfficialGuildAsync()
-        {
-            var oldOfficialGuild = _guilds.FirstOrDefault(a => a.IsOfficialServer);
-            if (oldOfficialGuild is null) //check db
-            {
-                oldOfficialGuild = await _db.GetOfficialGuildAsync();
-            }
-            return oldOfficialGuild;
-        }
+        public async Task<Guild> GetOfficialGuildAsync() => await GetGuildAsync(_officialGuildId, false);
 
         public async Task<Guild> GetGuildAsync(ulong id, bool New = true, Action<Guild> action = null)
         {
@@ -140,7 +115,6 @@ namespace Dynastio.Bot
                     guild = new Guild()
                     {
                         Id = id,
-                        IsOfficialServer = false,
                     };
 
                     if (action != null)

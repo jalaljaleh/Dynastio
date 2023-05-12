@@ -29,8 +29,10 @@ namespace Dynastio.Bot.Interactions.Modules.ServerBooster
         public async Task server_booster_gift()
         {
             await DeferAsync(false);
-            await FollowupAsync("checking ..");
-            if((Context.User as IGuildUser).PremiumSince is null)
+            
+            var message = await FollowUpToLoading(this["accounts.sync-roles.checking.title"]);
+
+            if ((Context.User as IGuildUser).PremiumSince is null)
             {
                 await FollowupAsync("you are not a server booster !");
                 return;

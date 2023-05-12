@@ -15,6 +15,9 @@ namespace Dynastio.Bot.Data
         public User() { }
         public ulong Id { get; set; }
         public int Honor { get; set; }
+
+        public long activiy_score { get; set; }
+   
         public DateTime LastHonorGift { get; set; }
         public DateTime LastBoostGift { get; set; }
         public List<UserAccount> Accounts { get; set; } = new();

@@ -51,8 +51,8 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
                 await FollowupAsync($"done, {redeemCodes.Count} redeem codes added to the db as {type}.");
             }
 
-            [SlashCommand("status", "get status about the redeem codes.")]
-            public async Task status()
+            [SlashCommand("list", "get status about the redeem codes.")]
+            public async Task list()
             {
                 await DeferAsync();
 
@@ -70,32 +70,6 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
             }
         }
 
-        [Group("setup", "config guilds")]
-        public class SetupModule : OwnerModule
-        {
-            [SlashCommand("display", "display official guild")]
-            public async Task display()
-            {
-                await DeferAsync();
-
-                var guild = await _guildService.GetOfficialGuildAsync();
-
-                await FollowupAsync(
-                    guild is null
-                    ? "No any guild found!"
-                    : $"The official guild.id is {guild.Id}");
-            }
-
-            [RequireContext(ContextType.Guild)]
-            [RequireConfirmation("Are you sure ?","Do you want to mark this server as the official server ?")]
-            [SlashCommand("set", "mark this server as official guild")]
-            public async Task set()
-            {
-                await Context.OverridedInteraction.DeferAsync();
-                await _guildService.SetOfficialGuildAsync(Context.Guild.Id);
-                await FollowupAsync(true ? "done, the official server is this guild now !" : "There is a problem.");
-            }
-
-        }
+       
     }
 }

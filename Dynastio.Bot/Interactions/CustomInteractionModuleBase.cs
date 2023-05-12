@@ -8,6 +8,7 @@ namespace Dynastio.Bot.Interactions
 {
     using Discord;
     using Discord.Interactions;
+    using Discord.WebSocket;
     using Dynastio.Bot.Globalization;
 
     public class CustomInteractionModuleBase : InteractionModuleBase<CustomSocketInteractionContext>
@@ -22,6 +23,18 @@ namespace Dynastio.Bot.Interactions
         public Locale thisU { get => this.Context.UserLocale; }
         public string this[string key] { get => Context.UserLocale[key]; }
         public string this[string key, params object[] @params] { get => Context.UserLocale[key, @params]; }
+
+        public async Task<IUserMessage> FollowUpToLoading(string Description = null, string Title = null, string ThumbnailUrl = null)
+        {
+            return await FollowupAsync(userMention, embed: new EmbedBuilder()
+            {
+                Title = Title ?? this["waiting_for_bot.title"],
+                Description = Description ?? this["waiting_for_bot.description"] + "\n" +
+                                       $"\n\n" + this["waiting_for_bot.waiting_since:*", DateTime.UtcNow.ToDiscordUnixTimestampFormat()].ToBold(),
+                ThumbnailUrl = ThumbnailUrl ?? "https://cdn.discordapp.com/attachments/1098332386674085988/1106640674234847262/1496_1.gif",
+                Color = Color.LightOrange
+            }.Build()); ;
+        }
 
     }
 
