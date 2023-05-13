@@ -34,6 +34,7 @@ namespace Dynastio.Bot.Interactions.Modules.@public
 
             var message = await FollowupAsync(userMention, embed:
                 new EmbedBuilder()
+                .WithDescription("Only ten users can get <@&1098350344368558200> role..")
                 .AddField("R", counter, true)
                 .AddField("Name", names, true)
                 .AddField("Score", scores, true)
