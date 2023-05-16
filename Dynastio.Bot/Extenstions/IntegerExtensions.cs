@@ -26,6 +26,10 @@ namespace Dynastio.Bot
         {
             return Discord.MentionUtils.MentionUser(Id);
         }
+        public static string ToChannelMention(this ulong Id)
+        {
+            return Discord.MentionUtils.MentionChannel(Id);
+        }
         public static string Metric(this ulong score)
         {
             if (score < 1) score = 1;

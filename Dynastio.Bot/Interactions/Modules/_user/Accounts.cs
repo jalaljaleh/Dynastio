@@ -95,9 +95,9 @@ namespace Dynastio.Bot.Interactions.Modules._user
             UserAccount selectedAccount = Context.BotUser.Accounts
                 .FirstOrDefault(
                 a =>
-                a.GetHashCode().Equals(int.Parse(account)));
+                a.GetHashCode() == int.Parse(account));
 
-            Context.BotUser.SwitchAccount(selectedAccount);
+            Context.BotUser.SwitchAccount(ref selectedAccount);
 
             await _userService.UpdateAsync(Context.BotUser);
 
@@ -191,7 +191,7 @@ namespace Dynastio.Bot.Interactions.Modules._user
                     PinCode = form.PinCode.Trim()
                 };
                 Context.BotUser.Accounts.Add(account);
-                Context.BotUser.SwitchAccount(account);
+                Context.BotUser.SwitchAccount(ref account);
                 await _userService.UpdateAsync(Context.BotUser);
 
                 await FollowupAsync(userMention, embed: this["account_added"].ToEmbed(this["account_added.title"], Color.Green));

@@ -30,7 +30,7 @@ namespace Dynastio.Bot.Data
         {
             return Accounts.FirstOrDefault(a => a.IsDefault) ?? Accounts.FirstOrDefault();
         }
-        public void SwitchAccount(UserAccount userAccount)
+        public void SwitchAccount(ref UserAccount userAccount)
         {
             Accounts.ForEach(a => a.IsDefault = false);
             userAccount.IsDefault = true;

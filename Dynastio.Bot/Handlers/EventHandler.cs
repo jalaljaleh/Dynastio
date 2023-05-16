@@ -23,7 +23,7 @@ namespace Dynastio.Bot.Handlers
             _configuration = _services.GetRequiredService<Configuration>();
 
             _client.Ready += _client_Ready;
-            _client.GuildMemberUpdated += _client_GuildMemberUpdated; ; ;
+            _client.GuildMemberUpdated += _client_GuildMemberUpdated;
         }
 
         private async Task _client_GuildMemberUpdated(Cacheable<SocketGuildUser, ulong> olduser, SocketGuildUser newUser)
@@ -31,19 +31,20 @@ namespace Dynastio.Bot.Handlers
             //user boosted the server
             if (olduser.Value.PremiumSince.HasValue is false && newUser.PremiumSince.HasValue)
             {
-                
+
             }
         }
 
 
         private async Task _client_Ready()
         {
+            await _services.GetRequiredService<WebhookService>().InitializeAsync();
 
             var guilds = _client.Guilds.ToList();
 
             await _client.SetGameAsync($"Watching {guilds.Sum(a => a.MemberCount)} members !", "", ActivityType.Playing);
             await _client.SetStatusAsync(UserStatus.Online);
-           
+
             //foreach(var guild in guilds)
             //{
             //    if(guild.Id == 480416088312774657) continue;

@@ -20,7 +20,8 @@ namespace Dynastio.Bot
         private readonly CommandsHandler _commandHandler;
         private readonly UserService _userService;
         private readonly RankService _rankService;
-
+        private readonly GuildService _guildService;
+        private readonly WebhookService _webhookService;
         public MessageHandler(IServiceProvider services)
         {
             _services = services;
@@ -28,11 +29,59 @@ namespace Dynastio.Bot
             _commandHandler = services.GetRequiredService<CommandsHandler>();
             _userService = services.GetRequiredService<UserService>();
             _rankService = services.GetRequiredService<RankService>();
-
+            _guildService = services.GetRequiredService<GuildService>();
+            _webhookService = services.GetRequiredService<WebhookService>();
             _discord.MessageReceived += _discord_MessageReceived;
+            
+            if (!Global.Main.IsDebug())
+            { 
+                _discord.MessageDeleted += _discord_MessageDeleted;
+                _discord.MessageUpdated += _discord_MessageUpdated;
+            }
+         
         }
 
-       
+        private async Task _discord_MessageUpdated(Cacheable<IMessage, ulong> oldMessage, SocketMessage NewMessage, ISocketMessageChannel channel)
+        {
+            if (!(NewMessage is SocketUserMessage message))
+                return;
+
+            if (NewMessage.Source != Discord.MessageSource.User)
+                return;
+
+            if (channel is IGuildChannel guildChannel)
+            {
+                if (guildChannel.GuildId != GuildService._officialGuildId) return;
+
+                var _oldMessage = await oldMessage.GetOrDownloadAsync();
+
+                if (_oldMessage is null) return;
+
+                await _webhookService.LogEditedMessageAsync(NewMessage,_oldMessage, channel);
+            }
+        }
+
+        private async Task _discord_MessageDeleted(Cacheable<IMessage, ulong> cachedMessage, Cacheable<IMessageChannel, ulong> channel)
+        {
+           
+            if (channel.HasValue && channel.Value is IGuildChannel guildChannel)
+            {
+                if (guildChannel.GuildId != GuildService._officialGuildId) return;
+
+                var message = await cachedMessage.GetOrDownloadAsync();
+               
+                if (!(message is SocketUserMessage))
+                    return;
+
+                if (message.Source != Discord.MessageSource.User)
+                    return;
+
+                if (message is null) return;
+
+                await _webhookService.LogDeleteMessageAsync(message, channel.Value);
+            }
+        }
+
         private async Task _discord_MessageReceived(SocketMessage rawMessage)
         {
             if (!(rawMessage is SocketUserMessage message))

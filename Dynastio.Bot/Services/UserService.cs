@@ -95,9 +95,11 @@ namespace Dynastio.Bot
             var user = new User()
             {
                 Id = id,
-                Honor = 0,
                 Accounts = new(),
+                Honor = 0,
                 LastHonorGift = DateTime.MinValue,
+                activiy_score = 0,
+                LastBoostGift = DateTime.MinValue,
             };
 
             Profile profile;

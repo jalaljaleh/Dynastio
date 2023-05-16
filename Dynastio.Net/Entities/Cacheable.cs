@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Net.Entities
 {
-    public struct CacheItem<T>
+    public struct Cacheable<T>
     {
         private Func<Task<T>> _updateFunc;
         private int _time = 1000;
-        public CacheItem(int millisecondsUpdateTime, Func<Task<T>> updateFunc)
+        public Cacheable(int millisecondsUpdateTime, Func<Task<T>> updateFunc)
         {
             _updateFunc = updateFunc;
             _time = millisecondsUpdateTime;

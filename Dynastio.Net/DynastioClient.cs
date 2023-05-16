@@ -27,20 +27,20 @@ namespace Dynastio.Net
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
 
-            _players = new CacheItem<List<Player>>(30000, GetPlayersAsync);
-            _servers = new CacheItem<List<Server>>(30000, GetServersAsync);
-            _version = new CacheItem<Version>(240000, GetVersionAsync);
-            _changelog = new CacheItem<string>(240000, GetChangeLogAsync);
-            _leaderboardcoin = new CacheItem<List<Leaderboardcoin>>(240000, GetLeaderboardcoinsAsync);
-            _leaderboardscore = new CacheItem<Leaderboardscore[][]>(240000, GetLeaderboardscoresAsync);
+            _players = new Cacheable<List<Player>>(30000, GetPlayersAsync);
+            _servers = new Cacheable<List<Server>>(30000, GetServersAsync);
+            _version = new Cacheable<Version>(240000, GetVersionAsync);
+            _changelog = new Cacheable<string>(240000, GetChangeLogAsync);
+            _leaderboardcoin = new Cacheable<List<Leaderboardcoin>>(240000, GetLeaderboardcoinsAsync);
+            _leaderboardscore = new Cacheable<Leaderboardscore[][]>(240000, GetLeaderboardscoresAsync);
 
         }
-        private readonly CacheItem<List<Player>> _players;
-        private readonly CacheItem<List<Server>> _servers;
-        private readonly CacheItem<Version> _version;
-        private readonly CacheItem<string> _changelog;
-        private readonly CacheItem<List<Leaderboardcoin>> _leaderboardcoin;
-        private readonly CacheItem<Leaderboardscore[][]> _leaderboardscore;
+        private readonly Cacheable<List<Player>> _players;
+        private readonly Cacheable<List<Server>> _servers;
+        private readonly Cacheable<Version> _version;
+        private readonly Cacheable<string> _changelog;
+        private readonly Cacheable<List<Leaderboardcoin>> _leaderboardcoin;
+        private readonly Cacheable<Leaderboardscore[][]> _leaderboardscore;
         public List<Player> OnlinePlayers { get => _players.Value; }
         public List<Server> OnlineServers { get => _servers.Value; }
         public Version Version { get => _version.Value; }

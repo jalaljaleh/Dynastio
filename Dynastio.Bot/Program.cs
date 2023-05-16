@@ -45,6 +45,8 @@ namespace Dynastio.Bot
                {
                    GatewayIntents = GatewayIntents.All,
                    AlwaysDownloadUsers = true,
+                   
+                   MessageCacheSize = 1024,
                    AlwaysDownloadDefaultStickers = false,
                    DefaultRetryMode = RetryMode.AlwaysRetry,
                }))
@@ -61,10 +63,10 @@ namespace Dynastio.Bot
                
                .AddSingleton<UserService>()
                .AddSingleton<GuildService>()
+               .AddSingleton<WebhookService>()
 
                .AddSingleton<RankService>()
                .AddSingleton<GraphicService>()
-
                .AddSingleton<GlobalizationService>()
                .AddSingleton<YoutubeService>()
                .AddSingleton<InternetService>()

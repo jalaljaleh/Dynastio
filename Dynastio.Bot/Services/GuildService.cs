@@ -16,6 +16,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dynastio.Bot
 {
+
     public class GuildService
     {
         private readonly ConcurrentBag<Guild> _guilds;
@@ -35,7 +36,8 @@ namespace Dynastio.Bot
             this._guilds = new();
         }
         public const ulong _officialGuildId = 480416088312774657;
-        static Dictionary<BadgeType, ulong> _roles = new()
+
+        readonly static Dictionary<BadgeType, ulong> _roles = new()
         {
             { BadgeType.Developer, 1100680838678581269},
             { BadgeType.Monthly, 1098272223116148796},
@@ -55,6 +57,34 @@ namespace Dynastio.Bot
             { BadgeType.YoutuberSilver, 1106218154365034606},
             { BadgeType.Void, 1100741981812051998},
         };
+        readonly static Dictionary<GuildChannelType, ulong> _channels = new()
+        {
+            { GuildChannelType.None, 0},
+            { GuildChannelType.TopActive, 480966712318099487},
+            { GuildChannelType.LoggerChannel, 1107754629200089180},
+        };
+        readonly static Dictionary<ChannelThreadType, ulong> _threads = new()
+        {
+            { ChannelThreadType.None, 0},
+            { ChannelThreadType.DeletedMessages, 1107764609848463460 },
+            { ChannelThreadType.EditedMessages, 1107930813569454160 },
+        };
+        public ulong GetChanneThreadlId(ChannelThreadType t)
+        {
+            return _threads[t];
+        }
+        public ulong GetChannelId(GuildChannelType t)
+        {
+            return _channels[t];
+        }
+        public async Task<IUserMessage> SendMessageAsync(GuildChannelType _channel, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageReference messageReference = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None)
+        {
+            var guild = _discord.GetGuild(_officialGuildId);
+            if (guild is null) return null;
+
+            var channel = guild.GetTextChannel(_channels[_channel]) ?? await _discord.GetChannelAsync(_channels[_channel]) as ITextChannel;
+            return await channel.SendMessageAsync(text, isTTS, embed, options, allowedMentions, messageReference, components, stickers, embeds, flags);
+        }
         public async Task<(ulong[] addedRoles, ulong[] removedRoles)> SyncUserBadges(User buser)
         {
             var officialGuild = await GetOfficialGuildAsync();
@@ -101,7 +131,6 @@ namespace Dynastio.Bot
 
             return (rolesToAdd.ToArray(), rolesToRemove.ToArray());
         }
-
         public async Task<Guild> GetOfficialGuildAsync() => await GetGuildAsync(_officialGuildId, false);
 
         public async Task<Guild> GetGuildAsync(ulong id, bool New = true, Action<Guild> action = null)
@@ -135,5 +164,17 @@ namespace Dynastio.Bot
             await _db.UpdateAsync(guild);
             return true;
         }
+    }
+    public enum GuildChannelType
+    {
+        None,
+        TopActive,
+        LoggerChannel
+    }
+    public enum ChannelThreadType
+    {
+        None,
+        DeletedMessages,
+        EditedMessages
     }
 }
