@@ -41,18 +41,16 @@ namespace Dynastio.Bot
          
         }
 
+
         private async Task _discord_MessageUpdated(Cacheable<IMessage, ulong> oldMessage, SocketMessage NewMessage, ISocketMessageChannel channel)
         {
-            if (!(NewMessage is SocketUserMessage message))
-                return;
-
             if (NewMessage.Source != Discord.MessageSource.User)
                 return;
 
             if (channel is IGuildChannel guildChannel)
             {
                 if (guildChannel.GuildId != GuildService._officialGuildId) return;
-
+                
                 var _oldMessage = await oldMessage.GetOrDownloadAsync();
 
                 if (_oldMessage is null) return;
@@ -70,15 +68,12 @@ namespace Dynastio.Bot
 
                 var message = await cachedMessage.GetOrDownloadAsync();
                
-                if (!(message is SocketUserMessage))
-                    return;
-
                 if (message.Source != Discord.MessageSource.User)
                     return;
 
                 if (message is null) return;
 
-                await _webhookService.LogDeleteMessageAsync(message, channel.Value);
+                await _webhookService.LogDeleteMessageAsync(message, guildChannel);
             }
         }
 

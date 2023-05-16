@@ -62,6 +62,7 @@ namespace Dynastio.Bot
             { GuildChannelType.None, 0},
             { GuildChannelType.TopActive, 480966712318099487},
             { GuildChannelType.LoggerChannel, 1107754629200089180},
+            { GuildChannelType.General, 480966712318099487},
         };
         readonly static Dictionary<ChannelThreadType, ulong> _threads = new()
         {
@@ -169,7 +170,8 @@ namespace Dynastio.Bot
     {
         None,
         TopActive,
-        LoggerChannel
+        LoggerChannel,
+        General
     }
     public enum ChannelThreadType
     {

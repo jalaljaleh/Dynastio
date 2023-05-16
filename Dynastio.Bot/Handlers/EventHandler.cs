@@ -15,13 +15,14 @@ namespace Dynastio.Bot.Handlers
         private readonly DiscordSocketClient _client;
         private readonly IServiceProvider _services;
         private readonly Configuration _configuration;
+        private readonly GuildService _guildService;
 
         public EventHandler(IServiceProvider services)
         {
             _services = services;
             _client = _services.GetRequiredService<DiscordSocketClient>();
             _configuration = _services.GetRequiredService<Configuration>();
-
+            _guildService = _services.GetService<GuildService>();
             _client.Ready += _client_Ready;
             _client.GuildMemberUpdated += _client_GuildMemberUpdated;
         }
@@ -31,7 +32,7 @@ namespace Dynastio.Bot.Handlers
             //user boosted the server
             if (olduser.Value.PremiumSince.HasValue is false && newUser.PremiumSince.HasValue)
             {
-
+              //  _guildService.GetChannelId(GuildChannelType.)
             }
         }
 

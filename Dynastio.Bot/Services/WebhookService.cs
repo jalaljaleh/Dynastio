@@ -1,6 +1,7 @@
 ﻿using Amazon.Runtime.Internal.Transform;
 using Amazon.Runtime.Internal.Util;
 using Discord;
+using Discord.Rest;
 using Discord.Webhook;
 using Discord.WebSocket;
 using Dynastio.Bot.Utilities;
@@ -45,25 +46,33 @@ namespace Dynastio.Bot
             _clients.Add(webhooktype, (new DiscordWebhookClient(webhook), _guildService.GetChanneThreadlId(thread)));
         }
         Dictionary<WebhookChannels, (DiscordWebhookClient client, ulong threadId)> _clients = new();
-        public async Task<ulong> LogDeleteMessageAsync(IMessage message, IMessageChannel channel)
+        public async Task<ulong> LogDeleteMessageAsync(IMessage message, IGuildChannel channel)
         {
             if (!_clients.TryGetValue(WebhookChannels.DeleteMessage, out (DiscordWebhookClient client, ulong threadId) value)) return 0;
 
+            var logs = await channel.Guild.GetAuditLogsAsync(5, actionType: ActionType.MessageDeleted);
+            var deleteAction = logs.FirstOrDefault(a => (a.Data as MessageDeleteAuditLogData).Target.Id == message.Author.Id);
+
             return await value.client.SendMessageAsync(
-                     text: "",
-                     embeds: new Embed[] {
+                 text: "",
+                 embeds: new Embed[] {
                          new EmbedBuilder() {
                                 Description = $"{message.Author.Id.ToUserMention()} > {channel.Id.ToChannelMention()} > {message.CreatedAt.UtcDateTime.ToDiscordUnixTimestampFormat()}",
                                 Fields = new List<EmbedFieldBuilder>()
                                 {
                                     new EmbedFieldBuilder()
                                     .WithName("Message")
-                                    .WithValue(message.Content)
+                                    .WithValue(message.Content),
+
+                                    new EmbedFieldBuilder()
+                                    .WithName("Moderator")
+                                    .WithValue(deleteAction is not null ? deleteAction.User.Id.ToUserMention() : "` deleted by user `")
+
                                 }}.Build()
-                     },
-                     username: message.Author.Username,
-                     avatarUrl: message.Author.GetAvatarUrl() ?? message.Author.GetDefaultAvatarUrl(),
-                     threadId: value.threadId);
+                 },
+                 username: message.Author.Username,
+                 avatarUrl: message.Author.GetAvatarUrl() ?? message.Author.GetDefaultAvatarUrl(),
+                 threadId: value.threadId);
         }
         public async Task<ulong> LogEditedMessageAsync(SocketMessage newMessage, IMessage oldMessage, IMessageChannel channel)
         {
@@ -77,10 +86,10 @@ namespace Dynastio.Bot
                                 Fields = new List<EmbedFieldBuilder>()
                                 {
                                     new EmbedFieldBuilder()
-                                    .WithName("old message")
+                                    .WithName("Old message")
                                     .WithValue(oldMessage.Content),
                                     new EmbedFieldBuilder()
-                                    .WithName("new message")
+                                    .WithName("New message")
                                     .WithValue(newMessage.Content)
                                 }}.Build()
                      },
