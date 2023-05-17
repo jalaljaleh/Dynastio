@@ -107,12 +107,16 @@ namespace Dynastio.Bot.Data
         public async Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 15)
         {
             var filter = Builders<User>.Filter.Empty;
-            var sort = Builders<User>.Sort.Descending(a => a.activiy_score);
+
+            var sort = Builders<User>.Sort
+                .Descending(a => a.activiy_level);
+
             var result = await _users.FindAsync(filter, new FindOptions<User, User>()
             {
                 Sort = sort,
                 Limit = count,
             });
+
             return result.ToList();
         }
         public async Task<bool> UpdateManyAsync(List<User> users)

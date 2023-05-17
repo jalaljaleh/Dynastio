@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Dynastio.Bot.Managers;
 using Microsoft.Extensions.DependencyInjection;
 using SixLabors.ImageSharp;
 using System;
@@ -32,7 +33,7 @@ namespace Dynastio.Bot.Handlers
             //user boosted the server
             if (olduser.Value.PremiumSince.HasValue is false && newUser.PremiumSince.HasValue)
             {
-              //  _guildService.GetChannelId(GuildChannelType.)
+                //  _guildService.GetChannelId(GuildChannelType.)
             }
         }
 
@@ -51,6 +52,7 @@ namespace Dynastio.Bot.Handlers
             //    if(guild.Id == 480416088312774657) continue;
             //    await guild.LeaveAsync();
             //}
+
         }
     }
 }

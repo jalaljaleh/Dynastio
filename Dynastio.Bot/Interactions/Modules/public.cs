@@ -25,19 +25,24 @@ namespace Dynastio.Bot.Interactions.Modules.@public
         public async Task syncroles()
         {
             await DeferAsync();
-            var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(15);
+            var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(20);
 
-            string counter = string.Join("\n.", leaderboard.Select(x => leaderboard.IndexOf(x)));
-            string names = string.Join("\n", leaderboard.Select(x => $"<@{x.Id}>"));
-            string scores = string.Join("\n", leaderboard.Select(x => $"**{x.activiy_score}**"));
+            string names = string.Join("\n", leaderboard.Select(x => (leaderboard.IndexOf(x) + 1) +  $". <@{x.Id}>"));
+            string levels = string.Join("\n", leaderboard.Select(x => x.activiy_level));
+            string xps = string.Join("\n", leaderboard.Select(x => x.activiy_score.Metric()));
 
 
             var message = await FollowupAsync(userMention, embed:
                 new EmbedBuilder()
-                .WithDescription("Only ten users can get <@&1098350344368558200> role..")
-                .AddField("R", counter, true)
-                .AddField("Name", names, true)
-                .AddField("Score", scores, true)
+                {
+                    Title = "Top Active Users",
+                    ThumbnailUrl = "https://cdn.discordapp.com/attachments/1098332386674085988/1107719615678791781/circle_of_sacrifices_glow.png",
+                    Color = Color.DarkGreen
+                }
+                .WithDescription("")
+                .AddField("User", names, true)
+                .AddField("Level", levels, true)
+                .AddField("XP", xps, true)
                 .Build());
         }
 

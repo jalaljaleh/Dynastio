@@ -29,9 +29,31 @@ namespace Dynastio.Bot
 
         ConcurrentBag<RankRecord> _temporaryHolder = new();
         private const int _syncRolesTime = 90;
-        private const int _nextScoreTime = 70;
+        private const int _nextScoreTime = 40;
         private const int _updateUserTime = 90;
-        private int[] _randomScore = { 0, 15 };
+        private int[] _randomScore = { 1, 15 };
+        int getMax(int lvl)
+        {
+            return ((lvl + 20) * (int)Math.Pow(lvl, 2.1));
+        }
+        public async Task AddMemberRoles(IGuildUser duser, User buser)
+        {
+            var rankedRoles = duser.Guild.Roles
+                .Where(x => x.Name.StartsWith("rank: "))
+                .OrderBy(a => a.Position)
+                .Select(a => a.Id)
+                .ToList();
+
+            var userRankedroles = duser.RoleIds.Where(a => rankedRoles.Contains(a));
+
+            rankedRoles.AddRange(userRankedroles);
+
+            var rolesToAdd = rankedRoles
+                .GetRange(0, buser.activiy_level)
+                .Distinct();
+
+            await duser.AddRolesAsync(rolesToAdd);
+        }
         public async Task AddMessageScoreAsync(IUserMessage message)
         {
             if (message.Channel is null ||
@@ -39,11 +61,7 @@ namespace Dynastio.Bot
                !_score_channels.Contains(message.Channel.Id))
                 return;
 
-            if ((DateTime.UtcNow - _lastSyncTime).TotalSeconds > _syncRolesTime)
-            {
-                _lastSyncTime = DateTime.UtcNow;
-                await SyncRankRoles();
-            }
+
 
             var userId = message.Author.Id;
 
@@ -73,6 +91,13 @@ namespace Dynastio.Bot
                     var _user = await _userService.GetUserAsync(userId);
                     _user.activiy_score += user.Score;
 
+                    var max = getMax(_user.activiy_level);
+                    if (_user.activiy_score > max)
+                    {
+                        _user.activiy_score = _user.activiy_score - max;
+                        _user.activiy_level++;
+                        try { await AddMemberRoles(message.Author as IGuildUser, _user); } catch { }
+                    }
                     await _userService.UpdateAsync(_user);
 
                     user.Score = 0;
@@ -80,7 +105,6 @@ namespace Dynastio.Bot
             }
         }
 
-        private DateTime _lastSyncTime = DateTime.MinValue;
         private ulong[] _score_channels = {
             480966712318099487, //
             486591124836974592, //
@@ -90,57 +114,7 @@ namespace Dynastio.Bot
             1098608343947415575,//
             1098263349873082438,//
         };
-        private const ulong _active_role = 1098350344368558200;
-        public async Task SyncRankRoles()
-        {
-            var guild = _discord.GetGuild(GuildService._officialGuildId);
-            if (guild is null) return;
-
-            var role = guild.GetRole(_active_role);
-            var roleMembers = role.Members.Select(a => a.Id);
-
-            var _topMembers = await _userService.GetActivityScoreLeaderboardAsync(10);
-            var topMembers = _topMembers.Select(a => a.Id);
-
-            foreach (var t in topMembers)
-            {
-                try
-                {
-                    if (!roleMembers.Contains(t))
-                    {
-                        var user = guild.GetUser(t);
-                        if (user is not null)
-                        {
-                            await user.AddRoleAsync(_active_role);
-                            await _guildService.SendMessageAsync(GuildChannelType.TopActive,
-                                text: user.Id.ToUserMention(),
-                                embed: new EmbedBuilder()
-                                {
-                                    Title = "rankservice.role.added.title",
-                                    Description = "rankservice.role.added.description",
-                                    ThumbnailUrl = "https://cdn.discordapp.com/attachments/1098332386674085988/1107719615678791781/circle_of_sacrifices_glow.png"
-                                }.Build());
-                        }
-                    }
-                }
-                catch { }
-                await Task.Delay(150);
-            }
-            foreach (var m in roleMembers)
-            {
-                try
-                {
-                    if (!topMembers.Contains(m))
-                    {
-                        var user = guild.GetUser(m);
-                        if (user is not null)
-                            await user.RemoveRoleAsync(_active_role);
-                    }
-                }
-                catch { }
-                await Task.Delay(150);
-            }
-        }
+       
     }
     public class RankRecord
     {

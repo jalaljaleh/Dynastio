@@ -42,7 +42,11 @@ namespace Dynastio.Bot
         public async Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 15)
         {
             if (_isActivityLeaderboardCached)
-                return this._users.OrderByDescending(a => a.activiy_score).Take(count).ToList();
+                return this._users
+                    .OrderByDescending(a => a.activiy_level)
+                    .ThenByDescending(a=>a.activiy_score)
+                    .Take(count)
+                    .ToList();
 
             var users = await this._db.GetActivityScoreLeaderboardAsync(count);
             foreach (var user in users)
