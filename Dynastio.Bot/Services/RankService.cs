@@ -28,15 +28,15 @@ namespace Dynastio.Bot
         }
 
         ConcurrentBag<RankRecord> _temporaryHolder = new();
-        private const int _syncRolesTime = 90;
-        private const int _nextScoreTime = 40;
+
+        private const int _nextScoreTime = 10;
         private const int _updateUserTime = 90;
-        private int[] _randomScore = { 1, 15 };
+        private int[] _randomScore = { 50, 100 };
         int getMax(int lvl)
         {
-            return ((lvl + 20) * (int)Math.Pow(lvl, 2.1));
+            return ((lvl + 250) * (int)Math.Pow(lvl, 2.1));
         }
-        public async Task AddMemberRoles(IGuildUser duser, User buser)
+        public async Task AddMemberRoles(IGuildUser duser, User buser, IUserMessage message)
         {
             var rankedRoles = duser.Guild.Roles
                 .Where(x => x.Name.StartsWith("rank: "))
@@ -53,6 +53,23 @@ namespace Dynastio.Bot
                 .Distinct();
 
             await duser.AddRolesAsync(rolesToAdd);
+
+            var latestRole = duser.Guild.Roles.First(a => a.Id == rolesToAdd.Last());
+            await message.Channel.SendMessageAsync(message.Author.Id.ToUserMention(),
+                embed: new EmbedBuilder()
+                {
+                    Title = "🎉 You just got new level 🎉",
+                    Description = $"You just got new level **{buser.activiy_level}** exp: **{buser.activiy_score}**",
+                    Color = latestRole?.Color ?? Color.Orange,
+                    Fields = new List<EmbedFieldBuilder>()
+                    {
+                        new EmbedFieldBuilder()
+                        .WithName("Unlocked Roles")
+                        .WithValue(string.Join(", ", rolesToAdd.Select(a=> $"<@&{a}>")))
+                        .WithIsInline(true)
+                    },
+                    ThumbnailUrl = latestRole.GetIconUrl() ?? ""
+                }.Build());
         }
         public async Task AddMessageScoreAsync(IUserMessage message)
         {
@@ -90,17 +107,23 @@ namespace Dynastio.Bot
 
                     var _user = await _userService.GetUserAsync(userId);
                     _user.activiy_score += user.Score;
+                    user.Score = 0;
 
                     var max = getMax(_user.activiy_level);
                     if (_user.activiy_score > max)
                     {
                         _user.activiy_score = _user.activiy_score - max;
                         _user.activiy_level++;
-                        try { await AddMemberRoles(message.Author as IGuildUser, _user); } catch { }
+
+                        try
+                        {
+                            await AddMemberRoles(message.Author as IGuildUser, _user, message);
+                        }
+                        catch { }
+
                     }
                     await _userService.UpdateAsync(_user);
 
-                    user.Score = 0;
                 }
             }
         }
@@ -114,7 +137,7 @@ namespace Dynastio.Bot
             1098608343947415575,//
             1098263349873082438,//
         };
-       
+
     }
     public class RankRecord
     {

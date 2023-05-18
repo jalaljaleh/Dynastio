@@ -103,6 +103,7 @@ namespace Dynastio.Bot
                 Honor = 0,
                 LastHonorGift = DateTime.MinValue,
                 activiy_score = 0,
+                activiy_level = 0,
                 LastBoostGift = DateTime.MinValue,
             };
 

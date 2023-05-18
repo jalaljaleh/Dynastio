@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Dynastio.Bot.Data;
 using Dynastio.Bot.Managers;
 using Microsoft.Extensions.DependencyInjection;
 using SixLabors.ImageSharp;
@@ -52,7 +53,7 @@ namespace Dynastio.Bot.Handlers
             //    if(guild.Id == 480416088312774657) continue;
             //    await guild.LeaveAsync();
             //}
-
+ 
         }
     }
 }

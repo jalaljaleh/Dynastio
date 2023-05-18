@@ -32,13 +32,13 @@ namespace Dynastio.Bot
             _guildService = services.GetRequiredService<GuildService>();
             _webhookService = services.GetRequiredService<WebhookService>();
             _discord.MessageReceived += _discord_MessageReceived;
-            
+
             if (!Global.Main.IsDebug())
-            { 
+            {
                 _discord.MessageDeleted += _discord_MessageDeleted;
                 _discord.MessageUpdated += _discord_MessageUpdated;
             }
-         
+
         }
 
 
@@ -50,24 +50,24 @@ namespace Dynastio.Bot
             if (channel is IGuildChannel guildChannel)
             {
                 if (guildChannel.GuildId != GuildService._officialGuildId) return;
-                
+
                 var _oldMessage = await oldMessage.GetOrDownloadAsync();
 
                 if (_oldMessage is null) return;
 
-                await _webhookService.LogEditedMessageAsync(NewMessage,_oldMessage, channel);
+                await _webhookService.LogEditedMessageAsync(NewMessage, _oldMessage, channel);
             }
         }
 
         private async Task _discord_MessageDeleted(Cacheable<IMessage, ulong> cachedMessage, Cacheable<IMessageChannel, ulong> channel)
         {
-           
+
             if (channel.HasValue && channel.Value is IGuildChannel guildChannel)
             {
                 if (guildChannel.GuildId != GuildService._officialGuildId) return;
 
                 var message = await cachedMessage.GetOrDownloadAsync();
-               
+
                 if (message.Source != Discord.MessageSource.User)
                     return;
 
@@ -85,14 +85,8 @@ namespace Dynastio.Bot
             if (message.Source != Discord.MessageSource.User)
                 return;
 
-            try
-            {
-                var commandResult = await _commandHandler.HandleCommand(message);
-            }
-            catch
-            {
+            var commandResult = await _commandHandler.HandleCommand(message);
 
-            }
 
             await _rankService.AddMessageScoreAsync(message);
         }
