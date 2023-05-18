@@ -29,14 +29,14 @@ namespace Dynastio.Bot
 
         ConcurrentBag<RankRecord> _temporaryHolder = new();
 
-        private const int _nextScoreTime = 10;
+        private const int _nextScoreTime = 15;
         private const int _updateUserTime = 90;
-        private int[] _randomScore = { 50, 100 };
-        int getMax(int lvl)
+        private int[] _randomScore = { 15, 60 };
+        public static int getMax(int lvl)
         {
             return ((lvl + 250) * (int)Math.Pow(lvl, 2.1));
         }
-        public async Task AddMemberRoles(IGuildUser duser, User buser, IUserMessage message)
+        public async Task AddMemberRoles(IGuildUser duser, User buser, ITextChannel channel)
         {
             var rankedRoles = duser.Guild.Roles
                 .Where(x => x.Name.StartsWith("rank: "))
@@ -46,16 +46,16 @@ namespace Dynastio.Bot
 
             var userRankedroles = duser.RoleIds.Where(a => rankedRoles.Contains(a));
 
-            rankedRoles.AddRange(userRankedroles);
-
-            var rolesToAdd = rankedRoles
-                .GetRange(0, buser.activiy_level)
-                .Distinct();
+            var rolesToAdd = rankedRoles.GetRange(0, buser.activiy_level);
+            rolesToAdd.RemoveRange(0, userRankedroles.Count());
 
             await duser.AddRolesAsync(rolesToAdd);
 
             var latestRole = duser.Guild.Roles.First(a => a.Id == rolesToAdd.Last());
-            await message.Channel.SendMessageAsync(message.Author.Id.ToUserMention(),
+
+            if (channel is null) return;
+
+            await channel.SendMessageAsync(buser.Id.ToUserMention(),
                 embed: new EmbedBuilder()
                 {
                     Title = "🎉 You just got new level 🎉",
@@ -117,7 +117,7 @@ namespace Dynastio.Bot
 
                         try
                         {
-                            await AddMemberRoles(message.Author as IGuildUser, _user, message);
+                            await AddMemberRoles(message.Author as IGuildUser, _user, message.Channel as ITextChannel);
                         }
                         catch { }
 

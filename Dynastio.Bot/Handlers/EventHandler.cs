@@ -18,6 +18,8 @@ namespace Dynastio.Bot.Handlers
         private readonly IServiceProvider _services;
         private readonly Configuration _configuration;
         private readonly GuildService _guildService;
+        private readonly UserService _usersService;
+        private readonly RankService _rankService;
 
         public EventHandler(IServiceProvider services)
         {
@@ -27,6 +29,17 @@ namespace Dynastio.Bot.Handlers
             _guildService = _services.GetService<GuildService>();
             _client.Ready += _client_Ready;
             _client.GuildMemberUpdated += _client_GuildMemberUpdated;
+            _client.UserJoined += _client_UserJoined;
+            _rankService = _services.GetService<RankService>();
+            _usersService = _services.GetService<UserService>();
+        }
+
+        private async Task _client_UserJoined(SocketGuildUser user)
+        {
+            var buser = await _usersService.GetUserAsync(user.Id, false);
+
+            if (buser is not null)
+                await _rankService.AddMemberRoles(user, buser, null);
         }
 
         private async Task _client_GuildMemberUpdated(Cacheable<SocketGuildUser, ulong> olduser, SocketGuildUser newUser)
@@ -53,7 +66,7 @@ namespace Dynastio.Bot.Handlers
             //    if(guild.Id == 480416088312774657) continue;
             //    await guild.LeaveAsync();
             //}
- 
+
         }
     }
 }
