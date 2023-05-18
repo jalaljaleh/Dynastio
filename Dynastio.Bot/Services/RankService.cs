@@ -29,7 +29,7 @@ namespace Dynastio.Bot
 
         ConcurrentBag<RankRecord> _temporaryHolder = new();
 
-        private const int _nextScoreTime = 15;
+        private const int _nextScoreTime = 20;
         private const int _updateUserTime = 90;
         private int[] _randomScore = { 15, 60 };
         public static int getMax(int lvl)
