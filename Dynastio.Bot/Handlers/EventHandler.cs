@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Handlers
@@ -44,15 +45,29 @@ namespace Dynastio.Bot.Handlers
         private const ulong _onlinePlayersChannelId = 1109014316922978354;
         private const ulong _onlineServersChannelId = 1109019161587355738;
 
+        private static int getNumber(string txt)
+        {
+            var resultString = Regex.Match(txt, @"\d+").Value;
+            bool result = int.TryParse(resultString, out var number);
+            return result ? number : 0;
+        }
         public async Task UpdateInformationChannelsAsync()
         {
             var guild = _client.GetGuild(GuildService._officialGuildId);
 
-            await guild.GetTextChannel(_onlineServersChannelId)
-                .ModifyAsync(x => x.Name = $"Online Servers: {_dynastioClient.OnlineServers.Where(a=>a.IsPrivate == false).Count()}");
-           
-            await guild.GetTextChannel(_onlinePlayersChannelId)
-                .ModifyAsync(x => x.Name = $"Online Players: {_dynastioClient.OnlinePlayers.Count}");
+            var serverchannel = guild.GetTextChannel(_onlineServersChannelId);
+            int serversCount = _dynastioClient.OnlineServers.Where(a => a.IsPrivate == false).Count();
+            if (getNumber(serverchannel.Name) != serversCount)
+                await serverchannel.ModifyAsync(
+                    x =>
+                    x.Name = $"Online Servers: {serversCount}");
+
+            var playerschannel = guild.GetTextChannel(_onlinePlayersChannelId);
+            int playerscount = _dynastioClient.OnlinePlayers.Count;
+            if (getNumber(playerschannel.Name) != playerscount)
+                await playerschannel.ModifyAsync(
+                x =>
+                x.Name = $"Online Players: {playerscount}");
         }
 
         public static ulong _memberChannelId = 1109020050163240990;
@@ -92,8 +107,8 @@ namespace Dynastio.Bot.Handlers
             {
                 while (true)
                 {
+                    await Task.Delay(TimeSpan.FromSeconds(240));
                     await UpdateInformationChannelsAsync();
-                    await Task.Delay(TimeSpan.FromSeconds(120));
                 }
             });
         }
