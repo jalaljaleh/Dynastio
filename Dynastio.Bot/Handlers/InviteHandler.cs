@@ -49,8 +49,7 @@ namespace Dynastio.Bot.Handlers
 
             newBotUser = await _usersService.GetUserAsync(joinedUser.Id, true);
 
-            var botUserInviter = await _usersService.GetUserAsync(currentInvite.Inviter.Id, false);
-            if (botUserInviter is null) return;
+            var botUserInviter = await _usersService.GetUserAsync(currentInvite.Inviter.Id);
 
             await _rankService.AddXpAsync(botUserInviter, _discord.CurrentUser.Id, 500, $"{joinedUser.Id.ToUserMention()} joined to the server by your currentInvite link.");
         }

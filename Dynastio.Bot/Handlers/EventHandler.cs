@@ -62,6 +62,8 @@ namespace Dynastio.Bot.Handlers
                     x =>
                     x.Name = $"Online Servers: {serversCount}");
 
+            await Task.Delay(200);
+
             var playerschannel = guild.GetTextChannel(_onlinePlayersChannelId);
             int playerscount = _dynastioClient.OnlinePlayers.Count;
             if (getNumber(playerschannel.Name) != playerscount)
@@ -107,7 +109,7 @@ namespace Dynastio.Bot.Handlers
             {
                 while (true)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(240));
+                    await Task.Delay(TimeSpan.FromMinutes(10));
                     await UpdateInformationChannelsAsync();
                 }
             });
