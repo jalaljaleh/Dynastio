@@ -31,13 +31,15 @@ namespace Dynastio.Bot
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _guildService = services.GetRequiredService<GuildService>();
 
+            _discord.Ready += _discord_Ready;
         }
 
-        public async Task InitializeAsync()
+        private async Task _discord_Ready()
         {
             await AddClient(WebhookChannels.DeleteMessage, GuildChannelType.LoggerChannel, ChannelThreadType.DeletedMessages);
             await AddClient(WebhookChannels.EditedMessage, GuildChannelType.LoggerChannel, ChannelThreadType.EditedMessages);
         }
+
         private async Task AddClient(WebhookChannels webhooktype, GuildChannelType channelType, ChannelThreadType thread)
         {
             var channelId = _guildService.GetChannelId(channelType);

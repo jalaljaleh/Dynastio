@@ -25,6 +25,16 @@ namespace Dynastio.Bot
             _guildService = services.GetRequiredService<GuildService>();
             _database = services.GetRequiredService<IDynastioBotDatabase>();
             _services = services;
+
+            _discord.UserJoined += _discord_UserJoined;
+        }
+
+        private async Task _discord_UserJoined(SocketGuildUser user)
+        {
+            var buser = await _userService.GetUserAsync(user.Id, false);
+
+            if (buser is not null)
+                await SyncMemberRolesAsync(user, buser, null);
         }
 
         ConcurrentBag<RankRecord> _temporaryHolder = new();
@@ -36,7 +46,31 @@ namespace Dynastio.Bot
         {
             return ((lvl + 250) * (int)Math.Pow(lvl, 2.1));
         }
-        public async Task AddMemberRoles(IGuildUser duser, User buser, ITextChannel channel)
+
+        public static ulong _scoreChannelId = 1108998382996946964;
+        public async Task AddXpAsync(User user, ulong @operator, int count, string reason = "no reason provided.")
+        {
+            user.activiy_score += count;
+            await _userService.UpdateAsync(user);
+
+            var targetUser = _discord.GetUser(user.Id);
+
+            await _discord.GetGuild(GuildService._officialGuildId)
+                .GetTextChannel(_scoreChannelId)
+                .SendMessageAsync(
+                text:user.Id.ToUserMention(),
+                embed: new EmbedBuilder()
+                {
+                    Title = $"🎉 You just got {count} xp !",
+                    Description = $"You got **{count}** xp from {@operator.ToUserMention()} for ` {reason} `",
+                    Color = Color.Green,
+                    ThumbnailUrl = 
+                    targetUser?.GetAvatarUrl() ??
+                    targetUser?.GetDefaultAvatarUrl() ??
+                    "https://cdn.discordapp.com/attachments/1098332386674085988/1098521187191095387/dynastio.png"
+                }.Build());
+        }
+        public async Task SyncMemberRolesAsync(IGuildUser duser, User buser, ITextChannel channel)
         {
             var rankedRoles = duser.Guild.Roles
                 .Where(x => x.Name.StartsWith("rank: "))
@@ -71,14 +105,12 @@ namespace Dynastio.Bot
                     ThumbnailUrl = latestRole.GetIconUrl() ?? ""
                 }.Build());
         }
-        public async Task AddMessageScoreAsync(IUserMessage message)
+        public async Task AddMessageXpAsync(IUserMessage message)
         {
             if (message.Channel is null ||
                 message.Channel is not IGuildChannel ||
                !_score_channels.Contains(message.Channel.Id))
                 return;
-
-
 
             var userId = message.Author.Id;
 
@@ -97,7 +129,17 @@ namespace Dynastio.Bot
             //increase score
             if ((DateTime.UtcNow - user.LastUpdate).TotalSeconds > _nextScoreTime)
             {
-                user.Score = user.Score + Global.Main.Random.Next(_randomScore[0], _randomScore[1]);
+                bool isServerBooster = false /*(message.Author as IGuildUser).PremiumSince.HasValue*/;
+
+                user.Score =
+                    user.Score +
+                    Global.Main.Random
+                    .Next(_randomScore[0],
+
+                    isServerBooster
+                    ? (int)(_randomScore[1] * 1.3)
+                    : _randomScore[1]);
+
                 user.LastUpdate = DateTime.UtcNow;
 
                 // save user score
@@ -117,7 +159,7 @@ namespace Dynastio.Bot
 
                         try
                         {
-                            await AddMemberRoles(message.Author as IGuildUser, _user, message.Channel as ITextChannel);
+                            await SyncMemberRolesAsync(message.Author as IGuildUser, _user, message.Channel as ITextChannel);
                         }
                         catch { }
 

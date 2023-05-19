@@ -67,8 +67,7 @@ namespace Dynastio.Bot
                 if (guildChannel.GuildId != GuildService._officialGuildId) return;
 
                 var message = await cachedMessage.GetOrDownloadAsync();
-
-                if (message.Source != Discord.MessageSource.User)
+                if (message is null || message.Source != Discord.MessageSource.User)
                     return;
 
                 if (message is null) return;
@@ -88,7 +87,7 @@ namespace Dynastio.Bot
             var commandResult = await _commandHandler.HandleCommand(message);
 
 
-            await _rankService.AddMessageScoreAsync(message);
+            await _rankService.AddMessageXpAsync(message);
         }
     }
 }

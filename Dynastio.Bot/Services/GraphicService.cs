@@ -6,14 +6,20 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using Dynastio.Bot.Managers;
 using Dynastio.Bot.Global;
+using Dynastio.Bot.Services;
+using Microsoft.Extensions.DependencyInjection;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dynastio.Bot
 {
     public class GraphicService
     {
-        public GraphicService()
+        private readonly InternetService _internetService;
+        private readonly IServiceProvider _services;
+        public GraphicService(IServiceProvider services)
         {
-
+            _services = services;
+            _internetService = _services.GetRequiredService<InternetService>();
         }
         public GraphicService Initialize()
         {
@@ -29,12 +35,27 @@ namespace Dynastio.Bot
         }
         public Font font { get; set; }
         public FontFamily fontFamily { get; set; }
+        public async Task<Image> GetWelcomeImage(Discord.IGuildUser user)
+        {
+            Image image = Image.Load(FileManager.ToResourcePath($@"Images/welcome.jpg"));
 
+            using (Image avatar = await _internetService.GetImageAsync(user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl()))
+            {
+                avatar.Mutate(wIndex => wIndex.Resize(238, 238));
+                image.Mutate(wIndex => wIndex.DrawImage(avatar, new Point(30, 30), 1f));
+
+                image.Mutate(wIndex => wIndex.DrawText("Username: " + user.Username, new Font(fontFamily, 35, FontStyle.Regular), Color.White, new Point(40, 300)));
+                image.Mutate(wIndex => wIndex.DrawText("Member: " + (user.Guild.ApproximateMemberCount + 1) +"th", new Font(fontFamily, 35, FontStyle.Regular), Color.White, new Point(40, 370)));
+                image.Mutate(wIndex => wIndex.DrawText("Welcome to Dynast.io", new Font(fontFamily, 35, FontStyle.Regular), Color.White, new Point(40, 430)));
+            }
+
+            return image;
+        }
         public Image GetProfile(Profile profile)
         {
             Image image = Image.Load(FileManager.ToResourcePath($@"Images/Profile/default.png"));
 
-            var pointCoinSection = new PointF() { X = (360 ), Y = 90 };
+            var pointCoinSection = new PointF() { X = (360), Y = 90 };
             image.Mutate(wIndex => wIndex.DrawText(profile.Coins.ToString(), new Font(fontFamily, 40, FontStyle.Regular), Color.White, pointCoinSection));
 
             var TextLevelPoint = new PointF() { X = (140 - (4 * profile.Details.Level.ToString().Length)), Y = 115 };

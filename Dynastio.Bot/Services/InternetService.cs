@@ -1,6 +1,8 @@
-﻿using System;
+﻿using SixLabors.ImageSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +23,22 @@ namespace Dynastio.Bot.Services
             _client = new HttpClient(clientHandler);
             _client.DefaultRequestHeaders.Add("application", "dynastio.bot");
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        }
+        public async Task<Image> GetImageAsync(string url)
+        {
+            Image img = null;
+            using (WebClient webClient = new WebClient())
+            {
+                byte[] data = webClient.DownloadData(url);
+
+                using (MemoryStream mem = new MemoryStream(data))
+                {
+                    img = Image.Load(mem);
+
+                    mem.Close();
+                }
+            }
+            return img;
         }
         public async Task<string> GetAsync(string api)
         {

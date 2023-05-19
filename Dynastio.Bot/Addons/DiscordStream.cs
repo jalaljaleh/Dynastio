@@ -30,7 +30,24 @@ namespace Dynastio.Bot
             }
             return msg;
         }
-
+        public static async Task<IUserMessage> SendFileAsync(ITextChannel channel, SixLabors.ImageSharp.Image img, string fileName, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, bool isSpoiler = false, AllowedMentions allowedMentions = null, MessageReference messageReference = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None)
+        {
+            IUserMessage msg;
+            using (var stream = new System.IO.MemoryStream())
+            {
+                try
+                {
+                    img.SaveAsJpeg(stream);
+                    img.Dispose();
+                    msg = await channel.SendFileAsync(stream, fileName,text,isTTS,embed,options,isSpoiler, allowedMentions, messageReference, components,stickers,embeds,flags);
+                }
+                finally
+                {
+                    stream.Dispose();
+                }
+            }
+            return msg;
+        }
         public static async Task<IUserMessage> SendStringAsFile(IMessageChannel channel, string value, string fileName = "text.txt")
         {
             IUserMessage res;

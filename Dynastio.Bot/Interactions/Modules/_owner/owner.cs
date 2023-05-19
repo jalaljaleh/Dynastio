@@ -21,7 +21,32 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         public GuildService _guildService { get; set; }
         public UserService _userService { get; set; }
         public InternetService _internetService { get; set; }
+        public RankService _rankService { get; set; }
         public IDynastioBotDatabase _database { get; set; }
+
+
+        [Group("xp", "xp")]
+        public class XPModule : OwnerModule
+        {
+            [SlashCommand("add", "add xp to user.")]
+            public async Task add(IUser user, int count, string reason)
+            {
+                await DeferAsync();
+
+                var target = await _userService.GetUserAsync(user.Id, false);
+                if (target is null)
+                {
+                    await FollowupAsync($"not found");
+                    return;
+                }
+                await _rankService.AddXpAsync(target, Context.User.Id, count, reason);
+
+                await FollowupAsync($"done");
+            }
+
+        }
+
+
 
         [Group("redeem-code", "dynast.io redeem codes.")]
         public class RedeemCodeModule : OwnerModule
@@ -32,7 +57,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
                 await DeferAsync();
 
                 var txt = await _internetService.GetAsync(txtFile.Url);
-                
+
                 string[] codes = txt.Contains(",")
                     ? txt.Split(new string[] { "," }, StringSplitOptions.TrimEntries)
                     : txt.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
@@ -70,6 +95,6 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
             }
         }
 
-       
+
     }
 }

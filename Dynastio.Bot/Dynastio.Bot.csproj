@@ -8,9 +8,6 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 	<ItemGroup>
-		<None Include="..\.dockerignore" Link=".dockerignore">
-			<DependentUpon>$(DockerDefaultDockerfile)</DependentUpon>
-		</None>
 		<Compile Update="Properties\Resources.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
@@ -39,14 +36,6 @@
 	  <Content Include="Resources\**" CopyToOutputDirectory="Always" />
  
   </ItemGroup>
-
-	
-  <ItemGroup>
-    <Folder Include="Commands\Modules\admin\" />
-    <Folder Include="Handlers\Events\" />
-  </ItemGroup>
-
- 
 
 
 	
