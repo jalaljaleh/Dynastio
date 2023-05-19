@@ -24,6 +24,7 @@ namespace Dynastio.Bot
         private readonly IDynastioBotDatabase _db;
         private readonly IServiceProvider _services;
         private readonly DiscordSocketClient _discord;
+        private readonly UserService _userService;
         public GuildService(IServiceProvider services)
         {
             Main.Log("Guild Service", "Start Async");
@@ -32,7 +33,7 @@ namespace Dynastio.Bot
             this._db = services.GetRequiredService<IDynastioBotDatabase>();
             this._discord = services.GetRequiredService<DiscordSocketClient>();
             this._services = services;
-
+            this._userService = services.GetRequiredService<UserService>();
             this._guilds = new();
         }
         public const ulong _officialGuildId = 480416088312774657;
@@ -129,6 +130,9 @@ namespace Dynastio.Bot
 
             if (rolesToRemove.Count > 0)
                 await user.RemoveRolesAsync(rolesToRemove);
+            
+            buser.last_badges_sync = DateTime.UtcNow;
+            await _userService.UpdateAsync(buser);
 
             return (rolesToAdd.ToArray(), rolesToRemove.ToArray());
         }

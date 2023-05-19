@@ -24,7 +24,6 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         public RankService _rankService { get; set; }
         public IDynastioBotDatabase _database { get; set; }
 
-
         [Group("xp", "xp")]
         public class XPModule : OwnerModule
         {

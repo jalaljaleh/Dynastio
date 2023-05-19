@@ -44,7 +44,7 @@ namespace Dynastio.Bot
             if (_isActivityLeaderboardCached)
                 return this._users
                     .OrderByDescending(a => a.activiy_level)
-                    .ThenByDescending(a=>a.activiy_score)
+                    .ThenByDescending(a => a.activiy_score)
                     .Take(count)
                     .ToList();
 
@@ -90,7 +90,12 @@ namespace Dynastio.Bot
                     await _db.InsertAsync(user);
                 }
                 if (user != null)
+                {
                     Cache(user);
+                    
+                    if ((DateTime.UtcNow - user.last_badges_sync).TotalDays > 3)
+                        await _guildService.SyncUserBadges(user);
+                }
             }
             return user;
         }
