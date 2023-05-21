@@ -63,12 +63,12 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
 
                 new EmbedFieldBuilder()
                 .WithName("Players")
-                .WithValue(string.Join(", ", result.Players.Select(a => a.Nickname.TrySubstring(16))).ToMarkdown())
+                .WithValue(string.Join("\n", result.Players.Select(a => a.Nickname.TrySubstring(16))).ToMarkdown())
                 .WithIsInline(false),
 
                 new EmbedFieldBuilder()
                 .WithName("Teams")
-                .WithValue(string.Join(", ", teams.Select(a => a.Key)).ToMarkdown())
+                .WithValue(string.Join("\n", teams.Select(a => a.Key)).ToMarkdown())
                 .WithIsInline(true)
                 }
             }.Build();

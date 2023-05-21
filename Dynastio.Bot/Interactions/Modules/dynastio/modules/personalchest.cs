@@ -22,7 +22,7 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
             await DeferAsync();
             var account = Context.BotUser.GetDefaultAccount();
             var personalchest = await this._dynastio.GetUserPersonalchestAsync(account.Id);
-            var image = _graphicService.GetPersonalChest(personalchest);
+            var image = await _graphicService.GetPersonalChestAsync(Context.User as IGuildUser,account, personalchest);
             await DiscordStream.FollowupWithFileAsync(Context, image, $"personalchest-{Context.User.Id}.png", $"");
         }
 

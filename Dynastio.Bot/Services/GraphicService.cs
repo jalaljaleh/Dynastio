@@ -8,13 +8,14 @@ using Dynastio.Bot.Managers;
 using Dynastio.Bot.Global;
 using Dynastio.Bot.Services;
 using Microsoft.Extensions.DependencyInjection;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Dynastio.Bot.Data;
 
 namespace Dynastio.Bot
 {
     public class GraphicService
     {
         private readonly InternetService _internetService;
+
         private readonly IServiceProvider _services;
         public GraphicService(IServiceProvider services)
         {
@@ -45,7 +46,7 @@ namespace Dynastio.Bot
                 image.Mutate(wIndex => wIndex.DrawImage(avatar, new Point(30, 30), 1f));
 
                 image.Mutate(wIndex => wIndex.DrawText("Username: " + user.Username, new Font(fontFamily, 35, FontStyle.Regular), Color.White, new Point(40, 300)));
-                image.Mutate(wIndex => wIndex.DrawText("Member: " + (user.Guild.ApproximateMemberCount + 1) +"th", new Font(fontFamily, 35, FontStyle.Regular), Color.White, new Point(40, 370)));
+                image.Mutate(wIndex => wIndex.DrawText("Member: " + (user.Guild.ApproximateMemberCount + 1) + "th", new Font(fontFamily, 35, FontStyle.Regular), Color.White, new Point(40, 370)));
                 image.Mutate(wIndex => wIndex.DrawText("Welcome to Dynast.io", new Font(fontFamily, 35, FontStyle.Regular), Color.White, new Point(40, 430)));
             }
 
@@ -84,7 +85,15 @@ namespace Dynastio.Bot
         }
 
 
-        public Image GetPersonalChest(Personalchest personalchest)
+        private const int wSlotSize = 6;
+        private const int hSlotSize = 5;
+        private const int SlotSizeWidth = 73;
+        private const int SlotSizeHeight = 87;
+        private const int firstSlotSizeMarginWidth = 288;
+        private const int firstSlotSizeMarginHeight = 52;
+        private const int SlotSizeMarginWidth = 5;
+        private const int SlotSizeMarginHeight = 7;
+        public async Task<Image> GetPersonalChestAsync(Discord.IGuildUser user, UserAccount account, Personalchest personalchest)
         {
 
             Image image = Image.Load(FileManager.ToResourcePath($@"Images/personalchest/default.png"));
@@ -93,14 +102,6 @@ namespace Dynastio.Bot
 
             var items = personalchest.GetAsDictionary();
 
-            const int wSlotSize = 6;
-            const int hSlotSize = 5;
-            const int SlotSizeWidth = 73;
-            const int SlotSizeHeight = 87;
-            const int firstSlotSizeMarginWidth = 170;
-            const int firstSlotSizeMarginHeight = 52;
-            const int SlotSizeMarginWidth = 5;
-            const int SlotSizeMarginHeight = 7;
 
             for (var wIndex = 0; wIndex < wSlotSize; wIndex++)
             {
@@ -126,6 +127,15 @@ namespace Dynastio.Bot
                     }
                 }
             }
+
+            using (Image avatar = await _internetService.GetImageAsync(user?.GetAvatarUrl() ?? user?.GetDefaultAvatarUrl()))
+            {
+                avatar.Mutate(x => x.Resize(151, 151, true));
+                image.Mutate(x => x.DrawImage(avatar, new Point(68, 83), 1f));
+            }
+            image.Mutate(wIndex => wIndex.DrawText("User: " + user.Username, new Font(fontFamily, 16, FontStyle.Regular), Color.Black, new Point(74, 250)));
+            image.Mutate(wIndex => wIndex.DrawText("Account: " + account.Reminder, new Font(fontFamily, 16, FontStyle.Regular), Color.Black, new Point(74, 275)));
+
             return image;
 
         }
