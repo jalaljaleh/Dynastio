@@ -101,7 +101,7 @@ namespace Dynastio.Bot
             if (personalchest == null) return image;
 
             var items = personalchest.GetAsDictionary();
-
+            
 
             for (var wIndex = 0; wIndex < wSlotSize; wIndex++)
             {
