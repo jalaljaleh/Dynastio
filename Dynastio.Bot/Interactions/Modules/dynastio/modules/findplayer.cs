@@ -9,13 +9,14 @@ using Dynastio.Net;
 using Discord.WebSocket;
 using Dynastio.Bot.Interactions.Modules.Shard;
 using System.ComponentModel;
+using Dynastio.Bot.Addons;
 
 namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
 {
     public partial class DynastioModule
     {
         [SlashCommand("find-player", "find player")]
-        public async Task find(   
+        public async Task find(
             string name,
               [MaxValue(60)] int take = 30,
               int page = 1)
@@ -30,10 +31,11 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
             }
             players = players.Where(
                 a =>
-                a.Nickname.Contains(name)
+               a.Nickname.Trim().ToLower()
+               .Contains(name.ToLower().Trim())
                 ).OrderByDescending(a => a.Score).ToList();
 
-             
+
             var players1 = players.Skip((page - 1) * take).Take(take).ToList();
             var content = players1.ToStringTable(new[] { "#", Context.UserLocale["server"], Context.UserLocale["score"], Context.UserLocale["level"], Context.UserLocale["team"], Context.UserLocale["nickname"] },
                 a => players.IndexOf(a),
