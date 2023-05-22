@@ -14,7 +14,7 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
 {
     public partial class DynastioModule
     {
-        [SlashCommand("find-player", "")]
+        [SlashCommand("find-player", "find player")]
         public async Task find(   
             string name,
               [MaxValue(60)] int take = 30,
