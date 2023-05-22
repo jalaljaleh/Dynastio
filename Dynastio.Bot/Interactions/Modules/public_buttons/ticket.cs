@@ -29,10 +29,10 @@ namespace Dynastio.Bot.Interactions.Modules.public_buttons
                 $"- Do not mention anyone.\n\n" +
                 $"> Примечания: \n" +
                 $"-Не упоминайте никого.\n\n" +
-                $"");
+                $"<@&480954902005415937>");
 
             await thread.SendMessageAsync(
-              $"<@{Context.User.Id}> Send Your Message to <@&480954902005415937>:");
+              $"<@{Context.User.Id}> Send Your Message:");
         }
 
     }

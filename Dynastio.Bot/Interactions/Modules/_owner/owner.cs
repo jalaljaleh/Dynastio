@@ -9,6 +9,7 @@ using Dynastio.Net;
 using Discord.WebSocket;
 using Dynastio.Bot.Data;
 using Dynastio.Bot.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dynastio.Bot.Interactions.Modules.Owner
 {
@@ -23,6 +24,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         public UserService _userService { get; set; }
         public InternetService _internetService { get; set; }
         public RankService _rankService { get; set; }
+        public DiscordSocketClient _discord { get; set; }
         public IDynastioBotDatabase _database { get; set; }
 
 
@@ -30,7 +32,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         public class setupModule : OwnerModule
         {
             [SlashCommand("ticket", "ticket.")]
-            public async Task ticket( ITextChannel channel)
+            public async Task ticket(ITextChannel channel)
             {
                 await DeferAsync(true);
 
@@ -69,7 +71,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         [Group("xp", "xp")]
         public class XPModule : OwnerModule
         {
-            [SlashCommand("add", "add xp to user.")]
+            [SlashCommand("add", "add xp to targrtUser.")]
             public async Task add(IUser user, int count, string reason)
             {
                 await DeferAsync(true);
@@ -93,7 +95,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         public class RedeemCodeModule : OwnerModule
         {
             [SlashCommand("send", "send .")]
-            public async Task send(IUser user, string reason, RedeemCode.RedeemType type)
+            public async Task send(IUser targrtUser, string reason, RedeemCode.RedeemType type)
             {
                 await DeferAsync(true);
 
@@ -104,14 +106,32 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
                     return;
                 }
 
-                var result = await user.SendMessageAsync(
+                var result = await targrtUser.SendMessageAsync(
                     $"You just got a redeem code from {userMention} for ` {reason} `\n" +
                     $"```{code.Code}```")
                     .TryAsync();
 
                 if (result.isSuccesful)
+                {
                     await _database.DeleteAsync(code);
-                else await FollowupAsync("user dm is closed.");
+                    await FollowupAsync("done.");
+
+                    await _discord.GetGuild(GuildService._officialGuildId)
+                                    .GetTextChannel(RankService._scoreChannelId)
+                                    .SendMessageAsync(
+                                    text: targrtUser.Id.ToUserMention(),
+                                    embed: new EmbedBuilder()
+                                    {
+                                        Title = $"🎉 You just got {type} redeem code!",
+                                        Description = $"You got **{type}** redeem code from {Context.User.Id.ToUserMention()} for ` {reason} `",
+                                        Color = Color.Green,
+                                        ThumbnailUrl =
+                                        targrtUser?.GetAvatarUrl() ??
+                                        targrtUser?.GetDefaultAvatarUrl() ??
+                                        "https://cdn.discordapp.com/attachments/1098332386674085988/1098521187191095387/dynastio.png"
+                                    }.Build());
+                }
+                else await FollowupAsync("targrtUser dm is closed.");
             }
 
             [SlashCommand("add", "add redeem codes. consider separate with , or newline.")]
