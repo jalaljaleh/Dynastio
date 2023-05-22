@@ -11,7 +11,7 @@ namespace Dynastio.Bot.Interactions.Modules.public_buttons
 {
     public class TicketModule : CustomInteractionModuleBase
     {
-
+        [RateLimit(999999999)]
         [ComponentInteraction("btn.public.ticket.start")]
         public async Task start()
         {
