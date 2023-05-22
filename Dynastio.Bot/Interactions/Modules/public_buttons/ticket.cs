@@ -22,7 +22,7 @@ namespace Dynastio.Bot.Interactions.Modules.public_buttons
                 .CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.OneWeek, null, false, 0);
 
             await thread.SendMessageAsync(
-                $"**Important**" +
+                $"**Important**\n" +
                 $"This is a safe and private thread with Dynastio Staff **No Admin, No Moderator**.\n" +
                 $"> Это безопасный и конфиденциальный поток с персоналом Dynastio ** Без администраторов, без модераторов**.\n\n\n" +
                 $"**Notes:**\n" +
@@ -32,7 +32,7 @@ namespace Dynastio.Bot.Interactions.Modules.public_buttons
                 $"");
 
             await thread.SendMessageAsync(
-              $"<@&480954902005415937> Send Your Message to <@&480954902005415937>:");
+              $"<@{Context.User.Id}> Send Your Message to <@&480954902005415937>:");
         }
 
     }

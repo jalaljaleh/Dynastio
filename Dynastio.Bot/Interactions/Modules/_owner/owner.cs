@@ -30,18 +30,19 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         public class setupModule : OwnerModule
         {
             [SlashCommand("ticket", "ticket.")]
-            public async Task ticket(string content, ITextChannel channel)
+            public async Task ticket( ITextChannel channel)
             {
                 await DeferAsync(true);
 
                 await channel.SendMessageAsync(
-                 "** Private Ticket **" +
+                 "** Private Ticket **\n" +
                  $"- If you have an enquiry that requires discussion with staff, create a ticket by clicking on the button below!\n" +
                  $"- Abuse of the ticket system will lead to action being taken by staff members.\n" +
-                 $"- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠feedback ⁠report-bug channel.\n\n\n" +
-                 $"- Если у вас есть запрос, требующий обсуждения с сотрудником, создайте тикет, нажав на кнопку ниже! \n" +
+                 $"- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠feedback ⁠report-bug channel.\n\n" +
+                 $">>> - Если у вас есть запрос, требующий обсуждения с сотрудником, создайте тикет, нажав на кнопку ниже! \n" +
                  $"- Злоупотребление системой тикетов приведет к принятию мер сотрудниками.\n" +
-                 $"- Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал ⁠обратная-связь ⁠сообщить-ошибке.\r",
+                 $"- Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал ⁠обратная-связь ⁠сообщить-ошибке.\n" +
+                 $"\n",
                   components: new ComponentBuilder()
                   .WithButton("Start", "btn.public.ticket.start", ButtonStyle.Success, Emoji.Parse("📩"))
                   .Build());

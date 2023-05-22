@@ -54,7 +54,7 @@ namespace Dynastio.Bot
         }
         public Image GetProfile(Profile profile)
         {
-            Image image = Image.Load(FileManager.ToResourcePath($@"Images/Profile/default.png"));
+            Image image = Image.Load(FileManager.ToResourcePath("Images/Profile/default.png"));
 
             var pointCoinSection = new PointF() { X = (360), Y = 90 };
             image.Mutate(wIndex => wIndex.DrawText(profile.Coins.ToString(), new Font(fontFamily, 40, FontStyle.Regular), Color.White, pointCoinSection));
@@ -96,7 +96,7 @@ namespace Dynastio.Bot
         public async Task<Image> GetPersonalChestAsync(Discord.IGuildUser user, UserAccount account, Personalchest personalchest)
         {
 
-            Image image = Image.Load(FileManager.ToResourcePath($@"Images/Personalchest/default.png"));
+            Image image = Image.Load(FileManager.ToResourcePath("Images/Chest/default.png"));
 
             if (personalchest == null) return image;
 
