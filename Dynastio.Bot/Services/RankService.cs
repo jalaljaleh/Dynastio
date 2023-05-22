@@ -58,13 +58,13 @@ namespace Dynastio.Bot
             await _discord.GetGuild(GuildService._officialGuildId)
                 .GetTextChannel(_scoreChannelId)
                 .SendMessageAsync(
-                text:user.Id.ToUserMention(),
+                text: user.Id.ToUserMention(),
                 embed: new EmbedBuilder()
                 {
                     Title = $"🎉 You just got {count} xp !",
                     Description = $"You got **{count}** xp from {@operator.ToUserMention()} for ` {reason} `",
                     Color = Color.Green,
-                    ThumbnailUrl = 
+                    ThumbnailUrl =
                     targetUser?.GetAvatarUrl() ??
                     targetUser?.GetDefaultAvatarUrl() ??
                     "https://cdn.discordapp.com/attachments/1098332386674085988/1098521187191095387/dynastio.png"
@@ -157,14 +157,15 @@ namespace Dynastio.Bot
                         _user.activiy_score = _user.activiy_score - max;
                         _user.activiy_level++;
 
-                        try
-                        {
-                            await SyncMemberRolesAsync(message.Author as IGuildUser, _user, message.Channel as ITextChannel);
-                        }
-                        catch { }
+                        await _userService.UpdateAsync(_user);
+
+                        var result = await SyncMemberRolesAsync(message.Author as IGuildUser, _user, message.Channel as ITextChannel)
+                            .TryAsync();
+
+                        //if (result is false)
+                        //    await message.Author.SendMessageAsync("can't sync your roles.").TryAsync();
 
                     }
-                    await _userService.UpdateAsync(_user);
 
                 }
             }

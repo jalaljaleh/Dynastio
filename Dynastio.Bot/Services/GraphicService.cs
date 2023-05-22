@@ -96,7 +96,7 @@ namespace Dynastio.Bot
         public async Task<Image> GetPersonalChestAsync(Discord.IGuildUser user, UserAccount account, Personalchest personalchest)
         {
 
-            Image image = Image.Load(FileManager.ToResourcePath($@"Images/personalchest/default.png"));
+            Image image = Image.Load(FileManager.ToResourcePath($@"Images/Personalchest/default.png"));
 
             if (personalchest == null) return image;
 

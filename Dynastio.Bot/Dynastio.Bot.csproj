@@ -28,11 +28,9 @@
 	  <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
 
        <ProjectReference Include="..\Dynastio.Bot.Data\Dynastio.Bot.Data.csproj" />
-
        <ProjectReference Include="..\Dynastio.Bot.Globalization\Dynastio.Bot.Globalization.csproj" />
        <ProjectReference Include="..\Dynastio.Bot.Global\Dynastio.Bot.Global.csproj" />
-	   
-	  
+	   	  
 	  <Content Include="Resources\**" CopyToOutputDirectory="Always" />
  
   </ItemGroup>

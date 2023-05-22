@@ -102,6 +102,9 @@ namespace Dynastio.Bot.Handlers
         {
             var guilds = _client.Guilds.ToList();
 
+            //dev channel
+            await guilds.First().GetTextChannel(1109911020341837825).SendMessageAsync("Ready !");
+
             await _client.SetGameAsync($"Watching {guilds.Sum(a => a.MemberCount)} members !", "", ActivityType.Playing);
             await _client.SetStatusAsync(UserStatus.Online);
 

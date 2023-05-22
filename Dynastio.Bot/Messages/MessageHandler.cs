@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Dynastio.Bot.Global;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Concurrent;
@@ -86,8 +87,8 @@ namespace Dynastio.Bot
 
             var commandResult = await _commandHandler.HandleCommand(message);
 
-
-            await _rankService.AddMessageXpAsync(message);
+            if (Main.IsDebug() is false)
+                await _rankService.AddMessageXpAsync(message);
         }
     }
 }

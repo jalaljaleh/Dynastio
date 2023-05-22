@@ -15,6 +15,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
 
     [RequireBotOwner]
     [EnabledInDm(true)]
+    [DefaultMemberPermissions(GuildPermission.Administrator)]
     [Group("owner", "config bot")]
     public class OwnerModule : CustomInteractionModuleBase
     {
@@ -24,12 +25,34 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         public RankService _rankService { get; set; }
         public IDynastioBotDatabase _database { get; set; }
 
+
+        [Group("setup", "setup")]
+        public class setupModule : OwnerModule
+        {
+            [SlashCommand("ticket", "ticket.")]
+            public async Task ticket(string content, string title, string description, string imageUrl, ITextChannel channel)
+            {
+                await DeferAsync(true);
+
+                await channel.SendMessageAsync(
+                    content,
+                    embed: description.ToEmbed(title, imageUrl, color: Color.Orange)
+                    , components: new ComponentBuilder()
+                    .WithButton("btn.public.ticket.start", "Start", ButtonStyle.Success, Emote.Parse("📩"))
+                    .Build());
+                await FollowupAsync("done");
+            }
+
+        }
+
+
         [Group("bot", "bot")]
         public class botModule : OwnerModule
         {
             [SlashCommand("shutdown", "shutdown.")]
             public async Task shutdown()
             {
+                await DeferAsync(true);
                 await FollowupAsync($"done");
                 Environment.Exit(0);
             }
@@ -42,7 +65,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
             [SlashCommand("add", "add xp to user.")]
             public async Task add(IUser user, int count, string reason)
             {
-                await DeferAsync();
+                await DeferAsync(true);
 
                 var target = await _userService.GetUserAsync(user.Id, false);
                 if (target is null)
@@ -62,8 +85,30 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         [Group("redeem-code", "dynast.io redeem codes.")]
         public class RedeemCodeModule : OwnerModule
         {
+            [SlashCommand("send", "send .")]
+            public async Task send(IUser user, string reason, RedeemCode.RedeemType type)
+            {
+                await DeferAsync(true);
+
+                var code = await _database.GetRedeemCodeAsync(type);
+                if (code is null)
+                {
+                    await FollowupAsync($"not found", ephemeral: true);
+                    return;
+                }
+
+                var result = await user.SendMessageAsync(
+                    $"You just got a redeem code from {userMention} for ` {reason} `\n" +
+                    $"```{code.Code}```")
+                    .TryAsync();
+
+                if (result.isSuccesful)
+                    await _database.DeleteAsync(code);
+                else await FollowupAsync("user dm is closed.");
+            }
+
             [SlashCommand("add", "add redeem codes. consider separate with , or newline.")]
-            public async Task add(RedeemCode.RedeemType type, IAttachment txtFile)
+            public async Task add(IAttachment txtFile, RedeemCode.RedeemType type)
             {
                 await DeferAsync();
 

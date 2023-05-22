@@ -45,7 +45,7 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                     {
                         new EmbedFieldBuilder()
                         .WithName("Unlocked Roles")
-                        .WithValue(string.Join(", ", rankedRoles.ToList().GetRange(0, BotUser.activiy_level).Select(a=> $"<@&{a}>")))
+                        .WithValue(string.Join(", ", rankedRoles.ToList().GetRange(0, BotUser.activiy_level).Select(a=> $"<@&{a}>")) + "\n.")
                         .WithIsInline(true)
                     },
                      ThumbnailUrl = latestRole.GetIconUrl() ?? ""
