@@ -38,7 +38,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
                     content,
                     embed: description.ToEmbed(title, imageUrl, color: Color.Orange)
                     , components: new ComponentBuilder()
-                    .WithButton("btn.public.ticket.start", "Start", ButtonStyle.Success, Emoji.Parse("📩"))
+                    .WithButton("Start", "btn.public.ticket.start", ButtonStyle.Success, Emoji.Parse("📩"))
                     .Build());
                 await FollowupAsync("done");
             }
