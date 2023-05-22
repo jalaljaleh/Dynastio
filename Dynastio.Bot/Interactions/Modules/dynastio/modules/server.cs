@@ -13,7 +13,7 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
 {
     public partial class DynastioModule
     {
-        [SlashCommand("servers-find", "get server information")]
+        [SlashCommand("find-server", "get server information")]
         public async Task server(
             [Autocomplete(typeof(SharedAutocompleteHandler.OnlineServersAutocompleteHandler))] string server)
         {
