@@ -24,6 +24,18 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         public RankService _rankService { get; set; }
         public IDynastioBotDatabase _database { get; set; }
 
+        [Group("bot", "bot")]
+        public class botModule : OwnerModule
+        {
+            [SlashCommand("shutdown", "shutdown.")]
+            public async Task shutdown()
+            {
+                await FollowupAsync($"done");
+                Environment.Exit(0);
+            }
+
+        }
+
         [Group("xp", "xp")]
         public class XPModule : OwnerModule
         {
