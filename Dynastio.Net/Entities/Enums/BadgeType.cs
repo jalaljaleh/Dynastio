@@ -8,7 +8,8 @@ namespace Dynastio.Net
     public enum BadgeType
     {
         Developer,
-        Supporter, Administrator = 3,
+        Supporter, 
+        Administrator = 3,
         Monthly, 
         Friend, 
         Translator, 
