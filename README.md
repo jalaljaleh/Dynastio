@@ -65,8 +65,7 @@
  	- [X] Support 1+ [Languages](https://discord.com/developers/docs/reference#locales)		
     - [ ] Thai	
     - [ ] English, UK
-    - [ ] Portuguese, Brazilian
-    - [ ] Chinese, Taiwan
+
 
 See the [Discord Locales](https://discord.com/developers/docs/reference#locales) for a full list of available locales.
 
