@@ -57,7 +57,9 @@ namespace Dynastio.Bot
                .AddSingleton<InteractionsHandler>()
                .AddSingleton<CommandsHandler>()
                .AddSingleton<MessageHandler>()
+               .AddSingleton<FreshChannelHandler>()
 
+               .AddSingleton<RepeaterService>()
 
                .AddSingleton<DynastioClient>(x => new DynastioClient(configuration.DynastioApi))
                

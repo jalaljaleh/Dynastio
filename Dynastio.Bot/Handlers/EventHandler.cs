@@ -25,6 +25,7 @@ namespace Dynastio.Bot.Handlers
         private readonly RankService _rankService;
         private readonly GraphicService _graphicService;
         private readonly DynastioClient _dynastioClient;
+        private readonly RepeaterService _repeaterService;
 
         public EventHandler(IServiceProvider services)
         {
@@ -36,40 +37,12 @@ namespace Dynastio.Bot.Handlers
             _usersService = _services.GetService<UserService>();
             _graphicService = _services.GetService<GraphicService>();
             _dynastioClient = _services.GetService<DynastioClient>();
+            _repeaterService = _services.GetRequiredService<RepeaterService>();
 
             _client.Ready += _client_Ready;
             _client.UserJoined += _client_UserJoined;
 
 
-        }
-        private const ulong _onlinePlayersChannelId = 1109014316922978354;
-        private const ulong _onlineServersChannelId = 1109019161587355738;
-
-        private static int getNumber(string txt)
-        {
-            var resultString = Regex.Match(txt, @"\d+").Value;
-            bool result = int.TryParse(resultString, out var number);
-            return result ? number : 0;
-        }
-        public async Task UpdateInformationChannelsAsync()
-        {
-            var guild = _client.GetGuild(GuildService._officialGuildId);
-
-            var serverchannel = guild.GetTextChannel(_onlineServersChannelId);
-            int serversCount = _dynastioClient.OnlineServers.Where(a => a.IsPrivate == false).Count();
-            if (getNumber(serverchannel.Name) != serversCount)
-                await serverchannel.ModifyAsync(
-                    x =>
-                    x.Name = $"Online Servers: {serversCount}");
-
-            await Task.Delay(200);
-
-            var playerschannel = guild.GetTextChannel(_onlinePlayersChannelId);
-            int playerscount = _dynastioClient.OnlinePlayers.Count;
-            if (getNumber(playerschannel.Name) != playerscount)
-                await playerschannel.ModifyAsync(
-                x =>
-                x.Name = $"Online Players: {playerscount}");
         }
 
         public static ulong _memberChannelId = 1109020050163240990;
@@ -100,23 +73,16 @@ namespace Dynastio.Bot.Handlers
 
         private async Task _client_Ready()
         {
-            var guilds = _client.Guilds.ToList();
+            // dev channel
+            await _client.Guilds.First().GetTextChannel(1109911020341837825).SendMessageAsync("Ready !");
 
-            //dev channel
-            await guilds.First().GetTextChannel(1109911020341837825).SendMessageAsync("Ready !");
-
-
-            await _client.SetGameAsync($"Watching {guilds.Sum(a => a.MemberCount)} members !", "", ActivityType.Playing);
-            await _client.SetStatusAsync(UserStatus.Online);
-
-            _ = Task.Run(async () =>
-            {
-                while (true)
-                {
-                    await Task.Delay(TimeSpan.FromMinutes(10));
-                    await UpdateInformationChannelsAsync();
-                }
-            });
+            _repeaterService.AddFunction(updateStatus(), TimeSpan.FromMinutes(50));
         }
+        async Task updateStatus()
+        {
+            await _client.SetGameAsync($"Watching {_client.Guilds.Sum(a => a.MemberCount)} members !", "", ActivityType.Playing);
+        }
+
+
     }
 }

@@ -9,6 +9,9 @@ using Dynastio.Bot.Global;
 using Dynastio.Bot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Dynastio.Bot.Data;
+using Discord;
+using Image = SixLabors.ImageSharp.Image;
+using Color = SixLabors.ImageSharp.Color;
 
 namespace Dynastio.Bot
 {
@@ -45,8 +48,10 @@ namespace Dynastio.Bot
                 avatar.Mutate(wIndex => wIndex.Resize(238, 238));
                 image.Mutate(wIndex => wIndex.DrawImage(avatar, new Point(30, 30), 1f));
 
+                var users = await user.Guild.GetUsersAsync();
+
                 image.Mutate(wIndex => wIndex.DrawText("Username: " + user.Username, new Font(fontFamily, 35, FontStyle.Regular), Color.White, new Point(40, 300)));
-                image.Mutate(wIndex => wIndex.DrawText("Member: " + (user.Guild.ApproximateMemberCount + 1) + "th", new Font(fontFamily, 35, FontStyle.Regular), Color.White, new Point(40, 370)));
+                image.Mutate(wIndex => wIndex.DrawText("Member: " + (users.Count + 1) + "th", new Font(fontFamily, 35, FontStyle.Regular), Color.White, new Point(40, 370)));
                 image.Mutate(wIndex => wIndex.DrawText("Welcome to Dynast.io", new Font(fontFamily, 35, FontStyle.Regular), Color.White, new Point(40, 430)));
             }
 
@@ -101,7 +106,7 @@ namespace Dynastio.Bot
             if (personalchest == null) return image;
 
             var items = personalchest.GetAsDictionary();
-            
+
 
             for (var wIndex = 0; wIndex < wSlotSize; wIndex++)
             {
@@ -133,8 +138,8 @@ namespace Dynastio.Bot
                 avatar.Mutate(x => x.Resize(151, 151, true));
                 image.Mutate(x => x.DrawImage(avatar, new Point(68, 83), 1f));
             }
-            image.Mutate(wIndex => wIndex.DrawText("User: " + user.Username, new Font(fontFamily, 16, FontStyle.Regular), Color.Black, new Point(74, 250)));
-            image.Mutate(wIndex => wIndex.DrawText("Account: " + account.Reminder, new Font(fontFamily, 16, FontStyle.Regular), Color.Black, new Point(74, 275)));
+            image.Mutate(wIndex => wIndex.DrawText("User: " + user.Username, new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(74, 250)));
+            image.Mutate(wIndex => wIndex.DrawText("Account: " + account.Reminder, new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(74, 275)));
 
             return image;
 

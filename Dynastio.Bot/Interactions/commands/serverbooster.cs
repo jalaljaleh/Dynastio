@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Net;
 using Discord.WebSocket;
-using Dynastio.Bot.Interactions.Modules.Owner;
 using static Dynastio.Bot.Data.Guild;
 using Dynastio.Bot.Data;
 
 
-namespace Dynastio.Bot.Interactions.Modules.ServerBooster
+namespace Dynastio.Bot.Interactions.commands
 {
 
     [EnabledInDm(false)]
@@ -29,7 +28,7 @@ namespace Dynastio.Bot.Interactions.Modules.ServerBooster
         public async Task server_booster_gift()
         {
             await DeferAsync(false);
-            
+
             var message = await FollowUpToLoading(this["accounts.sync-roles.checking.title"]);
 
             if ((Context.User as IGuildUser).PremiumSince is null)

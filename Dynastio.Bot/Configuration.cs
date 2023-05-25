@@ -30,7 +30,7 @@ namespace Dynastio.Bot
             }
 
             // set config-key value to environment
-            if (false && File.Exists(FileManager.ToResourcePath(@"config-key.txt")))
+            if (true && File.Exists(FileManager.ToResourcePath(@"config-key.txt")))
             {
                 var _configKey = File.ReadAllText(FileManager.ToResourcePath(@"config-key.txt"));
                 Environment.SetEnvironmentVariable("config-key", _configKey);

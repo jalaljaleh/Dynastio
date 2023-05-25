@@ -11,7 +11,7 @@ using Dynastio.Bot.Data;
 using Dynastio.Bot.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Dynastio.Bot.Interactions.Modules.Owner
+namespace Dynastio.Bot.Interactions.commands
 {
 
     [RequireBotOwner]
@@ -26,47 +26,6 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         public RankService _rankService { get; set; }
         public DiscordSocketClient _discord { get; set; }
         public IDynastioBotDatabase _database { get; set; }
-
-
-        [Group("setup", "setup")]
-        public class setupModule : OwnerModule
-        {
-            [SlashCommand("ticket", "ticket.")]
-            public async Task ticket(ITextChannel channel)
-            {
-                await DeferAsync(true);
-
-                await channel.SendMessageAsync(
-                 "** Private Ticket **\n" +
-                 $"- If you have an enquiry that requires discussion with staff, create a ticket by clicking on the button below!\n" +
-                 $"- Abuse of the ticket system will lead to action being taken by staff members.\n" +
-                 $"- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠feedback ⁠report-bug channel.\n\n" +
-                 $">>> - Если у вас есть запрос, требующий обсуждения с сотрудником, создайте тикет, нажав на кнопку ниже! \n" +
-                 $"- Злоупотребление системой тикетов приведет к принятию мер сотрудниками.\n" +
-                 $"- Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал ⁠обратная-связь ⁠сообщить-ошибке.\n" +
-                 $"\n",
-                  components: new ComponentBuilder()
-                  .WithButton("Start", "btn.public.ticket.start", ButtonStyle.Success, Emoji.Parse("📩"))
-                  .Build());
-
-                await FollowupAsync("done");
-            }
-
-        }
-
-
-        [Group("bot", "bot")]
-        public class botModule : OwnerModule
-        {
-            [SlashCommand("shutdown", "shutdown.")]
-            public async Task shutdown()
-            {
-                await DeferAsync(true);
-                await FollowupAsync($"done");
-                Environment.Exit(0);
-            }
-
-        }
 
         [Group("xp", "xp")]
         public class XPModule : OwnerModule
@@ -89,8 +48,6 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
 
         }
 
-
-
         [Group("redeem-code", "dynast.io redeem codes.")]
         public class RedeemCodeModule : OwnerModule
         {
@@ -107,7 +64,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
                 }
 
                 var result = await targrtUser.SendMessageAsync(
-                    $"You just got a redeem code from {userMention} for ` {reason} `\n" +
+                    $"You just got a redeem code for ` {reason} `\n" +
                     $"```{code.Code}```")
                     .TryAsync();
 
@@ -123,12 +80,12 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
                                     embed: new EmbedBuilder()
                                     {
                                         Title = $"🎉 You just got {type} redeem code!",
-                                        Description = $"You got **{type}** redeem code from {Context.User.Id.ToUserMention()} for ` {reason} `",
+                                        Description = $"You got **{type}** redeem code for ` {reason} `",
                                         Color = Color.Green,
                                         ThumbnailUrl =
                                         targrtUser?.GetAvatarUrl() ??
                                         targrtUser?.GetDefaultAvatarUrl() ??
-                                        "https://cdn.discordapp.com/attachments/1098332386674085988/1098521187191095387/dynastio.png"
+                                        "https://cdn.discordapp.com/attachments/1111209352095871028/1111209352217509938/openiron.png",
                                     }.Build());
                 }
                 else await FollowupAsync("targrtUser dm is closed.");

@@ -62,7 +62,7 @@ namespace Dynastio.Bot
                 embed: new EmbedBuilder()
                 {
                     Title = $"🎉 You just got {count} xp !",
-                    Description = $"You got **{count}** xp from {@operator.ToUserMention()} for ` {reason} `",
+                    Description = $"You got **{count}** xp for ` {reason} `",
                     Color = Color.Green,
                     ThumbnailUrl =
                     targetUser?.GetAvatarUrl() ??

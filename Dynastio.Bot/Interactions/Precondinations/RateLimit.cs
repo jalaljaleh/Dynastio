@@ -22,6 +22,7 @@ namespace Discord.Interactions
         private readonly RateLimitBaseType _baseType;
         private readonly int _requests;
         private readonly int _seconds;
+
         public RateLimit(int seconds = 4, int requests = 1, RateLimitType context = RateLimitType.User, RateLimitBaseType baseType = RateLimitBaseType.BaseOnCommandInfo)
         {
             this._context = context;
