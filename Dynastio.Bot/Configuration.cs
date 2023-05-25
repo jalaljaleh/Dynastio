@@ -29,24 +29,26 @@ namespace Dynastio.Bot
                 return JsonConvert.DeserializeObject<Configuration>(file);
             }
 
+            // set config-key value to environment
             if (File.Exists(FileManager.ToResourcePath(@"config-key.txt")))
             {
                 var _configKey = File.ReadAllText(FileManager.ToResourcePath(@"config-key.txt"));
                 Environment.SetEnvironmentVariable("config-key", _configKey);
 
             }
-            //if (File.Exists(FileManager.ToResourcePath(@"release-config.json")))
-            //{
-            //    var txtConfig = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(FileManager.ToResourcePath(@"release-config.json")));
 
-            //    var configKey = File.ReadAllText(FileManager.ToResourcePath(@"config-key.txt"));
-            //    var encryptedConfig = Encryption.Encrypt(JsonConvert.SerializeObject(txtConfig), configKey);
+            if (false && File.Exists(FileManager.ToResourcePath(@"release-config.json")))
+            {
+                var txtConfig = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(FileManager.ToResourcePath(@"release-config.json")));
 
-            //    File.WriteAllText(FileManager.ToResourcePath(@"../../../../Resources/configuration"), encryptedConfig);
+                var configKey = File.ReadAllText(FileManager.ToResourcePath(@"config-key.txt"));
+                var encryptedConfig = Encryption.Encrypt(JsonConvert.SerializeObject(txtConfig), configKey);
 
-            //    Environment.SetEnvironmentVariable("config-key", configKey);
-            //}
-          
+                File.WriteAllText(FileManager.ToResourcePath(@"../../../../Resources/configuration"), encryptedConfig);
+
+                Environment.SetEnvironmentVariable("config-key", configKey);
+            }
+
 
             string? key = Environment.GetEnvironmentVariable("config-key");
             if (key is null)
