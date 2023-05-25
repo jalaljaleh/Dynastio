@@ -40,7 +40,7 @@ namespace Dynastio.Bot.Interactions.commands
             {
                 if ((DateTime.UtcNow - Context.BotUser.LastBoostGift).TotalDays > 30)
                 {
-                    var result = await _db.GetRedeemCodeAsync(RedeemCode.RedeemType.BoostServer);
+                    var result = await _db.GetRedeemCodeAsync(RedeemCode.RedeemType.Boost_Server);
                     if (result is not null)
                     {
                         Context.BotUser.LastBoostGift = DateTime.UtcNow;

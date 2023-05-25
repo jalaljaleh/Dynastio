@@ -19,14 +19,14 @@ namespace Dynastio.Bot.Data
         public enum RedeemType
         {
             Default,
-            BoostServer,
-            Coin100 = 50,
-            Coin200,
-            Coin300,
-            Coin400,
-            Coin500,
-            Coin1000,
-            Coin1500,
+            Boost_Server,
+            Coin_100 = 50,
+            Coin_200,
+            Coin_300,
+            Coin_400,
+            Coin_500,
+            Coin_1000,
+            Coin_1500,
         }
     }
 

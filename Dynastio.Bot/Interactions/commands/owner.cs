@@ -83,8 +83,6 @@ namespace Dynastio.Bot.Interactions.commands
                                         Description = $"You got **{type}** redeem code for ` {reason} `",
                                         Color = Color.Green,
                                         ThumbnailUrl =
-                                        targrtUser?.GetAvatarUrl() ??
-                                        targrtUser?.GetDefaultAvatarUrl() ??
                                         "https://cdn.discordapp.com/attachments/1111209352095871028/1111209352217509938/openiron.png",
                                     }.Build());
                 }
