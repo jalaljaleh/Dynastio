@@ -1,4 +1,6 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
+using DnsClient.Protocol;
 using Dynastio.Bot.Data;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +41,47 @@ namespace Dynastio.Bot
             await Task.Delay(200);
 
             await UpdateOnlinePlayers();
+
+            await Task.Delay(200);
+
+            //await UpdateStatusChannelAsync();
+        }
+
+        private const ulong _statusChannelId = 1111211859283021884;
+        public async Task UpdateStatusChannelAsync()
+        {
+            var guild = _discord.GetGuild(GuildService._officialGuildId);
+
+            var channel = guild.GetTextChannel(_statusChannelId);
+
+            var lastMessage = await channel.GetMessagesAsync(1).FlattenAsync();
+            if (lastMessage is not null && lastMessage.Any()) await lastMessage.FirstOrDefault().DeleteAsync();
+
+            var servers = _dynastioClient.OnlineServers
+                .OrderByDescending(a => a.IsPrivate)
+                .ThenBy(a => a.TopPlayerScore)
+                .ToList();
+
+            var content = servers
+                .ToStringTable(new[] { "#", "server", "count", "limit", "private", "region", "top score" },
+                        a => servers.IndexOf(a),
+                        a => a.Label.TrySubstring(16),
+                        a => a.PlayersCount.Metric(),
+                        a => a.ConnectionsLimit.Metric(),
+                        a => a.IsPrivate,
+                        a => a.Region,
+                        a => a.TopPlayerScore.Metric())
+                        .ToMarkdown();
+
+            var msg = await channel.SendMessageAsync(
+                text: "",
+                embed: new EmbedBuilder()
+                {
+                    Description = content
+                }
+                .Build());
+
+            await msg.CrosspostAsync();
         }
 
         private const ulong _onlinePlayersChannelId = 1109014316922978354;

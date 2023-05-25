@@ -94,6 +94,8 @@ namespace Dynastio.Bot
 
             _services.GetRequiredService<Handlers.EventHandler>();
             _services.GetRequiredService<MessageHandler>();
+            _services.GetRequiredService<FreshChannelHandler>();
+
             _services.GetRequiredService<WebhookService>();
 
             await _services.GetRequiredService<InteractionsHandler>().InitializeAsync();

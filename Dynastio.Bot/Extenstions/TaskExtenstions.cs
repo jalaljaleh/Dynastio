@@ -29,7 +29,7 @@ namespace Dynastio.Bot
             }
             catch
             {
-                return (true, default(T));
+                return (false, default(T));
             }
         }
     }
