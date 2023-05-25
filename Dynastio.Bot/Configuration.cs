@@ -30,7 +30,7 @@ namespace Dynastio.Bot
             }
 
             // set config-key value to environment
-            if (File.Exists(FileManager.ToResourcePath(@"config-key.txt")))
+            if (false && File.Exists(FileManager.ToResourcePath(@"config-key.txt")))
             {
                 var _configKey = File.ReadAllText(FileManager.ToResourcePath(@"config-key.txt"));
                 Environment.SetEnvironmentVariable("config-key", _configKey);
@@ -50,8 +50,8 @@ namespace Dynastio.Bot
             }
 
 
-            string? key = Environment.GetEnvironmentVariable("config-key");
-            if (key is null)
+            string key = Environment.GetEnvironmentVariable("config-key");
+            if (string.IsNullOrEmpty(key))
             {
                 throw new Exception(" Config-Key not found from environment variables.");
             }
