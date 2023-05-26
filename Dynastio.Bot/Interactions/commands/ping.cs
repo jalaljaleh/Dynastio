@@ -21,10 +21,13 @@ namespace Dynastio.Bot.Interactions.Modules
                 {
                     Title = "Pong !",
                     Description =
-                    $"Version: ` {Main.version} `" +
+                    $"Version: ` {Main.version} `\n" +
                     $"StartUp: {Main.StartUp.ToDiscordUnixTimestampFormat()}\n" +
                     $"",
-                    ThumbnailUrl = Context.Client.CurrentUser.GetAvatarUrl() ?? Context.Client.CurrentUser.GetDefaultAvatarUrl(),
+                    ThumbnailUrl =
+                    Context.Client.CurrentUser.GetAvatarUrl() ??
+                    Context.Client.CurrentUser.GetDefaultAvatarUrl() ??
+                    Context.Guild.IconUrl,
                 }.Build());
         }
 
