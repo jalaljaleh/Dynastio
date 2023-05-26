@@ -2,8 +2,12 @@
 {
     public class Main
     {
+        public const string version = "0.1.1.2-beta";
+
         public static DateTime StartUp { get; private set; } = DateTime.UtcNow;
+
         public static Random Random = new Random();
+
         public static bool IsDebug()
         {
 #if DEBUG

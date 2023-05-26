@@ -10,6 +10,8 @@ using Discord.WebSocket;
 using Dynastio.Bot.Data;
 using Dynastio.Bot.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Numerics;
+using System.Reflection;
 
 namespace Dynastio.Bot.Interactions.commands
 {
@@ -26,6 +28,7 @@ namespace Dynastio.Bot.Interactions.commands
         public RankService _rankService { get; set; }
         public DiscordSocketClient _discord { get; set; }
         public IDynastioBotDatabase _database { get; set; }
+
 
         [Group("xp", "xp")]
         public class XPModule : OwnerModule
@@ -121,13 +124,14 @@ namespace Dynastio.Bot.Interactions.commands
 
                 var codes = await _database.GetRedeemCodesAsync();
 
-                var clist = codes.GroupBy(a => a.Type).ToList();
+                var clist = codes
+                    .GroupBy(a => a.Type)
+                    .ToList();
 
-                string table = "#  Type          Count";
-                foreach (var c in clist)
-                {
-                    table += "\n  " + c.First().Type.ToString() + c.Count().ToString().PadLeft(10);
-                }
+                string table = clist.ToStringTable(new string[] { "Type", "Remain" },
+                    a =>
+                    a.FirstOrDefault().Type,
+                    a => a.Count());
 
                 await FollowupAsync(embed: table.ToMarkdown().ToEmbed());
             }

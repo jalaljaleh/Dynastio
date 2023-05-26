@@ -40,13 +40,13 @@ namespace Dynastio.Bot.Interactions._Modules
 
         [RateLimit(10000000)]
         [ComponentInteraction("btn.ticket.start:*")]
-        public async Task btn_ticket_start(ulong channel)
+        public async Task btn_ticket_start(ulong _channel)
         {
             await DeferAsync();
 
-            var thread = await Context.Guild
-                .GetTextChannel(channel)
-                .CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.ThreeDays, null, false, 0);
+            var channel =  Context.Guild.GetTextChannel(_channel);
+
+            var thread =  await channel.CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.ThreeDays, null, false, 0);
 
             await thread.SendMessageAsync(
                 $"**Important**\n" +
@@ -55,10 +55,9 @@ namespace Dynastio.Bot.Interactions._Modules
                 $"**Notes:**\n" +
                 $"- Do not mention anyone.\n" +
                 $"> Не упоминайте никого.\n\n" +
-                $"<@&480954902005415937>\n\n");
+                $"> **<@{Context.User.Id}> Send Your Message:**");
 
-            await thread.SendMessageAsync(
-              $"> **<@{Context.User.Id}> Send Your Message:**");
+            await channel.SendMessageAsync($"{Context.User.Mention} Created new Ticket {thread.Mention} !");
         }
 
 
