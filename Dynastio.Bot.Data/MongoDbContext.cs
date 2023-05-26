@@ -109,7 +109,8 @@ namespace Dynastio.Bot.Data
             var filter = Builders<User>.Filter.Empty;
 
             var sort = Builders<User>.Sort
-                .Descending(a => a.activiy_level);
+                .Descending(a => a.activiy_level)
+                .Descending(a => a.activiy_score);
 
             var result = await _users.FindAsync(filter, new FindOptions<User, User>()
             {

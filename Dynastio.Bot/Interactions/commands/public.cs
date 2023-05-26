@@ -53,14 +53,14 @@ namespace Dynastio.Bot.Interactions.Modules.@public
 
         }
         [RateLimit(60)]
-        [SlashCommand("rank-leaderboard", "user rank")]
+        [SlashCommand("leaderboard-rank", "user rank")]
         public async Task rleaderboard()
         {
             await DeferAsync();
             var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(20);
 
             string names = string.Join("\n", leaderboard.Select(x => (leaderboard.IndexOf(x) + 1) + $". <@{x.Id}>"));
-            string levels = string.Join("\n", leaderboard.Select(x => x.activiy_level));
+            string levels = string.Join("\n",leaderboard.Select(x => x.activiy_level) );
             string xps = string.Join("\n", leaderboard.Select(x => x.activiy_score.Metric()));
 
 
@@ -73,8 +73,8 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                 }
                 .WithDescription("")
                 .AddField("User", names, true)
-                .AddField("Level", levels, true)
-                .AddField("XP", xps, true)
+                .AddField("Level  ", levels, true)
+                .AddField(" XP", xps, true)
                 .Build());
         }
 
