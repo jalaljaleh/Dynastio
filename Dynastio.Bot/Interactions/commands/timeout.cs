@@ -49,18 +49,18 @@ namespace Dynastio.Bot.Interactions.Modules
                             Name = "Revoke",
                             Value =  (DateTime.UtcNow + timeSpan).ToDiscordUnixTimestampFormat(),
                             IsInline = true
-                        }, new EmbedFieldBuilder()
-                        {
-                            Name = "Reason",
-                            Value = reason,
-                            IsInline = true
                         },
                           new EmbedFieldBuilder()
                         {
                             Name = "Moderator",
                             Value = userMention,
                             IsInline = true
-                        }
+                        }, new EmbedFieldBuilder()
+                        {
+                            Name = "Reason",
+                            Value = reason,
+                            IsInline = false
+                        },
                     }
                 }.Build());
         }
