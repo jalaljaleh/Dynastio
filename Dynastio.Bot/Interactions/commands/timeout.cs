@@ -33,7 +33,7 @@ namespace Dynastio.Bot.Interactions.Modules
                 text: user.Mention,
                 embed: new EmbedBuilder()
                 {
-                    Description = $"You have been muted by {Context.User.Id.ToUserMention()}.",
+                    Description = $"You have been muted by {Context.User.Id.ToUserMention()} for ` {reason} `.",
                     ThumbnailUrl = user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl(),
                     Color = Color.DarkRed,
                     Fields = new List<EmbedFieldBuilder>()
