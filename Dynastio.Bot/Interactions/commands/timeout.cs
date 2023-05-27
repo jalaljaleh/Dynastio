@@ -33,7 +33,7 @@ namespace Dynastio.Bot.Interactions.Modules
                 text: user.Mention,
                 embed: new EmbedBuilder()
                 {
-                    Description = $"You have been muted by {Context.User.Id.ToUserMention()}..",
+                    Description = $"You have been muted by {Context.User.Id.ToUserMention()} for ` {reason} `.",
                     ThumbnailUrl = user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl(),
                     Color = Color.DarkRed,
                     Fields = new List<EmbedFieldBuilder>()
@@ -55,14 +55,13 @@ namespace Dynastio.Bot.Interactions.Modules
                             Name = "Moderator",
                             Value = userMention,
                             IsInline = true
-                        }, new EmbedFieldBuilder()
-                        {
-                            Name = "Reason",
-                            Value = reason,
-                            IsInline = false
-                        },
+                        } 
                     }
-                }.Build());
+                }.Build()
+                //components: new ComponentBuilder()
+                //            .WithButton("Revoke Now", $"btn.mute.revoke:{user.Id}", ButtonStyle.Danger, new Emoji("🔘"))
+                //            .Build()
+                );
         }
 
     }
