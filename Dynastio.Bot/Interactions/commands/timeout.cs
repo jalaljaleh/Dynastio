@@ -12,15 +12,13 @@ namespace Dynastio.Bot.Interactions.Modules
 {
     [EnabledInDm(false)]
     [RequireContext(ContextType.Guild)]
-    [RequireBotPermission(ChannelPermission.SendMessages)]
     [RequireBotPermission(GuildPermission.ModerateMembers)]
-    [RequireUserPermission(GuildPermission.Administrator)]
-    [DefaultMemberPermissions(GuildPermission.Administrator)]
-    [RateLimit(5, 1, RateLimit.RateLimitType.User)]
+    [RequireUserPermission(GuildPermission.ModerateMembers)]
+    [DefaultMemberPermissions(GuildPermission.ModerateMembers)]
     public class timeoutModule : CustomInteractionModuleBase
     {
         [SlashCommand("mute", "mute a user")]
-        public async Task mute(IGuildUser user, TimeType time, int value)
+        public async Task mute(IGuildUser user, TimeType time, int value,string reason = "no reason provided")
         {
             await DeferAsync();
             var time_ = value * (int)time;
@@ -31,7 +29,7 @@ namespace Dynastio.Bot.Interactions.Modules
             }
             var timeSpan = TimeSpan.FromSeconds(time_);
             await user.SetTimeOutAsync(timeSpan);
-            await FollowupAsync(embed: $"User <@{user.Id}> muted until {(DateTime.UtcNow + timeSpan).ToDiscordUnixTimestampFormat()} by {Context.User.Id.ToUserMention()}.".ToSuccessfulEmbed(user.Username + " Muted"));
+            await FollowupAsync(embed: $"User <@{user.Id}> muted until {(DateTime.UtcNow + timeSpan).ToDiscordUnixTimestampFormat()} by {Context.User.Id.ToUserMention()} for ` {reason} `.".ToEmbed(user.Username + " Muted"));
         }
 
     }
