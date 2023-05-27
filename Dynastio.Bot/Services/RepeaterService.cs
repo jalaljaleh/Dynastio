@@ -23,7 +23,6 @@ namespace Dynastio.Bot
         {
             Timer timer = new Timer(async _ => 
             {
-
                 await function.TryAsync();
 
             }, null, TimeSpan.Zero, interval);

@@ -42,25 +42,20 @@ namespace Dynastio.Bot.Handlers
             _client.Ready += _client_Ready;
             _client.UserJoined += _client_UserJoined;
 
-
         }
 
-        public static ulong _memberChannelId = 1109020050163240990;
         private async Task _client_UserJoined(SocketGuildUser user)
         {
-            try
-            {
-                await user.SendMessageAsync(
-                    text: "https://www.youtube.com/watch?v=x1tRXvcFJvs" + "\n" + "https://dynast.io/",
-                    components: new ComponentBuilder()
-                            .WithButton("Play Dynast.io", null, ButtonStyle.Link, null, "https://dynast.io/")
-                            .WithButton("Youtube Channel", null, ButtonStyle.Link, null, "https://www.youtube.com/channel/UCW0PmC1B8jjhpKLHciFp0xA/?sub_confirmation=1")
-                .Build());
-            }
-            catch { }
+            await user.SendMessageAsync(
+                text: "https://www.youtube.com/watch?v=x1tRXvcFJvs" + "\n" + "https://dynast.io/",
+                components: new ComponentBuilder()
+                .WithButton("Play Dynast.io", null, ButtonStyle.Link, null, "https://dynast.io/")
+                .WithButton("Youtube Channel", null, ButtonStyle.Link, null, "https://www.youtube.com/channel/UCW0PmC1B8jjhpKLHciFp0xA/?sub_confirmation=1")
+                .Build())
+                .TryAsync();
 
             await DiscordStream.SendFileAsync(
-                channel: user.Guild.GetTextChannel(_memberChannelId),
+                channel: user.Guild.GetTextChannel(_guildService.GetChannelId(GuildService.GuildChannelType.MemberChannel)),
                 img: await _graphicService.GetWelcomeImage(user),
                 user.Id + ".jpg",
                 user.Id.ToUserMention(),
@@ -73,17 +68,23 @@ namespace Dynastio.Bot.Handlers
 
         private async Task _client_Ready()
         {
-            // dev channel
-            await _client.Guilds.First().GetTextChannel(1109911020341837825).SendMessageAsync("Ready !");
+            await _client.Guilds.First()
+                .GetTextChannel(1109911020341837825)
+                .SendMessageAsync("Ready !")
+                .TryAsync();
 
-            _repeaterService.AddFunction(updateStatus(), TimeSpan.FromMinutes(10));
+            _repeaterService
+                .AddFunction(updateStatus(), TimeSpan.FromMinutes(10));
         }
         async Task updateStatus()
         {
-            int serversCount = _dynastioClient.OnlineServers.Where(a => a.IsPrivate == false).Count();
+            int serversCount = _dynastioClient.OnlineServers
+                .Where(a => a.IsPrivate == false)
+                .Count();
+
             int playerscount = _dynastioClient.OnlinePlayers.Count;
 
-            await _client.SetGameAsync($"Online players {playerscount}, Online servers {serversCount} !", "", ActivityType.Playing);
+            await _client.SetGameAsync($"{playerscount} players, {serversCount} Servers!", "", ActivityType.Watching);
         }
 
 

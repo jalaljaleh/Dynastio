@@ -19,7 +19,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dynastio.Bot
 {
-    internal class WebhookService
+    public class WebhookService
     {
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
@@ -38,6 +38,7 @@ namespace Dynastio.Bot
         {
             await AddClient(WebhookChannels.DeleteMessage, GuildChannelType.LoggerChannel, ChannelThreadType.DeletedMessages);
             await AddClient(WebhookChannels.EditedMessage, GuildChannelType.LoggerChannel, ChannelThreadType.EditedMessages);
+            await AddClient(WebhookChannels.Timeout, GuildChannelType.LoggerChannel, ChannelThreadType.TimeOut);
         }
 
         private async Task AddClient(WebhookChannels webhooktype, GuildChannelType channelType, ChannelThreadType thread)
@@ -48,6 +49,17 @@ namespace Dynastio.Bot
             _clients.Add(webhooktype, (new DiscordWebhookClient(webhook), _guildService.GetChanneThreadlId(thread)));
         }
         Dictionary<WebhookChannels, (DiscordWebhookClient client, ulong threadId)> _clients = new();
+        public async Task<ulong> LogTimeOutAsync(Embed embed, IUser moderator)
+        {
+            if (!_clients.TryGetValue(WebhookChannels.Timeout, out (DiscordWebhookClient client, ulong threadId) value)) return 0;
+
+            return await value.client.SendMessageAsync(
+                 text: "",
+                 embeds: new Embed[] { embed },
+                 username: moderator.Username,
+                 avatarUrl: moderator.GetAvatarUrl() ?? moderator.GetDefaultAvatarUrl(),
+                 threadId: value.threadId);
+        }
         public async Task<ulong> LogDeleteMessageAsync(IMessage message, IGuildChannel channel)
         {
             if (!_clients.TryGetValue(WebhookChannels.DeleteMessage, out (DiscordWebhookClient client, ulong threadId) value)) return 0;
@@ -102,7 +114,8 @@ namespace Dynastio.Bot
         public enum WebhookChannels
         {
             DeleteMessage,
-            EditedMessage
+            EditedMessage,
+            Timeout
         }
     }
 }

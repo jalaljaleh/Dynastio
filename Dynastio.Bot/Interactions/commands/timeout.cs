@@ -17,26 +17,31 @@ namespace Dynastio.Bot.Interactions.Modules
     [DefaultMemberPermissions(GuildPermission.ModerateMembers)]
     public class timeoutModule : CustomInteractionModuleBase
     {
+        public WebhookService _webhookService { get; set; }
+
         [SlashCommand("mute", "mute a user")]
         public async Task mute(IGuildUser user, TimeType time, int value, string reason = "no reason provided")
         {
             await DeferAsync();
+
             var time_ = value * (int)time;
             if (time_ > 2419200) // api limit
             {
-                await FollowupAsync(embed: "Can not set more than 6 hours".ToEmbed("Api limit", Color.Orange));
+                await FollowupAsync(embed: "Can not set more than 29 days.".ToEmbed("Api limit", Color.Orange));
                 return;
             }
+
+
             var timeSpan = TimeSpan.FromSeconds(time_);
+
             await user.SetTimeOutAsync(timeSpan);
-            await FollowupAsync(
-                text: user.Mention,
-                embed: new EmbedBuilder()
-                {
-                    Description = $"You have been muted by {Context.User.Id.ToUserMention()}, reason ` {reason} `.",
-                    ThumbnailUrl = user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl(),
-                    Color = Color.DarkRed,
-                    Fields = new List<EmbedFieldBuilder>()
+
+            var embed = new EmbedBuilder()
+            {
+                Description = $"You have been muted by {Context.User.Id.ToUserMention()}, reason ` {reason} `.",
+                ThumbnailUrl = user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl(),
+                Color = Color.DarkRed,
+                Fields = new List<EmbedFieldBuilder>()
                     {
                         new EmbedFieldBuilder()
                         {
@@ -55,9 +60,18 @@ namespace Dynastio.Bot.Interactions.Modules
                             Name = "Moderator",
                             Value = userMention,
                             IsInline = true
-                        } 
+                        }
                     }
-                }.Build()
+            }
+            .Build();
+
+            await _webhookService
+                .LogTimeOutAsync(embed, Context.User)
+                .TryAsync();
+
+            await FollowupAsync(
+                text: user.Mention,
+                embed: embed
                 //components: new ComponentBuilder()
                 //            .WithButton("Revoke Now", $"btn.mute.revoke:{user.Id}", ButtonStyle.Danger, new Emoji("🔘"))
                 //            .Build()

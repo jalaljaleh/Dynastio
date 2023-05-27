@@ -64,13 +64,30 @@ namespace Dynastio.Bot
             { GuildChannelType.TopActive, 480966712318099487},
             { GuildChannelType.LoggerChannel, 1107754629200089180},
             { GuildChannelType.General, 480966712318099487},
+            { GuildChannelType.MemberChannel, 1109020050163240990},
         };
         readonly static Dictionary<ChannelThreadType, ulong> _threads = new()
         {
             { ChannelThreadType.None, 0},
             { ChannelThreadType.DeletedMessages, 1107764609848463460 },
             { ChannelThreadType.EditedMessages, 1107930813569454160 },
+            { ChannelThreadType.TimeOut, 1112059604071874640 },
         };
+        public enum GuildChannelType
+        {
+            None,
+            TopActive,
+            LoggerChannel,
+            General,
+            MemberChannel
+        }
+        public enum ChannelThreadType
+        {
+            None,
+            DeletedMessages,
+            EditedMessages,
+            TimeOut
+        }
         public ulong GetChanneThreadlId(ChannelThreadType t)
         {
             return _threads[t];
@@ -170,17 +187,5 @@ namespace Dynastio.Bot
             return true;
         }
     }
-    public enum GuildChannelType
-    {
-        None,
-        TopActive,
-        LoggerChannel,
-        General
-    }
-    public enum ChannelThreadType
-    {
-        None,
-        DeletedMessages,
-        EditedMessages
-    }
+  
 }
