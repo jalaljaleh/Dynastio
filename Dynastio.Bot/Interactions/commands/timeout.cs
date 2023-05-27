@@ -33,7 +33,7 @@ namespace Dynastio.Bot.Interactions.Modules
                 text: user.Mention,
                 embed: new EmbedBuilder()
                 {
-                    Description = $"You have been muted by {Context.User.Id.ToUserMention()} for ` {reason} `.",
+                    Description = $"You have been muted by {Context.User.Id.ToUserMention()}..",
                     ThumbnailUrl = user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl(),
                     Color = Color.DarkRed,
                     Fields = new List<EmbedFieldBuilder>()
@@ -48,6 +48,11 @@ namespace Dynastio.Bot.Interactions.Modules
                         {
                             Name = "Revoke",
                             Value =  (DateTime.UtcNow + timeSpan).ToDiscordUnixTimestampFormat(),
+                            IsInline = true
+                        }, new EmbedFieldBuilder()
+                        {
+                            Name = "Reason",
+                            Value = reason,
                             IsInline = true
                         },
                           new EmbedFieldBuilder()
