@@ -31,7 +31,7 @@ namespace Dynastio.Bot
 
         private async Task _discord_Ready()
         {
-            _repeaterService.AddFunction(UpdateChannels(), TimeSpan.FromMinutes(5));
+           // _repeaterService.AddFunction(UpdateChannels(), TimeSpan.FromMinutes(5));
         }
 
         public async Task UpdateChannels()

@@ -8,24 +8,26 @@ namespace Dynastio.Net
     public enum BadgeType
     {
         Developer,
-        Supporter, 
+        Supporter,
         Administrator = 3,
-        Monthly, 
-        Friend, 
-        Translator, 
-        YoutuberBronze = 2, 
-        YoutuberSilver = 7, 
-        YoutuberGold, 
-        YoutuberPlatinum, 
-        CupBronze, 
-        CupSilver, 
-        CupGold, 
-        CupPlatinum, 
-        Void, 
-        SuperDeveloper, 
-        Premium, 
-        MapMaker, 
-        TopDonate, 
+        Monthly,
+        Friend,
+        Translator,
+        YoutuberBronze = 2,
+        YoutuberSilver = 7,
+        YoutuberGold,
+        YoutuberPlatinum,
+        CupBronze,
+        CupSilver,
+        CupGold,
+        CupPlatinum,
+        Void,
+        SuperDeveloper,
+        Premium,
+        MapMaker,
+        TopDonate,
         Robot
     }
+
+
 }

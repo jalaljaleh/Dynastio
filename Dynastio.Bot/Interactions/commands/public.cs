@@ -59,7 +59,8 @@ namespace Dynastio.Bot.Interactions.Modules.@public
             await DeferAsync();
             var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(20);
 
-            string names = string.Join("\n", leaderboard.Select(x => (leaderboard.IndexOf(x) + 1) + $". <@{x.Id}>"));
+            string names = string.Join("\n", leaderboard.Select(x => (leaderboard.IndexOf(x) + 1) + this.Context.Guild.GetUser(x.Id)?.Username  ?? "Unknown"));
+            string users = string.Join("\n", leaderboard.Select(x => $". <@{x.Id}>"));
             string levels = string.Join("\n",leaderboard.Select(x => x.activiy_level) );
             string xps = string.Join("\n", leaderboard.Select(x => x.activiy_score.Metric()));
 
@@ -72,9 +73,10 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                     Color = Color.DarkGreen
                 }
                 .WithDescription("")
-                .AddField("User", names, true)
+                .AddField("Name", names, true)
                 .AddField("Level  ", levels, true)
                 .AddField(" XP", xps, true)
+                .AddField("User", users, true)
                 .Build());
         }
 

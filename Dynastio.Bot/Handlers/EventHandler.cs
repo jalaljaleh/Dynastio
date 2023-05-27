@@ -76,11 +76,14 @@ namespace Dynastio.Bot.Handlers
             // dev channel
             await _client.Guilds.First().GetTextChannel(1109911020341837825).SendMessageAsync("Ready !");
 
-            _repeaterService.AddFunction(updateStatus(), TimeSpan.FromMinutes(50));
+            _repeaterService.AddFunction(updateStatus(), TimeSpan.FromMinutes(10));
         }
         async Task updateStatus()
         {
-            await _client.SetGameAsync($"Watching {_client.Guilds.Sum(a => a.MemberCount)} members !", "", ActivityType.Playing);
+            int serversCount = _dynastioClient.OnlineServers.Where(a => a.IsPrivate == false).Count();
+            int playerscount = _dynastioClient.OnlinePlayers.Count;
+
+            await _client.SetGameAsync($"Online players {playerscount}, Online servers {serversCount} !", "", ActivityType.Playing);
         }
 
 
