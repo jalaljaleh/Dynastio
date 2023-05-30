@@ -39,15 +39,30 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                  embed: new EmbedBuilder()
                  {
                      Title = $"Level {BotUser.activiy_level}",
-                     Description = $"Your level is **{BotUser.activiy_level}** and your xp: **{BotUser.activiy_score}**\n" +
-                     $"You need **{RankService.getMax(BotUser.activiy_level) - BotUser.activiy_score}** more xp to get <@&{nextRole.Id}> role.",
+                     Description = $"Your are level **{BotUser.activiy_level}**.\n" +
+                     $"You need **{RankService.getMax(BotUser.activiy_level) - BotUser.activiy_score}** more xp to get new role.",
                      Color = latestRole?.Color ?? Color.Orange,
                      Fields = new List<EmbedFieldBuilder>()
                     {
-                        new EmbedFieldBuilder()
+                           new EmbedFieldBuilder()
+                        .WithName("Level")
+                        .WithValue( $"**{BotUser.activiy_level}**")
+                        .WithIsInline(true),
+                         
+                         new EmbedFieldBuilder()
+                        .WithName("XP")
+                        .WithValue( $"**{BotUser.activiy_score.Metric()}**")
+                        .WithIsInline(true),
+
+                         new EmbedFieldBuilder()
+                        .WithName("Next Role")
+                        .WithValue( $"<@&{nextRole.Id}>")
+                        .WithIsInline(true),
+
+                         new EmbedFieldBuilder()
                         .WithName("Unlocked Roles")
                         .WithValue(string.Join(", ", rankedRoles.ToList().GetRange(0, BotUser.activiy_level).Select(a=> $"<@&{a}>")) + "\n.")
-                        .WithIsInline(true)
+                        .WithIsInline(false)
                     },
                      ThumbnailUrl = latestRole.GetIconUrl() ?? ""
                  }.Build());
