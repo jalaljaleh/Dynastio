@@ -40,7 +40,7 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                  {
                      Title = $"Level {BotUser.activiy_level}",
                      Description = $"Your level is **{BotUser.activiy_level}** and your xp: **{BotUser.activiy_score}**\n" +
-                     $"You need **{RankService.getMax(BotUser.activiy_level) - BotUser.activiy_score}** more xp to get <@&{nextRole}> role.",
+                     $"You need **{RankService.getMax(BotUser.activiy_level) - BotUser.activiy_score}** more xp to get <@&{nextRole.Id}> role.",
                      Color = latestRole?.Color ?? Color.Orange,
                      Fields = new List<EmbedFieldBuilder>()
                     {
