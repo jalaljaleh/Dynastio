@@ -58,26 +58,23 @@ namespace Dynastio.Bot.Interactions.Modules.@public
         public async Task rleaderboard()
         {
             await DeferAsync();
-            var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(20);
+            var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(15);
 
-            string names = string.Join("\n", leaderboard.Select(x => (leaderboard.IndexOf(x) + 1) + this.Context.Guild.GetUser(x.Id)?.Username  ?? "Unknown"));
-            string users = string.Join("\n", leaderboard.Select(x => $". <@{x.Id}>"));
-            string levels = string.Join("\n",leaderboard.Select(x => x.activiy_level) );
-            string xps = string.Join("\n", leaderboard.Select(x => x.activiy_score.Metric()));
+            string users = string.Join("\n", leaderboard.Select(x => (leaderboard.IndexOf(x) + 1) + $". <@{x.Id}>"));
+            string levels = string.Join("\n",leaderboard.Select(x => $"**{x.activiy_level}**") );
+            string xps = string.Join("\n", leaderboard.Select(x => $"**{x.activiy_score.Metric()}**"));
 
 
             var message = await FollowupAsync(userMention, embed:
                 new EmbedBuilder()
                 {
                     Title = "Top Active Users",
-                    ThumbnailUrl = "https://cdn.discordapp.com/attachments/1098332386674085988/1107719615678791781/circle_of_sacrifices_glow.png",
                     Color = Color.DarkGreen
                 }
                 .WithDescription("")
-                .AddField("Name", names, true)
+                .AddField("User", users, true)
                 .AddField("Level  ", levels, true)
                 .AddField(" XP", xps, true)
-                .AddField("User", users, true)
                 .Build());
         }
 
