@@ -70,6 +70,7 @@ namespace Dynastio.Bot
                     "https://cdn.discordapp.com/attachments/1098332386674085988/1098521187191095387/dynastio.png"
                 }.Build());
         }
+        private const ulong _rolesHeader = 1113082402781282334;
         public async Task SyncMemberRolesAsync(IGuildUser duser, User buser, ITextChannel channel)
         {
             var rankedRoles = duser.Guild.Roles
@@ -82,6 +83,9 @@ namespace Dynastio.Bot
 
             var rolesToAdd = rankedRoles.GetRange(0, buser.activiy_level);
             rolesToAdd.RemoveRange(0, userRankedroles.Count());
+
+            if(!duser.RoleIds.Contains(_rolesHeader))
+                rolesToAdd.Add(_rolesHeader);
 
             await duser.AddRolesAsync(rolesToAdd);
 
@@ -105,6 +109,7 @@ namespace Dynastio.Bot
                     ThumbnailUrl = latestRole.GetIconUrl() ?? ""
                 }.Build());
         }
+
         public async Task AddMessageXpAsync(IUserMessage message)
         {
             if (message.Channel is null ||
@@ -151,26 +156,26 @@ namespace Dynastio.Bot
                     _user.activiy_score += user.Score;
                     user.Score = 0;
 
-                    var max = getMax(_user.activiy_level);
-                    if (_user.activiy_score > max)
-                    {
-                        _user.activiy_score = _user.activiy_score - max;
-                        _user.activiy_level++;
-
-                        await _userService.UpdateAsync(_user);
-
-                        var result = await SyncMemberRolesAsync(message.Author as IGuildUser, _user, message.Channel as ITextChannel)
-                            .TryAsync();
-
-                        //if (result is false)
-                        //    await message.Author.SendMessageAsync("can't sync your roles.").TryAsync();
-
-                    }
-
+                    await LevelUpUserAsync(_user, message);
                 }
             }
         }
+        public async Task<bool> LevelUpUserAsync(User _user, IUserMessage message)
+        {
+            var max = getMax(_user.activiy_level);
+            if (_user.activiy_score > max)
+            {
+                _user.activiy_score = _user.activiy_score - max;
+                _user.activiy_level++;
 
+                await _userService.UpdateAsync(_user);
+
+                var result = await SyncMemberRolesAsync(message.Author as IGuildUser, _user, message.Channel as ITextChannel)
+                    .TryAsync();
+                return result;
+            }
+            return false;
+        }
         private ulong[] _score_channels = {
             480966712318099487, //
             486591124836974592, //

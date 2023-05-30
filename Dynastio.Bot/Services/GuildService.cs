@@ -104,6 +104,7 @@ namespace Dynastio.Bot
             var channel = guild.GetTextChannel(_channels[_channel]) ?? await _discord.GetChannelAsync(_channels[_channel]) as ITextChannel;
             return await channel.SendMessageAsync(text, isTTS, embed, options, allowedMentions, messageReference, components, stickers, embeds, flags);
         }
+        private const ulong _rolesHeader = 1113080837303455794;
         public async Task<(ulong[] addedRoles, ulong[] removedRoles)> SyncUserBadges(User buser)
         {
             var officialGuild = await GetOfficialGuildAsync();
@@ -142,6 +143,10 @@ namespace Dynastio.Bot
                     rolesToRemove.Add(role.Value);
                 }
             }
+
+            if (badges.Count() > 0 && !user.Roles.Select(a=>a.Id).Contains(_rolesHeader))
+                rolesToAdd.Add(_rolesHeader);
+
             if (rolesToAdd.Count > 0)
                 await user.AddRolesAsync(rolesToAdd);
 
