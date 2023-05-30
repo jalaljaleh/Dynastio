@@ -32,14 +32,15 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                            .ToList();
 
             var rankedRoles = _rankedRoles.Select(a => a.Id);
-            var latestRole = _rankedRoles[BotUser.activiy_level + 1];
+            var latestRole = _rankedRoles[BotUser.activiy_level];
+            var nextRole = _rankedRoles[BotUser.activiy_level + 1];
 
             var message = await FollowupAsync(userMention,
                  embed: new EmbedBuilder()
                  {
                      Title = $"Level {BotUser.activiy_level}",
                      Description = $"Your level is **{BotUser.activiy_level}** and your xp: **{BotUser.activiy_score}**\n" +
-                     $"You need **{RankService.getMax(BotUser.activiy_level) - BotUser.activiy_score}** more xp to get new role.",
+                     $"You need **{RankService.getMax(BotUser.activiy_level) - BotUser.activiy_score}** more xp to get <@&{nextRole}> role.",
                      Color = latestRole?.Color ?? Color.Orange,
                      Fields = new List<EmbedFieldBuilder>()
                     {

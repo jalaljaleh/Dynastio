@@ -37,8 +37,6 @@ namespace Dynastio.Bot
                 await SyncMemberRolesAsync(user, buser, null);
         }
 
-        ConcurrentBag<RankRecord> _temporaryHolder = new();
-
         private const int _nextScoreTime = 20;
         private const int _updateUserTime = 90;
         private int[] _randomScore = { 15, 60 };
@@ -84,10 +82,12 @@ namespace Dynastio.Bot
             var rolesToAdd = rankedRoles.GetRange(0, buser.activiy_level);
             rolesToAdd.RemoveRange(0, userRankedroles.Count());
 
-            if(!duser.RoleIds.Contains(_rolesHeader))
+            if (!duser.RoleIds.Contains(_rolesHeader))
                 rolesToAdd.Add(_rolesHeader);
 
             await duser.AddRolesAsync(rolesToAdd);
+
+            rolesToAdd.Remove(_rolesHeader);
 
             var latestRole = duser.Guild.Roles.First(a => a.Id == rolesToAdd.Last());
 
@@ -96,8 +96,8 @@ namespace Dynastio.Bot
             await channel.SendMessageAsync(buser.Id.ToUserMention(),
                 embed: new EmbedBuilder()
                 {
-                    Title = "🎉 You just got new level 🎉",
-                    Description = $"You just got new level **{buser.activiy_level}** exp: **{buser.activiy_score}**",
+                    Title = " You just got new level 🎉",
+                    Description = $"🎉 You just got new level **{buser.activiy_level}** exp: **{buser.activiy_score}**",
                     Color = latestRole?.Color ?? Color.Orange,
                     Fields = new List<EmbedFieldBuilder>()
                     {
@@ -112,52 +112,19 @@ namespace Dynastio.Bot
 
         public async Task AddMessageXpAsync(IUserMessage message)
         {
-            if (message.Channel is null ||
-                message.Channel is not IGuildChannel ||
+            if (message.Channel is null || message.Channel is not IGuildChannel ||
                !_score_channels.Contains(message.Channel.Id))
                 return;
 
-            var userId = message.Author.Id;
+            var user = await _userService.GetUserAsync(message.Author.Id);
 
-            var user = _temporaryHolder.FirstOrDefault(x => x.Id == userId);
-            if (user is null)
+            if ((DateTime.UtcNow - user.last_activiy_score_time).TotalSeconds > _nextScoreTime)
             {
-                user = new RankRecord()
-                {
-                    Id = userId,
-                    LastUpdate = DateTime.MinValue,
-                    Score = 0,
-                    LastUserUpdate = DateTime.MinValue,
-                };
-                _temporaryHolder.Add(user);
-            }
-            //increase score
-            if ((DateTime.UtcNow - user.LastUpdate).TotalSeconds > _nextScoreTime)
-            {
-                bool isServerBooster = false /*(message.Author as IGuildUser).PremiumSince.HasValue*/;
+                user.activiy_score += Global.Main.Random.Next(_randomScore[0], _randomScore[1]);
 
-                user.Score =
-                    user.Score +
-                    Global.Main.Random
-                    .Next(_randomScore[0],
+                user.last_activiy_score_time = DateTime.UtcNow;
 
-                    isServerBooster
-                    ? (int)(_randomScore[1] * 1.3)
-                    : _randomScore[1]);
-
-                user.LastUpdate = DateTime.UtcNow;
-
-                // save user score
-                if ((DateTime.UtcNow - user.LastUserUpdate).TotalSeconds > _updateUserTime)
-                {
-                    user.LastUserUpdate = DateTime.UtcNow;
-
-                    var _user = await _userService.GetUserAsync(userId);
-                    _user.activiy_score += user.Score;
-                    user.Score = 0;
-
-                    await LevelUpUserAsync(_user, message);
-                }
+                await LevelUpUserAsync(user, message);
             }
         }
         public async Task<bool> LevelUpUserAsync(User _user, IUserMessage message)
@@ -187,11 +154,5 @@ namespace Dynastio.Bot
         };
 
     }
-    public class RankRecord
-    {
-        public ulong Id { get; set; }
-        public int Score { get; set; }
-        public DateTime LastUpdate { get; set; }
-        public DateTime LastUserUpdate { get; set; }
-    }
+  
 }
