@@ -120,11 +120,24 @@ namespace Dynastio.Bot
 
             if ((DateTime.UtcNow - user.last_activiy_score_time).TotalSeconds > _nextScoreTime)
             {
-                user.activiy_score += Global.Main.Random.Next(_randomScore[0], _randomScore[1]);
+                var isServerBooster = (message.Author as IGuildUser) is not { PremiumSince: null };
+
+                user.activiy_score += Global.Main.Random
+                    .Next(_randomScore[0], 
+                    
+                    isServerBooster 
+                    ? (int)(_randomScore[1] * 1.2) 
+                    : _randomScore[1]);
 
                 user.last_activiy_score_time = DateTime.UtcNow;
 
                 await LevelUpUserAsync(user, message);
+            }
+
+            if ((DateTime.UtcNow - user.last_update).TotalSeconds > _updateUserTime)
+            {
+                await _userService.UpdateAsync(user);
+                user.last_update = DateTime.UtcNow;
             }
         }
         public async Task<bool> LevelUpUserAsync(User _user, IUserMessage message)
@@ -136,6 +149,7 @@ namespace Dynastio.Bot
                 _user.activiy_level++;
 
                 await _userService.UpdateAsync(_user);
+                _user.last_update = DateTime.UtcNow;
 
                 var result = await SyncMemberRolesAsync(message.Author as IGuildUser, _user, message.Channel as ITextChannel)
                     .TryAsync();
@@ -154,5 +168,5 @@ namespace Dynastio.Bot
         };
 
     }
-  
+
 }

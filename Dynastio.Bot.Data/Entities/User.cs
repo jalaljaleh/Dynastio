@@ -24,6 +24,11 @@ namespace Dynastio.Bot.Data
         public DateTime LastBoostGift { get; set; }
         public DateTime last_activiy_score_time { get; set; }
         public DateTime last_badges_sync { get; set; }
+        
+        [BsonIgnore]
+        public DateTime last_update { get; set; }
+
+
         public List<UserAccount> Accounts { get; set; } = new();
 
         public UserAccount GetAccount(string Id)
