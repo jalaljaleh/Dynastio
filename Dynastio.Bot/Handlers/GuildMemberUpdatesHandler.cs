@@ -15,29 +15,16 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Handlers
 {
-    internal class RoleUpdatesHandler
+    internal class GuildMemberUpdatesHandler
     {
         private readonly DiscordSocketClient _client;
         private readonly IServiceProvider _services;
-        private readonly Configuration _configuration;
-        private readonly GuildService _guildService;
-        private readonly UserService _usersService;
-        private readonly RankService _rankService;
-        private readonly GraphicService _graphicService;
-        private readonly DynastioClient _dynastioClient;
-        private readonly RepeaterService _repeaterService;
 
-        public RoleUpdatesHandler(IServiceProvider services)
+
+        public GuildMemberUpdatesHandler(IServiceProvider services)
         {
             _services = services;
             _client = _services.GetRequiredService<DiscordSocketClient>();
-            _configuration = _services.GetRequiredService<Configuration>();
-            _guildService = _services.GetService<GuildService>();
-            _rankService = _services.GetService<RankService>();
-            _usersService = _services.GetService<UserService>();
-            _graphicService = _services.GetService<GraphicService>();
-            _dynastioClient = _services.GetService<DynastioClient>();
-            _repeaterService = _services.GetRequiredService<RepeaterService>();
 
             _client.GuildMemberUpdated += _client_GuildMemberUpdated;
         }
