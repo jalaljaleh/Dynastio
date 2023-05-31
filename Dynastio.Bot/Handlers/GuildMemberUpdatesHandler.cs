@@ -36,32 +36,26 @@ namespace Dynastio.Bot.Handlers
 
             if (newUser.Roles.Count != oldUser.Roles.Count)
             {
-                //var changedRoles = newUser.Roles.Except(oldUser.Roles);
-                //var addedRoles = changedRoles.Where(a => newUser.Roles.Contains(a));
-                //var removedRoles = changedRoles.Where(a => !newUser.Roles.Contains(a));
                 await RolesChangedAsync(newUser);
             }
         }
-        private const ulong _achievmentHeader = 1113119762277482647;
-        private const ulong _moderatorHeader = 1113119662100709406;
+
         async Task RolesChangedAsync(SocketGuildUser user)
         {
-            var hasAchroles = user.Roles.Any(a => a.Name.StartsWith("ach:"));
-            var hasAchHeader = user.Roles.Any(a => a.Id == _achievmentHeader);
-
-            if (hasAchroles && !hasAchHeader)
-                await user.AddRoleAsync(_achievmentHeader);
-            if (!hasAchroles && hasAchHeader)
-                await user.RemoveRoleAsync(_achievmentHeader);
-
-
-            var hasModroles = user.Roles.Any(a => a.Name.StartsWith("mod:"));
-            var hasModHeader = user.Roles.Any(a => a.Id == _moderatorHeader);
+            await CheckCategorie("ach:", 1113119762277482647, user);
+            await CheckCategorie("mod:", 1113119662100709406, user);
+            await CheckCategorie("badge:", 1113080837303455794, user);
+            await CheckCategorie("rank:", 1113082402781282334, user);
+        }
+        async Task CheckCategorie(string startWith, ulong categoryId, SocketGuildUser user)
+        {
+            var hasModroles = user.Roles.Any(a => a.Name.StartsWith(startWith));
+            var hasModHeader = user.Roles.Any(a => a.Id == categoryId);
 
             if (hasModroles && !hasModHeader)
-                await user.AddRoleAsync(_moderatorHeader);
+                await user.AddRoleAsync(categoryId);
             if (!hasModroles && hasModHeader)
-                await user.RemoveRoleAsync(_moderatorHeader);
+                await user.RemoveRoleAsync(categoryId);
         }
     }
 }

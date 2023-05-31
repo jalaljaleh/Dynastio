@@ -68,7 +68,7 @@ namespace Dynastio.Bot
                     "https://cdn.discordapp.com/attachments/1098332386674085988/1098521187191095387/dynastio.png"
                 }.Build());
         }
-        private const ulong _rolesHeader = 1113082402781282334;
+
         public async Task SyncMemberRolesAsync(IGuildUser duser, User buser, ITextChannel channel)
         {
             var rankedRoles = duser.Guild.Roles
@@ -81,13 +81,8 @@ namespace Dynastio.Bot
 
             var rolesToAdd = rankedRoles.GetRange(0, buser.activiy_level);
             rolesToAdd.RemoveRange(0, userRankedroles.Count());
-
-            if (!duser.RoleIds.Contains(_rolesHeader))
-                rolesToAdd.Add(_rolesHeader);
-
+        
             await duser.AddRolesAsync(rolesToAdd);
-
-            rolesToAdd.Remove(_rolesHeader);
 
             var latestRole = duser.Guild.Roles.First(a => a.Id == rolesToAdd.Last());
 
@@ -135,10 +130,8 @@ namespace Dynastio.Bot
             }
 
             if ((DateTime.UtcNow - user.last_update).TotalSeconds > _updateUserTime)
-            {
                 await _userService.UpdateAsync(user);
-                user.last_update = DateTime.UtcNow;
-            }
+            
         }
         public async Task<bool> LevelUpUserAsync(User _user, IUserMessage message)
         {
@@ -149,7 +142,6 @@ namespace Dynastio.Bot
                 _user.activiy_level++;
 
                 await _userService.UpdateAsync(_user);
-                _user.last_update = DateTime.UtcNow;
 
                 var result = await SyncMemberRolesAsync(message.Author as IGuildUser, _user, message.Channel as ITextChannel)
                     .TryAsync();

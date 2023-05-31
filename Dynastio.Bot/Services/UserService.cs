@@ -36,6 +36,7 @@ namespace Dynastio.Bot
         }
         public async Task<bool> UpdateAsync(User user)
         {
+            user.last_update = DateTime.UtcNow;
             return await _db.UpdateAsync(user);
         }
         private bool _isActivityLeaderboardCached = false;
