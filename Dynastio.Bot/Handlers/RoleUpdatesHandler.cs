@@ -52,12 +52,12 @@ namespace Dynastio.Bot.Handlers
                 //var changedRoles = newUser.Roles.Except(oldUser.Roles);
                 //var addedRoles = changedRoles.Where(a => newUser.Roles.Contains(a));
                 //var removedRoles = changedRoles.Where(a => !newUser.Roles.Contains(a));
-                await RolesChangedAsync(newUser, default, default);
+                await RolesChangedAsync(newUser);
             }
         }
         private const ulong _achievmentHeader = 1113119762277482647;
         private const ulong _moderatorHeader = 1113119662100709406;
-        async Task RolesChangedAsync(SocketGuildUser user, IEnumerable<SocketRole> addedRoles, IEnumerable<SocketRole> removedRoles)
+        async Task RolesChangedAsync(SocketGuildUser user)
         {
             var hasAchroles = user.Roles.Any(a => a.Name.StartsWith("ach:"));
             var hasAchHeader = user.Roles.Any(a => a.Id == _achievmentHeader);
