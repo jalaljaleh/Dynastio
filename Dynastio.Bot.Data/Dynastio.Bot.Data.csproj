@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Dynastio.Bot.Global\Dynastio.Bot.Global.csproj" />
+    <ProjectReference Include="..\Dynastio.Net\Dynastio.Net.csproj" />
   </ItemGroup>
 
 </Project>

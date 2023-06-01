@@ -37,13 +37,6 @@ namespace Dynastio.Bot
                 await SyncMemberRolesAsync(user, buser, null);
         }
 
-        private const int _nextScoreTime = 20;
-        private const int _updateUserTime = 90;
-        private int[] _randomScore = { 15, 60 };
-        public static int getMax(int lvl)
-        {
-            return ((lvl + 250) * (int)Math.Pow(lvl, 2.1));
-        }
 
         public static ulong _scoreChannelId = 1108998382996946964;
         public async Task AddXpAsync(User user, ulong @operator, int count, string reason = "no reason provided.")
@@ -81,7 +74,7 @@ namespace Dynastio.Bot
 
             var rolesToAdd = rankedRoles.GetRange(0, buser.activiy_level);
             rolesToAdd.RemoveRange(0, userRankedroles.Count());
-        
+
             await duser.AddRolesAsync(rolesToAdd);
 
             var latestRole = duser.Guild.Roles.First(a => a.Id == rolesToAdd.Last());
@@ -105,6 +98,14 @@ namespace Dynastio.Bot
                 }.Build());
         }
 
+        public const int _nextScoreTime = 20;
+        public const int _updateUserTime = 90;
+        public static int[] _randomScore = { 15, 60 };
+        public static int[] _randomScoreServerBooster = { 20, 80 };
+        public static int getMax(int lvl)
+        {
+            return ((lvl + 250) * (int)Math.Pow(lvl, 2.1));
+        }
         public async Task AddMessageXpAsync(IUserMessage message)
         {
             if (message.Channel is null || message.Channel is not IGuildChannel ||
@@ -116,13 +117,10 @@ namespace Dynastio.Bot
             if ((DateTime.UtcNow - user.last_activiy_score_time).TotalSeconds > _nextScoreTime)
             {
                 var isServerBooster = (message.Author as IGuildUser) is not { PremiumSince: null };
+                int[] score = isServerBooster ? _randomScoreServerBooster : _randomScore;
 
                 user.activiy_score += Global.Main.Random
-                    .Next(_randomScore[0], 
-                    
-                    isServerBooster 
-                    ? (int)(_randomScore[1] * 1.2) 
-                    : _randomScore[1]);
+                    .Next(score[0], score[1]);
 
                 user.last_activiy_score_time = DateTime.UtcNow;
 
@@ -131,7 +129,7 @@ namespace Dynastio.Bot
 
             if ((DateTime.UtcNow - user.last_update).TotalSeconds > _updateUserTime)
                 await _userService.UpdateAsync(user);
-            
+
         }
         public async Task<bool> LevelUpUserAsync(User _user, IUserMessage message)
         {

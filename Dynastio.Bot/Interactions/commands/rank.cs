@@ -35,6 +35,9 @@ namespace Dynastio.Bot.Interactions.Modules.@public
             var latestRole = _rankedRoles[BotUser.activiy_level];
             var nextRole = _rankedRoles[BotUser.activiy_level + 1];
 
+            var isServerBooster =  Context.User as IGuildUser is not { PremiumSince: null };
+            int[] score = isServerBooster ? RankService._randomScoreServerBooster : RankService._randomScore;
+
             var message = await FollowupAsync(userMention,
                  embed: new EmbedBuilder()
                  {
@@ -57,6 +60,16 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                          new EmbedFieldBuilder()
                         .WithName("Next Role")
                         .WithValue( $"<@&{nextRole.Id}>")
+                        .WithIsInline(true),
+
+                         new EmbedFieldBuilder()
+                        .WithName("Accessible-Xp")
+                        .WithValue($"{score[0]} - {score[1]}")
+                        .WithIsInline(true),
+
+                         new EmbedFieldBuilder()
+                        .WithName("Last Xp")
+                        .WithValue($"{Context.BotUser.last_activiy_score_time.ToDiscordUnixTimestampFormat()}")
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()

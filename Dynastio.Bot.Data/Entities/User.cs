@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using MongoDB.Bson;
+using System.Collections.Concurrent;
+using Dynastio.Net;
 
 namespace Dynastio.Bot.Data
 {
@@ -24,11 +26,11 @@ namespace Dynastio.Bot.Data
         public DateTime LastBoostGift { get; set; }
         public DateTime last_activiy_score_time { get; set; }
         public DateTime last_badges_sync { get; set; }
-        
+
         [BsonIgnore]
         public DateTime last_update { get; set; }
 
-
+        //public Inventory Inventory { get; set; }
         public List<UserAccount> Accounts { get; set; } = new();
 
         public UserAccount GetAccount(string Id)
@@ -46,5 +48,12 @@ namespace Dynastio.Bot.Data
         }
     }
 
-
+    //public class Inventory
+    //{
+    //    public ConcurrentDictionary<ItemType, long> Items { get; set; }
+    //    public void AddItem(ItemType item, long count)
+    //    {
+    //        Items[item] += count;
+    //    }
+    //}
 }
