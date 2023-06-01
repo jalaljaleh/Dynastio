@@ -32,7 +32,7 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                            .ToList();
 
             var rankedRoles = _rankedRoles.Select(a => a.Id);
-            var latestRole = _rankedRoles[BotUser.activiy_level];
+            var latestRole = _rankedRoles[BotUser.activiy_level - 1];
             var nextRole = _rankedRoles[BotUser.activiy_level + 1];
 
             var isServerBooster =  Context.User as IGuildUser is not { PremiumSince: null };
@@ -59,17 +59,12 @@ namespace Dynastio.Bot.Interactions.Modules.@public
 
                          new EmbedFieldBuilder()
                         .WithName("Next Level")
-                        .WithValue( $"**{BotUser.activiy_level + 1}** / <@&{nextRole.Id}>")
+                        .WithValue( $"**{BotUser.activiy_level}** / <@&{nextRole.Id}>")
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()
                         .WithName("Accessible-Xp")
                         .WithValue($"{score[0]} - {score[1]}")
-                        .WithIsInline(true),
-
-                         new EmbedFieldBuilder()
-                        .WithName("Last Xp")
-                        .WithValue($"{Context.BotUser.last_activiy_score_time.ToDiscordUnixTimestampFormat()}")
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()
