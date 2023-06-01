@@ -35,7 +35,7 @@ namespace Dynastio.Bot.Interactions.Modules.@public
             var latestRole = _rankedRoles[BotUser.activiy_level - 1];
             var nextRole = _rankedRoles[BotUser.activiy_level + 1];
 
-            var isServerBooster =  Context.User as IGuildUser is not { PremiumSince: null };
+            var isServerBooster = Context.User as IGuildUser is not { PremiumSince: null };
             int[] score = isServerBooster ? RankService._randomScoreServerBooster : RankService._randomScore;
 
             var message = await FollowupAsync(userMention,
@@ -49,12 +49,7 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                     {
                            new EmbedFieldBuilder()
                         .WithName("Level")
-                        .WithValue( $"**{BotUser.activiy_level}**")
-                        .WithIsInline(true),
-                         
-                         new EmbedFieldBuilder()
-                        .WithName("XP")
-                        .WithValue( $"**{BotUser.activiy_score.Metric()}**")
+                        .WithValue( $"**{BotUser.activiy_level}**."+ $"**{BotUser.activiy_score.Metric()}**Xp")
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()
@@ -67,10 +62,6 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                         .WithValue($"{score[0]} - {score[1]}")
                         .WithIsInline(true),
 
-                         new EmbedFieldBuilder()
-                        .WithName("Unlocked Roles")
-                        .WithValue(string.Join(", ", rankedRoles.ToList().GetRange(0, BotUser.activiy_level).Select(a=> $"<@&{a}>")) + "\n.")
-                        .WithIsInline(false)
                     },
                      ThumbnailUrl = latestRole.GetIconUrl() ?? ""
                  }.Build());
@@ -84,7 +75,7 @@ namespace Dynastio.Bot.Interactions.Modules.@public
             var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(15);
 
             string users = string.Join("\n", leaderboard.Select(x => (leaderboard.IndexOf(x) + 1) + $". <@{x.Id}>"));
-            string levels = string.Join("\n",leaderboard.Select(x => $"**{x.activiy_level}**") );
+            string levels = string.Join("\n", leaderboard.Select(x => $"**{x.activiy_level}**"));
             string xps = string.Join("\n", leaderboard.Select(x => $"**{x.activiy_score.Metric()}**"));
 
 
