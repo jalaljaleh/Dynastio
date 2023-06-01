@@ -58,8 +58,8 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()
-                        .WithName("Next Role")
-                        .WithValue( $"<@&{nextRole.Id}>")
+                        .WithName("Next Level")
+                        .WithValue( $"**{BotUser.activiy_level + 1}** / <@&{nextRole.Id}>")
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()
