@@ -89,7 +89,11 @@ namespace Dynastio.Bot
             return image;
         }
 
-
+        public enum ChestStyle
+        {
+            Default,
+            Orange
+        }
         private const int wSlotSize = 6;
         private const int hSlotSize = 5;
         private const int SlotSizeWidth = 73;
@@ -100,8 +104,8 @@ namespace Dynastio.Bot
         private const int SlotSizeMarginHeight = 7;
         public async Task<Image> GetPersonalChestAsync(Discord.IGuildUser user, UserAccount account, Personalchest personalchest)
         {
-
-            Image image = Image.Load(FileManager.ToResourcePath("Images/Chest/default.png"));
+            ChestStyle chest = user is { PremiumSince: null } ? ChestStyle.Default : ChestStyle.Orange;
+            Image image = Image.Load(FileManager.ToResourcePath($"Images/Chest/{chest.ToString().ToLower()}.png"));
 
             if (personalchest == null) return image;
 
