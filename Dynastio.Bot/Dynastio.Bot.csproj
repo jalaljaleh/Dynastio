@@ -24,10 +24,7 @@
  
   </ItemGroup>
 
-	
-  <ItemGroup>
-    <None Remove="Resources\Images\Chest\orange.png" />
-  </ItemGroup>
+
 
 
 	
