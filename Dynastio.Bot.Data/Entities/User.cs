@@ -37,9 +37,9 @@ namespace Dynastio.Bot.Data
         {
             return Accounts.FirstOrDefault(a => a.Id.Equals(Id));
         }
-        public UserAccount GetAccount(int Id)
+        public UserAccount GetAccountByHashCode(string Id)
         {
-            return Accounts.FirstOrDefault(a => a.Id.GetHashCode() == Id);
+            return Accounts.FirstOrDefault(a => a.Id.GetHashCode().ToString().Equals(Id));
         }
         public UserAccount GetDefaultAccount()
         {

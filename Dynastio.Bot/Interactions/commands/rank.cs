@@ -77,10 +77,10 @@ namespace Dynastio.Bot.Interactions.Modules.@public
             var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(15);
 
             var content = leaderboard.ToStringTable<User>(new string[] { "Index", "User", "Level", "Xp" },
-                a => leaderboard.IndexOf(a),
+                a => leaderboard.IndexOf(a).ToString().ToCodeBlocks(),
                 a => ". " + a.Id.ToUserMention(),
-                a => a.activiy_level,
-                a => a.activiy_score.Metric());
+                a => a.activiy_level.ToString().PadLeft(5).ToCodeBlocks(),
+                a => a.activiy_score.Metric()).PadLeft(5).ToCodeBlocks();
 
 
             var message = await FollowupAsync(userMention, embed:

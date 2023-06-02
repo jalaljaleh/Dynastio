@@ -61,5 +61,6 @@ namespace Dynastio.Bot
             return value.ToEmbedBuilder(title, default, default, color).Build();
         }
         public static string ToMarkdown(this string value) => $"```{value}```";
+        public static string ToCodeBlocks(this string value) => $"`{value}`";
     }
 }

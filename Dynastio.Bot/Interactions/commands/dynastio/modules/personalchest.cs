@@ -24,7 +24,7 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
 
             UserAccount account_ = string.IsNullOrWhiteSpace(account)
                     ? Context.BotUser.GetDefaultAccount()
-                    : Context.BotUser.GetAccount(int.Parse(account));
+                    : Context.BotUser.GetAccount(account);
 
             var personalchest = await this._dynastio.GetUserPersonalchestAsync(account_.Id);
 
