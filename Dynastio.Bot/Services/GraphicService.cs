@@ -92,7 +92,8 @@ namespace Dynastio.Bot
         public enum ChestStyle
         {
             Default,
-            Orange
+            Orange,
+            Green
         }
         private const int wSlotSize = 6;
         private const int hSlotSize = 5;
@@ -102,9 +103,16 @@ namespace Dynastio.Bot
         private const int firstSlotSizeMarginHeight = 52;
         private const int SlotSizeMarginWidth = 5;
         private const int SlotSizeMarginHeight = 7;
-        public async Task<Image> GetPersonalChestAsync(Discord.IGuildUser user, UserAccount account, Personalchest personalchest)
+        public async Task<Image> GetPersonalChestAsync(Discord.IGuildUser user, User buser, UserAccount account, Personalchest personalchest)
         {
-            ChestStyle chest = user is { PremiumSince: null } ? ChestStyle.Default : ChestStyle.Orange;
+            ChestStyle chest = user is { PremiumSince: null }
+            ? 
+                (buser.activiy_level > 10 
+                ? ChestStyle.Green 
+                : ChestStyle.Default)
+
+            : ChestStyle.Orange;
+
             Image image = Image.Load(FileManager.ToResourcePath($"Images/Chest/{chest.ToString().ToLower()}.png"));
 
             if (personalchest == null) return image;
@@ -142,7 +150,7 @@ namespace Dynastio.Bot
                 avatar.Mutate(x => x.Resize(151, 151, true));
                 image.Mutate(x => x.DrawImage(avatar, new Point(68, 83), 1f));
             }
-            image.Mutate(wIndex => wIndex.DrawText("User: " + user.Username.Remove(0,16), new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(65, 250)));
+            image.Mutate(wIndex => wIndex.DrawText("User: " + user.Username.Remove(0, 16), new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(65, 250)));
             image.Mutate(wIndex => wIndex.DrawText("Account: " + account.Reminder.Remove(0, 16), new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(65, 275)));
 
             return image;

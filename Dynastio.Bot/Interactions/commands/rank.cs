@@ -77,7 +77,7 @@ namespace Dynastio.Bot.Interactions.Modules.@public
             var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(15);
 
             var content = leaderboard.ToStringTable<User>(new string[] { "Index", "User", "Level", "Xp" },
-                a => leaderboard.IndexOf(a).ToString().ToCodeBlocks(),
+                a => leaderboard.IndexOf(a).ToString(),
                 a => ". " + a.Id.ToUserMention(),
                 a => a.activiy_level.ToString().PadLeft(5).ToCodeBlocks(),
                 a => a.activiy_score.Metric()).PadLeft(5).ToCodeBlocks();

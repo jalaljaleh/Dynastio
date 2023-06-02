@@ -24,11 +24,11 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
 
             UserAccount account_ = string.IsNullOrWhiteSpace(account)
                     ? Context.BotUser.GetDefaultAccount()
-                    : Context.BotUser.GetAccount(account);
+                    : Context.BotUser.GetAccountByHashCode(account);
 
             var personalchest = await this._dynastio.GetUserPersonalchestAsync(account_.Id);
 
-            var image = await _graphicService.GetPersonalChestAsync(Context.User as IGuildUser, account_, personalchest);
+            var image = await _graphicService.GetPersonalChestAsync(Context.User as IGuildUser,BotUser, account_, personalchest);
 
             await DiscordStream.FollowupWithFileAsync(Context, image, $"personalchest-{Context.User.Id}.png", $"");
         }
