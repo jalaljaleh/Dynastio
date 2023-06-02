@@ -43,14 +43,18 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                  embed: new EmbedBuilder()
                  {
                      Title = $"Level {BotUser.activiy_level}",
-                     Description = $"Your are level **{BotUser.activiy_level}**.\n" +
-                     $"You need **{RankService.getMax(BotUser.activiy_level) - BotUser.activiy_score}** more xp to get new role.",
+                     Description = $"Your are level **{BotUser.activiy_level}** You need **{RankService.getMax(BotUser.activiy_level) - BotUser.activiy_score}** more xp to get new role.",
                      Color = latestRole?.Color ?? Color.Orange,
                      Fields = new List<EmbedFieldBuilder>()
                     {
+                         new EmbedFieldBuilder()
+                        .WithName("Accessible-Xp")
+                        .WithValue($"{score[0]} - {score[1]}")
+                        .WithIsInline(true),
+
                            new EmbedFieldBuilder()
                         .WithName("Level")
-                        .WithValue( $"Level: **{BotUser.activiy_level}**\n"+ $"Xp: **{BotUser.activiy_score.Metric()}**Xp")
+                        .WithValue( $"Level: **{BotUser.activiy_level}**\n"+ $"Xp: **{BotUser.activiy_score.Metric()}**")
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()
@@ -58,10 +62,6 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                         .WithValue( $"<@&{nextRole.Id}>")
                         .WithIsInline(true),
 
-                         new EmbedFieldBuilder()
-                        .WithName("Accessible-Xp")
-                        .WithValue($"{score[0]} - {score[1]}")
-                        .WithIsInline(true),
 
                     },
                      ThumbnailUrl = latestRole.GetIconUrl() ?? ""
@@ -76,7 +76,7 @@ namespace Dynastio.Bot.Interactions.Modules.@public
 
             var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(15);
 
-            var content = leaderboard.ToStringTable<User>(new string[] {"User","Level","Xp" },
+            var content = leaderboard.ToStringTable<User>(new string[] { "Index", "User", "Level", "Xp" },
                 a => leaderboard.IndexOf(a),
                 a => ". " + a.Id.ToUserMention(),
                 a => a.activiy_level,

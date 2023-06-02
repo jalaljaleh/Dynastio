@@ -18,24 +18,13 @@ namespace Dynastio.Bot.Interactions.Modules.Shard
             public UserService UserService { get; set; }
             public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
             {
-                List<AutocompleteResult> results;
-
                 string match = autocompleteInteraction.Data.Current.Value.ToString();
-                var userParam = autocompleteInteraction.Data.Options.Where(a => a.Name == "user").FirstOrDefault();
 
-                User user = userParam is null || string.IsNullOrEmpty((string)userParam.Value)
-                    ? (context as CustomSocketInteractionContext).BotUser
-                    : await UserService.GetUserAsync(ulong.Parse((string)userParam.Value));
+                var accounts = (context as CustomSocketInteractionContext)
+                    .BotUser
+                    .Accounts
+                    .Where(a => a.Reminder.Contains(match)).ToList();
 
-
-                results = Parse(user.Accounts.Where(a => a.Reminder.Contains(match)).ToList());
-               
-
-                // max - 25 suggestions at a time (API limit)
-                return await Task.FromResult(AutocompletionResult.FromSuccess(results.Take(25)));
-            }
-            private List<AutocompleteResult> Parse(List<UserAccount> accounts)
-            {
                 var result = new List<AutocompleteResult>();
                 foreach (var account in accounts)
                 {
@@ -45,8 +34,12 @@ namespace Dynastio.Bot.Interactions.Modules.Shard
                         Value = account.GetHashCode().ToString()
                     });
                 }
-                return result;
+
+                // max - 25 suggestions at a time (API limit)
+                return await Task.FromResult(AutocompletionResult.FromSuccess(result.Take(25)));
             }
+
+
         }
 
 
