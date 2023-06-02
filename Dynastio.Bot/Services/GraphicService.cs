@@ -142,8 +142,8 @@ namespace Dynastio.Bot
                 avatar.Mutate(x => x.Resize(151, 151, true));
                 image.Mutate(x => x.DrawImage(avatar, new Point(68, 83), 1f));
             }
-            image.Mutate(wIndex => wIndex.DrawText("User: " + user.Username, new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(74, 250)));
-            image.Mutate(wIndex => wIndex.DrawText("Account: " + account.Reminder, new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(74, 275)));
+            image.Mutate(wIndex => wIndex.DrawText("User: " + user.Username.Remove(0,16), new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(65, 250)));
+            image.Mutate(wIndex => wIndex.DrawText("Account: " + account.Reminder.Remove(0, 16), new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(65, 275)));
 
             return image;
 

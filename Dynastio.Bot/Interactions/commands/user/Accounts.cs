@@ -90,7 +90,7 @@ namespace Dynastio.Bot.Interactions.Modules._user
         [SlashCommand("switch", "switch to another account")]
         public async Task id([Autocomplete(typeof(SharedAutocompleteHandler.AccountAutocompleteHandler))] string account)
         {
-            await DeferAsync(true);
+            await DeferAsync();
 
             UserAccount selectedAccount = Context.BotUser.Accounts
                 .FirstOrDefault(

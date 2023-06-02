@@ -43,9 +43,17 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
                  a => coinboard.IndexOf(a) < 5 ? "🏆" : "",
                  a => $"{(coinboard.IndexOf(a) + 1).ToRegularCounter()}",
                  a => $"{a.Coin.Metric()}",
-                 a => $"{a.Name.RemoveLines()}");
+                 a => $"{getUsernameAsync(a.Id).Result}");
 
             await FollowupAsync(Context.User.Id.ToUserMention(), embed: content.ToMarkdown().ToEmbed(Context.UserLocale["leaderboard"] + " " + Context.UserLocale["coin"]));
+        }
+        public async Task<string> getUsernameAsync(string id)
+        {
+            if (!id.Contains("discord:"))
+                return "Hidden";
+            ulong _id = ulong.Parse(id.Replace("discord:", ""));
+            var user = await this.Context.Client.GetUserAsync(_id);
+            return user?.Username ?? "Unknown";
         }
         //[RateLimit(10)]
         //[SlashCommand("honor", "leaderboard honor")]

@@ -9,6 +9,7 @@ using Dynastio.Net;
 using Discord.WebSocket;
 using Dynastio.Bot.Interactions.Modules.Shard;
 using System.ComponentModel;
+using Dynastio.Bot.Data;
 
 namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
 {
@@ -17,12 +18,18 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
     {
         [RequireUserDynastioAccount]
         [SlashCommand("personalchest", "your dynastio personal chest")]
-        public async Task personalchest()
+        public async Task personalchest([Autocomplete(typeof(SharedAutocompleteHandler.AccountAutocompleteHandler))] string account = "")
         {
             await DeferAsync();
-            var account = Context.BotUser.GetDefaultAccount();
-            var personalchest = await this._dynastio.GetUserPersonalchestAsync(account.Id);
-            var image = await _graphicService.GetPersonalChestAsync(Context.User as IGuildUser,account, personalchest);
+
+            UserAccount account_ = string.IsNullOrWhiteSpace(account)
+                    ? Context.BotUser.GetDefaultAccount()
+                    : Context.BotUser.GetAccount(int.Parse(account));
+
+            var personalchest = await this._dynastio.GetUserPersonalchestAsync(account_.Id);
+
+            var image = await _graphicService.GetPersonalChestAsync(Context.User as IGuildUser, account_, personalchest);
+
             await DiscordStream.FollowupWithFileAsync(Context, image, $"personalchest-{Context.User.Id}.png", $"");
         }
 

@@ -21,7 +21,6 @@ namespace Dynastio.Bot.Interactions.Modules.Shard
                 List<AutocompleteResult> results;
 
                 string match = autocompleteInteraction.Data.Current.Value.ToString();
-                var all = autocompleteInteraction.Data.Options.Where(a => a.Name == "all").FirstOrDefault();
                 var userParam = autocompleteInteraction.Data.Options.Where(a => a.Name == "user").FirstOrDefault();
 
                 User user = userParam is null || string.IsNullOrEmpty((string)userParam.Value)
@@ -29,15 +28,8 @@ namespace Dynastio.Bot.Interactions.Modules.Shard
                     : await UserService.GetUserAsync(ulong.Parse((string)userParam.Value));
 
 
-                results = all is null || (bool)all.Value == false
-                 ? Parse(user.Accounts.Where(a => a.Reminder.Contains(match)).ToList())
-                 : new List<AutocompleteResult>() {
-                     new AutocompleteResult()
-                     {
-                         Name = "All",
-                         Value = "0"
-                     }
-                 };
+                results = Parse(user.Accounts.Where(a => a.Reminder.Contains(match)).ToList());
+               
 
                 // max - 25 suggestions at a time (API limit)
                 return await Task.FromResult(AutocompletionResult.FromSuccess(results.Take(25)));

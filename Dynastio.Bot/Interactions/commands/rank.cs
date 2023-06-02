@@ -10,6 +10,7 @@ using Discord.WebSocket;
 using Dynastio.Bot.Data;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Interactions.Modules.Shard;
+using System.Net.Http.Headers;
 
 namespace Dynastio.Bot.Interactions.Modules.@public
 {
@@ -49,12 +50,12 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                     {
                            new EmbedFieldBuilder()
                         .WithName("Level")
-                        .WithValue( $"**{BotUser.activiy_level}**."+ $"**{BotUser.activiy_score.Metric()}**Xp")
+                        .WithValue( $"Level: **{BotUser.activiy_level}**\n"+ $"Xp: **{BotUser.activiy_score.Metric()}**Xp")
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()
-                        .WithName("Next Level")
-                        .WithValue( $"**{BotUser.activiy_level}** / <@&{nextRole.Id}>")
+                        .WithName("Next Role")
+                        .WithValue( $"<@&{nextRole.Id}>")
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()
@@ -72,11 +73,14 @@ namespace Dynastio.Bot.Interactions.Modules.@public
         public async Task rleaderboard()
         {
             await DeferAsync();
+
             var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(15);
 
-            string users = string.Join("\n", leaderboard.Select(x => (leaderboard.IndexOf(x) + 1) + $". <@{x.Id}>"));
-            string levels = string.Join("\n", leaderboard.Select(x => $"**{x.activiy_level}**"));
-            string xps = string.Join("\n", leaderboard.Select(x => $"**{x.activiy_score.Metric()}**"));
+            var content = leaderboard.ToStringTable<User>(new string[] {"User","Level","Xp" },
+                a => leaderboard.IndexOf(a),
+                a => ". " + a.Id.ToUserMention(),
+                a => a.activiy_level,
+                a => a.activiy_score.Metric());
 
 
             var message = await FollowupAsync(userMention, embed:
@@ -85,10 +89,7 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                     Title = "Top Active Users",
                     Color = Color.DarkGreen
                 }
-                .WithDescription("")
-                .AddField("User", users, true)
-                .AddField("Level  ", levels, true)
-                .AddField(" XP", xps, true)
+                .WithDescription(content)
                 .Build());
         }
 
