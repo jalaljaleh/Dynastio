@@ -54,7 +54,7 @@ namespace Dynastio.Bot.Interactions._Modules
                 $"> Это безопасный и конфиденциальный поток с персоналом Dynastio ** Без администраторов, без модераторов**.\n\n\n" +
                 $"**Notes:**\n" +
                 $"- Do not mention anyone.\n" +
-                $"> Не упоминайте никого.\n\n" +
+                $"> Не упоминайте никого.\n\n<@&480954902005415937>" +
                 $"> **<@{Context.User.Id}> Send Your Message:**");
 
             await channel.SendMessageAsync($"{Context.User.Mention} Created new Ticket {thread.Mention} !");
