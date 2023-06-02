@@ -158,7 +158,7 @@ namespace Dynastio.Bot.Interactions.Modules._user
             string id = form.Id.Trim().Remove("id:", "Id:", "ID:", "iD:"); // don't use tolower
             string reminder = string.IsNullOrEmpty(form.Reminder)
                 ? id.Split(":")[0]
-                : form.Reminder.TrySubstring(16).Trim();
+                : form.Reminder.TryRemove(16).Trim();
 
             if (id.Contains("discord") && !id.Contains(Context.User.Id.ToString()))
                 await FollowupAsync(userMention, embed: this["error.unauthorized.discord"].ToEmbed(this["unauthorized"], Color.Orange));

@@ -65,7 +65,7 @@ namespace Dynastio.Bot
             var content = servers
                 .ToStringTable(new[] { "#", "server", "count", "limit", "private", "region", "top score" },
                         a => servers.IndexOf(a),
-                        a => a.Label.TrySubstring(16),
+                        a => a.Label.TryRemove(16),
                         a => a.PlayersCount.Metric(),
                         a => a.ConnectionsLimit.Metric(),
                         a => a.IsPrivate,

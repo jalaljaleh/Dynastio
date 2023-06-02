@@ -68,7 +68,7 @@ namespace Dynastio.Bot
             image.Mutate(wIndex => wIndex.DrawText(profile.Details.Level.ToString(), new Font(fontFamily, 40, FontStyle.Bold), Color.White, TextLevelPoint));
 
             var pointDetailsSection = new PointF() { X = 80, Y = 260 };
-            string TextDetails = string.Format("{0} was playing in {1}", profile.LastActiveAt.ToRelative(), StringExtensions.TrySubstring(profile.LatestServer, 16));
+            string TextDetails = string.Format("{0} was playing in {1}", profile.LastActiveAt.ToRelative(), StringExtensions.TryRemove(profile.LatestServer, 16));
             image.Mutate(wIndex => wIndex.DrawText(TextDetails, new Font(fontFamily, 16, FontStyle.Bold), Color.WhiteSmoke, pointDetailsSection));
 
             var ExperienceLine = new Pen(Color.WhiteSmoke, 11);
@@ -103,17 +103,17 @@ namespace Dynastio.Bot
         private const int firstSlotSizeMarginHeight = 52;
         private const int SlotSizeMarginWidth = 5;
         private const int SlotSizeMarginHeight = 7;
-        public async Task<Image> GetPersonalChestAsync(Discord.IGuildUser user, User buser, UserAccount account, Personalchest personalchest)
+        public async Task<Image> GetPersonalChestAsync(Discord.IGuildUser user, User buser, UserAccount account, Profile profile, Personalchest personalchest)
         {
-            ChestStyle chest = user is { PremiumSince: null }
-            ? 
-                (buser.activiy_level > 10 
-                ? ChestStyle.Green 
-                : ChestStyle.Default)
+            //ChestStyle chest = user is { PremiumSince: null }
+            //?
+            //    (buser.activiy_level > 10
+            //    ? ChestStyle.Green
+            //    : ChestStyle.Default)
 
-            : ChestStyle.Orange;
+            //: ChestStyle.Orange;
 
-            Image image = Image.Load(FileManager.ToResourcePath($"Images/Chest/{chest.ToString().ToLower()}.png"));
+            Image image = Image.Load(FileManager.ToResourcePath($"Images/Chest/{"default".ToString().ToLower()}.png"));
 
             if (personalchest == null) return image;
 
@@ -150,8 +150,33 @@ namespace Dynastio.Bot
                 avatar.Mutate(x => x.Resize(151, 151, true));
                 image.Mutate(x => x.DrawImage(avatar, new Point(68, 83), 1f));
             }
-            image.Mutate(wIndex => wIndex.DrawText("User: " + user.Username.Remove(0, 16), new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(65, 250)));
-            image.Mutate(wIndex => wIndex.DrawText("Account: " + account.Reminder.Remove(0, 16), new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(65, 275)));
+            var font = new Font(fontFamily, 18, FontStyle.Regular);
+            image.Mutate(x => x.DrawText("User: " + user.Username.TryRemove(16), font, Color.White, new Point(60, 245)));
+            image.Mutate(x => x.DrawText("Account: " + account.Reminder.TryRemove(16), font, Color.White, new Point(60, 265)));
+
+            image.Mutate(x => x.DrawText(profile.Details.Level.Metric().ToString(), font, Color.White, new Point(80, 302)));
+
+            image.Mutate(x => x.DrawText(profile.Coins.Metric().ToString(), font, Color.White, new Point(160, 302)));
+
+            image.Mutate(x => x.DrawText(profile.LastActiveAt.ToRelative() + " At " + profile.LatestServer, new Font(fontFamily, 14, FontStyle.Regular), Color.White, new Point(39, 393)));
+
+            var ExperienceLine = new Pen(brush: Brushes.Solid(Color.White), 8);
+            image.Mutate(x => x.DrawLines(ExperienceLine, new Point(49, 361), new Point((int)(profile.GetExperience(180) + 49), 361)));
+
+
+            for (int wIndex = 0; wIndex < profile.Badges.Count; wIndex++)
+            {
+                var itemImgPath = FileManager.ToResourcePath($"Images/Badges/{profile.Badges[wIndex].ToString().ToLower()}.png");
+                if (!File.Exists(itemImgPath)) itemImgPath = FileManager.ToResourcePath($"Images/unknown.png");
+
+                using (Image itemImg = Image.Load(path: itemImgPath))
+                {
+                    itemImg.Mutate(wIndex => wIndex.Resize(19, 19));
+                    var point = new Point((int)(49 + (wIndex * 21)), 332);
+                    image.Mutate(x => x.DrawImage(itemImg, point, 1f));
+                }
+            }
+
 
             return image;
 

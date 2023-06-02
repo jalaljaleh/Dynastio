@@ -39,11 +39,11 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
             var players1 = players.Skip((page - 1) * take).Take(take).ToList();
             var content = players1.ToStringTable(new[] { "#", Context.UserLocale["server"], Context.UserLocale["score"], Context.UserLocale["level"], Context.UserLocale["team"], Context.UserLocale["nickname"] },
                 a => players.IndexOf(a),
-                a => a.Parent.Label.TrySubstring(16),
+                a => a.Parent.Label.TryRemove(16),
                 a => a.Score.Metric(),
                 a => a.Level.Metric(),
-                a => a.Team.RemoveLines().TrySubstring(6),
-                a => a.Nickname.RemoveLines().TrySubstring(12))
+                a => a.Team.RemoveLines().TryRemove(6),
+                a => a.Nickname.RemoveLines().TryRemove(12))
                 .ToMarkdown();
 
             // var map = Map == Map.Enable ? _graphicService.GetMap(players1) : null;

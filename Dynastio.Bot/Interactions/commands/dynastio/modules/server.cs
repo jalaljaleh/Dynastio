@@ -32,7 +32,7 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
                 {
                 new EmbedFieldBuilder()
                 .WithName("Server")
-                .WithValue($"**Label**: {result.Label.TrySubstring(20)}" +
+                .WithValue($"**Label**: {result.Label.TryRemove(20)}" +
                 $"**Region**: {result.Region}\n" +
                 $"**Players**: {result.PlayersCount}\n" +
                 $"**Teams**: {teams.Count()}\n" +
@@ -63,7 +63,7 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
 
                 new EmbedFieldBuilder()
                 .WithName("Players")
-                .WithValue(string.Join(", ", result.Players.Select(a => a.Nickname.TrySubstring(16))).ToMarkdown())
+                .WithValue(string.Join(", ", result.Players.Select(a => a.Nickname.TryRemove(16))).ToMarkdown())
                 .WithIsInline(false),
 
                 new EmbedFieldBuilder()

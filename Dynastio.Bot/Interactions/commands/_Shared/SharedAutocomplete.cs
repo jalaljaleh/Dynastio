@@ -62,8 +62,8 @@ namespace Dynastio.Bot.Interactions.Modules.Shard
                 {
                     results.Add(new AutocompleteResult()
                     {
-                        Name = server.Label.TrySubstring(98),
-                        Value = server.Label.TrySubstring(30, false)
+                        Name = server.Label.TryRemove(98),
+                        Value = server.Label.TryRemove(30, false)
                     });
                 }
                 // max - 25 suggestions at a time (API limit)
@@ -88,7 +88,7 @@ namespace Dynastio.Bot.Interactions.Modules.Shard
                 {
                     results.Add(new AutocompleteResult()
                     {
-                        Name = server.Label.RemoveHtmlTags().TrySubstring(98),
+                        Name = server.Label.RemoveHtmlTags().TryRemove(98),
                         Value = server.GetHashCode().ToString()
                     });
                 }
@@ -115,7 +115,7 @@ namespace Dynastio.Bot.Interactions.Modules.Shard
                 {
                     results.Add(new AutocompleteResult()
                     {
-                        Name = player.Nickname.TrySubstring(16),
+                        Name = player.Nickname.TryRemove(16),
                         Value = player.UniqeId
                     });
                 }

@@ -68,6 +68,9 @@ namespace Dynastio.Bot.Handlers
 
         private async Task _client_Ready()
         {
+            if (Global.Main.IsDebug())
+                return;
+
             await _client.Guilds.First()
                 .GetTextChannel(1109911020341837825)
                 .SendMessageAsync("Ready !")

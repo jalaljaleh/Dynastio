@@ -30,6 +30,9 @@ namespace Dynastio.Bot
             _services = services;
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _guildService = services.GetRequiredService<GuildService>();
+         
+            if (Global.Main.IsDebug())
+                return;
 
             _discord.Ready += _discord_Ready;
         }
