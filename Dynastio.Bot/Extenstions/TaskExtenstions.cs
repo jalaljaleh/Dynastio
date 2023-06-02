@@ -25,7 +25,8 @@ namespace Dynastio.Bot
         {
             try
             {
-                return (true, await task);
+                var res = await task;
+                return (true, res);
             }
             catch
             {

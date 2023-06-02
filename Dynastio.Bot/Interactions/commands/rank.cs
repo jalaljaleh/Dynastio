@@ -79,8 +79,8 @@ namespace Dynastio.Bot.Interactions.Modules.@public
             var content = leaderboard.ToStringTable<User>(new string[] { "Index", "User", "Level", "Xp" },
                 a => leaderboard.IndexOf(a).ToString(),
                 a => ". " + a.Id.ToUserMention(),
-                a => "--->**" + a.activiy_level.ToString().PadLeft(5),
-                a => "**--->" + a.activiy_score.Metric()).PadLeft(5);
+                a => "` --->** `" + a.activiy_level.ToString().PadLeft(5),
+                a => "` **---> `" + a.activiy_score.Metric()).PadLeft(5);
 
 
             var message = await FollowupAsync(userMention, embed:

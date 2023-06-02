@@ -115,7 +115,10 @@ namespace Dynastio.Bot
 
             Image image = Image.Load(FileManager.ToResourcePath($"Images/Chest/{"default".ToString().ToLower()}.png"));
 
-            if (personalchest == null) return image;
+            if (personalchest == null)
+            {
+                personalchest = new Personalchest(new List<PersonalChestItem>()) { };
+            }
 
             var items = personalchest.GetAsDictionary();
 
@@ -150,6 +153,7 @@ namespace Dynastio.Bot
                 avatar.Mutate(x => x.Resize(151, 151, true));
                 image.Mutate(x => x.DrawImage(avatar, new Point(68, 83), 1f));
             }
+
             var font = new Font(fontFamily, 18, FontStyle.Regular);
             image.Mutate(x => x.DrawText("User: " + user.Username.TryRemove(16), font, Color.White, new Point(60, 245)));
             image.Mutate(x => x.DrawText("Account: " + account.Reminder.TryRemove(16), font, Color.White, new Point(60, 265)));
