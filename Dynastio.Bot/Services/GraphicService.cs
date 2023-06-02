@@ -154,18 +154,18 @@ namespace Dynastio.Bot
                 image.Mutate(x => x.DrawImage(avatar, new Point(68, 83), 1f));
             }
 
-            var font = new Font(fontFamily, 18, FontStyle.Regular);
-            image.Mutate(x => x.DrawText("User:   @" + user.Username.TryRemove(16), font, Color.White, new Point(70, 260)));
-            image.Mutate(x => x.DrawText("Account:   " + account.Reminder.TryRemove(16), font, Color.White, new Point(70, 280)));
+            var font = new Font(fontFamily, 20, FontStyle.Regular);
+            image.Mutate(x => x.DrawText("Account:" + account.Reminder.TryRemove(16), new Font(fontFamily, 14, FontStyle.Regular), Color.White, new Point(40, 462)));
 
-            image.Mutate(x => x.DrawText(profile.Details.Level.Metric().ToString(), font, Color.White, new Point(83, 342)));
 
-            image.Mutate(x => x.DrawText(profile.Coins.Metric().ToString(), font, Color.White, new Point(170, 342)));
+            image.Mutate(x => x.DrawText(profile.Details.Level.Metric().ToString(), font, Color.White, new Point(75, 257)));
 
-            image.Mutate(x => x.DrawText(profile.LastActiveAt.ToRelative() + " At " + profile.LatestServer, new Font(fontFamily, 14, FontStyle.Regular), Color.White, new Point(50, 462)));
+            image.Mutate(x => x.DrawText(profile.Coins.Metric().ToString(), font, Color.White, new Point(163, 257)));
+
+            image.Mutate(x => x.DrawText(profile.LastActiveAt.ToRelative() + " At " + profile.LatestServer, new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(60, 360)));
 
             var ExperienceLine = new Pen(brush: Brushes.Solid(Color.White), 9);
-            image.Mutate(x => x.DrawLines(ExperienceLine, new Point(51, 379), new Point((int)(profile.GetExperience(180) + 51), 379)));
+            image.Mutate(x => x.DrawLines(ExperienceLine, new Point(50, 296), new Point((int)(profile.GetExperience(180) + 50), 296)));
 
 
             for (int wIndex = 0; wIndex < profile.Badges.Count; wIndex++)
@@ -175,8 +175,8 @@ namespace Dynastio.Bot
 
                 using (Image itemImg = Image.Load(path: itemImgPath))
                 {
-                    itemImg.Mutate(wIndex => wIndex.Resize(25, 25));
-                    var point = new Point((int)(49 + (wIndex * 26)), 394);
+                    itemImg.Mutate(wIndex => wIndex.Resize(23, 23));
+                    var point = new Point((int)(50 + (wIndex * 24)), 309);
                     image.Mutate(x => x.DrawImage(itemImg, point, 1f));
                 }
             }
