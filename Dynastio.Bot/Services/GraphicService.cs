@@ -150,15 +150,15 @@ namespace Dynastio.Bot
 
             using (Image avatar = await _internetService.GetImageAsync(user?.GetAvatarUrl() ?? user?.GetDefaultAvatarUrl()))
             {
-                avatar.Mutate(x => x.Resize(188, 188, true));
+                avatar.Mutate(x => x.Resize(183, 183, true));
                 image.Mutate(x => x.DrawImage(avatar, new Point(50, 70), 1f));
             }
 
             var font = new Font(fontFamily, 20, FontStyle.Regular);
 
-            image.Mutate(x => x.DrawText(profile.Details.Level.Metric().ToString(), font, Color.White, new Point(84, 277)));
+            image.Mutate(x => x.DrawText(profile.Details.Level.Metric().ToString(), font, Color.White, new Point(84, 274)));
 
-            image.Mutate(x => x.DrawText(profile.Coins.Metric().ToString(), font, Color.White, new Point(175, 277)));
+            image.Mutate(x => x.DrawText(profile.Coins.Metric().ToString(), font, Color.White, new Point(175, 274)));
 
             image.Mutate(x => x.DrawText("Latest Activity: " + profile.LastActiveAt.ToRelative() + " At " + profile.LatestServer + ".", new Font(fontFamily, 16, FontStyle.Regular), Color.WhiteSmoke, new Point(40, 538)));
 
@@ -175,7 +175,7 @@ namespace Dynastio.Bot
                 using (Image itemImg = Image.Load(path: itemImgPath))
                 {
                     itemImg.Mutate(wIndex => wIndex.Resize(23, 23));
-                    var point = new Point((int)(51 + (wIndex * 27)), 334);
+                    var point = new Point((int)(51 + (wIndex * 27)), 332);
                     image.Mutate(x => x.DrawImage(itemImg, point, 1f));
                 }
             }
