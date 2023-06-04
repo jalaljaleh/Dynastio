@@ -150,23 +150,22 @@ namespace Dynastio.Bot
 
             using (Image avatar = await _internetService.GetImageAsync(user?.GetAvatarUrl() ?? user?.GetDefaultAvatarUrl()))
             {
-                avatar.Mutate(x => x.Resize(151, 151, true));
-                image.Mutate(x => x.DrawImage(avatar, new Point(68, 83), 1f));
+                avatar.Mutate(x => x.Resize(188, 188, true));
+                image.Mutate(x => x.DrawImage(avatar, new Point(50, 70), 1f));
             }
 
             var font = new Font(fontFamily, 20, FontStyle.Regular);
-            image.Mutate(x => x.DrawText("Account:" + account.Reminder.TryRemove(16), new Font(fontFamily, 14, FontStyle.Regular), Color.White, new Point(40, 462)));
 
+            image.Mutate(x => x.DrawText(profile.Details.Level.Metric().ToString(), font, Color.White, new Point(84, 277)));
 
-            image.Mutate(x => x.DrawText(profile.Details.Level.Metric().ToString(), font, Color.White, new Point(75, 257)));
+            image.Mutate(x => x.DrawText(profile.Coins.Metric().ToString(), font, Color.White, new Point(175, 277)));
 
-            image.Mutate(x => x.DrawText(profile.Coins.Metric().ToString(), font, Color.White, new Point(163, 257)));
-
-            image.Mutate(x => x.DrawText(profile.LastActiveAt.ToRelative() + " At " + profile.LatestServer, new Font(fontFamily, 16, FontStyle.Regular), Color.White, new Point(60, 360)));
+            image.Mutate(x => x.DrawText("Latest Activity: " + profile.LastActiveAt.ToRelative() + " At " + profile.LatestServer + ".", new Font(fontFamily, 16, FontStyle.Regular), Color.WhiteSmoke, new Point(40, 538)));
 
             var ExperienceLine = new Pen(brush: Brushes.Solid(Color.White), 9);
-            image.Mutate(x => x.DrawLines(ExperienceLine, new Point(50, 296), new Point((int)(profile.GetExperience(180) + 50), 296)));
+            image.Mutate(x => x.DrawLines(ExperienceLine, new Point(56, 316), new Point((int)(profile.GetExperience(180) + 56), 316)));
 
+            image.Mutate(x => x.DrawText("Account: " + account.Reminder.TryRemove(16), new Font(fontFamily, 14, FontStyle.Regular), Color.White, new Point(55, 371)));
 
             for (int wIndex = 0; wIndex < profile.Badges.Count; wIndex++)
             {
@@ -176,7 +175,7 @@ namespace Dynastio.Bot
                 using (Image itemImg = Image.Load(path: itemImgPath))
                 {
                     itemImg.Mutate(wIndex => wIndex.Resize(23, 23));
-                    var point = new Point((int)(50 + (wIndex * 24)), 309);
+                    var point = new Point((int)(51 + (wIndex * 27)), 334);
                     image.Mutate(x => x.DrawImage(itemImg, point, 1f));
                 }
             }
