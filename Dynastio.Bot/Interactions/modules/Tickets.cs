@@ -61,8 +61,8 @@ namespace Dynastio.Bot.Interactions._Modules
                 $"> **<@{Context.User.Id}> Send Your Message:**",
 
                 components: new ComponentBuilder()
-              .WithButton("Add Helpful", $"btn.ticket:helpfull:{channel.Id}:{thread.Id}", ButtonStyle.Danger, Emoji.Parse("🛠"))
-              .WithButton("Add Admins", $"btn.ticket:admin:{channel.Id}:{thread.Id}", ButtonStyle.Danger, Emoji.Parse("🛠"))
+              .WithButton("Add Helpful", $"btn.ticket:helpfull:{channel.Id}:{thread.Id}", ButtonStyle.Danger, Emoji.Parse("✅"))
+              .WithButton("Add Admins", $"btn.ticket:admin:{channel.Id}:{thread.Id}", ButtonStyle.Danger, Emoji.Parse("✅"))
               .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Danger, Emoji.Parse("🔒"))
               .Build());
 
