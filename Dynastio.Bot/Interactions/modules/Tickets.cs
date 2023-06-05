@@ -38,28 +38,51 @@ namespace Dynastio.Bot.Interactions._Modules
             await FollowupAsync("done");
         }
 
-        [RateLimit(10000000)]
+        [RateLimit(30)]
         [ComponentInteraction("btn.ticket.start:*")]
         public async Task btn_ticket_start(ulong _channel)
         {
             await DeferAsync();
 
-            var channel =  Context.Guild.GetTextChannel(_channel);
+            var channel = Context.Guild.GetTextChannel(_channel);
 
-            var thread =  await channel.CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.ThreeDays, null, false, 0);
+            var thread = await channel.CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.OneWeek, null, false, 0);
 
-            await thread.SendMessageAsync(
+            var message = await thread.SendMessageAsync(
                 $"**Important**\n" +
                 $"- This is a safe and private thread with Dynastio Staff **No Admin, No Moderator**.\n" +
                 $"> Это безопасный и конфиденциальный поток с персоналом Dynastio ** Без администраторов, без модераторов**.\n\n\n" +
                 $"**Notes:**\n" +
                 $"- Do not mention anyone.\n" +
                 $"> Не упоминайте никого.\n\n<@&480954902005415937>" +
-                $"> **<@{Context.User.Id}> Send Your Message:**");
+                $"> **<@{Context.User.Id}> Send Your Message:**",
 
-            await channel.SendMessageAsync($"{Context.User.Mention} Created new Ticket {thread.Mention} !");
+                components: new ComponentBuilder()
+              .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Danger, Emoji.Parse("❌"))
+              .Build());
+
+            await message.PinAsync();
+
         }
+        [RateLimit(5)]
+        [ComponentInteraction("btn.ticket:*:*:*")]
+        public async Task btn_ticket(string action, ulong _channel, ulong _thread)
+        {
+            await DeferAsync();
 
+            var channel = Context.Guild.GetTextChannel(_channel);
+            if (channel is null) return;
+
+            var thread = channel.Threads.FirstOrDefault(a => a.Id == _thread);
+            if (thread is null) return;
+
+            switch (action)
+            {
+                case "close":
+                    await thread.ModifyAsync(a => a.Archived = true);
+                    break;
+            }
+        }
 
     }
 }
