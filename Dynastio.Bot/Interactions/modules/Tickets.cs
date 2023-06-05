@@ -42,11 +42,11 @@ namespace Dynastio.Bot.Interactions._Modules
         [ComponentInteraction("btn.ticket.start:*")]
         public async Task btn_ticket_start(ulong _channel)
         {
-            await DeferAsync();
+            await DeferAsync(true);
 
             var channel = Context.Guild.GetTextChannel(_channel);
 
-            var thread = await channel.CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.OneWeek, null, false, 0);
+            var thread = await channel.CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.ThreeDays, null, false, 0);
 
             var message = await thread.SendMessageAsync(
                 $"## Important\n" +
@@ -61,12 +61,15 @@ namespace Dynastio.Bot.Interactions._Modules
                 $"> **<@{Context.User.Id}> Send Your Message:**",
 
                 components: new ComponentBuilder()
-              .WithButton("Add Helpful", $"btn.ticket:helpfull:{channel.Id}:{thread.Id}", ButtonStyle.Primary)
-              .WithButton("Add Admins", $"btn.ticket:admin:{channel.Id}:{thread.Id}", ButtonStyle.Primary)
+              .WithButton("Add Helpful", $"btn.ticket:helpfull:{channel.Id}:{thread.Id}", ButtonStyle.Success)
+              .WithButton("Add Admins", $"btn.ticket:admin:{channel.Id}:{thread.Id}", ButtonStyle.Success)
+              .WithButton("Unrelated", $"btn.ticket:unrelated:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
               .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
               .Build());
 
             await message.PinAsync();
+
+            await FollowupAsync($"## Done\nYour ticket created, click here: {message.GetJumpUrl()}.", ephemeral: true);
 
         }
         [RateLimit(5)]
@@ -88,7 +91,8 @@ namespace Dynastio.Bot.Interactions._Modules
                     await thread.ModifyAsync(a => a.Archived = true);
                     break;
 
-                case "helpfull": await thread
+                case "helpfull":
+                    await thread
                         .SendMessageAsync($"{MentionUtils.MentionRole(1113563679208775730)} You have been invited by {userMention} to help with the ticket.");
                     break;
 
@@ -97,6 +101,36 @@ namespace Dynastio.Bot.Interactions._Modules
                     .SendMessageAsync($"{MentionUtils.MentionRole(1105914502614089739)} You have been invited by {userMention} to help with the ticket.");
                     break;
 
+                case "unrelated":
+                    
+                    try
+                    {
+                        var msgs = await thread.GetPinnedMessagesAsync();
+
+                        var botPinedMessage = msgs
+                            .FirstOrDefault(a => a.Author.Id == this.Context.Client.CurrentUser.Id);
+
+                        if (botPinedMessage is null) return;
+
+                        var user = botPinedMessage.MentionedUsers
+                            .FirstOrDefault();
+
+                        if (user is null) return;
+
+                        await user.SendMessageAsync(
+                            $"## Ticket Closed\n" +
+                            $"- Your ticket closed by {userMention} due to unrelated content.\n" +
+                            $"> Ваша заявка закрыта пользователем {userMention} из-за содержания, не связанного с ней.\n" +
+                            $"- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠ <#1098263349873082438>/ <#1098322508459028480> channel.\n" +
+                            $"> Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал <#1098603826291941476>/ <#1098609722006970439>.")
+                           .TryAsync();
+                    }
+                    catch { }
+
+                    await thread.SendMessageAsync($"## Closed\nThe thread has been marked as unrelated by {userMention}.");
+                    await thread.ModifyAsync(a => a.Archived = true);
+
+                    break;
 
             }
         }
