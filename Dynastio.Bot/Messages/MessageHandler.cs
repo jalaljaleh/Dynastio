@@ -42,13 +42,19 @@ namespace Dynastio.Bot
 
         }
 
-        static ulong[] _bannedChannels = { 480951565255966720 };
+        static ulong[] _messageloggerBannedChannels = {
+            480951565255966720, // Rules
+            1111200419922837504, // Tickets
+            1109911020341837825, //dev bot
+            1106233786246631574, //admin
+            1100756385211351090, // counter
+        };
         private async Task _discord_MessageUpdated(Cacheable<IMessage, ulong> oldMessage, SocketMessage NewMessage, ISocketMessageChannel channel)
         {
             if (NewMessage.Source != Discord.MessageSource.User)
                 return;
 
-            if (_bannedChannels.Contains(channel.Id)) return;
+            if (_messageloggerBannedChannels.Contains(channel.Id)) return;
 
             if (channel is IGuildChannel guildChannel)
             {
@@ -64,7 +70,7 @@ namespace Dynastio.Bot
 
         private async Task _discord_MessageDeleted(Cacheable<IMessage, ulong> cachedMessage, Cacheable<IMessageChannel, ulong> channel)
         {
-            if (_bannedChannels.Contains(channel.Id)) return;
+            if (_messageloggerBannedChannels.Contains(channel.Id)) return;
 
             if (channel.HasValue && channel.Value is IGuildChannel guildChannel)
             {

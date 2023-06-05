@@ -49,16 +49,21 @@ namespace Dynastio.Bot.Interactions._Modules
             var thread = await channel.CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.OneWeek, null, false, 0);
 
             var message = await thread.SendMessageAsync(
-                $"**Important**\n" +
+                $"## Important\n" +
                 $"- This is a safe and private thread with Dynastio Staff **No Admin, No Moderator**.\n" +
                 $"> Это безопасный и конфиденциальный поток с персоналом Dynastio ** Без администраторов, без модераторов**.\n\n\n" +
-                $"**Notes:**\n" +
-                $"- Do not mention anyone.\n" +
-                $"> Не упоминайте никого.\n\n<@&480954902005415937>" +
+                $"## Notes:\n" +
+                $"- Do not mention anyone, Do not Invite anyone, Do not use Add buttons if you know nothing about them.\n" +
+                $"> Не упоминайте никого." +
+                $"- Use the close button to close the ticket when you done." +
+                $"\n\n" +
+                $"<@&480954902005415937>" +
                 $"> **<@{Context.User.Id}> Send Your Message:**",
 
                 components: new ComponentBuilder()
-              .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Danger, Emoji.Parse("❌"))
+              .WithButton("Add Helpful", $"btn.ticket:helpfull:{channel.Id}:{thread.Id}", ButtonStyle.Danger, Emoji.Parse("🛠"))
+              .WithButton("Add Admins", $"btn.ticket:admin:{channel.Id}:{thread.Id}", ButtonStyle.Danger, Emoji.Parse("🛠"))
+              .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Danger, Emoji.Parse("🔒"))
               .Build());
 
             await message.PinAsync();
@@ -79,8 +84,20 @@ namespace Dynastio.Bot.Interactions._Modules
             switch (action)
             {
                 case "close":
+                    await thread.SendMessageAsync($"## Closed\nThe thread has been closed by {userMention}.");
                     await thread.ModifyAsync(a => a.Archived = true);
                     break;
+
+                case "helpfull": await thread
+                        .SendMessageAsync($"{MentionUtils.MentionRole(1113563679208775730)} You have been invited by {userMention} to help with the ticket.");
+                    break;
+
+                case "admin":
+                    await thread
+                    .SendMessageAsync($"{MentionUtils.MentionRole(1105914502614089739)} You have been invited by {userMention} to help with the ticket.");
+                    break;
+
+
             }
         }
 
