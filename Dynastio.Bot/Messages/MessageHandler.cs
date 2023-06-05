@@ -55,7 +55,7 @@ namespace Dynastio.Bot
                 return;
 
             if (_messageloggerBannedChannels.Contains(channel.Id)) return;
-
+           
             if (channel is IGuildChannel guildChannel)
             {
                 if (guildChannel.GuildId != GuildService._officialGuildId) return;
