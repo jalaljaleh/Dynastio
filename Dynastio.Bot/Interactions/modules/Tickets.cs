@@ -79,7 +79,7 @@ namespace Dynastio.Bot.Interactions._Modules
 
             await message.PinAsync();
 
-            await FollowupAsync($"## Done\nYour ticket created, click here: {message.GetJumpUrl()}.", ephemeral: true);
+            await FollowupAsync($"## Done\nYour ticket created, click here: {thread.Mention}.", ephemeral: true);
 
         }
         public class TicketForm : IModal
