@@ -88,14 +88,11 @@ namespace Dynastio.Bot.Interactions.Modules._user
         [RateLimit(5)]
         [RequireUserDynastioAccount]
         [SlashCommand("switch", "switch to another account")]
-        public async Task id([Autocomplete(typeof(SharedAutocompleteHandler.AccountAutocompleteHandler))] string account)
+        public async Task id([MaxLengthAttribute(20),Autocomplete(typeof(SharedAutocompleteHandler.AccountAutocompleteHandler))] string account)
         {
             await DeferAsync();
 
-            UserAccount selectedAccount = Context.BotUser.Accounts
-                .FirstOrDefault(
-                a =>
-                a.GetHashCode() == int.Parse(account));
+            UserAccount selectedAccount = Context.BotUser.GetAccountByHashCode(account);
 
             Context.BotUser.SwitchAccount(ref selectedAccount);
 
@@ -111,10 +108,7 @@ namespace Dynastio.Bot.Interactions.Modules._user
         {
             await DeferAsync(true);
 
-            UserAccount selectedAccount = Context.BotUser.Accounts
-                .FirstOrDefault(
-                a =>
-                a.GetHashCode().Equals(int.Parse(account)));
+            UserAccount selectedAccount = Context.BotUser.GetAccountByHashCode(account);
 
             if (selectedAccount is null) await FollowupAsync("account not found.");
             else await FollowupAsync(Context.User.Id.ToUserMention(),
@@ -141,7 +135,7 @@ namespace Dynastio.Bot.Interactions.Modules._user
             var modal = new ModalBuilder(this["modal.account.add.title"], $"accounts add")
                .AddTextInput(new TextInputBuilder(this["account_id"], "id", TextInputStyle.Short, "google:0000000000000000000", 1, 150, true, null))
                .AddTextInput(new TextInputBuilder(this["pincode"], "pincode", TextInputStyle.Short, this["XXX-XXX-XXX"], 11, 11, true, null))
-               .AddTextInput(new TextInputBuilder(this["reminder"], "reminder", TextInputStyle.Paragraph, "its a reminder field you can write anything.", 0, 500, false, null))
+               .AddTextInput(new TextInputBuilder(this["reminder"], "reminder", TextInputStyle.Paragraph, "its a reminder field you can write anything.", 0, 16, false, null))
                .Build();
 
             await Context.OverridedInteraction.RespondWithModalAsync(modal);

@@ -31,6 +31,9 @@ namespace Dynastio.Bot.Interactions.Modules
             else
                 messages = await channel.GetMessagesAsync(count).FlattenAsync();
 
+            messages = messages.Where(x => (DateTime.UtcNow - x.CreatedAt.UtcDateTime).TotalDays < 14)
+                .ToList();
+
             await channel.DeleteMessagesAsync(messages);
 
             await FollowupAsync($"done, {count} messages deleted.");
