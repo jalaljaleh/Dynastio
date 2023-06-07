@@ -42,11 +42,21 @@ namespace Dynastio.Bot.Interactions._Modules
         [ComponentInteraction("btn.ticket.start:*")]
         public async Task btn_ticket_start(ulong _channel)
         {
+            var modal = new ModalBuilder(this["modal.ticket.start.title"], $"tickets.start:{_channel}")
+               .AddTextInput(new TextInputBuilder("Title","title", TextInputStyle.Short, "its a name for your ticket.", 0, maxLength: 60, null))
+              .Build();
+
+            await RespondWithModalAsync(modal);
+        }
+        [RateLimit(10)]
+        [ModalInteraction("tickets.start:*", true)]
+        public async Task add(ulong _channel,TicketForm form)
+        {
             await DeferAsync(true);
 
             var channel = Context.Guild.GetTextChannel(_channel);
 
-            var thread = await channel.CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.ThreeDays, null, false, 0);
+            var thread = await channel.CreateThreadAsync(Context.User.Username + $"-{form.Title1}", ThreadType.PrivateThread, ThreadArchiveDuration.ThreeDays, null, false, 0);
 
             var message = await thread.SendMessageAsync(
                 $"## Important\n" +
@@ -72,7 +82,17 @@ namespace Dynastio.Bot.Interactions._Modules
             await FollowupAsync($"## Done\nYour ticket created, click here: {message.GetJumpUrl()}.", ephemeral: true);
 
         }
-        [RateLimit(5)]
+        public class TicketForm : IModal
+        {
+            public string Title => "Ticket";
+
+            [InputLabel("Title")]
+            [RequiredInput(true)]
+            [ModalTextInput("title", TextInputStyle.Short, "its a name for your ticket.", 0, maxLength: 60, null)]
+            public string Title1 { get; set; }
+
+        }
+        [RateLimit(5, 2)]
         [ComponentInteraction("btn.ticket:*:*:*")]
         public async Task btn_ticket(string action, ulong _channel, ulong _thread)
         {
@@ -83,10 +103,35 @@ namespace Dynastio.Bot.Interactions._Modules
 
             var thread = channel.Threads.FirstOrDefault(a => a.Id == _thread);
             if (thread is null) return;
+            async Task SendMessageToTicketOwnerAsync(string msg)
+            {
+                var msgs = await thread.GetPinnedMessagesAsync();
 
+                var botPinedMessage = msgs
+                    .FirstOrDefault(a => a.Author.Id == this.Context.Client.CurrentUser.Id);
+
+                if (botPinedMessage is null) return;
+
+                var user = botPinedMessage.MentionedUsers
+                    .FirstOrDefault();
+
+                if (user is null) return;
+
+                await user.SendMessageAsync(msg).TryAsync();
+            }
             switch (action)
             {
+
                 case "close":
+
+                    await SendMessageToTicketOwnerAsync(
+                       $"## Ticket Closed\n" +
+                   $"- Your ticket closed by {userMention} probably due to unrelated content.\n" +
+                   $"> Ваша заявка закрыта пользователем {userMention} из-за содержания, не связанного с ней.\n" +
+                   $"- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠ <#1098263349873082438>/ <#1098322508459028480> channel.\n" +
+                   $"> Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал <#1098603826291941476>/ <#1098609722006970439>."
+                   ).TryAsync();
+
                     await thread.SendMessageAsync($"## Closed\nThe thread has been closed by {userMention}.");
                     await thread.ModifyAsync(a => a.Archived = true);
                     break;
@@ -102,30 +147,14 @@ namespace Dynastio.Bot.Interactions._Modules
                     break;
 
                 case "unrelated":
-                    
-                    try
-                    {
-                        var msgs = await thread.GetPinnedMessagesAsync();
 
-                        var botPinedMessage = msgs
-                            .FirstOrDefault(a => a.Author.Id == this.Context.Client.CurrentUser.Id);
-
-                        if (botPinedMessage is null) return;
-
-                        var user = botPinedMessage.MentionedUsers
-                            .FirstOrDefault();
-
-                        if (user is null) return;
-
-                        await user.SendMessageAsync(
-                            $"## Ticket Closed\n" +
-                            $"- Your ticket closed by {userMention} due to unrelated content.\n" +
-                            $"> Ваша заявка закрыта пользователем {userMention} из-за содержания, не связанного с ней.\n" +
-                            $"- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠ <#1098263349873082438>/ <#1098322508459028480> channel.\n" +
-                            $"> Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал <#1098603826291941476>/ <#1098609722006970439>.")
-                           .TryAsync();
-                    }
-                    catch { }
+                    await SendMessageToTicketOwnerAsync(
+                        $"## Ticket Closed\n" +
+                    $"- Your ticket closed by {userMention} due to unrelated content.\n" +
+                    $"> Ваша заявка закрыта пользователем {userMention} из-за содержания, не связанного с ней.\n" +
+                    $"- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠ <#1098263349873082438>/ <#1098322508459028480> channel.\n" +
+                    $"> Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал <#1098603826291941476>/ <#1098609722006970439>."
+                    ).TryAsync();
 
                     await thread.SendMessageAsync($"## Closed\nThe thread has been marked as unrelated by {userMention}.");
                     await thread.ModifyAsync(a => a.Archived = true);
