@@ -17,10 +17,12 @@ namespace Dynastio.Bot.Interactions.AutoCompeletes
         {
             string match = autocompleteInteraction.Data.Current.Value.ToString();
 
-            var accounts = (context as CustomSocketInteractionContext)
-                .BotUser
-                .Accounts
-                .Where(a => a.Reminder.Contains(match)).ToList();
+
+            var accounts = string.IsNullOrEmpty(match)
+                ?
+                (context as CustomSocketInteractionContext).BotUser.Accounts.OrderBy(a=>a.AddedAt).ToList()
+                :
+                (context as CustomSocketInteractionContext).BotUser.Accounts.OrderBy(a => a.AddedAt).Where(a => a.Reminder.Contains(match)).ToList();
 
             var result = new List<AutocompleteResult>();
             foreach (var account in accounts)

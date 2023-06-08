@@ -22,6 +22,14 @@ namespace Dynastio.Bot.Data
         [BsonDefaultValue("none")]
         public string Reminder { get; set; } = "none";
 
+        public UserAccount SetReminder(string text)
+        {
+            Reminder = string.IsNullOrEmpty(text)
+                ? Id.Split(":")[0]
+                : text.TryRemove(16).Trim(); ;
+            return this;
+        }
+       
         public DateTime AddedAt { get; set; }
 
         public bool IsDefault { get; set; } = false;

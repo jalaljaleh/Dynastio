@@ -125,6 +125,27 @@ namespace Dynastio.Bot.Interactions.modules
                     ).ToEmbed(default, Color.Green), ephemeral: true);
         }
 
+        [RateLimit(5)]
+        [RequireUserDynastioAccount]
+        [SlashCommand("change", "change account details")]
+        public async Task change([MaxLength(20), Autocomplete(typeof(AutoCompeleteAccounts))] string account, string newReminder)
+        {
+            await DeferAsync(true);
+
+            UserAccount selectedAccount = Context.BotUser.GetAccountByHashCode(account);
+
+            if (selectedAccount is null)
+            {
+                await FollowupAsync("account not found.");
+                return;
+            }
+            
+            selectedAccount.SetReminder(newReminder);
+
+            await _userService.UpdateAsync(Context.BotUser);
+
+            await FollowupAsync(userMention, embed: "Account updated.".ToEmbed());
+        }
         [RateLimit(10)]
         [SlashCommand("add", "connect an account to the bot")]
         [RequireConfirmation(
@@ -138,13 +159,13 @@ namespace Dynastio.Bot.Interactions.modules
             var modal = new ModalBuilder(this["modal.account.add.title"], $"accounts add")
                .AddTextInput(new TextInputBuilder(this["account_id"], "id", TextInputStyle.Short, "google:0000000000000000000", 1, 150, true, null))
                .AddTextInput(new TextInputBuilder(this["pincode"], "pincode", TextInputStyle.Short, this["XXX-XXX-XXX"], 11, 11, true, null))
-               .AddTextInput(new TextInputBuilder(this["reminder"], "reminder", TextInputStyle.Paragraph, "its a reminder field you can write anything.", 0, 16, false, null))
+               .AddTextInput(new TextInputBuilder(this["reminder"], "reminder", TextInputStyle.Short, "its a reminder field you can write anything.", 0, 16, false, null))
                .Build();
 
             await Context.OverridedInteraction.RespondWithModalAsync(modal);
         }
 
-        private const int _maxAccounts = 4;
+        private const int _maxAccounts = 8;
 
         [RateLimit(10)]
         [ModalInteraction("accounts add", true)]
@@ -153,9 +174,6 @@ namespace Dynastio.Bot.Interactions.modules
             await DeferAsync();
 
             string id = form.Id.Trim().Remove("id:", "Id:", "ID:", "iD:"); // don't use tolower
-            string reminder = string.IsNullOrEmpty(form.Reminder)
-                ? id.Split(":")[0]
-                : form.Reminder.TryRemove(16).Trim();
 
             if (id.Contains("discord") && !id.Contains(Context.User.Id.ToString()))
                 await FollowupAsync(userMention, embed: this["error.unauthorized.discord"].ToEmbed(this["unauthorized"], Color.Orange));
@@ -184,9 +202,9 @@ namespace Dynastio.Bot.Interactions.modules
                     Id = id,
                     AddedAt = DateTime.UtcNow,
                     IsDefault = false,
-                    Reminder = reminder,
                     PinCode = form.PinCode.Trim()
-                };
+                }.SetReminder(form.Reminder);
+
                 Context.BotUser.Accounts.Add(account);
                 Context.BotUser.SwitchAccount(ref account);
                 await _userService.UpdateAsync(Context.BotUser);
