@@ -21,8 +21,8 @@ namespace Dynastio.Bot.Interactions.commands.dynastio
             var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(15);
 
             string names = string.Join("\n.\n", leaderboard.Select(x => (leaderboard.IndexOf(x) + 1) + $". <@{x.Id}>"));
-            string levels = string.Join("\n", leaderboard.Select(x =>  x.activiy_level.ToString().ToMarkdown()));
-            string xps = string.Join("\n", leaderboard.Select(x =>  x.activiy_score.Metric().ToString().ToMarkdown()));
+            string levels = string.Join("", leaderboard.Select(x =>  x.activiy_level.ToString().ToMarkdown()));
+            string xps = string.Join("", leaderboard.Select(x =>  x.activiy_score.Metric().ToString().ToMarkdown()));
 
 
             var message = await FollowupAsync(userMention, embed:
