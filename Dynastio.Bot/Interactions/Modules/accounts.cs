@@ -127,8 +127,8 @@ namespace Dynastio.Bot.Interactions.modules
 
         [RateLimit(5)]
         [RequireUserDynastioAccount]
-        [SlashCommand("change", "change account details")]
-        public async Task change([MaxLength(20), Autocomplete(typeof(AutoCompeleteAccounts))] string account, string newReminder)
+        [SlashCommand("update", "update account details")]
+        public async Task update([MaxLength(20), Autocomplete(typeof(AutoCompeleteAccounts))] string account, string newReminder)
         {
             await DeferAsync(true);
 
