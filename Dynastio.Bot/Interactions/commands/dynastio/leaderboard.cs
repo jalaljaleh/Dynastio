@@ -18,7 +18,7 @@ namespace Dynastio.Bot.Interactions.commands.dynastio
         public async Task rank()
         {
             await DeferAsync();
-            var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(15);
+            var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(10);
 
             string names = string.Join("\n.\n", leaderboard.Select(x => (leaderboard.IndexOf(x) + 1) + $". <@{x.Id}>"));
             string levels = string.Join("", leaderboard.Select(x =>  x.activiy_level.ToString().ToMarkdown()));
@@ -29,8 +29,7 @@ namespace Dynastio.Bot.Interactions.commands.dynastio
                 new EmbedBuilder()
                 {
                     Title = "Top Active Users",
-                    ThumbnailUrl = "https://cdn.discordapp.com/attachments/1098332386674085988/1107719615678791781/circle_of_sacrifices_glow.png",
-                    Color = Color.DarkGreen
+                    Color = Color.Orange
                 }
                 .WithDescription("")
                 .AddField("User", names, true)

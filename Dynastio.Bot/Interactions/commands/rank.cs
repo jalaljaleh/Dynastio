@@ -9,7 +9,7 @@ using Dynastio.Net;
 using Discord.WebSocket;
 using Dynastio.Bot.Data;
 using Dynastio.Bot.Services;
-using Dynastio.Bot.Interactions.Modules.Shard;
+
 using System.Net.Http.Headers;
 
 namespace Dynastio.Bot.Interactions.Modules.@public

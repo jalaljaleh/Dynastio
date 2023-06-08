@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Net;
 using Discord.WebSocket;
-using Dynastio.Bot.Interactions.Modules.Shard;
+
+using Dynastio.Bot.Interactions.commands.dynastio._shared;
 
 namespace Dynastio.Bot.Interactions.commands.dynastio
 {
@@ -64,7 +65,7 @@ namespace Dynastio.Bot.Interactions.commands.dynastio
 
         [SlashCommand("server", "get server information")]
         public async Task server(
-            [MaxLength(20), Autocomplete(typeof(SharedAutocompleteHandler.OnlineServersAutocompleteHandler))] string server)
+            [MaxLength(20), Autocomplete(typeof(AutoCompeleteOnlineServers))] string server)
         {
             await DeferAsync();
             var result = _dynastio.OnlineServers.FirstOrDefault(a => a.Label.ToLower().Contains(server));

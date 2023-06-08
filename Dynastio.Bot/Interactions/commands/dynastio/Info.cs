@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Dynastio.Net;
-using Dynastio.Bot.Interactions.Modules.Shard;
 using MongoDB.Driver;
 
 namespace Dynastio.Bot.Interactions.Modules.Guild

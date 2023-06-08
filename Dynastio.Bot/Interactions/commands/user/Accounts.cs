@@ -9,7 +9,9 @@ using Dynastio.Net;
 using Discord.WebSocket;
 using Dynastio.Bot.Data;
 using Dynastio.Bot.Services;
-using Dynastio.Bot.Interactions.Modules.Shard;
+
+using Dynastio.Bot.Interactions.commands.dynastio._shared;
+using Dynastio.Bot.Interactions.commands._shared;
 
 namespace Dynastio.Bot.Interactions.Modules._user
 {
@@ -27,8 +29,8 @@ namespace Dynastio.Bot.Interactions.Modules._user
 
         [RateLimit(60)]
         [RequireUserDynastioAccount]
-        [SlashCommand("sync-roles", "get roles")]
-        public async Task syncroles()
+        [SlashCommand("roles", "get roles")]
+        public async Task roles()
         {
             await DeferAsync();
 
@@ -85,10 +87,11 @@ namespace Dynastio.Bot.Interactions.Modules._user
                     Url = "https://www.youtube.com/channel/UCW0PmC1B8jjhpKLHciFp0xA/?sub_confirmation=1"
                 }.Build());
         }
+
         [RateLimit(5)]
         [RequireUserDynastioAccount]
         [SlashCommand("switch", "switch to another account")]
-        public async Task id([MaxLengthAttribute(20),Autocomplete(typeof(SharedAutocompleteHandler.AccountAutocompleteHandler))] string account)
+        public async Task id([MaxLengthAttribute(20),Autocomplete(typeof(AutoCompeleteAccounts))] string account)
         {
             await DeferAsync();
 
@@ -101,10 +104,11 @@ namespace Dynastio.Bot.Interactions.Modules._user
             await FollowupAsync(userMention, embed: this["done"].ToEmbed(this["account_switched"], Color.Green));
 
         }
+
         [RateLimit(5, 2)]
         [RequireUserDynastioAccount]
         [SlashCommand("details", "get a connected account details")]
-        public async Task details([MaxLengthAttribute(20), Autocomplete(typeof(SharedAutocompleteHandler.AccountAutocompleteHandler))] string account)
+        public async Task details([MaxLengthAttribute(20), Autocomplete(typeof(AutoCompeleteAccounts))] string account)
         {
             await DeferAsync(true);
 

@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Net;
 using Discord.WebSocket;
-using Dynastio.Bot.Interactions.Modules.Shard;
 using System.ComponentModel;
 using Dynastio.Bot.Data;
+using Dynastio.Bot.Interactions.commands.dynastio._shared;
+using Dynastio.Bot.Interactions.commands._shared;
 
 namespace Dynastio.Bot.Interactions.commands.dynastio
 {
@@ -23,7 +24,7 @@ namespace Dynastio.Bot.Interactions.commands.dynastio
 
         [RequireUserDynastioAccount]
         [SlashCommand("profile", "your dynastio profile")]
-        public async Task profile([MaxLength(20), Autocomplete(typeof(SharedAutocompleteHandler.AccountAutocompleteHandler))] string account = "")
+        public async Task profile([MaxLength(20), Autocomplete(typeof(AutoCompeleteAccounts))] string account = "")
         {
             await DeferAsync();
 

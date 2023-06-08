@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Net;
 using Discord.WebSocket;
-using Dynastio.Bot.Interactions.Modules.Shard;
+
 using System.ComponentModel;
+using Dynastio.Bot.Interactions.commands.dynastio._shared;
 
 namespace Dynastio.Bot.Interactions.commands.dynastio
 {
@@ -21,7 +22,7 @@ namespace Dynastio.Bot.Interactions.commands.dynastio
 
         [SlashCommand("toplist", "a list of top players")]
         public async Task toplist(
-              [MaxLength(20), Autocomplete(typeof(SharedAutocompleteHandler.OnlineServersAutocompleteHandler))] string server = "",
+              [MaxLength(20), Autocomplete(typeof(AutoCompeleteOnlineServers))] string server = "",
               [MaxValue(60)] int take = 30,
               ToplistSortType sort = ToplistSortType.Score,
               int page = 1)
