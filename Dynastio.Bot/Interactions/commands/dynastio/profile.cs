@@ -11,14 +11,19 @@ using Dynastio.Bot.Interactions.Modules.Shard;
 using System.ComponentModel;
 using Dynastio.Bot.Data;
 
-namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
+namespace Dynastio.Bot.Interactions.commands.dynastio
 {
-
-    public partial class DynastioModule
+    [EnabledInDm(false)]
+    [RequireContext(ContextType.Guild)]
+    [RateLimit(4)]
+    public class ProfileModule : CustomInteractionModuleBase
     {
+        public DynastioClient _dynastio { get; set; }
+        public GraphicService _graphicService { get; set; }
+
         [RequireUserDynastioAccount]
         [SlashCommand("profile", "your dynastio profile")]
-        public async Task profile([Autocomplete(typeof(SharedAutocompleteHandler.AccountAutocompleteHandler))] string account = "")
+        public async Task profile([MaxLength(20), Autocomplete(typeof(SharedAutocompleteHandler.AccountAutocompleteHandler))] string account = "")
         {
             await DeferAsync();
 
@@ -26,10 +31,10 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
                     ? Context.BotUser.GetDefaultAccount()
                     : Context.BotUser.GetAccountByHashCode(account);
 
-            var _personalchest = await this._dynastio.GetUserPersonalchestAsync(account_.Id)
+            var _personalchest = await _dynastio.GetUserPersonalchestAsync(account_.Id)
                 .TryAsync();
 
-            var _profile = await this._dynastio.GetUserProfileAsync(account_.Id)
+            var _profile = await _dynastio.GetUserProfileAsync(account_.Id)
                 .TryAsync();
 
             var image = await _graphicService.GetPersonalChestAsync(Context.User as IGuildUser, BotUser, account_, _profile.result, _personalchest.result);

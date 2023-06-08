@@ -26,7 +26,7 @@ namespace Dynastio.Bot.Interactions.commands
         public IDynastioBotDatabase _db { get; set; }
 
         [RequireGuildOfficial]
-        [SlashCommand("boost-gift", "get your redeem code")]
+        [SlashCommand("gift", "get your redeem code", false, RunMode.Sync)]
         public async Task server_booster_gift()
         {
             await DeferAsync(false);

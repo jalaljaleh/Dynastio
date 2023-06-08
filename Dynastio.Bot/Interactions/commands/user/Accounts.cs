@@ -104,7 +104,7 @@ namespace Dynastio.Bot.Interactions.Modules._user
         [RateLimit(5, 2)]
         [RequireUserDynastioAccount]
         [SlashCommand("details", "get a connected account details")]
-        public async Task details([Autocomplete(typeof(SharedAutocompleteHandler.AccountAutocompleteHandler))] string account)
+        public async Task details([MaxLengthAttribute(20), Autocomplete(typeof(SharedAutocompleteHandler.AccountAutocompleteHandler))] string account)
         {
             await DeferAsync(true);
 

@@ -1,18 +1,18 @@
 ﻿using Discord.Interactions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Discord;
 using Dynastio.Net;
 
-namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
+namespace Dynastio.Bot.Interactions.commands.dynastio
 {
-    public partial class DynastioModule
+    [EnabledInDm(false)]
+    [RequireContext(ContextType.Guild)]
+    [RateLimit(4)]
+    [Group("leaderboard","Leaderboards")]
+    public class leaderboardModule : CustomInteractionModuleBase
     {
-        [SlashCommand("leaderboard-score", "leaderboard score")]
-        public async Task LeaderboardScore(LeaderboardType leaderboard = LeaderboardType.Monthly)
+        public DynastioClient _dynastio { get; set; }
+
+        [SlashCommand("score", "leaderboard score")]
+        public async Task svore(LeaderboardType leaderboard = LeaderboardType.Monthly)
         {
             await DeferAsync();
 
@@ -33,8 +33,8 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
                 a => $"{a.Nickname.RemoveLines()}");
             await FollowupAsync(Context.User.Id.ToUserMention(), embed: content.ToMarkdown().ToEmbed(Context.UserLocale["leaderboard"] + " " + Context.UserLocale[leaderboard.ToString().ToLower()]));
         }
-        [SlashCommand("leaderboard-coin", "leaderboard coin")]
-        public async Task leaderboard_coin()
+        [SlashCommand("coin", "leaderboard coin")]
+        public async Task coin()
         {
             await DeferAsync();
 
@@ -52,7 +52,7 @@ namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
             if (!id.Contains("discord:"))
                 return "Hidden";
             ulong _id = ulong.Parse(id.Replace("discord:", ""));
-            var user = await this.Context.Client.GetUserAsync(_id);
+            var user = await Context.Client.GetUserAsync(_id);
             return user?.Username ?? "Unknown";
         }
         //[RateLimit(10)]

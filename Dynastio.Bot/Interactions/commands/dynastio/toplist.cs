@@ -10,13 +10,18 @@ using Discord.WebSocket;
 using Dynastio.Bot.Interactions.Modules.Shard;
 using System.ComponentModel;
 
-namespace Dynastio.Bot.Interactions.Modules.dynastio.Commands
+namespace Dynastio.Bot.Interactions.commands.dynastio
 {
-    public partial class DynastioModule
+    [EnabledInDm(false)]
+    [RequireContext(ContextType.Guild)]
+    [RateLimit(4)]
+    public class toplistModule : CustomInteractionModuleBase
     {
+        public DynastioClient _dynastio { get; set; }
+
         [SlashCommand("toplist", "a list of top players")]
         public async Task toplist(
-              [Autocomplete(typeof(SharedAutocompleteHandler.OnlineServersAutocompleteHandler))] string server = "",
+              [MaxLength(20), Autocomplete(typeof(SharedAutocompleteHandler.OnlineServersAutocompleteHandler))] string server = "",
               [MaxValue(60)] int take = 30,
               ToplistSortType sort = ToplistSortType.Score,
               int page = 1)

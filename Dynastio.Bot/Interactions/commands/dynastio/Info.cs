@@ -11,16 +11,17 @@ using MongoDB.Driver;
 
 namespace Dynastio.Bot.Interactions.Modules.Guild
 {
+
     [EnabledInDm(false)]
     [RequireContext(ContextType.Guild)]
     [RequireBotPermission(ChannelPermission.AttachFiles | ChannelPermission.SendMessages)]
-    [Group("private-server", "dyanstio private server")]
-    public class PrivateServerModule : CustomInteractionModuleBase
+    [Group("info", "dyanstio info commands")]
+    public class InfoModule : CustomInteractionModuleBase
     {
         public DynastioClient Dynastio { get; set; }
 
 
-        [RateLimit(120, 1, RateLimit.RateLimitType.User)]
+        [RateLimit(10)]
         [SlashCommand("items", "get private server items")]
         public async Task items(bool Newest = false,int NewestNumber = 10)
         {
@@ -49,7 +50,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild
 
             await FollowupAsync(embed: content.ToEmbed(Newest ? "Newest Items" : "Items List"));
         }
-        [RateLimit(120, 1, RateLimit.RateLimitType.User)]
+        [RateLimit(10)]
         [SlashCommand("entities", "get private server entities")]
         public async Task entities(bool Newest = false, int NewestNumber = 10)
         {
