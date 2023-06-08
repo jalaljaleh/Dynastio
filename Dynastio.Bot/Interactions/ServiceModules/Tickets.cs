@@ -11,7 +11,7 @@ using Dynastio.Bot.Data;
 using Dynastio.Bot.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Dynastio.Bot.Interactions._Modules
+namespace Dynastio.Bot.Interactions.ServiceModules
 {
     public class TicketModule : CustomInteractionModuleBase
     {
@@ -43,14 +43,14 @@ namespace Dynastio.Bot.Interactions._Modules
         public async Task btn_ticket_start(ulong _channel)
         {
             var modal = new ModalBuilder(this["modal.ticket.start.title"], $"tickets.start:{_channel}")
-               .AddTextInput(new TextInputBuilder("Title","title", TextInputStyle.Short, "its a name for your ticket.", 0, maxLength: 60, null))
+               .AddTextInput(new TextInputBuilder("Title", "title", TextInputStyle.Short, "its a name for your ticket.", 0, maxLength: 60, null))
               .Build();
 
             await RespondWithModalAsync(modal);
         }
         [RateLimit(10)]
         [ModalInteraction("tickets.start:*", true)]
-        public async Task add(ulong _channel,TicketForm form)
+        public async Task add(ulong _channel, TicketForm form)
         {
             await DeferAsync(true);
 
@@ -108,7 +108,7 @@ namespace Dynastio.Bot.Interactions._Modules
                 var msgs = await thread.GetPinnedMessagesAsync();
 
                 var botPinedMessage = msgs
-                    .FirstOrDefault(a => a.Author.Id == this.Context.Client.CurrentUser.Id);
+                    .FirstOrDefault(a => a.Author.Id == Context.Client.CurrentUser.Id);
 
                 if (botPinedMessage is null) return;
 

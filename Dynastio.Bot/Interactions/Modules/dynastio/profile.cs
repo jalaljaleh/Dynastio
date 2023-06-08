@@ -9,10 +9,9 @@ using Dynastio.Net;
 using Discord.WebSocket;
 using System.ComponentModel;
 using Dynastio.Bot.Data;
-using Dynastio.Bot.Interactions.commands.dynastio._shared;
-using Dynastio.Bot.Interactions.commands._shared;
+using Dynastio.Bot.Interactions.AutoCompeletes;
 
-namespace Dynastio.Bot.Interactions.commands.dynastio
+namespace Dynastio.Bot.Interactions.modules.dynastio
 {
     [EnabledInDm(false)]
     [RequireContext(ContextType.Guild)]

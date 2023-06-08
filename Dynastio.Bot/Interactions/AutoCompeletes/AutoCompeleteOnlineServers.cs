@@ -8,9 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Dynastio.Bot.Data;
 
-namespace Dynastio.Bot.Interactions.commands.dynastio._shared
+namespace Dynastio.Bot.Interactions.AutoCompeletes
 {
-    public class AutoCompeleteOnlineServersPrivate : AutocompleteHandler
+
+
+    public class AutoCompeleteOnlineServers : AutocompleteHandler
     {
         public DynastioClient Dynastio { get; set; }
         public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
@@ -19,21 +21,23 @@ namespace Dynastio.Bot.Interactions.commands.dynastio._shared
 
             string match = autocompleteInteraction.Data.Current.Value.ToString();
 
+
             var servers = Dynastio.OnlineServers.Where(
                 a =>
-                a.IsPrivate == true &&
+                a.IsPrivate == false &&
                 a.Label.ToLower().Contains(match)).Take(25).ToList();
 
             foreach (var server in servers)
             {
                 results.Add(new AutocompleteResult()
                 {
-                    Name = server.Label.RemoveHtmlTags().TryRemove(98),
-                    Value = server.GetHashCode().ToString()
+                    Name = server.Label.TryRemove(98),
+                    Value = server.Label.TryRemove(30, false)
                 });
             }
             // max - 25 suggestions at a time (API limit)
             return await Task.FromResult(AutocompletionResult.FromSuccess(results));
         }
     }
+
 }

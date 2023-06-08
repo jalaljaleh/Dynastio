@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Dynastio.Bot.Data;
 
-namespace Dynastio.Bot.Interactions.commands._shared
+namespace Dynastio.Bot.Interactions.AutoCompeletes
 {
-    public class AutoCompeleteAccounts: AutocompleteHandler
+    public class AutoCompeleteAccounts : AutocompleteHandler
     {
         public UserService UserService { get; set; }
         public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)

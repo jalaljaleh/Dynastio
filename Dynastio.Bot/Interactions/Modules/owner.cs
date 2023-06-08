@@ -13,7 +13,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Numerics;
 using System.Reflection;
 
-namespace Dynastio.Bot.Interactions.commands
+namespace Dynastio.Bot.Interactions.modules
 {
 
     [RequireBotOwner]

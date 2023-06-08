@@ -3,7 +3,7 @@ using Discord.Interactions;
 using Dynastio.Bot.Data;
 using Dynastio.Net;
 
-namespace Dynastio.Bot.Interactions.commands.dynastio
+namespace Dynastio.Bot.Interactions.modules.dynastio
 {
     [EnabledInDm(false)]
     [RequireContext(ContextType.Guild)]
@@ -20,9 +20,9 @@ namespace Dynastio.Bot.Interactions.commands.dynastio
             await DeferAsync();
             var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(10);
 
-            string names = string.Join("\n.\n", leaderboard.Select(x => (leaderboard.IndexOf(x) + 1) + $". <@{x.Id}>"));
-            string levels = string.Join("", leaderboard.Select(x =>  x.activiy_level.ToString().ToMarkdown()));
-            string xps = string.Join("", leaderboard.Select(x =>  x.activiy_score.Metric().ToString().ToMarkdown()));
+            string names = string.Join("\n.\n", leaderboard.Select(x => leaderboard.IndexOf(x) + 1 + $". <@{x.Id}>"));
+            string levels = string.Join("", leaderboard.Select(x => x.activiy_level.ToString().ToMarkdown()));
+            string xps = string.Join("", leaderboard.Select(x => x.activiy_score.Metric().ToString().ToMarkdown()));
 
 
             var message = await FollowupAsync(userMention, embed:

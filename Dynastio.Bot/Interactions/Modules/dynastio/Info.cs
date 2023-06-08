@@ -8,7 +8,7 @@ using Discord;
 using Dynastio.Net;
 using MongoDB.Driver;
 
-namespace Dynastio.Bot.Interactions.Modules.Guild
+namespace Dynastio.Bot.Interactions.modules.dynastio
 {
 
     [EnabledInDm(false)]
@@ -22,14 +22,14 @@ namespace Dynastio.Bot.Interactions.Modules.Guild
 
         [RateLimit(10)]
         [SlashCommand("items", "get private server items")]
-        public async Task items(bool Newest = false,int NewestNumber = 10)
+        public async Task items(bool Newest = false, int NewestNumber = 10)
         {
             await DeferAsync();
 
             string content = "";
 
             var items = (ItemType[])Enum.GetValues(typeof(ItemType));
-            
+
             if (Newest)
                 items = items.TakeLast(NewestNumber).ToArray();
 
@@ -69,7 +69,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild
 
             await FollowupAsync(embed: content.ToEmbed(Newest ? "Newest Entities" : "Entities List"));
         }
-      
+
 
     }
 }

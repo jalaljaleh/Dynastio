@@ -12,7 +12,7 @@ using Dynastio.Bot.Data;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
-namespace Dynastio.Bot.Interactions.commands
+namespace Dynastio.Bot.Interactions.modules
 {
 
     [EnabledInDm(false)]

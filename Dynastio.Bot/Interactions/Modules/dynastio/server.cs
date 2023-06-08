@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Net;
 using Discord.WebSocket;
+using Dynastio.Bot.Interactions.AutoCompeletes;
 
-using Dynastio.Bot.Interactions.commands.dynastio._shared;
-
-namespace Dynastio.Bot.Interactions.commands.dynastio
+namespace Dynastio.Bot.Interactions.modules.dynastio
 {
     [EnabledInDm(false)]
     [RequireContext(ContextType.Guild)]
     [RateLimit(4)]
-    [Group("find","Find commands")]
+    [Group("find", "Find commands")]
     public class FindModule : CustomInteractionModuleBase
     {
         public DynastioClient _dynastio { get; set; }

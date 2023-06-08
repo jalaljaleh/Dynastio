@@ -12,7 +12,7 @@ using Dynastio.Bot.Services;
 
 using System.Net.Http.Headers;
 
-namespace Dynastio.Bot.Interactions.Modules.@public
+namespace Dynastio.Bot.Interactions.modules
 {
 
     [RequireGuildOfficial]
@@ -68,7 +68,7 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                  }.Build());
 
         }
-       
+
 
     }
 

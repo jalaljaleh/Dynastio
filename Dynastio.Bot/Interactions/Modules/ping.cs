@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Bot.Global;
 
-namespace Dynastio.Bot.Interactions.Modules
+namespace Dynastio.Bot.Interactions.modules
 {
     public class PingModule : CustomInteractionModuleBase
     {

@@ -8,7 +8,7 @@ using Discord;
 using Dynastio.Bot.Global;
 using Dynastio.Net;
 
-namespace Dynastio.Bot.Interactions.Modules
+namespace Dynastio.Bot.Interactions.modules.moderators
 {
     [EnabledInDm(false)]
     [RequireContext(ContextType.Guild)]

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Interactions.Modules._user.forms
+namespace Dynastio.Bot.Interactions.Forms
 {
-    public class AddAccountForm : IModal
+    public class FormAddAccount : IModal
     {
         public string Title => "Add Account";
 

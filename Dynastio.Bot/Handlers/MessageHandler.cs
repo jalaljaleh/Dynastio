@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Dynastio.Bot
+namespace Dynastio.Bot.Handlers
 {
     public class MessageHandler
     {
@@ -34,7 +34,7 @@ namespace Dynastio.Bot
             _webhookService = services.GetRequiredService<WebhookService>();
             _discord.MessageReceived += _discord_MessageReceived;
 
-            if (!Global.Main.IsDebug())
+            if (!Main.IsDebug())
             {
                 _discord.MessageDeleted += _discord_MessageDeleted;
                 _discord.MessageUpdated += _discord_MessageUpdated;
@@ -51,11 +51,11 @@ namespace Dynastio.Bot
         };
         private async Task _discord_MessageUpdated(Cacheable<IMessage, ulong> oldMessage, SocketMessage NewMessage, ISocketMessageChannel channel)
         {
-            if (NewMessage.Source != Discord.MessageSource.User)
+            if (NewMessage.Source != MessageSource.User)
                 return;
 
             if (_messageloggerBannedChannels.Contains(channel.Id)) return;
-           
+
             if (channel is IGuildChannel guildChannel)
             {
                 if (guildChannel.GuildId != GuildService._officialGuildId) return;
@@ -77,7 +77,7 @@ namespace Dynastio.Bot
                 if (guildChannel.GuildId != GuildService._officialGuildId) return;
 
                 var message = await cachedMessage.GetOrDownloadAsync();
-                if (message is null || message.Source != Discord.MessageSource.User)
+                if (message is null || message.Source != MessageSource.User)
                     return;
 
                 if (message is null) return;
@@ -91,7 +91,7 @@ namespace Dynastio.Bot
             if (!(rawMessage is SocketUserMessage message))
                 return;
 
-            if (message.Source != Discord.MessageSource.User)
+            if (message.Source != MessageSource.User)
                 return;
 
             var commandResult = await _commandHandler.HandleCommand(message);

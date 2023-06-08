@@ -6,8 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Dynastio.Bot.Global;
+using Dynastio.Bot.Interactions.modules.moderators;
 
-namespace Dynastio.Bot.Interactions.Modules
+namespace Dynastio.Bot.Interactions.modules.admin
 {
     [EnabledInDm(false)]
     [RequireContext(ContextType.Guild)]

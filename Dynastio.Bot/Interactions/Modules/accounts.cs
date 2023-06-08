@@ -9,11 +9,10 @@ using Dynastio.Net;
 using Discord.WebSocket;
 using Dynastio.Bot.Data;
 using Dynastio.Bot.Services;
+using Dynastio.Bot.Interactions.AutoCompeletes;
+using Dynastio.Bot.Interactions.Forms;
 
-using Dynastio.Bot.Interactions.commands.dynastio._shared;
-using Dynastio.Bot.Interactions.commands._shared;
-
-namespace Dynastio.Bot.Interactions.Modules._user
+namespace Dynastio.Bot.Interactions.modules
 {
 
     [RequireGuildOfficial]
@@ -91,7 +90,7 @@ namespace Dynastio.Bot.Interactions.Modules._user
         [RateLimit(5)]
         [RequireUserDynastioAccount]
         [SlashCommand("switch", "switch to another account")]
-        public async Task id([MaxLengthAttribute(20),Autocomplete(typeof(AutoCompeleteAccounts))] string account)
+        public async Task id([MaxLength(20), Autocomplete(typeof(AutoCompeleteAccounts))] string account)
         {
             await DeferAsync();
 
@@ -108,7 +107,7 @@ namespace Dynastio.Bot.Interactions.Modules._user
         [RateLimit(5, 2)]
         [RequireUserDynastioAccount]
         [SlashCommand("details", "get a connected account details")]
-        public async Task details([MaxLengthAttribute(20), Autocomplete(typeof(AutoCompeleteAccounts))] string account)
+        public async Task details([MaxLength(20), Autocomplete(typeof(AutoCompeleteAccounts))] string account)
         {
             await DeferAsync(true);
 
@@ -149,7 +148,7 @@ namespace Dynastio.Bot.Interactions.Modules._user
 
         [RateLimit(10)]
         [ModalInteraction("accounts add", true)]
-        public async Task add(forms.AddAccountForm form)
+        public async Task add(FormAddAccount form)
         {
             await DeferAsync();
 

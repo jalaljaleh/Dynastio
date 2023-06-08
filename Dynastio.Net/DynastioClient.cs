@@ -41,15 +41,15 @@ namespace Dynastio.Net
         private readonly Cacheable<string> _changelog;
         private readonly Cacheable<List<Leaderboardcoin>> _leaderboardcoin;
         private readonly Cacheable<Leaderboardscore[][]> _leaderboardscore;
+
+        public Version Version { get => _version.Value; }
         public List<Player> OnlinePlayers { get => _players.Value; }
         public List<Server> OnlineServers { get => _servers.Value; }
-        public Version Version { get => _version.Value; }
-        public string Changelog { get => _changelog.Value; }
         public List<Leaderboardcoin> Leaderboardcoins { get => _leaderboardcoin.Value; }
-
         public List<Leaderboardscore> LeaderboardscoresDaily { get => _leaderboardscore.Value.ToArray()[0].ToList(); }
         public List<Leaderboardscore> LeaderboardscoresWeekly { get => _leaderboardscore.Value.ToArray()[1].ToList(); }
         public List<Leaderboardscore> LeaderboardscoresMonthly { get => _leaderboardscore.Value.ToArray()[2].ToList(); }
+        public string Changelog { get => _changelog.Value; }
 
         internal async Task<string> GetAsync(string api)
         {

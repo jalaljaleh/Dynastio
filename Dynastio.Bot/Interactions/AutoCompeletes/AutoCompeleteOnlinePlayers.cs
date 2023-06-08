@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dynastio.Bot.Data;
 
-namespace Dynastio.Bot.Interactions.commands.dynastio._shared
+namespace Dynastio.Bot.Interactions.AutoCompeletes
 {
 
     public class AutoCompeleteOnlinePlayers : AutocompleteHandler

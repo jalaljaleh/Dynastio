@@ -8,7 +8,7 @@ using Discord;
 using Dynastio.Net;
 using Discord.WebSocket;
 
-namespace Dynastio.Bot.Interactions.commands.dynastio
+namespace Dynastio.Bot.Interactions.modules.dynastio
 {
     [EnabledInDm(false)]
     [RequireContext(ContextType.Guild)]
@@ -23,7 +23,7 @@ namespace Dynastio.Bot.Interactions.commands.dynastio
             await DeferAsync();
             var version = _dynastio.Version;
             var message = await FollowupAsync(
-                embed: 
+                embed:
                 $"Current version is Is **{version.CurrentVersion}** [Download]({version.DownloadUrl})"
                 .ToEmbed("Version", Context.Client.CurrentUser.GetAvatarUrl()));
         }
