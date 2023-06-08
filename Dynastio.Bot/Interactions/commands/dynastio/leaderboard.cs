@@ -1,4 +1,6 @@
-﻿using Discord.Interactions;
+﻿using Discord;
+using Discord.Interactions;
+using Dynastio.Bot.Data;
 using Dynastio.Net;
 
 namespace Dynastio.Bot.Interactions.commands.dynastio
@@ -6,10 +8,36 @@ namespace Dynastio.Bot.Interactions.commands.dynastio
     [EnabledInDm(false)]
     [RequireContext(ContextType.Guild)]
     [RateLimit(4)]
-    [Group("leaderboard","Leaderboards")]
+    [Group("leaderboard", "Leaderboards")]
     public class leaderboardModule : CustomInteractionModuleBase
     {
         public DynastioClient _dynastio { get; set; }
+        public UserService _userService { get; set; }
+
+        [SlashCommand("rank", "user rank")]
+        public async Task rank()
+        {
+            await DeferAsync();
+            var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(15);
+
+            string names = string.Join("\n", leaderboard.Select(x => (leaderboard.IndexOf(x) + 1) + $". <@{x.Id}>"));
+            string levels = string.Join("\n", leaderboard.Select(x =>  x.activiy_level.ToString().ToMarkdown()));
+            string xps = string.Join("\n", leaderboard.Select(x =>  x.activiy_score.Metric().ToString().ToMarkdown()));
+
+
+            var message = await FollowupAsync(userMention, embed:
+                new EmbedBuilder()
+                {
+                    Title = "Top Active Users",
+                    ThumbnailUrl = "https://cdn.discordapp.com/attachments/1098332386674085988/1107719615678791781/circle_of_sacrifices_glow.png",
+                    Color = Color.DarkGreen
+                }
+                .WithDescription("")
+                .AddField("User", names, true)
+                .AddField("Level  ", levels, true)
+                .AddField(" XP", xps, true)
+                .Build());
+        }
 
         [SlashCommand("score", "leaderboard score")]
         public async Task svore(LeaderboardType leaderboard = LeaderboardType.Monthly)

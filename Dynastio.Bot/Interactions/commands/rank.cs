@@ -68,30 +68,7 @@ namespace Dynastio.Bot.Interactions.Modules.@public
                  }.Build());
 
         }
-        [RateLimit(60)]
-        [SlashCommand("leaderboard-rank", "user rank")]
-        public async Task rleaderboard()
-        {
-            await DeferAsync();
-
-            var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(15);
-
-            var content = leaderboard.ToStringTable<User>(new string[] { "Index", "User", "Level", "Xp" },
-                a => leaderboard.IndexOf(a).ToString(),
-                a => ". " + a.Id.ToUserMention(),
-                a => " --->** " + a.activiy_level.ToString().PadLeft(5),
-                a => " **---> " + a.activiy_score.Metric()).PadLeft(5);
-
-
-            var message = await FollowupAsync(userMention, embed:
-                new EmbedBuilder()
-                {
-                    Title = "Top Active Users",
-                    Color = Color.DarkGreen
-                }
-                .WithDescription(content)
-                .Build());
-        }
+       
 
     }
 
