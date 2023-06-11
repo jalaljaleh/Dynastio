@@ -30,16 +30,15 @@ namespace Dynastio.Net
         [JsonProperty("unlocked_buildings")]
         public List<EntityType> UnlockedBuildings { get; set; }
 
-        public ProfileDetails Details { get; set; } = new ProfileDetails()
-        {
-
-            Experience = 0,
-            Level = 0
-        };
+        [JsonProperty("experience")]
+        public int Experience { get; set; }
+        
+        [JsonProperty("level")]
+        public int Level { get; set; }
 
         public float GetExperienceMax()
         {
-            return 250 + Details.Level * 500;
+            return 250 + Level * 500;
         }
         public float GetExperience(int value)
         {
@@ -51,7 +50,7 @@ namespace Dynastio.Net
         }
         public float GetExperience()
         {
-            return Details.Experience;
+            return Experience;
         }
     }
 

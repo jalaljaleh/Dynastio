@@ -64,8 +64,8 @@ namespace Dynastio.Bot
             var pointCoinSection = new PointF() { X = (360), Y = 90 };
             image.Mutate(wIndex => wIndex.DrawText(profile.Coins.ToString(), new Font(fontFamily, 40, FontStyle.Regular), Color.White, pointCoinSection));
 
-            var TextLevelPoint = new PointF() { X = (140 - (4 * profile.Details.Level.ToString().Length)), Y = 115 };
-            image.Mutate(wIndex => wIndex.DrawText(profile.Details.Level.ToString(), new Font(fontFamily, 40, FontStyle.Bold), Color.White, TextLevelPoint));
+            var TextLevelPoint = new PointF() { X = (140 - (4 * profile.Level.ToString().Length)), Y = 115 };
+            image.Mutate(wIndex => wIndex.DrawText(profile.Experience.ToString(), new Font(fontFamily, 40, FontStyle.Bold), Color.White, TextLevelPoint));
 
             var pointDetailsSection = new PointF() { X = 80, Y = 260 };
             string TextDetails = string.Format("{0} was playing in {1}", profile.LastActiveAt.ToRelative(), StringExtensions.TryRemove(profile.LatestServer, 16));
@@ -103,7 +103,7 @@ namespace Dynastio.Bot
         private const int firstSlotSizeMarginHeight = 52;
         private const int SlotSizeMarginWidth = 5;
         private const int SlotSizeMarginHeight = 7;
-        public async Task<Image> GetPersonalChestAsync(Discord.IGuildUser user, User buser, UserAccount account, Profile profile, Personalchest personalchest)
+        public async Task<Image> GetPersonalChestAsync(Discord.IGuildUser user, UserAccount account,ProfileCard card)
         {
             //ChestStyle chest = user is { PremiumSince: null }
             //?
@@ -115,12 +115,12 @@ namespace Dynastio.Bot
 
             Image image = Image.Load(FileManager.ToResourcePath($"Images/Chest/{"default".ToString().ToLower()}.png"));
 
-            if (personalchest == null)
+            if (card.Chest == null)
             {
-                personalchest = new Personalchest(new List<PersonalChestItem>()) { };
+                card.Chest = new Personalchest(new List<PersonalChestItem>()) { };
             }
 
-            var items = personalchest.GetAsDictionary();
+            var items = card.Chest.GetAsDictionary();
 
 
             for (var wIndex = 0; wIndex < wSlotSize; wIndex++)
@@ -156,20 +156,20 @@ namespace Dynastio.Bot
 
             var font = new Font(fontFamily, 20, FontStyle.Regular);
 
-            image.Mutate(x => x.DrawText(profile.Details.Level.Metric().ToString(), font, Color.White, new Point(84, 274)));
+            image.Mutate(x => x.DrawText(card.Profile.Level.Metric().ToString(), font, Color.White, new Point(84, 274)));
 
-            image.Mutate(x => x.DrawText(profile.Coins.Metric().ToString(), font, Color.White, new Point(175, 274)));
+            image.Mutate(x => x.DrawText(card.Profile.Coins.Metric().ToString(), font, Color.White, new Point(175, 274)));
 
-            image.Mutate(x => x.DrawText("Latest Activity: " + profile.LastActiveAt.ToRelative() + " At " + profile.LatestServer + ".", new Font(fontFamily, 16, FontStyle.Regular), Color.WhiteSmoke, new Point(40, 538)));
+            image.Mutate(x => x.DrawText("Latest Activity: " + card.Profile.LastActiveAt.ToRelative() + " At " + card.Profile.LatestServer + ".", new Font(fontFamily, 16, FontStyle.Regular), Color.WhiteSmoke, new Point(40, 538)));
 
             var ExperienceLine = new Pen(brush: Brushes.Solid(Color.White), 9);
-            image.Mutate(x => x.DrawLines(ExperienceLine, new Point(56, 316), new Point((int)(profile.GetExperience(180) + 56), 316)));
+            image.Mutate(x => x.DrawLines(ExperienceLine, new Point(56, 316), new Point((int)(card.Profile.GetExperience(180) + 56), 316)));
 
             image.Mutate(x => x.DrawText("Account: " + account.Reminder.TryRemove(16), new Font(fontFamily, 14, FontStyle.Regular), Color.White, new Point(55, 371)));
 
-            for (int wIndex = 0; wIndex < profile.Badges.Count; wIndex++)
+            for (int wIndex = 0; wIndex < card.Profile.Badges.Count; wIndex++)
             {
-                var itemImgPath = FileManager.ToResourcePath($"Images/Badges/{profile.Badges[wIndex].ToString().ToLower()}.png");
+                var itemImgPath = FileManager.ToResourcePath($"Images/Badges/{card.Profile.Badges[wIndex].ToString().ToLower()}.png");
                 if (!File.Exists(itemImgPath)) itemImgPath = FileManager.ToResourcePath($"Images/unknown.png");
 
                 using (Image itemImg = Image.Load(path: itemImgPath))

@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dynastio.Net
 {
@@ -124,6 +125,24 @@ namespace Dynastio.Net
             var final = JsonConvert.DeserializeObject<PlayerStat>(cleardata);
             return final;
         }
+        public async Task<ProfileCard> GetUserProfileCardAsync(string playerId)
+        {
+            var result = await GetAsync("https://auth.dynast.cloud/api/get_user_card?uid=" + playerId);
+            var data = JsonConvert.DeserializeObject<DataType<ProfileCardEntitiy>>(result);
+
+            var clearStat = JsonConvert.DeserializeObject(data.data.Stat).ToString();
+            var Stat = JsonConvert.DeserializeObject<PlayerStat>(clearStat);
+
+            var clearPchest = JsonConvert.DeserializeObject(data.data.Chest).ToString();
+            var pchest = ParseToChest(clearPchest);
+
+            return new ProfileCard()
+            {
+                Profile = data.data.Profile,
+                Chest = pchest,
+                Stat = Stat,
+            };
+        }
         public async Task<Profile> GetUserProfileAsync(string playerId)
         {
             var result = await GetAsync("https://auth.dynast.io/api/get_user_profile?uid=" + playerId);
@@ -134,7 +153,11 @@ namespace Dynastio.Net
         {
             var result = await GetAsync("https://auth.dynast.io/api/get_user_chest?uid=" + playerId);
             var data = JsonConvert.DeserializeObject<DataType<string>>(result);
-            var cleardata = JsonConvert.DeserializeObject(data.data).ToString();
+            return ParseToChest(data.data);
+        }
+        internal Personalchest ParseToChest(string data)
+        {
+            var cleardata = JsonConvert.DeserializeObject(data).ToString();
             var final = JsonConvert.DeserializeObject<JObject>(cleardata).SelectToken("items").ToArray(); ;
 
             var chestItems = new List<PersonalChestItem>();

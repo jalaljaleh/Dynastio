@@ -98,7 +98,7 @@ namespace Dynastio.Bot
                 }.Build());
         }
 
-        public const int _nextScoreTime = 40;
+        public const int _nextScoreTime = 25;
         public const int _updateUserTime = 240;
         public static int[] _randomScore = { 15, 60 };
         public static int[] _randomScoreServerBooster = { 20, 80 };

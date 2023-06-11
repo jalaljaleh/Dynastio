@@ -31,15 +31,13 @@ namespace Dynastio.Bot.Interactions.modules.dynastio
                     ? Context.BotUser.GetDefaultAccount()
                     : Context.BotUser.GetAccountByHashCode(account);
 
-            var _personalchest = await _dynastio.GetUserPersonalchestAsync(account_.Id)
+            var profileCard = await _dynastio.GetUserProfileCardAsync(account_.Id)
                 .TryAsync();
 
-            var _profile = await _dynastio.GetUserProfileAsync(account_.Id)
-                .TryAsync();
 
-            var image = await _graphicService.GetPersonalChestAsync(Context.User as IGuildUser, BotUser, account_, _profile.result, _personalchest.result);
+            var image = await _graphicService.GetPersonalChestAsync(Context.User as IGuildUser, account_, profileCard.result);
 
-            await DiscordStream.FollowupWithFileAsync(Context, image, $"profile-{Context.User.Id}.png", $"");
+            await DiscordStream.FollowupWithFileAsync(Context, image, $"profile-card-{Context.User.Id}.png", $"");
         }
 
 
