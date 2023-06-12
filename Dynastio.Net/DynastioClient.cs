@@ -36,6 +36,7 @@ namespace Dynastio.Net
             _leaderboardscore = new Cacheable<Leaderboardscore[][]>(240000, GetLeaderboardscoresAsync);
 
         }
+
         private readonly Cacheable<List<Player>> _players;
         private readonly Cacheable<List<Server>> _servers;
         private readonly Cacheable<Version> _version;

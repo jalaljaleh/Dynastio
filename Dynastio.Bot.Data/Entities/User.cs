@@ -11,6 +11,12 @@ using Dynastio.Net;
 
 namespace Dynastio.Bot.Data
 {
+    public class UserWarn
+    {
+        public DateTime CreatedAt { get; set; }
+        public string Content { get; set; }
+        public ulong SourceId { get; set; }
+    }
     [BsonIgnoreExtraElements]
     public class User
     {
@@ -30,7 +36,8 @@ namespace Dynastio.Bot.Data
         [BsonIgnore]
         public DateTime last_update { get; set; }
 
-        //public Inventory Inventory { get; set; }
+        public List<UserWarn> Warns { get; set; } = new();
+
         public List<UserAccount> Accounts { get; set; } = new();
 
         public UserAccount GetAccount(string Id)
