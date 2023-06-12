@@ -68,13 +68,14 @@ namespace Dynastio.Bot.Interactions.modules.moderators
                 );
         }
         [SlashCommand("list", "warn list")]
-        public async Task list(IGuildUser user)
+        public async Task list(IGuildUser user,int page = 0)
         {
             await DeferAsync();
 
             var targetUser = await _userService.GetUserAsync(user.Id, false);
 
-            var content = targetUser.Warns.ToStringTable(new string[] { "Created At", "Moderator", "Reason" },
+            var content = targetUser.Warns.Skip(page * 10).ToStringTable(new string[] {"#", "Created At", "Moderator", "Reason" },
+                 a => targetUser.Warns.IndexOf(a) + ". ",
                  a => a.CreatedAt.ToRelative(),
                  a => a.SourceId.ToUserMention(),
                  a => a.Content);
