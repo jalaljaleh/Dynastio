@@ -12,12 +12,13 @@ using Dynastio.Bot.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Numerics;
 using System.Reflection;
+using Dynastio.Bot.Interactions.AutoCompeletes;
 
 namespace Dynastio.Bot.Interactions.modules
 {
 
     [RequireBotOwner]
-    [EnabledInDm(true)]
+    [EnabledInDm(false)]
     [DefaultMemberPermissions(GuildPermission.Administrator)]
     [Group("owner", "config bot")]
     public class OwnerModule : CustomInteractionModuleBase

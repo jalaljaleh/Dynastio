@@ -16,13 +16,18 @@ namespace Dynastio.Bot.Interactions.AutoCompeletes
         public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
         {
             string match = autocompleteInteraction.Data.Current.Value.ToString();
+           
+            var user_ = autocompleteInteraction.Data.Options.Where(a => a.Name == "user").FirstOrDefault();
 
+            User user = user_ is null || string.IsNullOrEmpty((string)user_.Value)
+                ? (context as CustomSocketInteractionContext).BotUser
+                : await UserService.GetUserAsync(ulong.Parse((string)user_.Value));
 
             var accounts = string.IsNullOrEmpty(match)
                 ?
-                (context as CustomSocketInteractionContext).BotUser.Accounts.OrderBy(a=>a.AddedAt).ToList()
+                user.Accounts.OrderBy(a=>a.AddedAt).ToList()
                 :
-                (context as CustomSocketInteractionContext).BotUser.Accounts.OrderBy(a => a.AddedAt).Where(a => a.Reminder.Contains(match)).ToList();
+                user.Accounts.OrderBy(a => a.AddedAt).Where(a => a.Reminder.Contains(match)).ToList();
 
             var result = new List<AutocompleteResult>();
             foreach (var account in accounts)

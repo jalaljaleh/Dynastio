@@ -11,13 +11,16 @@ namespace Discord.Interactions
 {
     public class RequireBotOwnerAttribute : PreconditionAttribute
     {
+        IApplication _application;
         public override async Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
         {
-            IApplication application = await context.Client.GetApplicationInfoAsync();
+            if(_application is null)
+                _application = await context.Client.GetApplicationInfoAsync();
+            
             if (
-                context.User.Id == application.Owner.Id ||
-                application.Team != null &&
-                application.Team.TeamMembers.Select(a => a.User.Id).Contains(context.User.Id)){
+                context.User.Id == _application.Owner.Id ||
+                _application.Team != null &&
+                _application.Team.TeamMembers.Select(a => a.User.Id).Contains(context.User.Id)){
                 return PreconditionResult.FromSuccess();
             }
             return PreconditionResult.FromError(((CustomSocketInteractionContext)context).UserLocale["access.denied.owner"]);
