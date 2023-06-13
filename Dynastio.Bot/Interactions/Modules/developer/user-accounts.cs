@@ -9,10 +9,8 @@ using Dynastio.Net;
 using Discord.WebSocket;
 using Dynastio.Bot.Data;
 using Dynastio.Bot.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Numerics;
-using System.Reflection;
 using Dynastio.Bot.Interactions.AutoCompeletes;
+using Newtonsoft.Json;
 
 namespace Dynastio.Bot.Interactions.modules
 {
@@ -32,7 +30,20 @@ namespace Dynastio.Bot.Interactions.modules
         [Group("user-accounts", "user commands")]
         public class userModule : OwnerModule
         {
+            [SlashCommand("download-json", "dynastio accounts")]
+            public async Task json(IGuildUser user)
+            {
+                await DeferAsync();
 
+                var buser = await _userService.GetUserAsync(user.Id, false);
+                if (buser is null)
+                {
+                    await FollowupAsync("no any result found.");
+                    return;
+                }
+
+                await DiscordStream.SendStringAsFile(Context.Channel, JsonConvert.SerializeObject(buser));
+            }
             [SlashCommand("list", "dynastio accounts")]
             public async Task list(IGuildUser user)
             {
