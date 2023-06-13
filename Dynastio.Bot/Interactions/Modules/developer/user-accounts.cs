@@ -67,7 +67,7 @@ namespace Dynastio.Bot.Interactions.modules
             [SlashCommand("details", "get a connected account details")]
             public async Task details(IGuildUser user, [Autocomplete(typeof(AutoCompeleteAccounts))] string account)
             {
-                await DeferAsync(true);
+                await DeferAsync(false);
 
                 var buser = await _userService.GetUserAsync(user.Id, false);
                 if (buser is null)
@@ -87,7 +87,7 @@ namespace Dynastio.Bot.Interactions.modules
                         $"\nPinCode: `{selectedAccount.PinCode}`" +
                         $"\nAdded at: {selectedAccount.AddedAt.ToDiscordUnixTimestampFormat()}" +
                         $"\nIs Default: {selectedAccount.IsDefault}"
-                        ).ToEmbed(user.Username + " Account Details", Color.Green), ephemeral: true);
+                        ).ToEmbed(user.Username + " Account Details", Color.Green), ephemeral: false);
             }
 
         }

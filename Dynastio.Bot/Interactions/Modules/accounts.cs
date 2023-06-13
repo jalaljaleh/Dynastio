@@ -165,7 +165,7 @@ namespace Dynastio.Bot.Interactions.modules
             await Context.OverridedInteraction.RespondWithModalAsync(modal);
         }
 
-        private const int _maxAccounts = 8;
+        private const int _maxAccounts = 20;
 
         [RateLimit(10)]
         [ModalInteraction("accounts add", true)]
