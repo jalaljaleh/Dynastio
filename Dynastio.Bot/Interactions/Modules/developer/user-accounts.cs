@@ -28,7 +28,7 @@ namespace Dynastio.Bot.Interactions.modules
         public IDynastioBotDatabase _database { get; set; }
 
         [Group("user-accounts", "user commands")]
-        public class userModule : OwnerModule
+        public class userModule : developerModule
         {
             [SlashCommand("download-json", "dynastio accounts")]
             public async Task json(IGuildUser user)
