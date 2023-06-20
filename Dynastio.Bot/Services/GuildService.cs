@@ -16,7 +16,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dynastio.Bot
 {
-
+    
     public class GuildService
     {
         private readonly ConcurrentBag<Guild> _guilds;
@@ -62,36 +62,24 @@ namespace Dynastio.Bot
         {
             { GuildChannelType.None, 0},
             { GuildChannelType.TopActive, 480966712318099487},
-            { GuildChannelType.LoggerChannel, 1107754629200089180},
+            { GuildChannelType.DeletedMessages, 1120683501256188005},
+            { GuildChannelType.TimeOut, 1120683687210651678},
+            { GuildChannelType.EditedMessages, 1120683592566190080},
             { GuildChannelType.General, 480966712318099487},
             { GuildChannelType.MemberChannel, 1109020050163240990},
         };
-        readonly static Dictionary<ChannelThreadType, ulong> _threads = new()
-        {
-            { ChannelThreadType.None, 0},
-            { ChannelThreadType.DeletedMessages, 1107764609848463460 },
-            { ChannelThreadType.EditedMessages, 1107930813569454160 },
-            { ChannelThreadType.TimeOut, 1112059604071874640 },
-        };
+
         public enum GuildChannelType
         {
             None,
             TopActive,
-            LoggerChannel,
+            DeletedMessages,
+            EditedMessages,
+            TimeOut,
             General,
             MemberChannel
         }
-        public enum ChannelThreadType
-        {
-            None,
-            DeletedMessages,
-            EditedMessages,
-            TimeOut
-        }
-        public ulong GetChanneThreadlId(ChannelThreadType t)
-        {
-            return _threads[t];
-        }
+
         public ulong GetChannelId(GuildChannelType t)
         {
             return _channels[t];

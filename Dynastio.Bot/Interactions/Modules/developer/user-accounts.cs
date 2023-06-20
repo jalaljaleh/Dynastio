@@ -43,6 +43,7 @@ namespace Dynastio.Bot.Interactions.modules
                 }
 
                 await DiscordStream.SendStringAsFile(Context.Channel, JsonConvert.SerializeObject(buser));
+                await FollowupAsync("result:");
             }
             [SlashCommand("list", "dynastio accounts")]
             public async Task list(IGuildUser user)

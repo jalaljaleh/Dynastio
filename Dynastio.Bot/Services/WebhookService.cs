@@ -39,38 +39,37 @@ namespace Dynastio.Bot
 
         private async Task _discord_Ready()
         {
-            await AddClient(WebhookChannels.DeleteMessage, GuildChannelType.LoggerChannel, ChannelThreadType.DeletedMessages);
-            await AddClient(WebhookChannels.EditedMessage, GuildChannelType.LoggerChannel, ChannelThreadType.EditedMessages);
-            await AddClient(WebhookChannels.Timeout, GuildChannelType.LoggerChannel, ChannelThreadType.TimeOut);
+            await AddClient(WebhookChannels.DeleteMessage, GuildChannelType.DeletedMessages);
+            await AddClient(WebhookChannels.EditedMessage, GuildChannelType.EditedMessages);
+            await AddClient(WebhookChannels.Timeout, GuildChannelType.TimeOut);
         }
 
-        private async Task AddClient(WebhookChannels webhooktype, GuildChannelType channelType, ChannelThreadType thread)
+        private async Task AddClient(WebhookChannels webhooktype, GuildChannelType channelType)
         {
             var channelId = _guildService.GetChannelId(channelType);
             var channel = (IForumChannel)await _discord.GetChannelAsync(channelId);
             var webhook = await ChannelUtilities.GetWebhookAsync(channel);
-            _clients.Add(webhooktype, (new DiscordWebhookClient(webhook), _guildService.GetChanneThreadlId(thread)));
+            _clients.Add(webhooktype, new DiscordWebhookClient(webhook));
         }
-        Dictionary<WebhookChannels, (DiscordWebhookClient client, ulong threadId)> _clients = new();
+        Dictionary<WebhookChannels, DiscordWebhookClient> _clients = new();
         public async Task<ulong> LogTimeOutAsync(Embed embed, IUser moderator)
         {
-            if (!_clients.TryGetValue(WebhookChannels.Timeout, out (DiscordWebhookClient client, ulong threadId) value)) return 0;
+            if (!_clients.TryGetValue(WebhookChannels.Timeout, out DiscordWebhookClient client)) return 0;
 
-            return await value.client.SendMessageAsync(
+            return await client.SendMessageAsync(
                  text: "",
                  embeds: new Embed[] { embed },
                  username: moderator.Username,
-                 avatarUrl: moderator.GetAvatarUrl() ?? moderator.GetDefaultAvatarUrl(),
-                 threadId: value.threadId);
+                 avatarUrl: moderator.GetAvatarUrl() ?? moderator.GetDefaultAvatarUrl());
         }
         public async Task<ulong> LogDeleteMessageAsync(IMessage message, IGuildChannel channel)
         {
-            if (!_clients.TryGetValue(WebhookChannels.DeleteMessage, out (DiscordWebhookClient client, ulong threadId) value)) return 0;
+            if (!_clients.TryGetValue(WebhookChannels.DeleteMessage, out DiscordWebhookClient client)) return 0;
 
             var logs = await channel.Guild.GetAuditLogsAsync(5, actionType: ActionType.MessageDeleted);
             var deleteAction = logs.FirstOrDefault(a => (a.Data as MessageDeleteAuditLogData).Target.Id == message.Author.Id);
 
-            return await value.client.SendMessageAsync(
+            return await client.SendMessageAsync(
                  text: "",
                  embeds: new Embed[] {
                          new EmbedBuilder() {
@@ -88,14 +87,13 @@ namespace Dynastio.Bot
                                 }}.Build()
                  },
                  username: message.Author.Username,
-                 avatarUrl: message.Author.GetAvatarUrl() ?? message.Author.GetDefaultAvatarUrl(),
-                 threadId: value.threadId);
+                 avatarUrl: message.Author.GetAvatarUrl() ?? message.Author.GetDefaultAvatarUrl());
         }
         public async Task<ulong> LogEditedMessageAsync(SocketMessage newMessage, IMessage oldMessage, IMessageChannel channel)
         {
-            if (!_clients.TryGetValue(WebhookChannels.EditedMessage, out (DiscordWebhookClient client, ulong threadId) value)) return 0;
+            if (!_clients.TryGetValue(WebhookChannels.EditedMessage, out DiscordWebhookClient client)) return 0;
 
-            return await value.client.SendMessageAsync(
+            return await client.SendMessageAsync(
                      text: "",
                      embeds: new Embed[] {
                             new EmbedBuilder() {
@@ -111,8 +109,7 @@ namespace Dynastio.Bot
                                 }}.Build()
                      },
                      username: newMessage.Author.Username,
-                     avatarUrl: newMessage.Author.GetAvatarUrl() ?? newMessage.Author.GetDefaultAvatarUrl(),
-                     threadId: value.threadId);
+                     avatarUrl: newMessage.Author.GetAvatarUrl() ?? newMessage.Author.GetDefaultAvatarUrl());
         }
         public enum WebhookChannels
         {
