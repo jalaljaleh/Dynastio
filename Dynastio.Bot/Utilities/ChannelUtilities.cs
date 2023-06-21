@@ -10,7 +10,7 @@ namespace Dynastio.Bot.Utilities
 {
     public class ChannelUtilities
     {
-        public static async Task<IWebhook> GetWebhookAsync(IForumChannel channel)
+        public static async Task<IWebhook> GetWebhookAsync(ITextChannel channel)
         {
             try
             {

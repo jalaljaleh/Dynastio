@@ -119,6 +119,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
                 await user.SendMessageAsync(msg).TryAsync();
             }
+
             switch (action)
             {
 
@@ -132,8 +133,11 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                    $"> Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал <#1098603826291941476>/ <#1098609722006970439>."
                    ).TryAsync();
 
-                    await thread.SendMessageAsync($"## Closed\nThe thread has been closed by {userMention}.");
-                    await thread.ModifyAsync(a => a.Archived = true);
+                    await thread.SendMessageAsync($"## Closed\nThe thread has been closed by {userMention}.",
+                         components: new ComponentBuilder()
+                          .WithButton("Leave", $"btn.ticket:leave:{channel.Id}:{thread.Id}", ButtonStyle.Success, Emoji.Parse("❌"))
+                          .Build());
+                    await thread.ModifyAsync(a => { a.Locked = true; a.AutoArchiveDuration = ThreadArchiveDuration.ThreeDays; });
                     break;
 
                 case "helpfull":
@@ -156,9 +160,17 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                     $"> Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал <#1098603826291941476>/ <#1098609722006970439>."
                     ).TryAsync();
 
-                    await thread.SendMessageAsync($"## Closed\nThe thread has been marked as unrelated by {userMention}.");
-                    await thread.ModifyAsync(a => a.Archived = true);
+                    await thread.SendMessageAsync($"## Closed\nThe thread has been marked as unrelated by {userMention}.",
+                        components: new ComponentBuilder()
+                          .WithButton("Leave", $"btn.ticket:leave:{channel.Id}:{thread.Id}", ButtonStyle.Success, Emoji.Parse("❌"))
+                          .Build());
+                    await thread.ModifyAsync(a => { a.Locked = true; a.AutoArchiveDuration = ThreadArchiveDuration.ThreeDays; });
 
+
+                    break;
+
+                case "leave":
+                    await thread.RemoveUserAsync(Context.User as IGuildUser);
                     break;
 
             }

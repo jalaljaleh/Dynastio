@@ -47,7 +47,7 @@ namespace Dynastio.Bot
         private async Task AddClient(WebhookChannels webhooktype, GuildChannelType channelType)
         {
             var channelId = _guildService.GetChannelId(channelType);
-            var channel = (IForumChannel)await _discord.GetChannelAsync(channelId);
+            var channel = (ITextChannel) await _discord.GetChannelAsync(channelId);
             var webhook = await ChannelUtilities.GetWebhookAsync(channel);
             _clients.Add(webhooktype, new DiscordWebhookClient(webhook));
         }
