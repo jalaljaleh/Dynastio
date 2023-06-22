@@ -42,19 +42,27 @@ namespace Dynastio.Bot.Handlers
 
         async Task RolesChangedAsync(SocketGuildUser user)
         {
-            await CheckCategorie("ach:", 1113119762277482647, user);
-            await CheckCategorie("mod:", 1113119662100709406, user);
-            await CheckCategorie("badge:", 1113080837303455794, user);
-            await CheckCategorie("rank:", 1113082402781282334, user);
+            await CheckCategorie("ach:", 1113119762277482647, user)
+                .TryAsync();
+
+            await CheckCategorie("mod:", 1113119662100709406, user)
+                .TryAsync();
+
+            await CheckCategorie("badge:", 1113080837303455794, user)
+                .TryAsync();
+
+            await CheckCategorie("rank:", 1113082402781282334, user)
+                .TryAsync();
         }
         async Task CheckCategorie(string startWith, ulong categoryId, SocketGuildUser user)
         {
-            var hasModroles = user.Roles.Any(a => a.Name.StartsWith(startWith));
-            var hasModHeader = user.Roles.Any(a => a.Id == categoryId);
+            var hasRole = user.Roles.Any(a => a.Name.StartsWith(startWith));
+            var hasHeader = user.Roles.Any(a => a.Id == categoryId);
 
-            if (hasModroles && !hasModHeader)
+            if (hasRole && !hasHeader)
                 await user.AddRoleAsync(categoryId);
-            if (!hasModroles && hasModHeader)
+
+            if (!hasRole && hasHeader)
                 await user.RemoveRoleAsync(categoryId);
         }
     }
