@@ -27,5 +27,10 @@ namespace Dynastio.Bot.Interactions.Forms
         [ModalTextInput("reminder", TextInputStyle.Short, "its a field that you can write anything.", 0, maxLength: 60, null)]
         public string Reminder { get; set; }
 
+        [InputLabel("Email")]
+        [RequiredInput(true)]
+        [ModalTextInput("email", TextInputStyle.Short, "Gmail, Discord, Facebook, Youtube Channel Address.", 0, maxLength: 100, null)]
+        public string Email { get; set; }
+
     }
 }

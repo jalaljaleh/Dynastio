@@ -128,8 +128,7 @@ namespace Dynastio.Bot
                     AddedAt = DateTime.UtcNow,
                     PinCode = "none",
                     IsDefault = true,
-                    Reminder = "discord",
-                };
+                }.SetReminder("discord");
                 user.Accounts.Add(account);
             }
 

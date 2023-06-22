@@ -120,6 +120,7 @@ namespace Dynastio.Bot.Interactions.modules
                     $"\nAccount Id: `{selectedAccount.Id}`" +
                     $"\nAccount Service: `{selectedAccount.GetAccountService()}`" +
                     $"\nPinCode: `{selectedAccount.PinCode}`" +
+                    $"\nEmail: `{selectedAccount.Email}`" +
                     $"\nAdded at: {selectedAccount.AddedAt.ToDiscordUnixTimestampFormat()}" +
                     $"\nIs Default: {selectedAccount.IsDefault}"
                     ).ToEmbed(default, Color.Green), ephemeral: true);
@@ -160,6 +161,7 @@ namespace Dynastio.Bot.Interactions.modules
                .AddTextInput(new TextInputBuilder(this["account_id"], "id", TextInputStyle.Short, "google:0000000000000000000", 1, 150, true, null))
                .AddTextInput(new TextInputBuilder(this["pincode"], "pincode", TextInputStyle.Short, this["XXX-XXX-XXX"], 11, 11, true, null))
                .AddTextInput(new TextInputBuilder(this["reminder"], "reminder", TextInputStyle.Short, "its a reminder field you can write anything.", 0, 16, false, null))
+               .AddTextInput(new TextInputBuilder(this["email"], "email", TextInputStyle.Short, "Gmail, Discord, Facebook, Youtube Channel Address.", 0, 100, false, null))
                .Build();
 
             await Context.OverridedInteraction.RespondWithModalAsync(modal);
@@ -202,7 +204,8 @@ namespace Dynastio.Bot.Interactions.modules
                     Id = id,
                     AddedAt = DateTime.UtcNow,
                     IsDefault = false,
-                    PinCode = form.PinCode.Trim()
+                    PinCode = form.PinCode.Trim(),
+                    Email = form.Email,
                 }.SetReminder(form.Reminder);
 
                 Context.BotUser.Accounts.Add(account);
