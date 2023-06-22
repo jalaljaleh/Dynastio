@@ -13,8 +13,7 @@ namespace Dynastio.Bot.Interactions.modules.moderators
     [EnabledInDm(false)]
     [RequireContext(ContextType.Guild)]
     [RequireBotPermission(GuildPermission.ModerateMembers)]
-    [RequireUserPermission(GuildPermission.ModerateMembers)]
-    [DefaultMemberPermissions(GuildPermission.ModerateMembers)]
+    [RequireRole(1099664231906955385)]
     public class timeoutModule : CustomInteractionModuleBase
     {
         public WebhookService _webhookService { get; set; }

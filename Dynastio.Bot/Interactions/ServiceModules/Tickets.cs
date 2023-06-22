@@ -67,10 +67,9 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                 $"- Do not mention anyone, Do not Invite anyone, Do not use Add buttons if you know nothing about them.\n" +
                 $"> Не упоминайте никого." +
                 $"\n\n" +
-                $"<@&480954902005415937> --> **<@{Context.User.Id}> Wrote:**\n\n" +
-                $"## {form.Title1}\n" +
-                $">>> {form.Description}",
-
+                $"<@&480954902005415937> --> **<@{Context.User.Id}> Wrote:**\n\n",
+                embed: 
+                $">>> {form.Description}".ToEmbed(form.Title,Context.User.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl()),
                 components: new ComponentBuilder()
               .WithButton("Unrelated", $"btn.ticket:unrelated:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
               .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
@@ -139,7 +138,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
                     await thread.SendMessageAsync(
                         $"# Ticket Closed\n" +
-                        $"## The ticket has been closed by {userMention}." +
+                        $"## The ticket has been closed by {userMention}, you should leave the ticket too." +
                         $"- You can leave the thread now, the ticket will be removed one day later.");
 
                     await thread.ModifyAsync(a => { a.Locked = true; a.AutoArchiveDuration = ThreadArchiveDuration.OneDay; });
