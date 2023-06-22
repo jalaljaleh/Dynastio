@@ -44,6 +44,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
         {
             var modal = new ModalBuilder(this["modal.ticket.start.title"], $"tickets.start:{_channel}")
                .AddTextInput(new TextInputBuilder("Title", "title", TextInputStyle.Short, "its a name for your ticket.", 0, maxLength: 60, null))
+               .AddTextInput(new TextInputBuilder("Description", "description", TextInputStyle.Paragraph, "what is the problem, explain here.", 0, maxLength: 1000, true))
               .Build();
 
             await RespondWithModalAsync(modal);
@@ -71,8 +72,6 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                 $"> **<@{Context.User.Id}> Send Your Message:**",
 
                 components: new ComponentBuilder()
-              .WithButton("Add Helpful", $"btn.ticket:helpfull:{channel.Id}:{thread.Id}", ButtonStyle.Success)
-              .WithButton("Add Admins", $"btn.ticket:admin:{channel.Id}:{thread.Id}", ButtonStyle.Success)
               .WithButton("Unrelated", $"btn.ticket:unrelated:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
               .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
               .Build());
@@ -91,8 +90,14 @@ namespace Dynastio.Bot.Interactions.ServiceModules
             [ModalTextInput("title", TextInputStyle.Short, "its a name for your ticket.", 0, maxLength: 60, null)]
             public string Title1 { get; set; }
 
+            [InputLabel("Description")]
+            [RequiredInput(true)]
+            [ModalTextInput("description", TextInputStyle.Paragraph, "what is the problem, explain here.", 0, maxLength: 1000, null)]
+            public string Description { get; set; }
+
         }
         [RateLimit(5, 2)]
+        [RequireUserPermission(ChannelPermission.ManageThreads)]
         [ComponentInteraction("btn.ticket:*:*:*")]
         public async Task btn_ticket(string action, ulong _channel, ulong _thread)
         {
@@ -122,32 +127,18 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
             switch (action)
             {
-
                 case "close":
 
                     await SendMessageToTicketOwnerAsync(
                        $"## Ticket Closed\n" +
                    $"- Your ticket closed by {userMention} probably due to unrelated content.\n" +
                    $"> Ваша заявка закрыта пользователем {userMention} из-за содержания, не связанного с ней.\n" +
-                   $"- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠ <#1098263349873082438>/ <#1098322508459028480> channel.\n" +
+                   $"\n- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠ <#1098263349873082438>/ <#1098322508459028480> channel.\n" +
                    $"> Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал <#1098603826291941476>/ <#1098609722006970439>."
                    ).TryAsync();
 
-                    await thread.SendMessageAsync($"## Closed\nThe thread has been closed by {userMention}.",
-                         components: new ComponentBuilder()
-                          .WithButton("Leave", $"btn.ticket:leave:{channel.Id}:{thread.Id}", ButtonStyle.Success, Emoji.Parse("❌"))
-                          .Build());
-                    await thread.ModifyAsync(a => { a.Locked = true; a.AutoArchiveDuration = ThreadArchiveDuration.ThreeDays; });
-                    break;
-
-                case "helpfull":
-                    await thread
-                        .SendMessageAsync($"{MentionUtils.MentionRole(1113563679208775730)} You have been invited by {userMention} to help with the ticket.");
-                    break;
-
-                case "admin":
-                    await thread
-                    .SendMessageAsync($"{MentionUtils.MentionRole(1105914502614089739)} You have been invited by {userMention} to help with the ticket.");
+                    await thread.SendMessageAsync($"## Closed\nThe thread has been closed by {userMention}.");
+                    await thread.ModifyAsync(a => { a.Locked = true; a.AutoArchiveDuration = ThreadArchiveDuration.OneDay; });
                     break;
 
                 case "unrelated":
@@ -156,17 +147,11 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                         $"## Ticket Closed\n" +
                     $"- Your ticket closed by {userMention} due to unrelated content.\n" +
                     $"> Ваша заявка закрыта пользователем {userMention} из-за содержания, не связанного с ней.\n" +
-                    $"- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠ <#1098263349873082438>/ <#1098322508459028480> channel.\n" +
+                    $"\n- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠ <#1098263349873082438>/ <#1098322508459028480> channel.\n" +
                     $"> Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал <#1098603826291941476>/ <#1098609722006970439>."
                     ).TryAsync();
 
-                    await thread.SendMessageAsync($"## Closed\nThe thread has been marked as unrelated by {userMention}.",
-                        components: new ComponentBuilder()
-                          .WithButton("Leave", $"btn.ticket:leave:{channel.Id}:{thread.Id}", ButtonStyle.Success, Emoji.Parse("❌"))
-                          .Build());
-                    await thread.ModifyAsync(a => { a.Locked = true; a.AutoArchiveDuration = ThreadArchiveDuration.ThreeDays; });
-
-
+                    await thread.DeleteAsync();
                     break;
 
                 case "leave":
