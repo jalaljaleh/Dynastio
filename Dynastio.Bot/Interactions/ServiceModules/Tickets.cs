@@ -57,7 +57,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
             var channel = Context.Guild.GetTextChannel(_channel);
 
-            var thread = await channel.CreateThreadAsync(Context.User.Username + $"-{form.Title1}", ThreadType.PrivateThread, ThreadArchiveDuration.ThreeDays, null, false, 0);
+            var thread = await channel.CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.ThreeDays, null, false, 0);
 
             var message = await thread.SendMessageAsync(
                 $"## Important\n" +
@@ -66,10 +66,10 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                 $"## Notes:\n" +
                 $"- Do not mention anyone, Do not Invite anyone, Do not use Add buttons if you know nothing about them.\n" +
                 $"> Не упоминайте никого." +
-                $"- Use the close button to close the ticket when you done." +
                 $"\n\n" +
-                $"<@&480954902005415937>" +
-                $"> **<@{Context.User.Id}> Send Your Message:**",
+                $"<@&480954902005415937> --> **<@{Context.User.Id}> Wrote:**\n\n" +
+                $"## {form.Title1}\n" +
+                $">>> {form.Description}",
 
                 components: new ComponentBuilder()
               .WithButton("Unrelated", $"btn.ticket:unrelated:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
@@ -137,8 +137,14 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                    $"> Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал <#1098603826291941476>/ <#1098609722006970439>."
                    ).TryAsync();
 
-                    await thread.SendMessageAsync($"## Closed\nThe thread has been closed by {userMention}.");
+                    await thread.SendMessageAsync(
+                        $"# Ticket Closed\n" +
+                        $"## The ticket has been closed by {userMention}." +
+                        $"- You can leave the thread now, the ticket will be removed one day later.");
+
                     await thread.ModifyAsync(a => { a.Locked = true; a.AutoArchiveDuration = ThreadArchiveDuration.OneDay; });
+
+                    await thread.RemoveUserAsync(Context.User as IGuildUser);
                     break;
 
                 case "unrelated":

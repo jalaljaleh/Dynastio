@@ -93,7 +93,7 @@ namespace Dynastio.Bot.Interactions.modules
                 if (selectedAccount is null) await FollowupAsync("account not found.");
                 else await FollowupAsync(Context.User.Id.ToUserMention(),
                         embed: (
-                        $"User: {user.Username}" +
+                        $"User: {user.Mention}" +
                         $"\nAccounts Count: ` {buser.Accounts.Count} `" +
                         $"\nReminder: `{selectedAccount.Reminder}`" +
                         $"\nAccount Id: `{selectedAccount.Id}`" +
