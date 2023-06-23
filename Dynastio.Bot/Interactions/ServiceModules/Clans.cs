@@ -58,7 +58,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                 $"# Start of {form.Title1} Clan\n" +
                 $"- This is your clan, a private place **No Admin, No Moderator**.\n" +
                 $" - Invite or remove people with ```/clans-add-member```" +
-                $"\n<@&480954902005415937> --> **<@{Context.User.Id}>");
+                $"\n<@&1121835049344569416> --> **<@{Context.User.Id}>");
 
             await message.PinAsync();
 
@@ -76,6 +76,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
 
         }
+
         [SlashCommand("clans-add-member", "add a member to your clan")]
         public async Task addMember(IGuildUser _user)
         {
@@ -88,19 +89,27 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                 var botPinedMessage = (RestMessage)msgs
                     .FirstOrDefault(a => a.Author.Id == Context.Client.CurrentUser.Id);
 
-                if (botPinedMessage is null) return;
+                if (botPinedMessage is null)
+                {
+                    await FollowupAsync("can't find owner.");
+                    return;
+                };
 
                 var user = botPinedMessage.MentionedUsers
                     .FirstOrDefault();
 
-                if (user is null) return;
+                if (user is null)
+                {
+                    await FollowupAsync("can't find owner.");
+                    return;
+                };
                 if (user.Id != Context.User.Id)
                 {
                     await FollowupAsync("only clan owner can add new member.");
                     return;
                 }
-               await thread.AddUserAsync(_user);
-
+                await thread.AddUserAsync(_user);
+                await FollowupAsync("done");
             }
 
         }
@@ -117,18 +126,27 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                 var botPinedMessage = (RestMessage)msgs
                     .FirstOrDefault(a => a.Author.Id == Context.Client.CurrentUser.Id);
 
-                if (botPinedMessage is null) return;
+                if (botPinedMessage is null)
+                {
+                    await FollowupAsync("cant find owner.");
+                    return;
+                };
 
                 var user = botPinedMessage.MentionedUsers
                     .FirstOrDefault();
 
-                if (user is null) return;
+                if (user is null)
+                {
+                    await FollowupAsync("only clan owner can remove members.");
+                    return;
+                };
                 if (user.Id != Context.User.Id)
                 {
                     await FollowupAsync("only clan owner can remove members.");
                     return;
                 }
                 await thread.RemoveUserAsync(_user);
+                await FollowupAsync("done");
 
             }
 
