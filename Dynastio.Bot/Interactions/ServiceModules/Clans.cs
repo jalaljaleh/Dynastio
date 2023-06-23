@@ -57,7 +57,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
             var message = await thread.SendMessageAsync(
                 $"# Start of {form.Title1} Clan\n" +
                 $"- This is your clan, a private place **No Admin, No Moderator**.\n" +
-                $" - Invite or remove people with ```/clans```" +
+                $" - Invite or remove people with ```/clans-add-member```" +
                 $"\n<@&480954902005415937> --> **<@{Context.User.Id}>");
 
             await message.PinAsync();
