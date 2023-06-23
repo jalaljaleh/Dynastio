@@ -62,14 +62,11 @@ namespace Dynastio.Bot.Interactions.ServiceModules
             var message = await thread.SendMessageAsync(
                 $"## Important\n" +
                 $"- This is a safe and private thread with Dynastio Staff **No Admin, No Moderator**.\n" +
-                $"> Это безопасный и конфиденциальный поток с персоналом Dynastio ** Без администраторов, без модераторов**.\n\n\n" +
-                $"## Notes:\n" +
-                $"- Do not mention anyone, Do not Invite anyone, Do not use Add buttons if you know nothing about them.\n" +
-                $"> Не упоминайте никого." +
-                $"\n\n" +
-                $"<@&480954902005415937> --> **<@{Context.User.Id}> Wrote:**\n\n",
+                $"> Это безопасный и конфиденциальный поток с персоналом Dynastio ** Без администраторов, без модераторов**.\n\n" +
+                $"<@&480954902005415937> --> **<@{Context.User.Id}>",
                 embed: 
-                $">>> {form.Description}".ToEmbed(form.Title,Context.User.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl()),
+                ($"{userMention}\n" +
+                $">>> {form.Description}").ToEmbed(form.Title1,Context.User.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl()),
                 components: new ComponentBuilder()
               .WithButton("Unrelated", $"btn.ticket:unrelated:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
               .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
