@@ -38,7 +38,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
         [ComponentInteraction("btn.clan.start:*")]
         public async Task btn_ticket_start(ulong _channel)
         {
-            var modal = new ModalBuilder(this["modal.clan.start.title"], $"tickets.start:{_channel}")
+            var modal = new ModalBuilder(this["modal.clan.start.title"], $"clan.start:{_channel}")
                .AddTextInput(new TextInputBuilder("Name", "name", TextInputStyle.Short, "its a name for your clan.", 0, maxLength: 16, null))
               .Build();
 
