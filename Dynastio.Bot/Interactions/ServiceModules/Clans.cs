@@ -28,7 +28,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
              "## ** Clans **\n" +
              "- create a clan and invite your friends.",
               components: new ComponentBuilder()
-              .WithButton("Create", $"btn.clan.start:{TargetChannel.Id}", ButtonStyle.Success, Emoji.Parse("🛠"))
+              .WithButton("Create", $"btn.clan.start:{TargetChannel.Id}", ButtonStyle.Success, Emoji.Parse(":crown:"))
               .Build());
 
             await FollowupAsync("done");

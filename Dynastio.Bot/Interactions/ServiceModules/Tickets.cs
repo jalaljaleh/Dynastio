@@ -88,7 +88,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
             [InputLabel("Description")]
             [RequiredInput(true)]
-            [ModalTextInput("description", TextInputStyle.Paragraph, "what is the problem, explain here.", 0, maxLength: 1000, null)]
+            [ModalTextInput("description", TextInputStyle.Paragraph, "what is the problem, explain here.", 0, maxLength: 2000, null)]
             public string Description { get; set; }
 
         }
