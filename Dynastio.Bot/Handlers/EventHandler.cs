@@ -9,6 +9,7 @@ using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ namespace Dynastio.Bot.Handlers
         private readonly GraphicService _graphicService;
         private readonly DynastioClient _dynastioClient;
         private readonly RepeaterService _repeaterService;
+        private readonly IDynastioBotDatabase _database;
 
         public EventHandler(IServiceProvider services)
         {
@@ -38,6 +40,7 @@ namespace Dynastio.Bot.Handlers
             _graphicService = _services.GetService<GraphicService>();
             _dynastioClient = _services.GetService<DynastioClient>();
             _repeaterService = _services.GetRequiredService<RepeaterService>();
+            _database = _services.GetRequiredService<IDynastioBotDatabase>();
 
             _client.Ready += _client_Ready;
             _client.UserJoined += _client_UserJoined;
@@ -78,6 +81,9 @@ namespace Dynastio.Bot.Handlers
 
             _repeaterService
                 .AddFunction(updateStatus(), TimeSpan.FromMinutes(10));
+
+            _repeaterService
+                .AddFunction(EidMubarakEvent(), TimeSpan.FromHours(1));
         }
         async Task updateStatus()
         {
@@ -90,6 +96,26 @@ namespace Dynastio.Bot.Handlers
             await _client.SetGameAsync($"{playerscount} players, {serversCount} Servers!", "", ActivityType.Watching);
         }
 
+        async Task EidMubarakEvent()
+        {
+            var code = await _database.GetRedeemCodeAsync(RedeemCode.RedeemType.Coin_100);
+            if (code is null)
+            {
+                return;
+            }
 
+            var result = await _client.Guilds.First()
+                .GetTextChannel(1108998382996946964)
+                .SendMessageAsync(
+                embed:
+                ($"Here is a redeem code for ` Eid al-Adha `\n" +
+                $"```{code.Code}```\nA code will be sent every 1 hour until 24 hours.").ToEmbed("Eid al-Adha", "https://cdn.discordapp.com/attachments/1098332386674085988/1123659712165056562/happy-eid-ul-adha-6.png", color: Discord.Color.Orange))
+                .TryAsync();
+
+            if (result.isSuccesful)
+            {
+                await _database.DeleteAsync(code);
+            }
+        }
     }
 }
