@@ -81,6 +81,9 @@ namespace Dynastio.Bot.Handlers
             _repeaterService
                 .AddFunction(updateStatus(), TimeSpan.FromMinutes(10));
 
+            _repeaterService
+                .AddFunction(status(), TimeSpan.FromMinutes(10));
+
             await _client.Guilds.First()
                 .GetTextChannel(1109911020341837825)
                 .SendMessageAsync("Ready !")
@@ -88,26 +91,39 @@ namespace Dynastio.Bot.Handlers
         }
         async Task status()
         {
-            var channel = _client.Guilds.First()
+            var channel = _client.Guilds
+                .First()
                 .GetTextChannel(1124036365613539408);
 
             if (channel == null) return;
 
-            var msgs = await channel.GetMessagesAsync().FlattenAsync().TryAsync();
-            foreach (var message in msgs.result)
-            {
-                if (message.Author.IsBot is false)
-                    continue;
+            var msgs = await channel.GetMessagesAsync()
+                .FlattenAsync()
+                .TryAsync();
 
-                await message.DeleteAsync()
-                    .TryAsync();
-            }
+            if (msgs.isSuccesful)
+                foreach (var message in msgs.result)
+                {
+                    if (message.Author.IsBot is false)
+                        continue;
+
+                    await message.DeleteAsync()
+                        .TryAsync();
+                }
 
             await channel.SendMessageAsync(
              embed: new EmbedBuilder()
              {
+                 Description =
+                 $"Online Servers: `{_dynastioClient.OnlineServers.Count}`\n" +
+                 $"Online Players: `{_dynastioClient.OnlinePlayers.Count}`\n" +
+                 $"",
 
-             }.Build())
+                 ThumbnailUrl = _client.CurrentUser.GetAvatarUrl(),
+                 Color = Discord.Color.Green
+             }
+             .AddField("Version", _dynastioClient.Version.CurrentVersion, false)
+             .Build())
              .TryAsync();
         }
         async Task updateStatus()
