@@ -19,15 +19,13 @@ namespace Dynastio.Bot
 
         }
 
-        public void AddFunction(Task function, TimeSpan interval)
+        public void AddFunction(Task function, TimeSpan interval, TimeSpan dueTime = default)
         {
-            Timer timer = new Timer(async _ => 
+            functionTimers[function] = new Timer(async _ =>
             {
                 await function.TryAsync();
 
-            }, null, TimeSpan.Zero, interval);
-
-            functionTimers[function] = timer;
+            }, null, dueTime , interval);
         }
         public void RemoveFunction(Task function)
         {

@@ -74,15 +74,12 @@ namespace Dynastio.Bot.Handlers
             if (Global.Main.IsDebug())
                 return;
 
-
-            _repeaterService
-                .AddFunction(EidMubarakEvent(), TimeSpan.FromHours(1));
-
-            _repeaterService
-                .AddFunction(updateStatus(), TimeSpan.FromMinutes(10));
-
             _repeaterService
                 .AddFunction(status(), TimeSpan.FromMinutes(10));
+
+            _repeaterService
+                .AddFunction(EidMubarakEvent(), TimeSpan.FromHours(1), TimeSpan.FromHours(1));
+
 
             await _client.Guilds.First()
                 .GetTextChannel(1109911020341837825)
@@ -117,7 +114,7 @@ namespace Dynastio.Bot.Handlers
                  Description =
                  $"Online Servers: `{_dynastioClient.OnlineServers.Count}`\n" +
                  $"Online Players: `{_dynastioClient.OnlinePlayers.Count}`\n" +
-                 $"",
+                 $"This message will be update in {(DateTime.UtcNow.AddMinutes(10).ToDiscordUnixTimestampFormat())}.",
 
                  ThumbnailUrl = _client.CurrentUser.GetAvatarUrl(),
                  Color = Discord.Color.Green
