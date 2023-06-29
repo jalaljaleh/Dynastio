@@ -75,10 +75,10 @@ namespace Dynastio.Bot.Handlers
                 return;
 
             _repeaterService
-                .AddFunction(status(), TimeSpan.FromSeconds(10));
+                .AddFunction(status(), TimeSpan.FromMinutes(10));
 
-            _repeaterService
-                .AddFunction(EidMubarakEvent(), TimeSpan.FromHours(1), TimeSpan.FromHours(1));
+            //_repeaterService
+            //    .AddFunction(EidMubarakEvent(), TimeSpan.FromHours(1), TimeSpan.FromHours(1));
 
 
             await _client.Guilds.First()
