@@ -21,11 +21,12 @@ namespace Dynastio.Bot
 
         public void AddFunction(Task function, TimeSpan interval, TimeSpan dueTime = default)
         {
-            functionTimers[function] = new Timer(async _ =>
+            var timer = new Timer(async _ =>
             {
-                await function.TryAsync();
-
+                await function;
             }, null, dueTime , interval);
+
+            functionTimers[function] = timer;
         }
         public void RemoveFunction(Task function)
         {

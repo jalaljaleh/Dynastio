@@ -75,7 +75,7 @@ namespace Dynastio.Bot.Handlers
                 return;
 
             _repeaterService
-                .AddFunction(status(), TimeSpan.FromMinutes(10));
+                .AddFunction(status(), TimeSpan.FromSeconds(10));
 
             _repeaterService
                 .AddFunction(EidMubarakEvent(), TimeSpan.FromHours(1), TimeSpan.FromHours(1));
@@ -86,7 +86,7 @@ namespace Dynastio.Bot.Handlers
                 .SendMessageAsync("Ready !")
                 .TryAsync();
         }
-        async Task status()
+        public async Task status()
         {
             var channel = _client.Guilds
                 .First()
@@ -134,7 +134,7 @@ namespace Dynastio.Bot.Handlers
             await _client.SetGameAsync($"{playerscount} players, {serversCount} Servers!", "", ActivityType.Watching);
         }
 
-        async Task EidMubarakEvent()
+        public async Task EidMubarakEvent()
         {
             var code = await _database.GetRedeemCodeAsync(RedeemCode.RedeemType.Coin_100);
             if (code is null)
