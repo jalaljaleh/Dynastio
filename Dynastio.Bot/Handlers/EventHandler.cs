@@ -74,16 +74,17 @@ namespace Dynastio.Bot.Handlers
             if (Global.Main.IsDebug())
                 return;
 
+
+            _repeaterService
+                .AddFunction(EidMubarakEvent(), TimeSpan.FromHours(1));
+            
+            _repeaterService
+                .AddFunction(updateStatus(), TimeSpan.FromMinutes(10));
+
             await _client.Guilds.First()
                 .GetTextChannel(1109911020341837825)
                 .SendMessageAsync("Ready !")
                 .TryAsync();
-
-            _repeaterService
-                .AddFunction(updateStatus(), TimeSpan.FromMinutes(10));
-
-            _repeaterService
-                .AddFunction(EidMubarakEvent(), TimeSpan.FromHours(1));
         }
         async Task updateStatus()
         {
@@ -113,9 +114,8 @@ namespace Dynastio.Bot.Handlers
                 .TryAsync();
 
             if (result.isSuccesful)
-            {
-                await _database.DeleteAsync(code);
-            }
+              await _database.DeleteAsync(code);
+            
         }
     }
 }
