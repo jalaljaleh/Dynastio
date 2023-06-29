@@ -77,7 +77,7 @@ namespace Dynastio.Bot.Handlers
 
             _repeaterService
                 .AddFunction(EidMubarakEvent(), TimeSpan.FromHours(1));
-            
+
             _repeaterService
                 .AddFunction(updateStatus(), TimeSpan.FromMinutes(10));
 
@@ -85,6 +85,30 @@ namespace Dynastio.Bot.Handlers
                 .GetTextChannel(1109911020341837825)
                 .SendMessageAsync("Ready !")
                 .TryAsync();
+        }
+        async Task status()
+        {
+            var channel = _client.Guilds.First()
+                .GetTextChannel(1124036365613539408);
+
+            if (channel == null) return;
+
+            var msgs = await channel.GetMessagesAsync().FlattenAsync().TryAsync();
+            foreach (var message in msgs.result)
+            {
+                if (message.Author.IsBot is false)
+                    continue;
+
+                await message.DeleteAsync()
+                    .TryAsync();
+            }
+
+            await channel.SendMessageAsync(
+             embed: new EmbedBuilder()
+             {
+
+             }.Build())
+             .TryAsync();
         }
         async Task updateStatus()
         {
@@ -101,9 +125,7 @@ namespace Dynastio.Bot.Handlers
         {
             var code = await _database.GetRedeemCodeAsync(RedeemCode.RedeemType.Coin_100);
             if (code is null)
-            {
                 return;
-            }
 
             var result = await _client.Guilds.First()
                 .GetTextChannel(1108998382996946964)
@@ -114,8 +136,8 @@ namespace Dynastio.Bot.Handlers
                 .TryAsync();
 
             if (result.isSuccesful)
-              await _database.DeleteAsync(code);
-            
+                await _database.DeleteAsync(code);
+
         }
     }
 }

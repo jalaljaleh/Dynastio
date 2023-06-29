@@ -96,6 +96,7 @@ namespace Dynastio.Bot
                 .LoadDirectory(FileManager.ToResourcePath("globalization"));
 
             _services.GetRequiredService<YoutubeService>();
+            _services.GetRequiredService<RepeaterService>();
             _services.GetRequiredService<GraphicService>().Initialize();
 
             _services.GetRequiredService<Handlers.EventHandler>();
