@@ -15,6 +15,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static Dynastio.Bot.Interactions.modules.dynastio.toplistModule;
 
 namespace Dynastio.Bot.Handlers
 {
@@ -110,46 +111,46 @@ namespace Dynastio.Bot.Handlers
                         .TryAsync();
                 }
 
-            var topPlayer = _dynastioClient.OnlinePlayers.OrderByDescending(a => a.Score).FirstOrDefault(a => a.Parent.IsPrivate is false);
+            var players = _dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).OrderByDescending(a => a.Score).Take(40).ToList();
+           
+            var topPlayer = players.FirstOrDefault();
+            
             var tpmention = topPlayer.IsDiscordAuth ? "- <@" + topPlayer.Id.Replace("discord:", "") + ">" : "";
+
+            var content = players.ToStringTable(new[] { "#", "server", "score", "level", "nickname" },
+                a => players.IndexOf(a),
+                a => a.Parent.Label.TryRemove(18),
+                a => a.Score.Metric(),
+                a => a.Level.Metric(),
+                a => a.Nickname.RemoveLines().TryRemove(18))
+                .ToMarkdown();
+
 
             await channel.SendMessageAsync(
                 text:
-                $"# Dynast.io Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()}\n" +
+                $"## Dynast.io Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()}\n\n" +
 
-                 $"## Servers:\n" +
-                 $"- **All Servers**: **`{_dynastioClient.OnlineServers.Count}`**\n" +
-                 $" -  Public Servers :   **` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} `**\n" +
-                 $" -  Private Servers:   **` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} `**\n" +
+                 $"- **`{_dynastioClient.OnlineServers.Count}` Servers with `{_dynastioClient.OnlinePlayers.Count}` Players**\n" +
+                 $" -  Public Servers   **` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} `** servers with **` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} `** Players\n" +
+                 $" -  Private Servers   **` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} `** servers with**` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} `** Players\n" +
                  $"\n" +
 
-                 $"## Players:\n" +
-                 $"- **All Players**: **`{_dynastioClient.OnlinePlayers.Count}`**\n" +
-                 $" -  In Public Servers :   **` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} `**\n" +
-                 $" -  In Private Servers:   **` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} `**\n\n" +
-
-                 $"- **Top Player**: **`{topPlayer.Nickname.RemoveLines().TryRemove(18)}`** {tpmention}\n" +
+                $"- **Top Player**: **`{topPlayer.Nickname.RemoveLines().TryRemove(18)}`** {tpmention}\n" +
                  $" -  Score :   **` {topPlayer.Score.Metric()} `**\n" +
                  $" -  Level :   **` {topPlayer.Level} `**\n" +
                  $" -  Team :   **` {topPlayer.Team} `**\n" +
                  $" -  Server :   **` {topPlayer.Parent.Label} `**\n" +
-
-
-                 $"" +
-
-
-                 $"\n\n" +
-                 $"> This message will be update {(DateTime.UtcNow.AddMinutes(10).ToDiscordUnixTimestampFormat())}."
+                  
+                 $"\n{content}\n"+
+                 $"",
 
              //embed: new EmbedBuilder()
              //{
-             //    Description ="",
-             //    ThumbnailUrl = _client.CurrentUser.GetAvatarUrl(),
-             //    Color = Discord.Color.Green
+             //    Description = 
+             //    $"{content}\n"
              //}
-             //.AddField("Version", _dynastioClient.Version.CurrentVersion, false)
-             //.Build()
-             , allowedMentions: AllowedMentions.None).TryAsync();
+             //.Build(),
+             allowedMentions: AllowedMentions.None).TryAsync();
 
         }
         async Task updateStatus()
