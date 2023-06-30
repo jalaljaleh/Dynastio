@@ -111,7 +111,7 @@ namespace Dynastio.Bot.Handlers
                         .TryAsync();
                 }
 
-            var players = _dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).OrderByDescending(a => a.Score).Take(40).ToList();
+            var players = _dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).OrderByDescending(a => a.Score).Take(17).ToList();
            
             var topPlayer = players.FirstOrDefault();
             
