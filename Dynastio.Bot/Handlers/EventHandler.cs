@@ -1,10 +1,12 @@
 ﻿using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
+using DnsClient.Protocol;
 using Dynastio.Bot.Data;
 using Dynastio.Bot.Managers;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver.Core.Authentication;
 using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
@@ -75,7 +77,7 @@ namespace Dynastio.Bot.Handlers
                 return;
 
             _repeaterService
-                .AddFunction(status(), TimeSpan.FromMinutes(10));
+                .AddAction(status, TimeSpan.FromMinutes(10));
 
             //_repeaterService
             //    .AddFunction(EidMubarakEvent(), TimeSpan.FromHours(1), TimeSpan.FromHours(1));
@@ -108,20 +110,47 @@ namespace Dynastio.Bot.Handlers
                         .TryAsync();
                 }
 
-            await channel.SendMessageAsync(
-             embed: new EmbedBuilder()
-             {
-                 Description =
-                 $"Online Servers: `{_dynastioClient.OnlineServers.Count}`\n" +
-                 $"Online Players: `{_dynastioClient.OnlinePlayers.Count}`\n" +
-                 $"This message will be update in {(DateTime.UtcNow.AddMinutes(10).ToDiscordUnixTimestampFormat())}.",
+            var topPlayer = _dynastioClient.OnlinePlayers.OrderByDescending(a => a.Score).FirstOrDefault(a => a.Parent.IsPrivate is false);
+            var tpmention = topPlayer.IsDiscordAuth ? "- <@" + topPlayer.Id.Replace("discord:", "") + ">" : "";
 
-                 ThumbnailUrl = _client.CurrentUser.GetAvatarUrl(),
-                 Color = Discord.Color.Green
-             }
-             .AddField("Version", _dynastioClient.Version.CurrentVersion, false)
-             .Build())
-             .TryAsync();
+            await channel.SendMessageAsync(
+                text:
+                $"# Dynast.io Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()}\n" +
+
+                 $"## Servers:\n" +
+                 $"- **All Servers**: **`{_dynastioClient.OnlineServers.Count}`**\n" +
+                 $" -  Public Servers :   **` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} `**\n" +
+                 $" -  Private Servers:   **` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} `**\n" +
+                 $"\n" +
+
+                 $"## Players:\n" +
+                 $"- **All Players**: **`{_dynastioClient.OnlinePlayers.Count}`**\n" +
+                 $" -  In Public Servers :   **` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} `**\n" +
+                 $" -  In Private Servers:   **` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} `**\n\n" +
+
+                 $"- **Top Player**: **`{topPlayer.Nickname.RemoveLines().TryRemove(18)}`** {tpmention}\n" +
+                 $" -  Score :   **` {topPlayer.Score.Metric()} `**\n" +
+                 $" -  Level :   **` {topPlayer.Level} `**\n" +
+                 $" -  Team :   **` {topPlayer.Team} `**\n" +
+                 $" -  Server :   **` {topPlayer.Parent.Label} `**\n" +
+
+
+                 $"" +
+
+
+                 $"\n\n" +
+                 $"> This message will be update {(DateTime.UtcNow.AddMinutes(10).ToDiscordUnixTimestampFormat())}."
+
+             //embed: new EmbedBuilder()
+             //{
+             //    Description ="",
+             //    ThumbnailUrl = _client.CurrentUser.GetAvatarUrl(),
+             //    Color = Discord.Color.Green
+             //}
+             //.AddField("Version", _dynastioClient.Version.CurrentVersion, false)
+             //.Build()
+             ).TryAsync();
+
         }
         async Task updateStatus()
         {

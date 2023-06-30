@@ -8,40 +8,43 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot
 {
+
     public class RepeaterService
     {
-        private Dictionary<Task, Timer> functionTimers;
+        private readonly Dictionary<Func<Task>, Timer> actionTimers;
         private IServiceProvider _services;
         public RepeaterService(IServiceProvider services)
         {
-            functionTimers = new Dictionary<Task, Timer>();
             _services = services;
-
+            actionTimers = new();
         }
-
-        public void AddFunction(Task function, TimeSpan interval, TimeSpan dueTime = default)
+        public void AddAction(Func<Task> action, TimeSpan interval, TimeSpan dueTime = default)
         {
-            var timer = new Timer(async _ =>
+            var timer = new Timer(_ =>
             {
-                await function;
-            }, null, dueTime , interval);
+                action.Invoke();
+            }, null, dueTime, interval);
 
-            functionTimers[function] = timer;
-        }
-        public void RemoveFunction(Task function)
-        {
-            functionTimers[function].Dispose();
+            actionTimers[action] = timer;
         }
 
-        public void RemoveAll()
+        public void RemoveAction(Func<Task> action)
         {
-            foreach (var kvp in functionTimers)
+            if (actionTimers.TryGetValue(action, out var timer))
             {
-                Timer timer = kvp.Value;
                 timer.Dispose();
+                actionTimers.Remove(action);
+            }
+        }
+
+        public void RemoveAllActions()
+        {
+            foreach (var kvp in actionTimers)
+            {
+                kvp.Value.Dispose();
             }
 
-            functionTimers.Clear();
+            actionTimers.Clear();
         }
     }
 }

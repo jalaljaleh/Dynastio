@@ -22,8 +22,15 @@ namespace Dynastio.Net
 
         [JsonIgnore]
         public string UniqeId { get; set; } = "";
+        
         [JsonIgnore]
         public bool IsAuth => !string.IsNullOrEmpty(Id);
+        
+        [JsonIgnore]
+        public bool IsDiscordAuth => IsAuth && Id.Contains("discord:");
+        
+
+
         [JsonIgnore]
         public Server Parent { get; set; }
 
