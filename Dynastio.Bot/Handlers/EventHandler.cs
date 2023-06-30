@@ -149,7 +149,7 @@ namespace Dynastio.Bot.Handlers
              //}
              //.AddField("Version", _dynastioClient.Version.CurrentVersion, false)
              //.Build()
-             ).TryAsync();
+             , allowedMentions: AllowedMentions.None).TryAsync();
 
         }
         async Task updateStatus()
