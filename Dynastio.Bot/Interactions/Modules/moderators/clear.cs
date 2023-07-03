@@ -18,7 +18,7 @@ namespace Dynastio.Bot.Interactions.modules.moderators
     public class clearModule : CustomInteractionModuleBase
     {
         [SlashCommand("clear", "clear messages")]
-        public async Task clear(int count, Direction direction = Direction.Before, ulong fromMessageId = 0)
+        public async Task clear(int count, Direction direction = Direction.Before, string fromMessageId = "")
         {
             await DeferAsync();
 
@@ -26,10 +26,20 @@ namespace Dynastio.Bot.Interactions.modules.moderators
 
             IEnumerable<IMessage> messages;
 
-            if (fromMessageId != 0)
-                messages = await channel.GetMessagesAsync(fromMessageId, direction, count).FlattenAsync();
-            else
+            if (string.IsNullOrEmpty(fromMessageId))
+            {
                 messages = await channel.GetMessagesAsync(count).FlattenAsync();
+            }
+            else
+            {
+                if (ulong.TryParse(fromMessageId, out ulong _fromMessageId))
+                    messages = await channel.GetMessagesAsync(_fromMessageId, direction, count).FlattenAsync();
+                else
+                {
+                    await FollowupAsync($"wrong message Id !");
+                    return;
+                }
+            }
 
             messages = messages.Where(x => (DateTime.UtcNow - x.CreatedAt.UtcDateTime).TotalDays < 14)
                 .ToList();
