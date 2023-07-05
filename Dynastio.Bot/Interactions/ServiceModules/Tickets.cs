@@ -39,6 +39,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
         }
 
         [RateLimit(30)]
+        [RequireBotUserPermission(BotUserPermission.CreateTicket)]
         [ComponentInteraction("btn.ticket.start:*")]
         public async Task btn_ticket_start(ulong _channel)
         {
@@ -50,6 +51,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
             await RespondWithModalAsync(modal);
         }
         [RateLimit(10)]
+        [RequireBotUserPermission(BotUserPermission.CreateTicket)]
         [ModalInteraction("tickets.start:*", true)]
         public async Task add(ulong _channel, TicketForm form)
         {
@@ -64,9 +66,9 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                 $"- This is a safe and private thread with Dynastio Staff **No Admin, No Moderator**.\n" +
                 $"> Это безопасный и конфиденциальный поток с персоналом Dynastio ** Без администраторов, без модераторов**.\n\n" +
                 $"<@&480954902005415937> --> **<@{Context.User.Id}>",
-                embed: 
+                embed:
                 ($"{userMention}\n" +
-                $">>> {form.Description}").ToEmbed(form.Title1,Context.User.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl()),
+                $">>> {form.Description}").ToEmbed(form.Title1, Context.User.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl()),
                 components: new ComponentBuilder()
               .WithButton("Unrelated", $"btn.ticket:unrelated:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
               .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Danger)

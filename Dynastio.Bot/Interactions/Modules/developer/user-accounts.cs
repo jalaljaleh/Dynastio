@@ -27,6 +27,31 @@ namespace Dynastio.Bot.Interactions.modules
         public DiscordSocketClient _discord { get; set; }
         public IDynastioBotDatabase _database { get; set; }
 
+
+        [SlashCommand("permission", "user permission")]
+        public async Task permission(IGuildUser user, BotUserPermission permission, bool Has)
+        {
+            await DeferAsync();
+
+            var buser = await _userService.GetUserAsync(user.Id, false);
+            if (buser is null)
+            {
+                await FollowupAsync("no any result found.");
+                return;
+            }
+
+            if (Has)
+            {
+                buser.UnlockPermission(permission);
+            }
+            else
+            {
+                buser.LockPermission(permission);
+            }
+            await _userService.UpdateAsync(buser);
+            await FollowupAsync("result: done");
+        }
+
         [Group("user-accounts", "user commands")]
         public class userModule : developerModule
         {

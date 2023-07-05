@@ -11,6 +11,10 @@ using Dynastio.Net;
 
 namespace Dynastio.Bot.Data
 {
+    public enum BotUserPermission
+    {
+        CreateTicket
+    }
     public class UserWarn
     {
         public DateTime CreatedAt { get; set; }
@@ -26,8 +30,22 @@ namespace Dynastio.Bot.Data
 
         public int activiy_level { get; set; }
         public long activiy_score { get; set; }
-
-
+        public List<BotUserPermission> LockedPermissions { get; set; } = new();
+        public bool HasPermission(BotUserPermission per)
+        {
+            return !LockedPermissions.Contains(per);
+        }
+        public User LockPermission(BotUserPermission per)
+        {
+            if (!LockedPermissions.Contains(per))
+                LockedPermissions.Add(per);
+            return this;
+        }
+        public User UnlockPermission(BotUserPermission per)
+        {
+                LockedPermissions.Remove(per);
+            return this;
+        }
         public DateTime LastHonorGift { get; set; }
         public DateTime LastBoostGift { get; set; }
         public DateTime last_activiy_score_time { get; set; }
