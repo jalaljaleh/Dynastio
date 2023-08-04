@@ -125,10 +125,10 @@ namespace Dynastio.Bot.Handlers
 
             if (msgs.isSuccesful is false) return;
 
-            List<IMessage> postsToDelete = msgs.result.ToList();
+            List<IMessage> postsToDelete = msgs.result.Where(a=>a.Source == MessageSource.Bot).ToList();
 
             var uploadedVideos = postsToDelete.Select(a => a.Content).ToList();
-            foreach (var video in _dynastioClient.FeaturedVideos.OrderBy(a => a.ExpireAt).Take(5))
+            foreach (var video in _dynastioClient.FeaturedVideos.OrderBy(a => a.ExpireAt))
             {
                 var toDeletePost = postsToDelete.FirstOrDefault(a => a.Content.Contains(video.Url));
                 if (toDeletePost != null)
@@ -137,7 +137,12 @@ namespace Dynastio.Bot.Handlers
                 if (uploadedVideos.Any(a => a.Contains(video.Url)))
                     continue;
 
-                await channel.SendMessageAsync($"## Expire {video.ExpireAt.ToDiscordUnixTimestampFormat()}\n" + video.Url);
+                var msg = await channel.SendMessageAsync($"## Expire {video.ExpireAt.ToDiscordUnixTimestampFormat()}\n" + video.Url);
+              
+                //await Task.Delay(80);
+
+                //await msg.CrosspostAsync();
+
                 await Task.Delay(550);
             }
             await channel.DeleteMessagesAsync(postsToDelete);
