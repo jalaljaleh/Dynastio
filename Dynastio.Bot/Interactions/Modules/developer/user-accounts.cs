@@ -59,7 +59,7 @@ namespace Dynastio.Bot.Interactions.modules
             public async Task json(IGuildUser user)
             {
                 await DeferAsync();
-
+                
                 var buser = await _userService.GetUserAsync(user.Id, false);
                 if (buser is null)
                 {

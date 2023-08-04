@@ -107,19 +107,15 @@ namespace Dynastio.Bot.Handlers
                 var msgContent =
                      $"## Dynast.io Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()}\n\n" +
 
+                     $"### Information \n" +
                      $"- **Current Version**: {_dynastioClient.Version.CurrentVersion} [Download]({_dynastioClient.Version.DownloadUrl})\n" +
 
-                     $"- **`{_dynastioClient.OnlineServers.Count}` Servers with `{_dynastioClient.OnlinePlayers.Count}` Players**\n" +
-                     $" -  Public Servers   **` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} `** servers with **` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} `** Players\n" +
-                     $" -  Private Servers   **` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} `** servers with**` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} `** Players\n" +
+                     $"### Servers and Players \n" +
+                     $"- `{_dynastioClient.OnlineServers.Count}` servers and `{_dynastioClient.OnlinePlayers.Count}` players are online:\n" +
+                     $" - ` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} ` public servers & ` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} ` players.\n" +
+                     $" - ` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} ` private servers & ` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} ` Players.\n" +
                      $"\n" +
-
-                    $"- **Top Player**: **`{topPlayer.Nickname.RemoveLines().TryRemove(18)}`** {tpmention}\n" +
-                     $" -  Score :   **` {topPlayer.Score.Metric()} `**\n" +
-                     $" -  Level :   **` {topPlayer.Level} `**\n" +
-                     $" -  Team :   **` {topPlayer.Team} `**\n" +
-                     $" -  Server :   **` {topPlayer.Parent.Label} `**\n" +
-
+                 
                      $"\n{content}\n" +
                      $"";
 

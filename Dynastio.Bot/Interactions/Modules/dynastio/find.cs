@@ -26,7 +26,7 @@ namespace Dynastio.Bot.Interactions.modules.dynastio
              int page = 1)
         {
             await DeferAsync();
-
+           
             var players = _dynastio.OnlinePlayers.Where(a => !a.Parent.IsPrivate).ToList() ?? null;
             if (players == null)
             {
