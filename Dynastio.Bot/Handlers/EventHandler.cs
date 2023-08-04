@@ -143,7 +143,6 @@ namespace Dynastio.Bot.Handlers
 
                 await msg.AddReactionAsync(new Emoji("👍"));
 
-                //await msg.CrosspostAsync();
 
                 await Task.Delay(550);
             }
@@ -151,7 +150,9 @@ namespace Dynastio.Bot.Handlers
             var _ex_channel = _client.Guilds.First().GetTextChannel(1137030131970494524);
             foreach (var msg in postsToDelete)
             {
-                await _ex_channel.SendMessageAsync(msg.Content);
+                var msg1 = await _ex_channel.SendMessageAsync(msg.Content);
+                await Task.Delay(80);
+                await msg1.CrosspostAsync();
                 await Task.Delay(550);
             }
 
