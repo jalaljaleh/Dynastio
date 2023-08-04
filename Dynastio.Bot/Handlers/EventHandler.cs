@@ -56,7 +56,7 @@ namespace Dynastio.Bot.Handlers
                 return;
 
             _repeaterService
-               .AddAction(featuredVideosChannel, TimeSpan.FromMinutes(31));
+               .AddAction(featuredVideosChannel, TimeSpan.FromMinutes(35));
 
             _repeaterService
                 .AddAction(status, TimeSpan.FromMinutes(10));
@@ -95,7 +95,7 @@ namespace Dynastio.Bot.Handlers
                 targetMessage = filter.FirstOrDefault();
 
                 if (filter.Count > 0)
-                    await channel.DeleteMessagesAsync(filter);
+                    await channel.DeleteMessagesAsync(filter.Skip(1));
             }
 
             var editionResult = false;
