@@ -138,15 +138,23 @@ namespace Dynastio.Bot.Handlers
                     continue;
 
                 var msg = await channel.SendMessageAsync($"## Expire {video.ExpireAt.ToDiscordUnixTimestampFormat()}\n" + video.Url);
-               
+
                 await Task.Delay(80);
-               
+
                 await msg.AddReactionAsync(new Emoji("👍"));
 
                 //await msg.CrosspostAsync();
 
                 await Task.Delay(550);
             }
+
+            var _ex_channel = _client.Guilds.First().GetTextChannel(1137030131970494524);
+            foreach (var msg in postsToDelete)
+            {
+                await _ex_channel.SendMessageAsync(msg.Content);
+                await Task.Delay(550);
+            }
+
             await channel.DeleteMessagesAsync(postsToDelete);
         }
         public async Task status()
