@@ -82,13 +82,12 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                     {
                         new EmbedFieldBuilder()
                         .WithName("Accounts")
-                        .WithValue(this["accounts.account.list.description"] + "\n" +
-                                      ((BotUser.Accounts?.ToStringTable(new string[] { "#", this["account"] + " |", "Default |", "Service |", this["added_at"] },
+                        .WithValue("Connected Accounts\n" +
+                                      ((BotUser.Accounts?.ToStringTable(new string[] { "#", this["account"] + " |", "Id |" },
                                       a => BotUser.Accounts.IndexOf(a) + 1,
                                       a => a.Reminder,
-                                      a => a.IsDefault ? "Yes" : "No",
-                                      a => a.GetAccountService(),
-                                      a => a.AddedAt.ToRelative()) + "                 ").ToMarkdown()
+                                      a => a.Id) +
+                                      "                 ").ToMarkdown()
 
                                       ?? this["no_account_found"].ToMarkdown())),
                     },
