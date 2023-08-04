@@ -9,7 +9,7 @@ using Dynastio.Net;
 using Discord.WebSocket;
 using Dynastio.Bot.Data;
 using Dynastio.Bot.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace Dynastio.Bot.Interactions.ServiceModules
 {
@@ -64,11 +64,38 @@ namespace Dynastio.Bot.Interactions.ServiceModules
             var message = await thread.SendMessageAsync(
                 $"## Important\n" +
                 $"- This is a safe and private thread with Dynastio Staff **No Admin, No Moderator**.\n" +
-                $"> Это безопасный и конфиденциальный поток с персоналом Dynastio ** Без администраторов, без модераторов**.\n\n" +
-                $"<@&480954902005415937> --> **<@{Context.User.Id}>",
-                embed:
-                ($"{userMention}\n" +
-                $">>> {form.Description}").ToEmbed(form.Title1, Context.User.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl()),
+                $"> Это безопасный и конфиденциальный поток с персоналом Dynastio ** Без администраторов, без модераторов**.\n" +
+                $"<@&480954902005415937> ` --> ` **<@{Context.User.Id}>",
+
+                embed: new EmbedBuilder()
+                {
+                    Title = form.Title1,
+                    Description = form.Description,
+                    Author = new EmbedAuthorBuilder()
+                    {
+                        Name = Context.User.Username,
+                        IconUrl = Context.User.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl(),
+                        Url = "https://discord.com/channels/@me/" + Context.User.Id,
+                    },
+                    Color = Color.Orange,
+                    Fields = new List<EmbedFieldBuilder>()
+                    {
+                        new EmbedFieldBuilder()
+                        .WithName("Accounts")
+                        .WithValue(this["accounts.account.list.description"] + "\n" +
+                                      ((BotUser.Accounts?.ToStringTable(new string[] { "#", this["account"] + " |", "Default |", "Service |", this["added_at"] },
+                                      a => BotUser.Accounts.IndexOf(a) + 1,
+                                      a => a.Reminder,
+                                      a => a.IsDefault ? "Yes" : "No",
+                                      a => a.GetAccountService(),
+                                      a => a.AddedAt.ToRelative()) + "                 ").ToMarkdown()
+
+                                      ?? this["no_account_found"].ToMarkdown())),
+                    },
+                    Timestamp = DateTime.UtcNow,
+                    Footer = new EmbedFooterBuilder() { Text = "Dynast.io Tickets", IconUrl = Context.Client.CurrentUser.GetAvatarUrl() }
+                }.Build(),
+
                 components: new ComponentBuilder()
               .WithButton("Unrelated", $"btn.ticket:unrelated:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
               .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Danger)

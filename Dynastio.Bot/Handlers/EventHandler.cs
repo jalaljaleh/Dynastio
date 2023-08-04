@@ -46,31 +46,9 @@ namespace Dynastio.Bot.Handlers
             _database = _services.GetRequiredService<IDynastioBotDatabase>();
 
             _client.Ready += _client_Ready;
-            _client.UserJoined += _client_UserJoined;
 
         }
 
-        private async Task _client_UserJoined(SocketGuildUser user)
-        {
-            await user.SendMessageAsync(
-                text: "https://www.youtube.com/watch?v=x1tRXvcFJvs" + "\n" + "https://dynast.io/",
-                components: new ComponentBuilder()
-                .WithButton("Play Dynast.io", null, ButtonStyle.Link, null, "https://dynast.io/")
-                .WithButton("Youtube Channel", null, ButtonStyle.Link, null, "https://www.youtube.com/channel/UCW0PmC1B8jjhpKLHciFp0xA/?sub_confirmation=1")
-                .Build())
-                .TryAsync();
-
-            await DiscordStream.SendFileAsync(
-                channel: user.Guild.GetTextChannel(_guildService.GetChannelId(GuildService.GuildChannelType.MemberChannel)),
-                img: await _graphicService.GetWelcomeImage(user),
-                user.Id + ".jpg",
-                user.Id.ToUserMention(),
-                embed: new EmbedBuilder()
-                {
-                    Description = $"A wild {user.Id.ToUserMention()} appears !",
-                    ImageUrl = $"attachment://{user.Id}.jpg"
-                }.Build());
-        }
 
         private async Task _client_Ready()
         {
@@ -101,57 +79,67 @@ namespace Dynastio.Bot.Handlers
                 .FlattenAsync()
                 .TryAsync();
 
+
             if (msgs.isSuccesful)
                 foreach (var message in msgs.result)
                 {
                     if (message.Author.IsBot is false)
                         continue;
 
-                    await message.DeleteAsync()
-                        .TryAsync();
+                    await sendMessage(message);
                 }
+            async Task sendMessage(IMessage msg = null)
+            {
+                var players = _dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).OrderByDescending(a => a.Score).Take(17).ToList();
 
-            var players = _dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).OrderByDescending(a => a.Score).Take(17).ToList();
-           
-            var topPlayer = players.FirstOrDefault();
-            
-            var tpmention = topPlayer.IsDiscordAuth ? "- <@" + topPlayer.Id.Replace("discord:", "") + ">" : "";
+                var topPlayer = players.FirstOrDefault();
 
-            var content = players.ToStringTable(new[] { "#", "server", "score", "level", "nickname" },
-                a => players.IndexOf(a),
-                a => a.Parent.Label.TryRemove(18),
-                a => a.Score.Metric(),
-                a => a.Level.Metric(),
-                a => a.Nickname.RemoveLines().TryRemove(18))
-                .ToMarkdown();
+                var tpmention = topPlayer.IsDiscordAuth ? "- <@" + topPlayer.Id.Replace("discord:", "") + ">" : "";
 
+                var content = players.ToStringTable(new[] { "#", "server", "score", "level", "nickname" },
+                    a => players.IndexOf(a),
+                    a => a.Parent.Label.TryRemove(18),
+                    a => a.Score.Metric(),
+                    a => a.Level.Metric(),
+                    a => a.Nickname.RemoveLines().TryRemove(18))
+                    .ToMarkdown();
 
-            await channel.SendMessageAsync(
-                text:
-                $"## Dynast.io Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()}\n\n" +
+                var msgContent =
+                     $"## Dynast.io Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()}\n\n" +
 
-                 $"- **`{_dynastioClient.OnlineServers.Count}` Servers with `{_dynastioClient.OnlinePlayers.Count}` Players**\n" +
-                 $" -  Public Servers   **` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} `** servers with **` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} `** Players\n" +
-                 $" -  Private Servers   **` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} `** servers with**` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} `** Players\n" +
-                 $"\n" +
+                     $"- **Current Version**: {_dynastioClient.Version.CurrentVersion} [Download]({_dynastioClient.Version.DownloadUrl})\n" +
 
-                $"- **Top Player**: **`{topPlayer.Nickname.RemoveLines().TryRemove(18)}`** {tpmention}\n" +
-                 $" -  Score :   **` {topPlayer.Score.Metric()} `**\n" +
-                 $" -  Level :   **` {topPlayer.Level} `**\n" +
-                 $" -  Team :   **` {topPlayer.Team} `**\n" +
-                 $" -  Server :   **` {topPlayer.Parent.Label} `**\n" +
-                  
-                 $"\n{content}\n"+
-                 $"",
+                     $"- **`{_dynastioClient.OnlineServers.Count}` Servers with `{_dynastioClient.OnlinePlayers.Count}` Players**\n" +
+                     $" -  Public Servers   **` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} `** servers with **` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} `** Players\n" +
+                     $" -  Private Servers   **` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} `** servers with**` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} `** Players\n" +
+                     $"\n" +
 
-             //embed: new EmbedBuilder()
-             //{
-             //    Description = 
-             //    $"{content}\n"
-             //}
-             //.Build(),
-             allowedMentions: AllowedMentions.None).TryAsync();
+                    $"- **Top Player**: **`{topPlayer.Nickname.RemoveLines().TryRemove(18)}`** {tpmention}\n" +
+                     $" -  Score :   **` {topPlayer.Score.Metric()} `**\n" +
+                     $" -  Level :   **` {topPlayer.Level} `**\n" +
+                     $" -  Team :   **` {topPlayer.Team} `**\n" +
+                     $" -  Server :   **` {topPlayer.Parent.Label} `**\n" +
 
+                     $"\n{content}\n" +
+                     $"";
+
+                if (msg is null)
+                {
+                    await channel.SendMessageAsync(msgContent, allowedMentions: AllowedMentions.None);
+                }
+                else
+                {
+                    var res = await (msg as IUserMessage).ModifyAsync(x =>
+                    {
+                        x.Content = msgContent;
+                    }).TryAsync();
+
+                    if (res is false)
+                    {
+                        await msg.DeleteAsync();
+                    }
+                }
+            }
         }
         async Task updateStatus()
         {

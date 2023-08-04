@@ -24,7 +24,7 @@ namespace Discord.Interactions
             if ((context as CustomSocketInteractionContext).BotUser.HasPermission(_botUserPermissions))
                 return Task.FromResult(PreconditionResult.FromSuccess());
 
-            return Task.FromResult(PreconditionResult.FromError(this.ErrorMessage ?? ((CustomSocketInteractionContext)context).UserLocale["accounts.require.default"]));
+            return Task.FromResult(PreconditionResult.FromError(this.ErrorMessage ?? ((CustomSocketInteractionContext)context).UserLocale[$"**Access Denied**\nYou need {_botUserPermissions} to use this command."]));
 
         }
     }
