@@ -56,10 +56,12 @@ namespace Dynastio.Bot.Handlers
                 return;
 
             _repeaterService
-                .AddAction(status, TimeSpan.FromMinutes(10));
+               .AddAction(featuredVideosChannel, TimeSpan.FromMinutes(31));
 
             _repeaterService
-               .AddAction(featuredVideosChannel, TimeSpan.FromMinutes(31));
+                .AddAction(status, TimeSpan.FromMinutes(10));
+
+
             //_repeaterService
             //    .AddFunction(EidMubarakEvent(), TimeSpan.FromHours(1), TimeSpan.FromHours(1));
 
@@ -81,33 +83,64 @@ namespace Dynastio.Bot.Handlers
                 .FlattenAsync()
                 .TryAsync();
 
-            if (msgs.isSuccesful)
-                foreach (var message in msgs.result)
-                {
-                    if (message.Author.IsBot is false)
-                        continue;
-                    await sendMessage(message);
-                }
-            async Task sendMessage(IMessage msg = null)
+            IMessage targetMessage = null;
+            if (msgs.isSuccesful && msgs.result.Any())
             {
-                if (msg is null)
-                    await channel.SendMessageAsync(txt, allowedMentions: AllowedMentions.None);
-                else
-                {
-                    var res = await (msg as IUserMessage).ModifyAsync(x =>
-                    {
-                        x.Content = txt;
-                    }).TryAsync();
+                var filter = msgs.result
+                     .Where(a => a.Author.Id == _client.CurrentUser.Id)
+                     .OrderByDescending(a => a.CreatedAt)
+                     .ThenBy(a => a.EditedTimestamp)
+                     .ToList();
 
-                    if (res is false)
-                        await msg.DeleteAsync();
-                }
+                targetMessage = filter.FirstOrDefault();
+
+                if (filter.Count > 0)
+                    await channel.DeleteMessagesAsync(filter);
+            }
+
+            var editionResult = false;
+            if (targetMessage is not null)
+            {
+                editionResult = await (targetMessage as IUserMessage)
+                    .ModifyAsync(x => { x.Content = txt; })
+                    .TryAsync();
+
+                if (editionResult is false)
+                    await (targetMessage as IUserMessage).DeleteAsync();
+            }
+            if (targetMessage is null)
+            {
+                await channel.SendMessageAsync(txt, allowedMentions: AllowedMentions.None);
+                return;
             }
         }
         private async Task featuredVideosChannel()
         {
-            var msgContent = string.Join("\n", _dynastioClient.FeaturedVideos.Select(a => a.Url));
-            await updateChannel(1136917780516585472, msgContent);
+            var channel = _client.Guilds.First().GetTextChannel(1136917780516585472);
+            if (channel == null) return;
+
+            var msgs = await channel.GetMessagesAsync()
+                .FlattenAsync()
+                .TryAsync();
+
+            if (msgs.isSuccesful is false) return;
+
+            List<IMessage> postsToDelete = msgs.result.ToList();
+
+            var uploadedVideos = postsToDelete.Select(a => a.Content).ToList();
+            foreach (var video in _dynastioClient.FeaturedVideos.OrderBy(a => a.ExpireAt).Take(5))
+            {
+                var toDeletePost = postsToDelete.FirstOrDefault(a => a.Content.Contains(video.Url));
+                if (toDeletePost != null)
+                    postsToDelete.Remove(toDeletePost);
+
+                if (uploadedVideos.Any(a => a.Contains(video.Url)))
+                    continue;
+
+                await channel.SendMessageAsync($"## Expire {video.ExpireAt.ToDiscordUnixTimestampFormat()}\n" + video.Url);
+                await Task.Delay(550);
+            }
+            await channel.DeleteMessagesAsync(postsToDelete);
         }
         public async Task status()
         {
@@ -138,6 +171,6 @@ namespace Dynastio.Bot.Handlers
 
             await updateChannel(1124036365613539408, msgContent);
         }
-   
+
     }
 }
