@@ -28,13 +28,13 @@ namespace Dynastio.Net
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
 
-            _players = new Cacheable<List<Player>>(30000, GetPlayersAsync);
-            _servers = new Cacheable<List<Server>>(30000, GetServersAsync);
-            _version = new Cacheable<Version>(240000, GetVersionAsync);
-            _changelog = new Cacheable<string>(240000, GetChangeLogAsync);
-            _leaderboardcoin = new Cacheable<List<Leaderboardcoin>>(240000, GetLeaderboardcoinsAsync);
-            _leaderboardscore = new Cacheable<Leaderboardscore[][]>(240000, GetLeaderboardscoresAsync);
-
+            _players = new Cacheable<List<Player>>(TimeSpan.FromSeconds(30), GetPlayersAsync);
+            _servers = new Cacheable<List<Server>>(TimeSpan.FromSeconds(30), GetServersAsync);
+            _version = new Cacheable<Version>(TimeSpan.FromSeconds(500), GetVersionAsync);
+            _changelog = new Cacheable<string>(TimeSpan.FromSeconds(500), GetChangeLogAsync);
+            _leaderboardcoin = new Cacheable<List<Leaderboardcoin>>(TimeSpan.FromSeconds(250), GetLeaderboardcoinsAsync);
+            _leaderboardscore = new Cacheable<Leaderboardscore[][]>(TimeSpan.FromSeconds(250), GetLeaderboardscoresAsync);
+            _featuredVideos = new Cacheable<List<FeaturedVideos>>(TimeSpan.FromMinutes(29), GetFeaturedVideosAsync);
         }
 
         private readonly Cacheable<List<Player>> _players;
@@ -43,6 +43,7 @@ namespace Dynastio.Net
         private readonly Cacheable<string> _changelog;
         private readonly Cacheable<List<Leaderboardcoin>> _leaderboardcoin;
         private readonly Cacheable<Leaderboardscore[][]> _leaderboardscore;
+        private readonly Cacheable<List<FeaturedVideos>> _featuredVideos;
 
         public Version Version { get => _version.Value; }
         public List<Player> OnlinePlayers { get => _players.Value; }
@@ -52,6 +53,7 @@ namespace Dynastio.Net
         public List<Leaderboardscore> LeaderboardscoresWeekly { get => _leaderboardscore.Value.ToArray()[1].ToList(); }
         public List<Leaderboardscore> LeaderboardscoresMonthly { get => _leaderboardscore.Value.ToArray()[2].ToList(); }
         public string Changelog { get => _changelog.Value; }
+        public List<FeaturedVideos> FeaturedVideos { get => _featuredVideos.Value; }
 
         internal async Task<string> GetAsync(string api)
         {
@@ -100,7 +102,7 @@ namespace Dynastio.Net
             var data = JsonConvert.DeserializeObject<DataType<Leaderboardcoin[]>>(result);
             return data.data.ToList();
         }
-        public async Task<bool> GetUserPincodeStatusAsync(string Id,string pincode)
+        public async Task<bool> GetUserPincodeStatusAsync(string Id, string pincode)
         {
             var result = await GetAsync($"https://auth.dynast.io/api/check_pincode?uid={Id}&pin={pincode}");
             var data = JsonConvert.DeserializeObject<DataType<bool>>(result);
@@ -188,6 +190,12 @@ namespace Dynastio.Net
                 UsersRankWeekly = data.data[1].ToList(),
                 UsersRankMontly = data.data[2].ToList()
             };
+        }
+        public async Task<List<FeaturedVideos>> GetFeaturedVideosAsync()
+        {
+            var result = await GetAsync("https://auth.dynast.io/api/get_featured_videos");
+            var data = JsonConvert.DeserializeObject<DataType<List<FeaturedVideos>>>(result);
+            return data.data;
         }
     }
 }

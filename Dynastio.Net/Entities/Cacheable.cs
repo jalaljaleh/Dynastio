@@ -9,8 +9,8 @@ namespace Dynastio.Net.Entities
     public struct Cacheable<T>
     {
         private Func<Task<T>> _updateFunc;
-        private int _time = 1000;
-        public Cacheable(int millisecondsUpdateTime, Func<Task<T>> updateFunc)
+        private TimeSpan _time = TimeSpan.FromSeconds(1);
+        public Cacheable(TimeSpan millisecondsUpdateTime, Func<Task<T>> updateFunc)
         {
             _updateFunc = updateFunc;
             _time = millisecondsUpdateTime;
@@ -23,7 +23,7 @@ namespace Dynastio.Net.Entities
         {
             get
             {
-                if ((DateTime.UtcNow - _valueTime).TotalMilliseconds > _time || _value is null)
+                if ((DateTime.UtcNow - _valueTime).TotalMilliseconds > _time.TotalMilliseconds || _value is null)
                 {
                     _value = _updateFunc().GetAwaiter().GetResult();
                     _valueTime = DateTime.UtcNow;
