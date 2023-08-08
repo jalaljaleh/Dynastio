@@ -56,10 +56,10 @@ namespace Dynastio.Bot.Handlers
                 return;
 
             _repeaterService
-               .AddAction(featuredVideosChannel, TimeSpan.FromMinutes(35));
+               .AddAction(RefreshFeaturedVideosChannel, TimeSpan.FromMinutes(35));
 
             _repeaterService
-                .AddAction(status, TimeSpan.FromMinutes(10));
+                .AddAction(RefreshStatusChannel, TimeSpan.FromMinutes(10));
 
 
             //_repeaterService
@@ -71,50 +71,8 @@ namespace Dynastio.Bot.Handlers
                 .SendMessageAsync("Ready !")
                 .TryAsync();
         }
-        async Task updateChannel(ulong channelId, string txt)
-        {
-            var channel = _client.Guilds
-            .First()
-            .GetTextChannel(channelId);
 
-            if (channel == null) return;
-
-            var msgs = await channel.GetMessagesAsync()
-                .FlattenAsync()
-                .TryAsync();
-
-            IMessage targetMessage = null;
-            if (msgs.isSuccesful && msgs.result.Any())
-            {
-                var filter = msgs.result
-                     .Where(a => a.Author.Id == _client.CurrentUser.Id)
-                     .OrderByDescending(a => a.CreatedAt)
-                     .ThenBy(a => a.EditedTimestamp)
-                     .ToList();
-
-                targetMessage = filter.FirstOrDefault();
-
-                if (filter.Count > 0)
-                    await channel.DeleteMessagesAsync(filter.Skip(1));
-            }
-
-            var editionResult = false;
-            if (targetMessage is not null)
-            {
-                editionResult = await (targetMessage as IUserMessage)
-                    .ModifyAsync(x => { x.Content = txt; })
-                    .TryAsync();
-
-                if (editionResult is false)
-                    await (targetMessage as IUserMessage).DeleteAsync();
-            }
-            if (targetMessage is null)
-            {
-                await channel.SendMessageAsync(txt, allowedMentions: AllowedMentions.None);
-                return;
-            }
-        }
-        private async Task featuredVideosChannel()
+        private async Task RefreshFeaturedVideosChannel()
         {
             var channel = _client.Guilds.First().GetTextChannel(1136917780516585472);
             if (channel == null) return;
@@ -143,22 +101,23 @@ namespace Dynastio.Bot.Handlers
 
                 await msg.AddReactionAsync(new Emoji("👍"));
 
-
                 await Task.Delay(550);
             }
 
             var _ex_channel = _client.Guilds.First().GetTextChannel(1137030131970494524);
             foreach (var msg in postsToDelete)
             {
-                var msg1 = await _ex_channel.SendMessageAsync(msg.Content);
+                var content = msg.Content.Replace("Expire", "Expired");
+                var msg1 = await _ex_channel.SendMessageAsync(content + "\n## Likes: " + msg.Reactions.FirstOrDefault().Value.ReactionCount);
                 await Task.Delay(80);
+
                 await msg1.CrosspostAsync();
                 await Task.Delay(550);
             }
 
             await channel.DeleteMessagesAsync(postsToDelete);
         }
-        public async Task status()
+        private async Task RefreshStatusChannel()
         {
             var players = _dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).OrderByDescending(a => a.Score).Take(17).ToList();
             var topPlayer = players.FirstOrDefault();
@@ -170,6 +129,7 @@ namespace Dynastio.Bot.Handlers
                 a => a.Level.Metric(),
                 a => a.Nickname.RemoveLines().TryRemove(18))
                 .ToMarkdown();
+
             var msgContent =
                  $"## Dynast.io Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()}\n\n" +
 
@@ -185,7 +145,8 @@ namespace Dynastio.Bot.Handlers
                  $"\n{content}\n" +
                  $"";
 
-            await updateChannel(1124036365613539408, msgContent);
+            var channel = await _client.GetChannelAsync(1124036365613539408);
+            await Utilities.ChannelUtilities.SendOrUpdateMessage((ITextChannel)channel, _client.CurrentUser.Id, msgContent);
         }
 
     }
