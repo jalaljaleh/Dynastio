@@ -95,7 +95,12 @@ namespace Dynastio.Bot.Handlers
                 if (uploadedVideos.Any(a => a.Contains(video.Url)))
                     continue;
 
-                var msg = await channel.SendMessageAsync($"## Expire {video.ExpireAt.ToDiscordUnixTimestampFormat()}\n" + video.Url);
+                var msg = await channel.SendMessageAsync(
+                    $"✦•························• Dynast.io •························•✦\r\n" +
+                    $"\n### Expire {video.ExpireAt.ToDiscordUnixTimestampFormat()}" +
+                    "\nUrl: " + video.Url +
+                    "\nGroup: " + video.Group +
+                    "\nPriority: " + video.Priority);
 
                 await Task.Delay(80);
 
@@ -108,7 +113,9 @@ namespace Dynastio.Bot.Handlers
             foreach (var msg in postsToDelete)
             {
                 var content = msg.Content.Replace("Expire", "Expired");
-                var msg1 = await _ex_channel.SendMessageAsync(content + "\n## Likes: " + msg.Reactions.FirstOrDefault().Value.ReactionCount);
+                var msg1 = await _ex_channel.SendMessageAsync(
+                    content +
+                    "\n### Likes: " + msg.Reactions.FirstOrDefault().Value.ReactionCount);
                 await Task.Delay(80);
 
                 await msg1.CrosspostAsync();
