@@ -96,7 +96,7 @@ namespace Dynastio.Bot.Handlers
                     continue;
 
                 var msg = await channel.SendMessageAsync(
-                    $"✦•························• Dynast.io •························•✦\r\n" +
+                    $"## ✦•··························• Dynast.io •··························•✦\n" +
                     $"\n### Expire {video.ExpireAt.ToDiscordUnixTimestampFormat()}" +
                     "\nUrl: " + video.Url +
                     "\nGroup: " + video.Group +
@@ -115,7 +115,7 @@ namespace Dynastio.Bot.Handlers
                 var content = msg.Content.Replace("Expire", "Expired");
                 var msg1 = await _ex_channel.SendMessageAsync(
                     content +
-                    "\n### Likes: " + msg.Reactions.FirstOrDefault().Value.ReactionCount);
+                    "\n### Likes: " + (msg.Reactions?.FirstOrDefault().Value.ReactionCount ?? 0));
                 await Task.Delay(80);
 
                 await msg1.CrosspostAsync();
