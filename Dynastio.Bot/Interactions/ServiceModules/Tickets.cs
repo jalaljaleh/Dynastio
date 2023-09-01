@@ -62,15 +62,20 @@ namespace Dynastio.Bot.Interactions.ServiceModules
             var thread = await channel.CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.ThreeDays, null, false, 0);
 
             var message = await thread.SendMessageAsync(
-                $"## Important\n" +
-                $"- This is a safe and private thread with Dynastio Staff **No Admin, No Moderator**.\n" +
-                $"> Это безопасный и конфиденциальный поток с персоналом Dynastio ** Без администраторов, без модераторов**.\n" +
-                $"<@&480954902005415937> ` --> ` **<@{Context.User.Id}>",
+                $"## {form.Title1} - <@{Context.User.Id}>:\n" +
+                $"{form.Description}\n\n" +
+                $"<@&480954902005415937>",
 
                 embed: new EmbedBuilder()
                 {
-                    Title = form.Title1,
-                    Description = form.Description,
+                    Title = "User details",
+                    Description = (BotUser.Accounts?.ToStringTable(new string[] { "#", this["account"] + " |", "Id |" },
+                                      a => BotUser.Accounts.IndexOf(a) + 1,
+                                      a => a.Reminder,
+                                      a => a.Id) +
+                                      "                 ").ToMarkdown()
+
+                                      ?? this["no_account_found"].ToMarkdown(),
                     Author = new EmbedAuthorBuilder()
                     {
                         Name = Context.User.Username,
@@ -78,26 +83,13 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                         Url = "https://discord.com/channels/@me/" + Context.User.Id,
                     },
                     Color = Color.Orange,
-                    Fields = new List<EmbedFieldBuilder>()
-                    {
-                        new EmbedFieldBuilder()
-                        .WithName("Accounts")
-                        .WithValue("Connected Accounts\n" +
-                                      ((BotUser.Accounts?.ToStringTable(new string[] { "#", this["account"] + " |", "Id |" },
-                                      a => BotUser.Accounts.IndexOf(a) + 1,
-                                      a => a.Reminder,
-                                      a => a.Id) +
-                                      "                 ").ToMarkdown()
-
-                                      ?? this["no_account_found"].ToMarkdown())),
-                    },
                     Timestamp = DateTime.UtcNow,
                     Footer = new EmbedFooterBuilder() { Text = "Dynast.io Tickets", IconUrl = Context.Client.CurrentUser.GetAvatarUrl() }
                 }.Build(),
 
                 components: new ComponentBuilder()
-              .WithButton("Unrelated", $"btn.ticket:unrelated:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
-              .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
+              .WithButton("Delete", $"btn.ticket:unrelated:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
+              .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Primary)
               .Build());
 
             await message.PinAsync();
@@ -132,49 +124,48 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
             var thread = channel.Threads.FirstOrDefault(a => a.Id == _thread);
             if (thread is null) return;
-            async Task SendMessageToTicketOwnerAsync(string msg)
+
+            async Task<IUser> GetTicketOnwer()
             {
                 var msgs = await thread.GetPinnedMessagesAsync();
 
                 var botPinedMessage = msgs
-                    .FirstOrDefault(a => a.Author.Id == Context.Client.CurrentUser.Id);
+                   .FirstOrDefault(a => a.Author.Id == Context.Client.CurrentUser.Id);
 
-                if (botPinedMessage is null) return;
+                if (botPinedMessage is null) return null;
 
-                var user = botPinedMessage.MentionedUsers
+                return botPinedMessage.MentionedUsers
                     .FirstOrDefault();
-
-                if (user is null) return;
-
-                await user.SendMessageAsync(msg).TryAsync();
             }
 
+            var user = await GetTicketOnwer();
             switch (action)
             {
                 case "close":
 
-                    await SendMessageToTicketOwnerAsync(
-                       $"## Ticket Closed\n" +
-                   $"- Your ticket closed by {userMention} probably due to unrelated content.\n" +
+                    await user.SendMessageAsync(
+                       $"## Ticket Closed \n" +
+                   $"- Your ticket <#{_thread}> closed by {userMention} probably answered due to unrelated content.\n" +
                    $"> Ваша заявка закрыта пользователем {userMention} из-за содержания, не связанного с ней.\n" +
                    $"\n- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠ <#1098263349873082438>/ <#1098322508459028480> channel.\n" +
                    $"> Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал <#1098603826291941476>/ <#1098609722006970439>."
                    ).TryAsync();
 
                     await thread.SendMessageAsync(
-                        $"# Ticket Closed\n" +
-                        $"## The ticket has been closed by {userMention}, you should leave the ticket too." +
-                        $"- You can leave the thread now, the ticket will be removed one day later.");
+                        $"# Ticket Closed \n" +
+                        $"- The ticket has been closed by {userMention}, you have access to the history always.\n" +
+                        $"- you can ask the admin to reopen this ticket again.");
 
-                    await thread.ModifyAsync(a => { a.Locked = true; a.AutoArchiveDuration = ThreadArchiveDuration.OneDay; });
+                    await thread.ModifyAsync(a => { a.Locked = true; a.Archived = true; });
 
-                    await thread.RemoveUserAsync(Context.User as IGuildUser);
+                    await channel.SendMessageAsync($"{user.Mention} > <#{thread}> ticket closed by {Context.User.Mention} !", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
+
                     break;
 
                 case "unrelated":
 
-                    await SendMessageToTicketOwnerAsync(
-                        $"## Ticket Closed\n" +
+                    await user.SendMessageAsync(
+                        $"## Ticket Deleted\n" +
                     $"- Your ticket closed by {userMention} due to unrelated content.\n" +
                     $"> Ваша заявка закрыта пользователем {userMention} из-за содержания, не связанного с ней.\n" +
                     $"\n- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠ <#1098263349873082438>/ <#1098322508459028480> channel.\n" +
@@ -182,6 +173,9 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                     ).TryAsync();
 
                     await thread.DeleteAsync();
+
+                    await channel.SendMessageAsync($"{user.Mention} > <#{thread}> ticket deleted by {Context.User.Mention} !", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
+
                     break;
 
                 case "leave":
