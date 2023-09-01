@@ -50,6 +50,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
             await RespondWithModalAsync(modal);
         }
+
         [RateLimit(10)]
         [RequireBotUserPermission(BotUserPermission.CreateTicket)]
         [ModalInteraction("tickets.start:*", true)]
