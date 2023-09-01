@@ -98,10 +98,10 @@ namespace Dynastio.Bot
                 }.Build());
         }
 
-        public const int _nextScoreTime = 25;
+        public const int _nextScoreTime = 70;
         public const int _updateUserTime = 240;
-        public static int[] _randomScore = { 15, 60 };
-        public static int[] _randomScoreServerBooster = { 20, 80 };
+        public static int[] _randomScore = { 5, 35 };
+        public static int[] _randomScoreServerBooster = { 10, 50 };
         public static int getMax(int lvl)
         {
             return ((lvl + 250) * (int)Math.Pow(lvl, 2.1));
