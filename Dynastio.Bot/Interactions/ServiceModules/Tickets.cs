@@ -63,8 +63,8 @@ namespace Dynastio.Bot.Interactions.ServiceModules
             var thread = await channel.CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.ThreeDays, null, false, 0);
 
             var message = await thread.SendMessageAsync(
-                $"### <@{Context.User.Id}>:\n" +
-                $"## {form.Title1}" +
+                $"## <@{Context.User.Id}>:\n" +
+                $"### {form.Title1}" +
                 $"{form.Description}\n\n",
 
                 embed: new EmbedBuilder()
@@ -83,6 +83,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                         IconUrl = Context.User.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl(),
                         Url = "https://discord.com/channels/@me/" + Context.User.Id,
                     },
+                    ThumbnailUrl = Context.User.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl(),
                     Color = Color.Orange,
                     Timestamp = DateTime.UtcNow,
                     Footer = new EmbedFooterBuilder() { Text = "Dynast.io Tickets", IconUrl = Context.Client.CurrentUser.GetAvatarUrl() }
@@ -94,9 +95,9 @@ namespace Dynastio.Bot.Interactions.ServiceModules
               .Build());
 
             await Task.Delay(100);
-            await message.PinAsync();
-            await Task.Delay(500);
             await thread.SendMessageAsync($"<@&480954902005415937>");
+            await Task.Delay(500);
+            await message.PinAsync();
 
             await FollowupAsync($"## Done\nYour ticket created, click here: {thread.Mention}.", ephemeral: true);
 
