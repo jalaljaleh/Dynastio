@@ -159,7 +159,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
                     await thread.ModifyAsync(a => { a.Locked = true; a.Archived = true; });
 
-                    await channel.SendMessageAsync($"{user.Mention} > <#{thread}> ticket closed by {Context.User.Mention} !", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
+                    await channel.SendMessageAsync($"{user.Mention} <#{thread.Id}> ticket closed by {Context.User.Mention} !", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
 
                     break;
 
@@ -175,7 +175,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
                     await thread.DeleteAsync();
 
-                    await channel.SendMessageAsync($"{user.Mention} > <#{thread}> ticket deleted by {Context.User.Mention} !", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
+                    await channel.SendMessageAsync($"{user.Mention} <#{thread.Id}> ticket deleted by {Context.User.Mention} !", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
 
                     break;
 
