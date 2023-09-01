@@ -75,6 +75,7 @@ namespace Dynastio.Bot
                .AddSingleton<GlobalizationService>()
                .AddSingleton<YoutubeService>()
                .AddSingleton<InternetService>()
+               .AddSingleton<FeaturedVideosService>()
                .BuildServiceProvider();
 
 
@@ -95,6 +96,7 @@ namespace Dynastio.Bot
                 .LoadDirectory(FileManager.ToResourcePath("globalization"));
 
             _services.GetRequiredService<YoutubeService>();
+            _services.GetRequiredService<FeaturedVideosService>();
             _services.GetRequiredService<RepeaterService>();
             _services.GetRequiredService<GraphicService>().Initialize();
 

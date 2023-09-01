@@ -55,8 +55,6 @@ namespace Dynastio.Bot.Handlers
             if (Global.Main.IsDebug())
                 return;
 
-            _repeaterService
-               .AddAction(RefreshFeaturedVideosChannel, TimeSpan.FromMinutes(35));
 
             _repeaterService
                 .AddAction(RefreshStatusChannel, TimeSpan.FromMinutes(10));
@@ -72,58 +70,7 @@ namespace Dynastio.Bot.Handlers
                 .TryAsync();
         }
 
-        private async Task RefreshFeaturedVideosChannel()
-        {
-            var channel = _client.Guilds.First().GetTextChannel(1136917780516585472);
-            if (channel == null) return;
-
-            var msgs = await channel.GetMessagesAsync()
-                .FlattenAsync()
-                .TryAsync();
-
-            if (msgs.isSuccesful is false) return;
-
-            List<IMessage> postsToDelete = msgs.result.Where(a => a.Source == MessageSource.Bot).ToList();
-
-            var uploadedVideos = postsToDelete.Select(a => a.Content).ToList();
-            foreach (var video in _dynastioClient.FeaturedVideos.OrderByDescending(a => a.ExpireAt))
-            {
-                var toDeletePost = postsToDelete.FirstOrDefault(a => a.Content.Contains(video.Url));
-                if (toDeletePost != null)
-                    postsToDelete.Remove(toDeletePost);
-
-                if (uploadedVideos.Any(a => a.Contains(video.Url)))
-                    continue;
-
-                var msg = await channel.SendMessageAsync(
-                    $"## ✦•··························• Dynast.io •··························•✦\n" +
-                    $"\n### Expire {video.ExpireAt.ToDiscordUnixTimestampFormat()}" +
-                    "\nUrl: " + video.Url +
-                    "\nGroup: " + video.Group +
-                    "\nPriority: " + video.Priority);
-
-                await Task.Delay(80);
-
-                await msg.AddReactionAsync(new Emoji("👍"));
-
-                await Task.Delay(550);
-            }
-
-            var _ex_channel = _client.Guilds.First().GetTextChannel(1137030131970494524);
-            foreach (var msg in postsToDelete)
-            {
-                var content = msg.Content.Replace("Expire", "Expired");
-                var msg1 = await _ex_channel.SendMessageAsync(
-                    content +
-                    "\n### Likes: " + (msg.Reactions?.FirstOrDefault().Value.ReactionCount ?? 0));
-                await Task.Delay(80);
-
-                await msg1.CrosspostAsync();
-                await Task.Delay(550);
-            }
-
-            await channel.DeleteMessagesAsync(postsToDelete);
-        }
+        
         private async Task RefreshStatusChannel()
         {
             var players = _dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).OrderByDescending(a => a.Score).Take(17).ToList();

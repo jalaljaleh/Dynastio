@@ -364,3 +364,6 @@ FodyWeavers.xsd
 /Dynastio.Bot/Resources/debug-config.json
 /Dynastio.Bot/Resources/config-key.txt
 /Dynastio.Bot/Resources/release-config.json
+/Dynastio.Bot/Resources/dynastio.bot.txt
+/Dynastio.Bot/Resources/dynastio.debug.json
+/Dynastio.Bot/Resources/dynastio.json
