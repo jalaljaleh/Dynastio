@@ -63,9 +63,9 @@ namespace Dynastio.Bot.Interactions.ServiceModules
             var thread = await channel.CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.ThreeDays, null, false, 0);
 
             var message = await thread.SendMessageAsync(
-                $"## {form.Title1} - <@{Context.User.Id}>:\n" +
-                $"{form.Description}\n\n" +
-                $"<@&480954902005415937>",
+                $"### <@{Context.User.Id}>:\n" +
+                $"## {form.Title1}" +
+                $"{form.Description}\n\n",
 
                 embed: new EmbedBuilder()
                 {
@@ -93,7 +93,10 @@ namespace Dynastio.Bot.Interactions.ServiceModules
               .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Primary)
               .Build());
 
+            await Task.Delay(100);
             await message.PinAsync();
+            await Task.Delay(500);
+            await thread.SendMessageAsync($"<@&480954902005415937>");
 
             await FollowupAsync($"## Done\nYour ticket created, click here: {thread.Mention}.", ephemeral: true);
 
@@ -146,7 +149,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
                     await user.SendMessageAsync(
                        $"## Ticket Closed \n" +
-                   $"- Your ticket <#{_thread}> closed by {userMention} probably answered due to unrelated content.\n" +
+                   $"- Your ticket <#{_thread}> closed by {userMention} probably answered or closed due to unrelated content.\n" +
                    $"> Ваша заявка закрыта пользователем {userMention} из-за содержания, не связанного с ней.\n" +
                    $"\n- If you want to report a bug or you have a suggetion that is not harmful, send message in ⁠ <#1098263349873082438>/ <#1098322508459028480> channel.\n" +
                    $"> Если вы хотите сообщить об ошибке или у вас есть предложение, которое не является вредным, отправьте сообщение в канал <#1098603826291941476>/ <#1098609722006970439>."
@@ -154,12 +157,12 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
                     await thread.SendMessageAsync(
                         $"# Ticket Closed \n" +
-                        $"- The ticket has been closed by {userMention}, you have access to the history always.\n" +
+                        $"- The ticket has been closed by {userMention}, you have access to the history forever.\n" +
                         $"- you can ask the admin to reopen this ticket again.");
 
                     await thread.ModifyAsync(a => { a.Locked = true; a.Archived = true; });
 
-                    await channel.SendMessageAsync($"{user.Mention} <#{thread.Id}> ticket closed by {Context.User.Mention} !", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
+                    await channel.SendMessageAsync($"{user.Mention} <#{thread.Id}> ticket ` closed ` by {Context.User.Mention} !", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
 
                     break;
 
@@ -175,7 +178,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
                     await thread.DeleteAsync();
 
-                    await channel.SendMessageAsync($"{user.Mention} <#{thread.Id}> ticket deleted by {Context.User.Mention} !", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
+                    await channel.SendMessageAsync($"{user.Mention} <#{thread.Id}> ticket ` deleted ` by {Context.User.Mention} !", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
 
                     break;
 
