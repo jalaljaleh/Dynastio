@@ -17,7 +17,6 @@ namespace Dynastio.Net
         {
             HttpClientHandler clientHandler = new HttpClientHandler()
             {
-                UseDefaultCredentials = true,
                 AllowAutoRedirect = true,
             };
             clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
@@ -65,7 +64,7 @@ namespace Dynastio.Net
             using (var request = new HttpRequestMessage(HttpMethod.Get, api))
             {
                 var response = await _client.SendAsync(request);
-               // response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
                 result = await response.Content.ReadAsStringAsync();
             }
             return result;
