@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot
+namespace Dynastio.Bot.Global
 {
     public static class Encryption
     {

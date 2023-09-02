@@ -69,7 +69,6 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
                 embed: new EmbedBuilder()
                 {
-                    Title = "User details",
                     Description = (BotUser.Accounts?.ToStringTable(new string[] { "#", this["account"] + " |", "Id |" },
                                       a => BotUser.Accounts.IndexOf(a) + 1,
                                       a => a.Reminder,

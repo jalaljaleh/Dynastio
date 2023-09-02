@@ -20,7 +20,7 @@
        <ProjectReference Include="..\Dynastio.Bot.Globalization\Dynastio.Bot.Globalization.csproj" />
        <ProjectReference Include="..\Dynastio.Bot.Global\Dynastio.Bot.Global.csproj" />
 	   	  
-	  <Content Include="Resources\**" CopyToOutputDirectory="Always" />
+	  <Content Include="Resources\**" CopyToOutputDirectory="PreserveNewest" />
  
   </ItemGroup>
 
