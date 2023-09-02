@@ -15,7 +15,12 @@ namespace Dynastio.Net
         internal HttpClient _client;
         public DynastioClient(string token)
         {
-            HttpClientHandler clientHandler = new HttpClientHandler();
+            HttpClientHandler clientHandler = new HttpClientHandler()
+            {
+                UseDefaultCredentials = false,
+                Credentials = System.Net.CredentialCache.DefaultCredentials,
+                AllowAutoRedirect = true
+            };
             clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
             {
                 return true;
