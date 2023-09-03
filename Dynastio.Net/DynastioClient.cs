@@ -2,39 +2,34 @@
 using Dynastio.Net.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dynastio.Net
 {
     public class DynastioClient
     {
-        internal HttpClient _client;
+        private readonly TimeSpan _timeout;
+        private HttpClient _client;
+        private HttpClientHandler _clientHandler;
+        private const string ClientUserAgent = "dynastio.net";
+        private const string MediaTypeJson = "application/json";
         private string tokenKey, tokenValue;
         public DynastioClient(string token)
         {
             tokenKey = token.Split(':')[0];
             tokenValue = token.Split(":")[1];
-         
-            
-            HttpClientHandler clientHandler = new HttpClientHandler()
-            {
-                AllowAutoRedirect = true,
-            };
-            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
-            {
-                return true;
-            };
-            clientHandler.Credentials = new System.Net.NetworkCredential("Dynastio.net", tokenValue);
-            _client = new HttpClient(clientHandler);
-            //_client.BaseAddress = new Uri("https://auth.dynast.io/");
+            _timeout = TimeSpan.FromSeconds(90);
+           
 
-            _client.DefaultRequestHeaders.Add(tokenKey, tokenValue);
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             _players = new Cacheable<List<Player>>(TimeSpan.FromSeconds(30), GetPlayersAsync);
             _servers = new Cacheable<List<Server>>(TimeSpan.FromSeconds(30), GetServersAsync);
@@ -44,16 +39,127 @@ namespace Dynastio.Net
             _leaderboardscore = new Cacheable<Leaderboardscore[][]>(TimeSpan.FromSeconds(250), GetLeaderboardscoresAsync);
             _featuredVideos = new Cacheable<List<FeaturedVideos>>(TimeSpan.FromMinutes(29), GetFeaturedVideosAsync);
         }
-        internal async Task<string> GetAsync(string api)
+        private void CreateHttpClient()
         {
-            string result = string.Empty;
-            using (var request = new HttpRequestMessage(HttpMethod.Get, api))
+            _clientHandler = new HttpClientHandler
             {
-                var response = await _client.SendAsync(request);
-               // response.EnsureSuccessStatusCode();
-                result = await response.Content.ReadAsStringAsync();
+                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip
+            };
+
+            _client = new HttpClient(_clientHandler, false)
+            {
+                Timeout = _timeout
+            };
+
+            _client.DefaultRequestHeaders.UserAgent.ParseAdd(ClientUserAgent);
+
+            //_client.BaseAddress = new Uri("https://auth.dynast.io/");
+
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeJson));          
+            _client.DefaultRequestHeaders.Add(tokenKey, tokenValue);
+        }
+
+        private void EnsureHttpClientCreated()
+        {
+            if (_client == null)
+            {
+                CreateHttpClient();
             }
-            return result;
+        }
+
+        private static string ConvertToJsonString(object obj)
+        {
+            if (obj == null)
+            {
+                return string.Empty;
+            }
+
+            return JsonConvert.SerializeObject(obj, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+        }
+
+        private static string NormalizeBaseUrl(string url)
+        {
+            return url.EndsWith("/") ? url : url + "/";
+        }
+        public async Task<string> PostAsync(string url, object input)
+        {
+            EnsureHttpClientCreated();
+
+            using (var requestContent = new StringContent(ConvertToJsonString(input), Encoding.UTF8, MediaTypeJson))
+            {
+                using (var response = await _client.PostAsync(url, requestContent))
+                {
+                    response.EnsureSuccessStatusCode();
+                    return await response.Content.ReadAsStringAsync();
+                }
+            }
+        }
+
+        public async Task<TResult> PostAsync<TResult>(string url, object input) where TResult : class, new()
+        {
+            var strResponse = await PostAsync(url, input);
+
+            return JsonConvert.DeserializeObject<TResult>(strResponse, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+        }
+
+        public async Task<TResult> GetAsync<TResult>(string url) where TResult : class, new()
+        {
+            var strResponse = await GetAsync(url);
+
+            return JsonConvert.DeserializeObject<TResult>(strResponse, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+        }
+
+        public async Task<string> GetAsync(string url)
+        {
+            EnsureHttpClientCreated();
+
+            using (var response = await _client.GetAsync(url))
+            {
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
+
+        public async Task<string> PutAsync(string url, object input)
+        {
+            return await PutAsync(url, new StringContent(JsonConvert.SerializeObject(input), Encoding.UTF8, MediaTypeJson));
+        }
+
+        public async Task<string> PutAsync(string url, HttpContent content)
+        {
+            EnsureHttpClientCreated();
+
+            using (var response = await _client.PutAsync(url, content))
+            {
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
+
+        public async Task<string> DeleteAsync(string url)
+        {
+            EnsureHttpClientCreated();
+
+            using (var response = await _client.DeleteAsync(url))
+            {
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
+
+        public void Dispose()
+        {
+            _clientHandler?.Dispose();
+            _client?.Dispose();
         }
 
         private readonly Cacheable<List<Player>> _players;
@@ -74,7 +180,7 @@ namespace Dynastio.Net
         public string Changelog { get => _changelog.Value; }
         public List<FeaturedVideos> FeaturedVideos { get => _featuredVideos.Value; }
 
-      
+
 
         public async Task<List<Server>> GetServersAsync() => await GetServersAsync(ServerType.AllServersWithAllPlayers);
         public async Task<List<Server>> GetServersAsync(ServerType serverType = default)
