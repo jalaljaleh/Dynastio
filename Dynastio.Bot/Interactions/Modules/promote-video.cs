@@ -69,7 +69,7 @@ namespace Dynastio.Bot.Interactions.Modules
             }
 
             var checkUsers = await _database.GetUserByYoutubeChannelIdAsync(channelId);
-            if (channelId is not null)
+            if (checkUsers is not null)
             {
                 await FollowupAsync(embed:
                                   ($"## Channel added by someone else already\n" +
