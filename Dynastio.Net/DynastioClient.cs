@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -13,8 +14,13 @@ namespace Dynastio.Net
     public class DynastioClient
     {
         internal HttpClient _client;
+        private string tokenKey, tokenValue;
         public DynastioClient(string token)
         {
+            tokenKey = token.Split(':')[0];
+            tokenValue = token.Split(":")[1];
+         
+            
             HttpClientHandler clientHandler = new HttpClientHandler()
             {
                 AllowAutoRedirect = true,
@@ -23,13 +29,12 @@ namespace Dynastio.Net
             {
                 return true;
             };
-
+            clientHandler.Credentials = new System.Net.NetworkCredential("Dynastio.net", tokenValue);
             _client = new HttpClient(clientHandler);
             //_client.BaseAddress = new Uri("https://auth.dynast.io/");
-            _client.DefaultRequestHeaders.Add(token.Split(':')[0], token.Split(':')[1]);
-            _client.DefaultRequestHeaders.Add("application", "dynastio.net");
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
+            _client.DefaultRequestHeaders.Add(tokenKey, tokenValue);
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             _players = new Cacheable<List<Player>>(TimeSpan.FromSeconds(30), GetPlayersAsync);
             _servers = new Cacheable<List<Server>>(TimeSpan.FromSeconds(30), GetServersAsync);
@@ -38,6 +43,17 @@ namespace Dynastio.Net
             _leaderboardcoin = new Cacheable<List<Leaderboardcoin>>(TimeSpan.FromSeconds(250), GetLeaderboardcoinsAsync);
             _leaderboardscore = new Cacheable<Leaderboardscore[][]>(TimeSpan.FromSeconds(250), GetLeaderboardscoresAsync);
             _featuredVideos = new Cacheable<List<FeaturedVideos>>(TimeSpan.FromMinutes(29), GetFeaturedVideosAsync);
+        }
+        internal async Task<string> GetAsync(string api)
+        {
+            string result = string.Empty;
+            using (var request = new HttpRequestMessage(HttpMethod.Get, api))
+            {
+                var response = await _client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                result = await response.Content.ReadAsStringAsync();
+            }
+            return result;
         }
 
         private readonly Cacheable<List<Player>> _players;
@@ -58,17 +74,7 @@ namespace Dynastio.Net
         public string Changelog { get => _changelog.Value; }
         public List<FeaturedVideos> FeaturedVideos { get => _featuredVideos.Value; }
 
-        internal async Task<string> GetAsync(string api)
-        {
-            string result;
-            using (var request = new HttpRequestMessage(HttpMethod.Get, api))
-            {
-                var response = await _client.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-                result = await response.Content.ReadAsStringAsync();
-            }
-            return result;
-        }
+      
 
         public async Task<List<Server>> GetServersAsync() => await GetServersAsync(ServerType.AllServersWithAllPlayers);
         public async Task<List<Server>> GetServersAsync(ServerType serverType = default)
