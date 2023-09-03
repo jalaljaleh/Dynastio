@@ -35,7 +35,7 @@ namespace Dynastio.Bot
         {
             Global.Main.Log("Main Async", "Started");
 
-            var configuration = Configuration.LoadConfiguration();
+            var configuration = Configuration.LoadConfiguration(true);
             // var configuration = Configuration.LoadReleaseConfiguration();
             // Configuration.UpdateConfiguration(configuration);
 
@@ -114,7 +114,7 @@ namespace Dynastio.Bot
 
 
             await client.LoginAsync(TokenType.Bot, _services.GetRequiredService<Configuration>().BotToken);
-            //await client.StartAsync();
+            await client.StartAsync();
 
             await Task.Delay(Timeout.Infinite);
         }
