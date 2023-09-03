@@ -25,6 +25,7 @@ namespace Dynastio.Bot.Interactions
         public string this[string key] { get => Context.UserLocale[key]; }
         public string this[string key, params object[] @params] { get => Context.UserLocale[key, @params]; }
         public User BotUser { get => Context.BotUser; }
+
         public async Task<IUserMessage> FollowUpToLoading(string Description = null, string Title = null, string ThumbnailUrl = null)
         {
             return await FollowupAsync(userMention, embed: new EmbedBuilder()

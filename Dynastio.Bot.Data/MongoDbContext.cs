@@ -14,6 +14,7 @@ namespace Dynastio.Bot.Data
         private IMongoCollection<User> _users => _dynastio.GetCollection<User>("Users");
         private IMongoCollection<Guild> _guilds => _dynastio.GetCollection<Guild>("Guilds");
         private IMongoCollection<RedeemCode> _redeemCodes => _dynastio.GetCollection<RedeemCode>("RedeemCodes");
+        private IMongoCollection<YoutuberVideo> _youtuber_videos => _dynastio.GetCollection<YoutuberVideo>("youtuber_videos");
 
         private MongoClient _db { get; set; }
         public MongoDbContext(string mongoConnection)
@@ -44,6 +45,25 @@ namespace Dynastio.Bot.Data
                 Main.Log("Mongodb", "db is not connected.", ConsoleColor.Red);
             }
         }
+
+
+        public async Task<List<YoutuberVideo>> GetYoutuberVideosAsync()
+        {
+            var result = this._youtuber_videos.AsQueryable()
+                        .ToList();
+            return await Task.FromResult(result);
+        }
+        public async Task<bool> InsertAsync(YoutuberVideo video)
+        {
+            _youtuber_videos.InsertOne(video);
+            return await Task.FromResult(true);
+        }
+        public async Task<bool> DeleteAsync(YoutuberVideo video)
+        {
+            _youtuber_videos.DeleteOne(a => a.url == video.url);
+            return await Task.FromResult(true);
+        }
+
 
         public async Task<Guild> GetGuildAsync(ulong Id)
         {
@@ -155,14 +175,14 @@ namespace Dynastio.Bot.Data
             _redeemCodes.InsertOne(redeemCode);
             return await Task.FromResult(true);
         }
-        public async Task<bool> InsertManyAsync(List<RedeemCode> redeemCodes)
-        {
-            _redeemCodes.InsertMany(redeemCodes);
-            return await Task.FromResult(true);
-        }
         public async Task<bool> DeleteAsync(RedeemCode redeemCodes)
         {
             _redeemCodes.DeleteOne(a => a.Id == redeemCodes.Id);
+            return await Task.FromResult(true);
+        }
+        public async Task<bool> InsertManyAsync(List<RedeemCode> redeemCodes)
+        {
+            _redeemCodes.InsertMany(redeemCodes);
             return await Task.FromResult(true);
         }
     }

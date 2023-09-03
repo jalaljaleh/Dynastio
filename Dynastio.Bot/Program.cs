@@ -35,8 +35,8 @@ namespace Dynastio.Bot
         {
             Global.Main.Log("Main Async", "Started");
 
-           // var configuration = Configuration.LoadReleaseConfiguration();
-            var configuration = Configuration.LoadConfiguration();
+          //  var configuration = Configuration.LoadReleaseConfiguration();
+           var configuration = Configuration.LoadConfiguration();
            // Configuration.UpdateConfiguration(configuration);
 
             var _db = new DynastioBotDatabase();

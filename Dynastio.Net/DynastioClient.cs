@@ -20,16 +20,16 @@ namespace Dynastio.Net
         private readonly TimeSpan _timeout;
         private HttpClient _client;
         private HttpClientHandler _clientHandler;
-        private const string ClientUserAgent = "dynastio.net";
-        private const string MediaTypeJson = "application/json";
         private string tokenKey, tokenValue;
+        private string _baseAddress = "https://auth.dynast.cloud";
+        private string MediaTypeJson = "application/json";
         public DynastioClient(string token)
         {
             tokenKey = token.Split(':')[0];
             tokenValue = token.Split(":")[1];
-            _timeout = TimeSpan.FromSeconds(90);
-           
+            _timeout = TimeSpan.FromSeconds(20);
 
+            CreateHttpClient();
 
             _players = new Cacheable<List<Player>>(TimeSpan.FromSeconds(30), GetPlayersAsync);
             _servers = new Cacheable<List<Server>>(TimeSpan.FromSeconds(30), GetServersAsync);
@@ -52,11 +52,11 @@ namespace Dynastio.Net
                 Timeout = _timeout
             };
 
-            _client.DefaultRequestHeaders.UserAgent.ParseAdd(ClientUserAgent);
+            _client.DefaultRequestHeaders.UserAgent.ParseAdd("dynastio.net");
 
             //_client.BaseAddress = new Uri("https://auth.dynast.io/");
 
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeJson));          
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));          
             _client.DefaultRequestHeaders.Add(tokenKey, tokenValue);
         }
 
@@ -87,7 +87,7 @@ namespace Dynastio.Net
         }
         public async Task<string> PostAsync(string url, object input)
         {
-            EnsureHttpClientCreated();
+            
 
             using (var requestContent = new StringContent(ConvertToJsonString(input), Encoding.UTF8, MediaTypeJson))
             {
@@ -120,9 +120,7 @@ namespace Dynastio.Net
         }
 
         public async Task<string> GetAsync(string url)
-        {
-            EnsureHttpClientCreated();
-
+        {      
             using (var response = await _client.GetAsync(url))
             {
                 response.EnsureSuccessStatusCode();
@@ -137,7 +135,7 @@ namespace Dynastio.Net
 
         public async Task<string> PutAsync(string url, HttpContent content)
         {
-            EnsureHttpClientCreated();
+            
 
             using (var response = await _client.PutAsync(url, content))
             {
@@ -148,7 +146,7 @@ namespace Dynastio.Net
 
         public async Task<string> DeleteAsync(string url)
         {
-            EnsureHttpClientCreated();
+            
 
             using (var response = await _client.DeleteAsync(url))
             {
@@ -182,16 +180,6 @@ namespace Dynastio.Net
         public List<FeaturedVideos> FeaturedVideos { get => _featuredVideos.Value; }
 
 
-        public async Task<string> GetStringWithWebClient(string url)
-        {
-            string result = string.Empty;
-            using(WebClient wb = new WebClient())
-            {
-                wb.UseDefaultCredentials = true;
-                result = await wb.DownloadStringTaskAsync(url);
-            }
-            return result;
-        }
         public async Task<List<Server>> GetServersAsync() => await GetServersAsync(ServerType.AllServersWithAllPlayers);
         public async Task<List<Server>> GetServersAsync(ServerType serverType = default)
         {
@@ -204,7 +192,7 @@ namespace Dynastio.Net
                 _ => ""
             };
 
-            var result = await GetStringWithWebClient("https://announcement-amsterdam-0-alpaca.dynast.cloud/" + url + "&random=" + Main.Random.Next());
+            var result = await GetAsync("https://announcement-amsterdam-0-alpaca.dynast.cloud/" + url + "&random=" + Main.Random.Next());
             var data = JsonConvert.DeserializeObject<DataType<List<Server>>>(result);
             return data.Servers;
         }
@@ -213,41 +201,41 @@ namespace Dynastio.Net
 
         public async Task<Version> GetVersionAsync()
         {
-            var result = await GetAsync("https://dynast.io/version.json");
+            var result = await GetAsync("https://dynast.cloud/version.json");
             return JsonConvert.DeserializeObject<Version>(result);
         }
         public async Task<string> GetChangeLogAsync()
         {
-            var result = await GetAsync("https://dynast.io/changelog.txt");
+            var result = await GetAsync("https://dynast.cloud/changelog.txt");
             return JsonConvert.DeserializeObject<string>(result);
         }
         public async Task<List<Leaderboardcoin>> GetLeaderboardcoinsAsync()
         {
-            var result = await GetAsync("https://auth.dynast.io/api/get_top_by_coins");
+            var result = await GetAsync(_baseAddress +"/api/get_top_by_coins");
             var data = JsonConvert.DeserializeObject<DataType<Leaderboardcoin[]>>(result);
             return data.data.ToList();
         }
         public async Task<bool> GetUserPincodeStatusAsync(string Id, string pincode)
         {
-            var result = await GetAsync($"https://auth.dynast.io/api/check_pincode?uid={Id}&pin={pincode}");
+            var result = await GetAsync(_baseAddress + "/api/check_pincode?uid={Id}&pin={pincode}");
             var data = JsonConvert.DeserializeObject<DataType<bool>>(result);
             return data.data;
         }
         public async Task<Leaderboardscore[][]> GetLeaderboardscoresAsync()
         {
-            var result = await GetAsync("https://auth.dynast.io/leaderboard/list_all");
+            var result = await GetAsync(_baseAddress + "/leaderboard/list_all");
             var data = JsonConvert.DeserializeObject<DataType<Leaderboardscore[][]>>(result);
             return data.data;
         }
         public async Task<UserRank> GetUserRankAsync(string playerId)
         {
-            var result = await GetAsync("https://auth.dynast.io/api/get_user_rank?uid=" + playerId);
+            var result = await GetAsync(_baseAddress + "/api/get_user_rank?uid=" + playerId);
             var data = JsonConvert.DeserializeObject<DataType<List<int>>>(result);
             return new UserRank(data.data);
         }
         public async Task<PlayerStat> GetUserStatAsync(string playerId)
         {
-            var result = await GetAsync("https://auth.dynast.io/api/get_user_stat?uid=" + playerId);
+            var result = await GetAsync(_baseAddress + "/api/get_user_stat?uid=" + playerId);
             var data = JsonConvert.DeserializeObject<DataType<string>>(result);
             var cleardata = JsonConvert.DeserializeObject(data.data).ToString();
             var final = JsonConvert.DeserializeObject<PlayerStat>(cleardata);
@@ -255,7 +243,7 @@ namespace Dynastio.Net
         }
         public async Task<ProfileCard> GetUserProfileCardAsync(string playerId)
         {
-            var result = await GetAsync("https://auth.dynast.cloud/api/get_user_card?uid=" + playerId);
+            var result = await GetAsync(_baseAddress + "/api/get_user_card?uid=" + playerId);
             var data = JsonConvert.DeserializeObject<DataType<ProfileCardEntitiy>>(result);
 
             var clearStat = JsonConvert.DeserializeObject(data.data.Stat).ToString();
@@ -273,13 +261,13 @@ namespace Dynastio.Net
         }
         public async Task<Profile> GetUserProfileAsync(string playerId)
         {
-            var result = await GetAsync("https://auth.dynast.io/api/get_user_profile?uid=" + playerId);
+            var result = await GetAsync(_baseAddress + "/api/get_user_profile?uid=" + playerId);
             var data = JsonConvert.DeserializeObject<DataType<Profile>>(result);
             return data.data;
         }
         public async Task<Personalchest> GetUserPersonalchestAsync(string playerId)
         {
-            var result = await GetAsync("https://auth.dynast.io/api/get_user_chest?uid=" + playerId);
+            var result = await GetAsync(_baseAddress + "/api/get_user_chest?uid=" + playerId);
             var data = JsonConvert.DeserializeObject<DataType<string>>(result);
             return ParseToChest(data.data);
         }
@@ -307,7 +295,7 @@ namespace Dynastio.Net
         }
         public async Task<UserSurroundingRank> GetUserSurroundingRankAsync(string playerId)
         {
-            var result = await GetAsync("https://auth.dynast.io/leaderboard/surrounding?uid=" + playerId);
+            var result = await GetAsync(_baseAddress + "/leaderboard/surrounding?uid=" + playerId);
             var data = JsonConvert.DeserializeObject<DataType<List<UserSurroundingRankRow[]>>>(result);
             return new UserSurroundingRank(playerId)
             {
@@ -318,7 +306,7 @@ namespace Dynastio.Net
         }
         public async Task<List<FeaturedVideos>> GetFeaturedVideosAsync()
         {
-            var result = await GetAsync("https://auth.dynast.io/api/get_featured_videos");
+            var result = await GetAsync(_baseAddress + "/api/get_featured_videos");
             var data = JsonConvert.DeserializeObject<DataType<List<FeaturedVideos>>>(result);
             return data.data;
         }

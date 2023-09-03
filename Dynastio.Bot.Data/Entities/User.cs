@@ -27,7 +27,7 @@ namespace Dynastio.Bot.Data
         public User() { }
         public ulong Id { get; set; }
         public int Honor { get; set; }
-
+        public string youtube_channel { get; set; }
         public int activiy_level { get; set; }
         public long activiy_score { get; set; }
         public List<BotUserPermission> LockedPermissions { get; set; } = new();
