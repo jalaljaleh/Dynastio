@@ -13,7 +13,7 @@ namespace Dynastio.Bot.Data
         Task InitializeAsync();
 
 
-        Task<List<YoutuberVideo>> GetYoutuberVideosAsync();
+        Task<List<YoutuberVideo>> GetYoutuberVideosAsync(int skip = 0, int take = 20);
         Task<bool> InsertAsync(YoutuberVideo video);
         Task<bool> DeleteAsync(YoutuberVideo video);
         Task<YoutuberVideo> GetYotuberVideoAsync(string url);

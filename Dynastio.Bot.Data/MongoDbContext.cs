@@ -47,9 +47,11 @@ namespace Dynastio.Bot.Data
         }
 
 
-        public async Task<List<YoutuberVideo>> GetYoutuberVideosAsync()
+        public async Task<List<YoutuberVideo>> GetYoutuberVideosAsync(int skip = 0, int take = 20)
         {
             var result = this._youtuber_videos.AsQueryable()
+                .Skip(skip)
+                .Take(take)
                         .ToList();
             return await Task.FromResult(result);
         }

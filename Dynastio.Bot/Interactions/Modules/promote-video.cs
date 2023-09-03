@@ -33,8 +33,8 @@ namespace Dynastio.Bot.Interactions.Modules
         public async Task connectchannel(IUser target)
         {
             await DeferAsync();
-            var targetUser = await _userService.GetUserAsync(target.Id,false);
-            if(targetUser != null)
+            var targetUser = await _userService.GetUserAsync(target.Id, false);
+            if (targetUser != null)
             {
                 targetUser.youtube_channel = null;
                 await _userService.UpdateAsync(targetUser);
@@ -42,6 +42,29 @@ namespace Dynastio.Bot.Interactions.Modules
             await FollowupAsync(embed: "Operator was succesful".ToEmbed("channel disconnected from the user profile."));
         }
 
+        [DefaultMemberPermissions(GuildPermission.Administrator)]
+        [RequireRole(480954902005415937)]
+        [SlashCommand("promote-video-list", " promote list requests!")]
+        public async Task promotelist()
+        {
+            await DeferAsync();
+
+            var promo = await _database.GetYoutuberVideosAsync();
+
+            var content = promo.ToStringTable(new[] { "#", "User", "Url" },
+                a => promo.IndexOf(a),
+                a => $"<@{a.user}>",
+                a => "https://www.youtube.com/channel/" + a.videoId
+               )
+                + $"\n`{promo.Count} removed from database.`";
+
+            await FollowupAsync(userMention, embed: content.ToEmbed("Requested Promo Videos"));
+
+            foreach (var item in promo)
+            {
+                await _database.DeleteAsync(item);
+            }
+        }
 
         [SlashCommand("connect-youtube-channel", "connect your youtube channel !")]
         public async Task connectchannel(string channelId)
@@ -73,7 +96,7 @@ namespace Dynastio.Bot.Interactions.Modules
             {
                 await FollowupAsync(embed:
                                   ($"## Channel added by someone else already\n" +
-                                   $"<@{checkUsers}> requested added this channel alrady, if its your channel but someone else added it, infrom us by creating a ticket.")
+                                   $"<@{checkUsers}> added this channel alrady, if its your channel but someone else added it, infrom us by creating a ticket.")
                                    .ToEmbed("Access Denied"));
                 return;
             }
@@ -171,10 +194,11 @@ namespace Dynastio.Bot.Interactions.Modules
             await user.SendMessageAsync("Your request for connect your youtube channel accepted by developers.")
                  .TryAsync();
 
+            await deleteRequest();
+
             async Task deleteRequest()
             {
-                var message = await Context.Interaction.GetOriginalResponseAsync();
-                await message.DeleteAsync();
+                await (Context.Interaction as SocketMessageComponent).Message.DeleteAsync();
             }
         }
 
@@ -191,7 +215,7 @@ namespace Dynastio.Bot.Interactions.Modules
                     $"- then use this command to coonect your channel to the bot `/connect-youtube-channel`\n" +
                     $"- wait for developers to confirm your request.\n" +
                     $"after doing the steps, we will infrom you the result !")
-                    .ToEmbed("Channel not found"));
+                    .ToEmbed("Channel not found", Color.Orange));
                 return;
             }
 
@@ -202,7 +226,7 @@ namespace Dynastio.Bot.Interactions.Modules
                 await FollowupAsync(embed:
                    ($"## Video uploaded by someone else already\n" +
                     $"<@{yvideo.user}> requested for this video already, if its your video but someone else uploaded it, infrom us by creating a ticket.")
-                    .ToEmbed("Access Denied"));
+                    .ToEmbed("Access Denied", Color.Red));
                 return;
             }
 
@@ -220,7 +244,7 @@ namespace Dynastio.Bot.Interactions.Modules
                 await FollowupAsync(embed:
                            ($"## Video not found\n" +
                            $"- your video not found, make sure you are sending the video id only !")
-                           .ToEmbed("Not Found"));
+                           .ToEmbed("Not Found", Color.Orange));
                 return;
             }
 
