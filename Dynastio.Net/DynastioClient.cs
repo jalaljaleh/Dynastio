@@ -43,7 +43,8 @@ namespace Dynastio.Net
         {
             _clientHandler = new HttpClientHandler
             {
-                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip
+                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+                UseDefaultCredentials = true,
             };
 
             _client = new HttpClient(_clientHandler, false)
@@ -186,6 +187,7 @@ namespace Dynastio.Net
             string result = string.Empty;
             using(WebClient wb = new WebClient())
             {
+                wb.UseDefaultCredentials = true;
                 result = await wb.DownloadStringTaskAsync(url);
             }
             return result;
