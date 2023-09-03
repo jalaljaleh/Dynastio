@@ -12,6 +12,14 @@ namespace Dynastio.Bot.Data
     {
         Task InitializeAsync();
 
+
+        Task<List<YoutuberVideo>> GetYoutuberVideosAsync();
+        Task<bool> InsertAsync(YoutuberVideo video);
+        Task<bool> DeleteAsync(YoutuberVideo video);
+        Task<YoutuberVideo> GetYotuberVideoAsync(string url);
+
+
+
         Task<Guild> GetGuildAsync(ulong Id);
         Task<bool> UpdateAsync(Guild guild);
         Task<bool> InsertAsync(Guild guild);
@@ -25,6 +33,7 @@ namespace Dynastio.Bot.Data
         Task<List<User>> GetHonorLeaderboardAsync(int count = 10);
         Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 15);
         Task<User> GetUserByAccountIdAsync(string Id);
+        Task<User> GetUserByYoutubeChannelIdAsync(string Id);
         Task<bool> UpdateManyAsync(List<User> users);
         Task<bool> DeleteAsync(User user);
 

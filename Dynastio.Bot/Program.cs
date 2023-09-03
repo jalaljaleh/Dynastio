@@ -35,9 +35,9 @@ namespace Dynastio.Bot
         {
             Global.Main.Log("Main Async", "Started");
 
-          //  var configuration = Configuration.LoadReleaseConfiguration();
-           var configuration = Configuration.LoadConfiguration();
-           // Configuration.UpdateConfiguration(configuration);
+            var configuration = Configuration.LoadConfiguration();
+            // var configuration = Configuration.LoadReleaseConfiguration();
+            // Configuration.UpdateConfiguration(configuration);
 
             var _db = new DynastioBotDatabase();
             var db = await _db.GetInstanseAsync(configuration.DatabaseConnectionString, DynastioBotDatabase.DatabasesInstances.Mongodb);
@@ -50,7 +50,7 @@ namespace Dynastio.Bot
                {
                    GatewayIntents = GatewayIntents.All,
                    AlwaysDownloadUsers = true,
-                   
+
                    MessageCacheSize = 1024,
                    AlwaysDownloadDefaultStickers = false,
                    DefaultRetryMode = RetryMode.AlwaysRetry,
@@ -67,7 +67,7 @@ namespace Dynastio.Bot
                .AddSingleton<RepeaterService>()
 
                .AddSingleton<DynastioClient>(x => new DynastioClient(configuration.DynastioApi))
-               
+
                .AddSingleton<UserService>()
                .AddSingleton<GuildService>()
                .AddSingleton<WebhookService>()
@@ -98,6 +98,7 @@ namespace Dynastio.Bot
                 .LoadDirectory(FileManager.ToResourcePath("globalization"));
 
             _services.GetRequiredService<YoutubeService>();
+
             _services.GetRequiredService<FeaturedVideosService>();
             _services.GetRequiredService<RepeaterService>();
             _services.GetRequiredService<GraphicService>().Initialize();
@@ -113,7 +114,7 @@ namespace Dynastio.Bot
 
 
             await client.LoginAsync(TokenType.Bot, _services.GetRequiredService<Configuration>().BotToken);
-            await client.StartAsync();
+            //await client.StartAsync();
 
             await Task.Delay(Timeout.Infinite);
         }

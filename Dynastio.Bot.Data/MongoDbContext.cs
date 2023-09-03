@@ -60,10 +60,16 @@ namespace Dynastio.Bot.Data
         }
         public async Task<bool> DeleteAsync(YoutuberVideo video)
         {
-            _youtuber_videos.DeleteOne(a => a.url == video.url);
+            _youtuber_videos.DeleteOne(a => a.videoId == video.videoId);
             return await Task.FromResult(true);
         }
-
+        public async Task<YoutuberVideo> GetYotuberVideoAsync(string url)
+        {
+            var result = _youtuber_videos.AsQueryable()
+                  .Where(a => a.videoId == url)
+                  .FirstOrDefault();
+            return await Task.FromResult(result);
+        }
 
         public async Task<Guild> GetGuildAsync(ulong Id)
         {
@@ -110,6 +116,12 @@ namespace Dynastio.Bot.Data
             var filter = Builders<User>.Filter
                 .ElemMatch(o => o.Accounts, Builders<UserAccount>.Filter.Where(a => a.Id == Id));
 
+            var result = _users.Find(filter).FirstOrDefault();
+            return await Task.FromResult(result);
+        }
+        public async Task<User> GetUserByYoutubeChannelIdAsync(string Id)
+        {
+            var filter = Builders<User>.Filter.Where(a => a.youtube_channel == Id);
             var result = _users.Find(filter).FirstOrDefault();
             return await Task.FromResult(result);
         }

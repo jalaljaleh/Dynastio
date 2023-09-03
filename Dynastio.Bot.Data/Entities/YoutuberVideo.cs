@@ -8,7 +8,7 @@ namespace Dynastio.Bot.Data
 {
     public class YoutuberVideo
     {
-        public string url { get; set; }
+        public string videoId { get; set; }
         public ulong user { get; set; }
         public DateTime createdAt { get; set; }
     }

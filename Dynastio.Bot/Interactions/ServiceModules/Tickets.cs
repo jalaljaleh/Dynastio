@@ -90,7 +90,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
                 components: new ComponentBuilder()
               .WithButton("Delete", $"btn.ticket:unrelated:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
-              .WithButton("Close", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Primary)
+              .WithButton("Archive", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Success)
               .Build());
 
             await Task.Delay(100);

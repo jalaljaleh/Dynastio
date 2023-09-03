@@ -63,6 +63,20 @@ namespace Dynastio.Bot
             var searchListResponse = searchListRequest.Execute();
             return Task.FromResult(searchListResponse.Items.ToList());
         }
+        public async Task<bool> IsChannelExistAsync(string channelId)
+        {
+            var search = youtube.Channels.List("snippet");
+            search.Id = channelId;
+            var result = await search.ExecuteAsync();
 
+            return result.Items.Any(a => a.Id == channelId);
+        }
+        public async Task<VideoListResponse> GetVideoAsync(string videoId)
+        {
+            VideosResource.ListRequest listRequest = youtube.Videos.List("snippet");
+            listRequest.Id = videoId;
+            VideoListResponse response = await listRequest.ExecuteAsync();
+            return response;
+        }
     }
 }
