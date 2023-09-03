@@ -181,7 +181,15 @@ namespace Dynastio.Net
         public List<FeaturedVideos> FeaturedVideos { get => _featuredVideos.Value; }
 
 
-
+        public async Task<string> GetStringWithWebClient(string url)
+        {
+            string result = string.Empty;
+            using(WebClient wb = new WebClient())
+            {
+                result = await wb.DownloadStringTaskAsync(url);
+            }
+            return result;
+        }
         public async Task<List<Server>> GetServersAsync() => await GetServersAsync(ServerType.AllServersWithAllPlayers);
         public async Task<List<Server>> GetServersAsync(ServerType serverType = default)
         {
@@ -194,7 +202,7 @@ namespace Dynastio.Net
                 _ => ""
             };
 
-            var result = await GetAsync("https://announcement-amsterdam-0-alpaca.dynast.cloud/" + url + "&random=" + Main.Random.Next());
+            var result = await GetStringWithWebClient("https://announcement-amsterdam-0-alpaca.dynast.cloud/" + url + "&random=" + Main.Random.Next());
             var data = JsonConvert.DeserializeObject<DataType<List<Server>>>(result);
             return data.Servers;
         }
