@@ -42,6 +42,8 @@ namespace Dynastio.Bot.Interactions.Modules
             await FollowupAsync(embed: "Operator was succesful".ToEmbed("channel disconnected from the user profile."));
         }
 
+        private static List<YoutuberVideo> _videos = new();
+
         [DefaultMemberPermissions(GuildPermission.Administrator)]
         [RequireRole(480954902005415937)]
         [SlashCommand("promote-video-list", " promote list requests!")]
@@ -49,21 +51,90 @@ namespace Dynastio.Bot.Interactions.Modules
         {
             await DeferAsync();
 
-            var promo = await _database.GetYoutuberVideosAsync();
+            _videos = await _database.GetYoutuberVideosAsync();
 
-            var content = promo.ToStringTable(new[] { "#", "User", "Url" },
-                a => promo.IndexOf(a),
-                a => $"<@{a.user}>",
-                a => "https://www.youtube.com/channel/" + a.videoId
-               )
-                + $"\n`{promo.Count} removed from database.`";
-
-            await FollowupAsync(userMention, embed: content.ToEmbed("Requested Promo Videos"));
-
-            foreach (var item in promo)
+            if (_videos.Any() is false)
             {
-                await _database.DeleteAsync(item);
+                await FollowupAsync(userMention, embed: "no any video found, try later !".ToEmbed("video not found !"));
+                return;
             }
+
+            await FollowupAsync(userMention, embed: new EmbedBuilder()
+            {
+                Title = "Promote Videos Menu",
+                Description = "Here you can manage promoted videos that requested by dynastio youtubers !",
+                Fields = new List<EmbedFieldBuilder>()
+                            { new EmbedFieldBuilder()
+                            .WithName("Requests Count")
+                            .WithValue(_videos.Count)
+                            .WithIsInline(true)
+                            }
+            }.Build(),
+              components: new ComponentBuilder()
+            .WithButton("Start", $"btn.youtubers-video:start:{_videos.FirstOrDefault().videoId}", ButtonStyle.Primary)
+            .Build());
+        }
+
+        [ComponentInteraction("btn.youtubers-video:*:*")]
+        public async Task promotevideo(string action, string videoid)
+        {
+            var video = _videos.FirstOrDefault(a => a.videoId == videoid);
+            if (_videos.Any() is false || video is null)
+            {
+                await (Context.Interaction as SocketMessageComponent).Message.DeleteAsync();
+                await promotelist();
+                return;
+            }
+
+            if (Context.Interaction.HasResponded is false)
+                await DeferAsync();
+
+            switch (action)
+            {
+                case "start":
+                    await postVideo();
+                    break;
+                case "cancel":
+                    await (Context.Interaction as SocketMessageComponent).Message.DeleteAsync();
+                    await FollowupAsync("Video Promote Requests Closed !");
+                    break;
+
+                case "promoted":
+                case "not_promoted":
+
+                    await sendMessageToVideoOwner($"Your video{(action == "promoted" ? "" : " not")} confirmed to be promoted.")
+                        .TryAsync();
+                    await _database.DeleteAsync(video);
+                    var videoIndex = _videos.IndexOf(video);
+                    await promotevideo("start", _videos.Skip(videoIndex + 1).FirstOrDefault().videoId);
+                    break;
+
+                case "skip":
+                    var videoIndex1 = _videos.IndexOf(video);
+                    await promotevideo("start", _videos.Skip(videoIndex1 + 1).FirstOrDefault().videoId);
+                    break;
+            }
+            async Task postVideo()
+            {
+                await (Context.Interaction as SocketMessageComponent).Message.DeleteAsync();
+                await FollowupAsync(userMention + " | " + video.GetUrl() +" \n"+ video.GetUrl().ToMarkdown(),
+                          components: new ComponentBuilder()
+                        .WithButton("Promoted", $"btn.youtubers-video:promoted:{videoid}", ButtonStyle.Success)
+                        .WithButton("Not Promoted", $"btn.youtubers-video:not_promoted:{videoid}", ButtonStyle.Danger)
+                        .WithButton("Skip >>", $"btn.youtubers-video:skip:{videoid}", ButtonStyle.Primary)
+                        .WithButton("Promote 3 days", $"btn.youtubers-video:promote3:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
+                        .WithButton("Promote 5 days", $"btn.youtubers-video:promote5:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
+                        .WithButton("Promote 10 days", $"btn.youtubers-video:promote10:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
+                        .WithButton("Cancel", $"btn.youtubers-video:cencel:{videoid}", ButtonStyle.Danger, row: 2)
+                        .Build());
+            }
+            async Task sendMessageToVideoOwner(string text)
+            {
+                var videoOwner = await Context.Client.GetUserAsync(video.user);
+                await videoOwner.SendMessageAsync(
+                    text +
+                    $"\nVideo: {video.GetUrl()}");
+            };
         }
 
         [SlashCommand("connect-youtube-channel", "connect your youtube channel !")]
