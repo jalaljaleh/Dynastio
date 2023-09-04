@@ -26,7 +26,7 @@ namespace Dynastio.Bot.Interactions.modules
         public async Task rank()
         {
             await DeferAsync();
-
+           
             var _rankedRoles = Context.Guild.Roles
                            .Where(x => x.Name.StartsWith("rank: "))
                            .OrderBy(a => a.Position)

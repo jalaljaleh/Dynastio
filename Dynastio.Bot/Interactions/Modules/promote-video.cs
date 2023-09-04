@@ -74,7 +74,8 @@ namespace Dynastio.Bot.Interactions.Modules
             .WithButton("Start", $"btn.youtubers-video:start:{_videos.FirstOrDefault().videoId}", ButtonStyle.Primary)
             .Build());
         }
-
+        [DefaultMemberPermissions(GuildPermission.Administrator)]
+        [RequireRole(480954902005415937)]
         [ComponentInteraction("btn.youtubers-video:*:*")]
         public async Task promotevideo(string action, string videoid)
         {
@@ -117,7 +118,7 @@ namespace Dynastio.Bot.Interactions.Modules
             async Task postVideo()
             {
                 await (Context.Interaction as SocketMessageComponent).Message.DeleteAsync();
-                await FollowupAsync(userMention + " | " + video.GetUrl() +" \n"+ video.GetUrl().ToMarkdown(),
+                await FollowupAsync(userMention + " | " + video.GetUrl() + " \n" + video.GetUrl().ToMarkdown(),
                           components: new ComponentBuilder()
                         .WithButton("Promoted", $"btn.youtubers-video:promoted:{videoid}", ButtonStyle.Success)
                         .WithButton("Not Promoted", $"btn.youtubers-video:not_promoted:{videoid}", ButtonStyle.Danger)
@@ -220,13 +221,23 @@ namespace Dynastio.Bot.Interactions.Modules
 
             if (action is "deny")
             {
-                await user.SendMessageAsync("Your request for connection your youtube channel denied by developers.")
-                    .TryAsync();
-
+                await sentDenyReasonTouser();
                 await deleteRequest();
                 return;
             }
-
+            async Task sentDenyReasonTouser()
+            {
+                await user.SendMessageAsync("" +
+                   "Your request for connection your youtube channel denied by developers.\n" +
+                   "## This happens if:" +
+                   "- Your youtube channel is not connected to your discord account connection.\n" +
+                   "- This is not the official server.\n" +
+                   "- Your account is banned.\n" +
+                   "- The channel added by someone else.\n" +
+                   "- You have a connected channel already." +
+                   "")
+                   .TryAsync();
+            }
             var checkUsers = await _database.GetUserByYoutubeChannelIdAsync(channel);
             if (checkUsers is not null)
             {
@@ -235,9 +246,7 @@ namespace Dynastio.Bot.Interactions.Modules
                                    $"<@{checkUsers}> added this channel alrady, if its your channel but someone else added it, infrom us by creating a ticket.")
                                    .ToEmbed("Access Denied"));
 
-                await user.SendMessageAsync("Your request for connect your youtube channel denied by developers because your channel added by someone else.")
-                   .TryAsync();
-
+                await sentDenyReasonTouser();
                 await deleteRequest();
                 return;
             }
@@ -250,8 +259,7 @@ namespace Dynastio.Bot.Interactions.Modules
                                    $"<@{targetUser}> added a channel alrady, remove the old channel first.")
                                    .ToEmbed("Access Denied"));
 
-                await user.SendMessageAsync("Your request for connect your youtube channel denied by developers because you have a channel already.")
-                   .TryAsync();
+                await sentDenyReasonTouser();
 
                 await deleteRequest();
                 return;
@@ -262,7 +270,11 @@ namespace Dynastio.Bot.Interactions.Modules
 
             await _userService.UpdateAsync(targetUser);
 
-            await user.SendMessageAsync("Your request for connect your youtube channel accepted by developers.")
+            await user.SendMessageAsync($"" +
+                $"## Youtube channel verified\n" +
+                $"- Your request for connecting your youtube channel to your bot account accepted by developers.\n" +
+                $"https://www.youtube.com/{channel}\n" +
+                $"")
                  .TryAsync();
 
             await deleteRequest();
@@ -273,6 +285,24 @@ namespace Dynastio.Bot.Interactions.Modules
             }
         }
 
+        //[SlashCommand("promote-channel-video", "promote your dynastio video !")]
+        //public async Task promotechannelvideo()
+        //{
+        //    await DeferAsync();
+
+        //    if (string.IsNullOrEmpty(BotUser.youtube_channel))
+        //    {
+        //        await FollowupAsync(embed:
+        //            ($"## You have to connect your channel to your bot account first.\n" +
+        //            $"- connect your youtube channel to your discord account first from **Discord Connections**.`\n" +
+        //            $"- then use this command to coonect your channel to the bot `/connect-youtube-channel`\n" +
+        //            $"- wait for developers to confirm your request.\n" +
+        //            $"after doing the steps, we will infrom you the result !")
+        //            .ToEmbed("Channel not found", Color.Orange));
+        //        return;
+        //    }
+
+        //}
         [SlashCommand("promote-video", "promote your dynastio video !")]
         public async Task promote(string videoId)
         {
@@ -315,7 +345,7 @@ namespace Dynastio.Bot.Interactions.Modules
                 await FollowupAsync(embed:
                            ($"## Video not found\n" +
                            $"- your video not found, make sure you are sending the video id only !")
-                           .ToEmbed("Not Found", Color.Orange));
+                           .ToEmbed("", Color.Orange));
                 return;
             }
 
@@ -326,7 +356,7 @@ namespace Dynastio.Bot.Interactions.Modules
                 await FollowupAsync(embed:
                            ($"## Video not found in your channel !\n" +
                            $"- your channel hasn't such video, make sure its your video !")
-                           .ToEmbed("Not Found"));
+                           .ToEmbed("", thumbnailUrl: video?.Snippet?.Thumbnails?.Default__?.Url ?? ""));
                 return;
             }
 
@@ -341,15 +371,15 @@ namespace Dynastio.Bot.Interactions.Modules
             {
                 await FollowupAsync(embed:
                        ($"## Request Sent Succesfuly !\n" +
-                       $"- Your video verified and sent to developers, we will inform you the result!")
-                       .ToEmbed("Operator was succesful", Color.Green));
+                       $"- Your video verified and sent to developers, we will inform you the result !")
+                       .ToEmbed("", thumbnailUrl: video?.Snippet?.Thumbnails?.Default__?.Url ?? "", color: Color.Green));
             }
             else
             {
                 await FollowupAsync(embed:
                      ($"## Request Failed !\n" +
                      $"- can't send your request, try again !")
-                     .ToEmbed("Operator was not succesful", Color.Red));
+                     .ToEmbed("", Color.Red));
             }
         }
 
