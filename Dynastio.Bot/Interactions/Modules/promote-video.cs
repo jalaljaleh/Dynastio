@@ -106,13 +106,13 @@ namespace Dynastio.Bot.Interactions.Modules
                     await sendMessageToVideoOwner($"Your video{(action == "promoted" ? "" : " not")} confirmed to be promoted.")
                         .TryAsync();
                     await _database.DeleteAsync(video);
-                    var videoIndex = _videos.IndexOf(video);
-                    await promotevideo("start", _videos.Skip(videoIndex + 1).FirstOrDefault().videoId);
+                    _videos.Remove(video);
+                    await promotevideo("start", _videos.FirstOrDefault().videoId);
                     break;
 
                 case "skip":
-                    var videoIndex1 = _videos.IndexOf(video);
-                    await promotevideo("start", _videos.Skip(videoIndex1 + 1).FirstOrDefault().videoId);
+                    _videos.Remove(video);
+                    await promotevideo("start", _videos.FirstOrDefault().videoId);
                     break;
             }
             async Task postVideo()
@@ -126,7 +126,8 @@ namespace Dynastio.Bot.Interactions.Modules
                         .WithButton("Promote 3 days", $"btn.youtubers-video:promote3:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
                         .WithButton("Promote 5 days", $"btn.youtubers-video:promote5:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
                         .WithButton("Promote 10 days", $"btn.youtubers-video:promote10:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
-                        .WithButton("Cancel", $"btn.youtubers-video:cencel:{videoid}", ButtonStyle.Danger, row: 2)
+                        .WithButton("Custom Duration", $"btn.youtubers-video:promotecustom:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
+                        .WithButton("Cancel", $"btn.youtubers-video:cancel:{videoid}", ButtonStyle.Danger, row: 2)
                         .Build());
             }
             async Task sendMessageToVideoOwner(string text)
