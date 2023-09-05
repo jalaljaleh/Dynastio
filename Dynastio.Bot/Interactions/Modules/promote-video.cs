@@ -118,17 +118,17 @@ namespace Dynastio.Bot.Interactions.Modules
             async Task postVideo()
             {
                 await (Context.Interaction as SocketMessageComponent).Message.DeleteAsync();
-                await FollowupAsync(userMention + " | " + video.GetUrl() + " \n" + video.GetUrl().ToMarkdown(),
+                await FollowupAsync(userMention + " | " + video.GetUrl() + " \n# Video Url:" + video.GetUrl().ToMarkdown(),
                           components: new ComponentBuilder()
                         .WithButton("Promoted", $"btn.youtubers-video:promoted:{videoid}", ButtonStyle.Success)
                         .WithButton("Not Promoted", $"btn.youtubers-video:not_promoted:{videoid}", ButtonStyle.Danger)
                         .WithButton("Skip >>", $"btn.youtubers-video:skip:{videoid}", ButtonStyle.Primary)
                         .WithButton("Promote 3 days", $"btn.youtubers-video:promote3:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
                         .WithButton("Promote 5 days", $"btn.youtubers-video:promote5:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
-                        .WithButton("Promote 10 days", $"btn.youtubers-video:promote10:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
-                        .WithButton("Custom Duration", $"btn.youtubers-video:promotecustom:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
+                        .WithButton("Custom Duration", $"btn.youtubers-video:promotecustom:{videoid}", ButtonStyle.Success, disabled: true, row: 1)
+                        .WithButton("Open in Browser",null, ButtonStyle.Link,null,video.GetUrl(), row: 2)
                         .WithButton("Cancel", $"btn.youtubers-video:cancel:{videoid}", ButtonStyle.Danger, row: 2)
-                        .Build());
+                        .Build());;
             }
             async Task sendMessageToVideoOwner(string text)
             {
@@ -230,7 +230,7 @@ namespace Dynastio.Bot.Interactions.Modules
             {
                 await user.SendMessageAsync("" +
                    "Your request for connection your youtube channel denied by developers.\n" +
-                   "## This happens if:" +
+                   "## This happens if:\n" +
                    "- Your youtube channel is not connected to your discord account connection.\n" +
                    "- This is not the official server.\n" +
                    "- Your account is banned.\n" +
