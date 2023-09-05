@@ -1,8 +1,10 @@
 ﻿
 namespace Dynastio.Bot.Handlers
 {
+    using Discord;
     using Discord.Rest;
     using Discord.WebSocket;
+    using Dynastio.Bot.Data;
     using Microsoft.Extensions.DependencyInjection;
     internal class InviteHandler
     {
@@ -11,6 +13,7 @@ namespace Dynastio.Bot.Handlers
         private readonly GuildService _guildService;
         private readonly UserService _usersService;
         private readonly RankService _rankService;
+        private readonly GraphicService _graphicService;
 
         public InviteHandler(IServiceProvider services)
         {
@@ -19,48 +22,23 @@ namespace Dynastio.Bot.Handlers
             _guildService = _services.GetService<GuildService>();
             _rankService = _services.GetService<RankService>();
             _usersService = _services.GetService<UserService>();
+            _graphicService = _services.GetService<GraphicService>();
 
-            //_discord.Ready += _client_Ready;
-            //_discord.UserJoined += _client_UserJoined;
-            //_discord.InviteCreated += _discord_InviteCreated;
+            _discord.UserJoined += _client_UserJoined;
         }
 
-
-        private IReadOnlyCollection<RestInviteMetadata> _cachedInviteMetadata;
         private async Task _client_UserJoined(SocketGuildUser joinedUser)
         {
-            //    if (joinedUser.IsBot) return;
-
-            //    var newInvitesMetadata = await joinedUser.Guild.GetInvitesAsync();
-
-            //    var currentInvite = _cachedInviteMetadata.FirstOrDefault(
-            //                                        a => newInvitesMetadata
-            //                                            .Where(
-            //                                             x =>
-            //                                             x.Id == a.Id &&
-            //                                             x.Uses - 1 == a.Uses)
-            //                                            .Any());
-            //    if (currentInvite is null) return;
-
-            //    _cachedInviteMetadata = newInvitesMetadata;
-
-            //    var newBotUser = await _usersService.GetUserAsync(joinedUser.Id, false);
-            //    if (newBotUser is not null) return;
-
-            //    newBotUser = await _usersService.GetUserAsync(joinedUser.Id, true);
-
-            //    var botUserInviter = await _usersService.GetUserAsync(currentInvite.Inviter.Id);
-
-            //    await _rankService.AddXpAsync(botUserInviter, _discord.CurrentUser.Id, 500, $"{joinedUser.Id.ToUserMention()} joined to the server by your currentInvite link.");
-        }
-
-        private async Task _discord_InviteCreated(SocketInvite arg)
-        {
-            //_cachedInviteMetadata = await arg.Guild.GetInvitesAsync();
-        }
-        private async Task _client_Ready()
-        {
-            //_cachedInviteMetadata = await _discord.GetGuild(GuildService._officialGuildId).GetInvitesAsync();
+            await DiscordStream.SendFileAsync(
+                channel: joinedUser.Guild.GetTextChannel(1109020050163240990),
+                img: await _graphicService.GetWelcomeImage(joinedUser),
+                joinedUser.Id + ".jpg",
+                joinedUser.Id.ToUserMention(),
+            embed: new EmbedBuilder()
+            {
+                Description = $"A wild {joinedUser.Id.ToUserMention()} appears !",
+                ImageUrl = $"attachment://{joinedUser.Id}.jpg"
+            }.Build());
         }
     }
 }

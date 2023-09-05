@@ -111,6 +111,7 @@ namespace Dynastio.Bot
                 activiy_score = 0,
                 activiy_level = 0,
                 LastBoostGift = DateTime.MinValue,
+                game_accountId = 0,
             };
 
             Profile profile;

@@ -57,37 +57,7 @@ namespace Dynastio.Bot
 
             return image;
         }
-        public Image GetProfile(Profile profile)
-        {
-            Image image = Image.Load(FileManager.ToResourcePath("Images/Profile/default.png"));
-
-            var pointCoinSection = new PointF() { X = (360), Y = 90 };
-            image.Mutate(wIndex => wIndex.DrawText(profile.Coins.ToString(), new Font(fontFamily, 40, FontStyle.Regular), Color.White, pointCoinSection));
-
-            var TextLevelPoint = new PointF() { X = (140 - (4 * profile.Level.ToString().Length)), Y = 115 };
-            image.Mutate(wIndex => wIndex.DrawText(profile.Experience.ToString(), new Font(fontFamily, 40, FontStyle.Bold), Color.White, TextLevelPoint));
-
-            var pointDetailsSection = new PointF() { X = 80, Y = 260 };
-            string TextDetails = string.Format("{0} was playing in {1}", profile.LastActiveAt.ToRelative(), StringExtensions.TryRemove(profile.LatestServer, 16));
-            image.Mutate(wIndex => wIndex.DrawText(TextDetails, new Font(fontFamily, 16, FontStyle.Bold), Color.WhiteSmoke, pointDetailsSection));
-
-            var ExperienceLine = new Pen(Color.WhiteSmoke, 11);
-            image.Mutate(wIndex => wIndex.DrawLines(ExperienceLine, new Point(250, 228), new Point((int)(profile.GetExperience(490) + 246), 228)));
-
-            for (int wIndex = 0; wIndex < profile.Badges.Count; wIndex++)
-            {
-                var itemImgPath = FileManager.ToResourcePath($"Images/Badges/{profile.Badges[wIndex].ToString().ToLower()}.png");
-                if (!File.Exists(itemImgPath)) itemImgPath = FileManager.ToResourcePath($"Images/unknown.png");
-
-                using (Image itemImg = Image.Load(path: itemImgPath))
-                {
-                    itemImg.Mutate(wIndex => wIndex.Resize(32, 32));
-                    var point = new Point((int)(260 + (wIndex * 44)), 177);
-                    image.Mutate(wIndex => wIndex.DrawImage(itemImg, point, 1f));
-                }
-            }
-            return image;
-        }
+     
 
         public enum ChestStyle
         {
