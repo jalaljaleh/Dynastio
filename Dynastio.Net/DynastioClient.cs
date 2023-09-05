@@ -85,7 +85,7 @@ namespace Dynastio.Net
         {
             return url.EndsWith("/") ? url : url + "/";
         }
-        public async Task<string> PostAsync(string url, object input)
+        private async Task<string> PostAsync(string url, object input)
         {
             
 
@@ -99,7 +99,7 @@ namespace Dynastio.Net
             }
         }
 
-        public async Task<TResult> PostAsync<TResult>(string url, object input) where TResult : class, new()
+        private async Task<TResult> PostAsync<TResult>(string url, object input) where TResult : class, new()
         {
             var strResponse = await PostAsync(url, input);
 
@@ -109,7 +109,7 @@ namespace Dynastio.Net
             });
         }
 
-        public async Task<TResult> GetAsync<TResult>(string url) where TResult : class, new()
+        private async Task<TResult> GetAsync<TResult>(string url) where TResult : class, new()
         {
             var strResponse = await GetAsync(url);
 
@@ -119,7 +119,7 @@ namespace Dynastio.Net
             });
         }
 
-        public async Task<string> GetAsync(string url)
+        private async Task<string> GetAsync(string url)
         {      
             using (var response = await _client.GetAsync(url))
             {
@@ -128,12 +128,12 @@ namespace Dynastio.Net
             }
         }
 
-        public async Task<string> PutAsync(string url, object input)
+        private async Task<string> PutAsync(string url, object input)
         {
             return await PutAsync(url, new StringContent(JsonConvert.SerializeObject(input), Encoding.UTF8, MediaTypeJson));
         }
 
-        public async Task<string> PutAsync(string url, HttpContent content)
+        private async Task<string> PutAsync(string url, HttpContent content)
         {
             
 
@@ -144,7 +144,7 @@ namespace Dynastio.Net
             }
         }
 
-        public async Task<string> DeleteAsync(string url)
+        private async Task<string> DeleteAsync(string url)
         {
             
 
@@ -208,7 +208,7 @@ namespace Dynastio.Net
             var result = await GetAsync("https://dynast.cloud/changelog.txt");
             return JsonConvert.DeserializeObject<string>(result);
         }
-        public async Task<DiscordRank> GetVersionAsync(string accountId,DiscordRank rank)
+        public async Task<DiscordRank> UpdateDiscordRank(string accountId,DiscordRank rank)
         {
             var result = await PostAsync<DataType<DiscordRank>>($"/write_api/set_user_discord_rank?uid={accountId}",rank);
             return result.data;

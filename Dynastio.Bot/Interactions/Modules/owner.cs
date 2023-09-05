@@ -28,9 +28,21 @@ namespace Dynastio.Bot.Interactions.modules
         public InternetService _internetService { get; set; }
         public RankService _rankService { get; set; }
         public DiscordSocketClient _discord { get; set; }
+        public DynastioClient _dynastio { get; set; }
         public IDynastioBotDatabase _database { get; set; }
 
+        [RequireRole(480954902005415937)]
+        [SlashCommand("test-nightly", "test.")]
+            public async Task add(string gameId, int level)
+            {
+                await DeferAsync(true);
 
+                var res = await _dynastio.UpdateDiscordRank(gameId, new DiscordRank() { Rank = level })
+                    .TryAsync();
+                await FollowupAsync($"{(res.isSuccesful ? res.result.Rank : "false")}");
+            }
+
+        
         [Group("xp", "xp")]
         public class XPModule : OwnerModule
         {
