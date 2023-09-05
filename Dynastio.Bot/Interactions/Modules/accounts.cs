@@ -171,6 +171,7 @@ namespace Dynastio.Bot.Interactions.modules
 
         [RateLimit(10)]
         [ModalInteraction("accounts add", true)]
+        [SlashCommand("add", "connect an account to the bot", false, RunMode.Sync)]
         public async Task add(FormAddAccount form)
         {
             await DeferAsync();

@@ -64,7 +64,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
             var message = await thread.SendMessageAsync(
                 $"## <@{Context.User.Id}>:\n" +
-                $"### {form.Title1}" +
+                $"### {form.Title1}\n" +
                 $"{form.Description}\n\n",
 
                 embed: new EmbedBuilder()
@@ -99,6 +99,10 @@ namespace Dynastio.Bot.Interactions.ServiceModules
             await message.PinAsync();
 
             await FollowupAsync($"## Done\nYour ticket created, click here: {thread.Mention}.", ephemeral: true);
+            await Task.Delay(100);
+
+            await Context.User.SendMessageAsync($"Your ticket created, click here: {thread.Mention}")
+                .TryAsync();
 
         }
         public class TicketForm : IModal

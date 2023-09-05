@@ -98,13 +98,13 @@ namespace Dynastio.Bot
                 }.Build());
         }
 
-        public const int _nextScoreTime = 70;
+        public const int _nextScoreTime = 60;
         public const int _updateUserTime = 240;
-        public static int[] _randomScore = { 5, 35 };
-        public static int[] _randomScoreServerBooster = { 10, 50 };
+        public static int[] _randomScore = { 40, 80 };
+        public static int[] _randomScoreServerBooster = { 50, 100 };
         public static int getMax(int lvl)
         {
-            return ((lvl + 250) * (int)Math.Pow(lvl, 2.1));
+            return (((lvl + 250) * (int)Math.Pow(lvl, 2.1))) + 3000;
         }
         public async Task AddMessageXpAsync(IUserMessage message)
         {
@@ -143,6 +143,7 @@ namespace Dynastio.Bot
 
                 var result = await SyncMemberRolesAsync(message.Author as IGuildUser, _user, message.Channel as ITextChannel)
                     .TryAsync();
+
                 return result;
             }
             return false;

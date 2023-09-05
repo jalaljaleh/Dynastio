@@ -126,9 +126,9 @@ namespace Dynastio.Bot.Interactions.Modules
                         .WithButton("Promote 3 days", $"btn.youtubers-video:promote3:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
                         .WithButton("Promote 5 days", $"btn.youtubers-video:promote5:{videoid}", ButtonStyle.Primary, disabled: true, row: 1)
                         .WithButton("Custom Duration", $"btn.youtubers-video:promotecustom:{videoid}", ButtonStyle.Success, disabled: true, row: 1)
-                        .WithButton("Open in Browser",null, ButtonStyle.Link,null,video.GetUrl(), row: 2)
+                        .WithButton("Open in Browser", null, ButtonStyle.Link, null, video.GetUrl(), row: 2)
                         .WithButton("Cancel", $"btn.youtubers-video:cancel:{videoid}", ButtonStyle.Danger, row: 2)
-                        .Build());;
+                        .Build()); ;
             }
             async Task sendMessageToVideoOwner(string text)
             {
@@ -139,7 +139,7 @@ namespace Dynastio.Bot.Interactions.Modules
             };
         }
 
-        [SlashCommand("connect-youtube-channel", "connect your youtube channel !")]
+        [SlashCommand("connect-youtube-channel", "connect your youtube channel !",false,RunMode.Sync)]
         public async Task connectchannel(string channelId)
         {
             await DeferAsync();
@@ -213,7 +213,7 @@ namespace Dynastio.Bot.Interactions.Modules
         }
 
 
-        [ComponentInteraction("btn.connectyoutubechannel:*:*:*")]
+        [ComponentInteraction("btn.connectyoutubechannel:*:*:*", false, RunMode.Sync)]
         public async Task btn_connectyoutubechannel(string action, ulong userId, string channel)
         {
             await DeferAsync();
@@ -235,8 +235,8 @@ namespace Dynastio.Bot.Interactions.Modules
                    "- This is not the official server.\n" +
                    "- Your account is banned.\n" +
                    "- The channel added by someone else.\n" +
-                   "- You have a connected channel already." +
-                   "")
+                   "- You have a connected channel already.\n" +
+                   "## `You can create a ticket for support anytime.`")
                    .TryAsync();
             }
             var checkUsers = await _database.GetUserByYoutubeChannelIdAsync(channel);
@@ -271,6 +271,16 @@ namespace Dynastio.Bot.Interactions.Modules
 
             await _userService.UpdateAsync(targetUser);
 
+            try
+            {
+                // youtuber ach role
+                await Context.Guild.GetUser(userId).AddRoleAsync(1139588083373854831);
+                await Task.Delay(100);
+            }
+            catch
+            {
+
+            }
             await user.SendMessageAsync($"" +
                 $"## Youtube channel verified\n" +
                 $"- Your request for connecting your youtube channel to your bot account accepted by developers.\n" +
@@ -304,7 +314,7 @@ namespace Dynastio.Bot.Interactions.Modules
         //    }
 
         //}
-        [SlashCommand("promote-video", "promote your dynastio video !")]
+        [SlashCommand("promote-video", "promote your dynastio video !", false, RunMode.Sync)]
         public async Task promote(string videoId)
         {
             await DeferAsync();

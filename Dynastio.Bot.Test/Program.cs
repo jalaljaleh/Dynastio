@@ -6,7 +6,10 @@ namespace Dynastio.Bot.Test
     {
         public static void Main()
         {
-            new Program().Test().GetAwaiter().GetResult();
+           for(int i =0;i < 42;i++)
+            {
+                Console.WriteLine(i + "    " + getMax(i));
+            }
         }
         public async Task Test()
         {
@@ -14,6 +17,10 @@ namespace Dynastio.Bot.Test
 
 
             Console.ReadLine();
+        }
+        public static int getMax(int lvl)
+        {
+            return (((lvl + 250) * (int)Math.Pow(lvl, 2.1))) + 3000;
         }
     }
 

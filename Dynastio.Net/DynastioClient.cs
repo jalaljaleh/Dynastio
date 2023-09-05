@@ -179,7 +179,6 @@ namespace Dynastio.Net
         public string Changelog { get => _changelog.Value; }
         public List<FeaturedVideos> FeaturedVideos { get => _featuredVideos.Value; }
 
-
         public async Task<List<Server>> GetServersAsync() => await GetServersAsync(ServerType.AllServersWithAllPlayers);
         public async Task<List<Server>> GetServersAsync(ServerType serverType = default)
         {
@@ -208,6 +207,11 @@ namespace Dynastio.Net
         {
             var result = await GetAsync("https://dynast.cloud/changelog.txt");
             return JsonConvert.DeserializeObject<string>(result);
+        }
+        public async Task<DiscordRank> GetVersionAsync(string accountId,DiscordRank rank)
+        {
+            var result = await PostAsync<DataType<DiscordRank>>($"/write_api/set_user_discord_rank?uid={accountId}",rank);
+            return result.data;
         }
         public async Task<List<Leaderboardcoin>> GetLeaderboardcoinsAsync()
         {
