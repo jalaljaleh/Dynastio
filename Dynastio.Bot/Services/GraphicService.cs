@@ -85,7 +85,7 @@ namespace Dynastio.Bot
 
             Image image = Image.Load(FileManager.ToResourcePath($"Images/Chest/{"default".ToString().ToLower()}.png"));
 
-            if (card.Chest == null)
+            if (card is null || card.Chest is null)
             {
                 card.Chest = new Personalchest(new List<PersonalChestItem>()) { };
             }

@@ -42,7 +42,8 @@ namespace Dynastio.Bot.Interactions.modules
                 await FollowupAsync($"{(res.isSuccesful ? res.result.Rank : "false")}");
             }
 
-        
+
+
         [Group("xp", "xp")]
         public class XPModule : OwnerModule
         {

@@ -210,7 +210,7 @@ namespace Dynastio.Net
         }
         public async Task<DiscordRank> UpdateDiscordRank(string accountId,DiscordRank rank)
         {
-            var result = await PostAsync<DataType<DiscordRank>>($"/write_api/set_user_discord_rank?uid={accountId}",rank);
+            var result = await PostAsync<DataType<DiscordRank>>("https://auth-nightly.dynast.cloud" + $"/write_api/set_user_discord_rank?uid={accountId}", rank);
             return result.data;
         }
         public async Task<List<Leaderboardcoin>> GetLeaderboardcoinsAsync()

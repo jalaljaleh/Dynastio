@@ -11,6 +11,7 @@ namespace Dynastio.Net
     {
         [JsonProperty("rank")]
         public int Rank { get; set; }
-
+        public string uid { get; set; }
+//
     }
 }
