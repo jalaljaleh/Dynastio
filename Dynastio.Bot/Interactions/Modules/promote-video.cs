@@ -43,7 +43,7 @@ namespace Dynastio.Bot.Interactions.Modules
             await (Context.Interaction as SocketMessageComponent).Message.DeleteAsync();
         }
         [SlashCommand("promote-video", "promote your dynastio video !", false, RunMode.Sync)]
-        public async Task promote(string videoId)
+        public async Task promote([Autocomplete(typeof(AutoCompeleteYoutuberVideos))] string videoId)
         {
             await DeferAsync();
 
@@ -123,6 +123,30 @@ namespace Dynastio.Bot.Interactions.Modules
                      .ToEmbed("", Color.Red));
             }
         }
+
+
+        public class AutoCompeleteYoutuberVideos : AutocompleteHandler
+        {
+            public YoutubeService youtubeService { get; set; }
+            public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
+            {
+                string match = autocompleteInteraction.Data.Current.Value.ToString();
+                var videos = await youtubeService.GetAllChannelVideos((context as CustomSocketInteractionContext).BotUser.youtube_channel);
+                var result = new List<AutocompleteResult>();
+                foreach (var v in videos.Where(a => a.Snippet.Title.Contains(match)).Take(25))
+                {
+                    result.Add(new AutocompleteResult()
+                    {
+                        Name = v.Snippet.Title.TryRemove(80),
+                        Value = v.Id
+                    });
+                }
+                return await Task.FromResult(AutocompletionResult.FromSuccess(result.Take(25)));
+            }
+        }
+
+
+
         [RequireDeveloper]
         [DefaultMemberPermissions(GuildPermission.Administrator)]
         [SlashCommand("disconnect-youtube-channel", "disconnect your youtube channel !")]
