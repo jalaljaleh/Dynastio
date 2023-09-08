@@ -8,19 +8,20 @@ using Discord.WebSocket;
 using Discord;
 using Dynastio;
 using Dynastio.Bot.Interactions;
-using Dynastio.Bot;
+using static Dynastio.Data.Guild;
 using Dynastio.Bot.Global;
 
 namespace Discord.Interactions
 {
-    public class RequireGuildOfficialAttribute : PreconditionAttribute
+    public class RequireDeveloperAttribute : PreconditionAttribute
     {
         public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
         {
-            if (context.Guild.Id != Guilds.OfficialGuild)
-                return Task.FromResult(PreconditionResult.FromError(this.ErrorMessage ?? ((CustomSocketInteractionContext)context).UserLocale["require.role.developer"]));
-
-            return Task.FromResult(PreconditionResult.FromSuccess());
+            if (Users.Develoeprs.Contains(context.User.Id))
+            {
+                return Task.FromResult(PreconditionResult.FromSuccess());
+            }
+            return Task.FromResult(PreconditionResult.FromError(this.ErrorMessage ?? ((CustomSocketInteractionContext)context).UserLocale["require.developer"]));
 
         }
     }

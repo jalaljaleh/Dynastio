@@ -9,7 +9,7 @@ using MongoDB.Bson;
 using System.Collections.Concurrent;
 using Dynastio.Net;
 
-namespace Dynastio.Bot.Data
+namespace Dynastio.Data
 {
     public enum BotUserPermission
     {
@@ -26,7 +26,6 @@ namespace Dynastio.Bot.Data
     {
         public User() { }
         public ulong Id { get; set; }
-        public int Honor { get; set; }
         public string youtube_channel { get; set; }
         public int activiy_level { get; set; }
         public long activiy_score { get; set; }

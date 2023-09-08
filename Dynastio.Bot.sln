@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynastio.Bot.Data", "Dynastio.Bot.Data\Dynastio.Bot.Data.csproj", "{7BBA5D2E-8089-4DAD-A727-19C82005C078}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynastio.Bot.Global", "Dynastio.Bot.Global\Dynastio.Bot.Global.csproj", "{4CE7D54B-137E-4594-B648-6AD78C806A1C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynastio.Bot", "Dynastio.Bot\Dynastio.Bot.csproj", "{E1C8438D-1AF9-4759-85B3-96B3B37DFA6F}"
@@ -15,16 +13,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynastio.Bot.Test", "Dynast
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynastio.Net", "Dynastio.Net\Dynastio.Net.csproj", "{923F3FDF-9309-40F7-9240-EC349E744DE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynastio.Data", "Dynastio.Data\Dynastio.Data.csproj", "{BE6A980A-3446-41A1-84CA-FB376BD80613}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7BBA5D2E-8089-4DAD-A727-19C82005C078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7BBA5D2E-8089-4DAD-A727-19C82005C078}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7BBA5D2E-8089-4DAD-A727-19C82005C078}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7BBA5D2E-8089-4DAD-A727-19C82005C078}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4CE7D54B-137E-4594-B648-6AD78C806A1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4CE7D54B-137E-4594-B648-6AD78C806A1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CE7D54B-137E-4594-B648-6AD78C806A1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{923F3FDF-9309-40F7-9240-EC349E744DE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{923F3FDF-9309-40F7-9240-EC349E744DE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{923F3FDF-9309-40F7-9240-EC349E744DE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE6A980A-3446-41A1-84CA-FB376BD80613}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE6A980A-3446-41A1-84CA-FB376BD80613}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE6A980A-3446-41A1-84CA-FB376BD80613}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE6A980A-3446-41A1-84CA-FB376BD80613}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

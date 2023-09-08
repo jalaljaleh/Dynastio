@@ -9,7 +9,7 @@ namespace Dynastio.Bot.Interactions
     using Discord;
     using Discord.Interactions;
     using Discord.WebSocket;
-    using Dynastio.Bot.Data;
+    using Dynastio.Data;
     using Dynastio.Bot.Globalization;
 
     public class CustomInteractionModuleBase : InteractionModuleBase<CustomSocketInteractionContext>

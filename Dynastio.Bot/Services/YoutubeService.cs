@@ -27,7 +27,10 @@ namespace Dynastio.Bot
                 ApiKey = config.YoutubeApi
             });
         }
-
+        public static string GetUrlFromVideoId(string videoId)
+        {
+            return "https://www.youtube.com/watch?v=" + videoId;
+        }
         public Task<List<SearchResult>> GetAllChannelVideos(string channelId)
         {
             List<SearchResult> res = new List<SearchResult>();

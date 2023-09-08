@@ -1,4 +1,4 @@
-﻿using Dynastio.Bot.Global;
+﻿
 using Dynastio.Net.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -23,6 +23,7 @@ namespace Dynastio.Net
         private string tokenKey, tokenValue;
         private string _baseAddress = "https://auth.dynast.cloud";
         private string MediaTypeJson = "application/json";
+        private Random random = new Random();
         public DynastioClient(string token)
         {
             tokenKey = token.Split(':')[0];
@@ -191,7 +192,7 @@ namespace Dynastio.Net
                 _ => ""
             };
 
-            var result = await GetAsync("https://announcement-amsterdam-0-alpaca.dynast.cloud/" + url + "&random=" + Main.Random.Next());
+            var result = await GetAsync("https://announcement-amsterdam-0-alpaca.dynast.cloud/" + url + "&random=" + random.Next());
             var data = JsonConvert.DeserializeObject<DataType<List<Server>>>(result);
             return data.Servers;
         }
@@ -210,7 +211,7 @@ namespace Dynastio.Net
         }
         public async Task<DiscordRank> UpdateDiscordRank(string accountId,DiscordRank rank)
         {
-            var result = await PostAsync<DataType<DiscordRank>>("https://auth-nightly.dynast.cloud" + $"/write_api/set_user_discord_rank?uid={accountId}", rank);
+            var result = await PostAsync<DataType<DiscordRank>>(_baseAddress + $"/write_api/set_user_discord_rank?uid={accountId}", rank);
             return result.data;
         }
         public async Task<List<Leaderboardcoin>> GetLeaderboardcoinsAsync()

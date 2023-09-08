@@ -8,7 +8,7 @@ using Discord.WebSocket;
 using Discord;
 using Dynastio;
 using Dynastio.Bot.Interactions;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 
 namespace Discord.Interactions
 {

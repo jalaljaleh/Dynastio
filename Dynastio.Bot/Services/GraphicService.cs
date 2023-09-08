@@ -8,7 +8,7 @@ using Dynastio.Bot.Managers;
 using Dynastio.Bot.Global;
 using Dynastio.Bot.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 using Discord;
 using Image = SixLabors.ImageSharp.Image;
 using Color = SixLabors.ImageSharp.Color;

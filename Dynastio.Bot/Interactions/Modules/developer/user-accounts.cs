@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Net;
 using Discord.WebSocket;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Interactions.AutoCompeletes;
 using Newtonsoft.Json;
@@ -16,16 +16,16 @@ namespace Dynastio.Bot.Interactions.modules
 {
     [EnabledInDm(false)]
     [DefaultMemberPermissions(GuildPermission.Administrator)]
-    [RequireRole(480954902005415937)]
+    [RequireDeveloper]
     [Group("developer", "developer")]
     public class developerModule : CustomInteractionModuleBase
     {
         public GuildService _guildService { get; set; }
-        public UserService _userService { get; set; }
+        public DynastioData _dynastioData { get; set; }
         public InternetService _internetService { get; set; }
         public RankService _rankService { get; set; }
         public DiscordSocketClient _discord { get; set; }
-        public IDynastioBotDatabase _database { get; set; }
+        public DynastioData _database { get; set; }
 
 
         [SlashCommand("permission", "user permission")]
@@ -33,7 +33,7 @@ namespace Dynastio.Bot.Interactions.modules
         {
             await DeferAsync();
 
-            var buser = await _userService.GetUserAsync(user.Id, false);
+            var buser = await _dynastioData.GetUserAsync(user.Id, false);
             if (buser is null)
             {
                 await FollowupAsync("no any result found.");
@@ -48,7 +48,7 @@ namespace Dynastio.Bot.Interactions.modules
             {
                 buser.LockPermission(permission);
             }
-            await _userService.UpdateAsync(buser);
+            await _dynastioData.UpdateAsync(buser);
             await FollowupAsync("result: done");
         }
 
@@ -59,8 +59,8 @@ namespace Dynastio.Bot.Interactions.modules
             public async Task json(IGuildUser user)
             {
                 await DeferAsync();
-                
-                var buser = await _userService.GetUserAsync(user.Id, false);
+
+                var buser = await _dynastioData.GetUserAsync(user.Id, false);
                 if (buser is null)
                 {
                     await FollowupAsync("no any result found.");
@@ -75,7 +75,7 @@ namespace Dynastio.Bot.Interactions.modules
             {
                 await DeferAsync();
 
-                var buser = await _userService.GetUserAsync(user.Id, false);
+                var buser = await _dynastioData.GetUserAsync(user.Id, false);
                 if (buser is null)
                 {
                     await FollowupAsync("no any result found.");
@@ -106,7 +106,7 @@ namespace Dynastio.Bot.Interactions.modules
             {
                 await DeferAsync(false);
 
-                var buser = await _userService.GetUserAsync(user.Id, false);
+                var buser = await _dynastioData.GetUserAsync(user.Id, false);
                 if (buser is null)
                 {
                     await FollowupAsync("no any result found.");

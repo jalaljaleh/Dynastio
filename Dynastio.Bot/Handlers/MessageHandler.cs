@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Dynastio.Bot.Global;
+using Dynastio.Data;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Concurrent;
@@ -19,6 +20,7 @@ namespace Dynastio.Bot.Handlers
         private readonly IServiceProvider _services;
         private readonly DiscordSocketClient _discord;
         private readonly CommandsHandler _commandHandler;
+        private readonly DynastioData _dynastioData;
         private readonly UserService _userService;
         private readonly RankService _rankService;
         private readonly GuildService _guildService;
@@ -28,18 +30,14 @@ namespace Dynastio.Bot.Handlers
             _services = services;
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _commandHandler = services.GetRequiredService<CommandsHandler>();
-            _userService = services.GetRequiredService<UserService>();
+            _dynastioData = services.GetRequiredService<DynastioData>();
             _rankService = services.GetRequiredService<RankService>();
             _guildService = services.GetRequiredService<GuildService>();
             _webhookService = services.GetRequiredService<WebhookService>();
             _discord.MessageReceived += _discord_MessageReceived;
 
-            if (!Main.IsDebug())
-            {
                 _discord.MessageDeleted += _discord_MessageDeleted;
-                _discord.MessageUpdated += _discord_MessageUpdated;
-            }
-
+                _discord.MessageUpdated += _discord_MessageUpdated;          
         }
 
         static ulong[] _messageloggerBannedChannels = {
@@ -58,7 +56,7 @@ namespace Dynastio.Bot.Handlers
 
             if (channel is IGuildChannel guildChannel)
             {
-                if (guildChannel.GuildId != GuildService._officialGuildId) return;
+                if (guildChannel.GuildId != Guilds.OfficialGuild) return;
 
                 var _oldMessage = await oldMessage.GetOrDownloadAsync();
 
@@ -74,7 +72,7 @@ namespace Dynastio.Bot.Handlers
 
             if (channel.HasValue && channel.Value is IGuildChannel guildChannel)
             {
-                if (guildChannel.GuildId != GuildService._officialGuildId) return;
+                if (guildChannel.GuildId != Guilds.OfficialGuild) return;
 
                 var message = await cachedMessage.GetOrDownloadAsync();
                 if (message is null || message.Source != MessageSource.User)
@@ -96,8 +94,11 @@ namespace Dynastio.Bot.Handlers
 
             var commandResult = await _commandHandler.HandleCommand(message);
 
-            if (Main.IsDebug() is false)
-                await _rankService.AddMessageXpAsync(message);
+            var xpResult = await _rankService.TryAddMessageXpAsync(message);
+            if (xpResult.levelupResult)
+            {
+                await _userService.UserRankedUpAsync(xpResult.user, xpResult.discordUser, message.Channel as ITextChannel);
+            }
         }
     }
 }

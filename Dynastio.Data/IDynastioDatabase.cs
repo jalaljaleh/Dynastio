@@ -4,21 +4,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using static Dynastio.Bot.Data.RedeemCode;
+using static Dynastio.Data.RedeemCode;
 
-namespace Dynastio.Bot.Data
+namespace Dynastio.Data
 {
-    public interface IDynastioBotDatabase
+    internal interface IDynastioDatabase
     {
         Task InitializeAsync();
-
-
-        Task<List<YoutuberVideo>> GetYoutuberVideosAsync(int skip = 0, int take = 20);
-        Task<bool> InsertAsync(YoutuberVideo video);
-        Task<bool> DeleteAsync(YoutuberVideo video);
-        Task<YoutuberVideo> GetYotuberVideoAsync(string url);
-
-
 
         Task<Guild> GetGuildAsync(ulong Id);
         Task<bool> UpdateAsync(Guild guild);
@@ -26,11 +18,10 @@ namespace Dynastio.Bot.Data
 
 
 
-        Task<User> GetUserAsync(ulong Id);
+       internal Task<User> GetUserAsync(ulong Id);
         Task<bool> InsertAsync(User Buser);
         Task<bool> UpdateAsync(User Buser);
 
-        Task<List<User>> GetHonorLeaderboardAsync(int count = 10);
         Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 15);
         Task<User> GetUserByAccountIdAsync(string Id);
         Task<User> GetUserByYoutubeChannelIdAsync(string Id);

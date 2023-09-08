@@ -15,10 +15,9 @@
 	  <PackageReference Include="Google.Apis.YouTube.v3" Version="1.57.0.2756" />
 	  <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
 	  <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
-
-       <ProjectReference Include="..\Dynastio.Bot.Data\Dynastio.Bot.Data.csproj" />
        <ProjectReference Include="..\Dynastio.Bot.Globalization\Dynastio.Bot.Globalization.csproj" />
        <ProjectReference Include="..\Dynastio.Bot.Global\Dynastio.Bot.Global.csproj" />
+       <ProjectReference Include="..\Dynastio.Data\Dynastio.Data.csproj" />
 	   	  
 	  <Content Include="Resources\**" CopyToOutputDirectory="PreserveNewest" />
  

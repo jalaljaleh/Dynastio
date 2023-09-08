@@ -8,7 +8,7 @@ using Discord;
 using Dynastio.Net;
 using Discord.WebSocket;
 using System.ComponentModel;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 using Dynastio.Bot.Interactions.AutoCompeletes;
 
 namespace Dynastio.Bot.Interactions.modules.dynastio

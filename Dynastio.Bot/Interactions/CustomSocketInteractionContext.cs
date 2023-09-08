@@ -9,20 +9,20 @@ namespace Dynastio.Bot.Interactions
     using Discord;
     using Discord.Interactions;
     using Discord.WebSocket;
-    using Dynastio.Bot.Data;
+    using Dynastio.Data;
     using Dynastio.Bot.Globalization;
     using Microsoft.Extensions.DependencyInjection;
 
     public class CustomSocketInteractionContext : SocketInteractionContext
     {
-        private readonly UserService _userService;
+        private readonly DynastioData _dynastioData;
         private readonly GuildService _guildService;
         private readonly GlobalizationService _globalizationService;
         private readonly IServiceProvider _services;
         public CustomSocketInteractionContext(DiscordSocketClient client, SocketInteraction interaction, IServiceProvider services, User user = null, Guild guild = null) : base(client, interaction)
         {
             _services = services;
-            _userService = _services.GetRequiredService<UserService>();
+            _dynastioData = _services.GetRequiredService<DynastioData>();
             _guildService = _services.GetRequiredService<GuildService>();
             _globalizationService = _services.GetRequiredService<GlobalizationService>();
 
@@ -43,7 +43,7 @@ namespace Dynastio.Bot.Interactions
             {
                 if (_user is null)
                 {
-                    _user = _userService.GetUserAsync(this.User.Id, true).Result;
+                    _user = _dynastioData.GetUserAsync(this.User.Id, true).Result;
                 }
                 return _user;
             }
@@ -54,7 +54,7 @@ namespace Dynastio.Bot.Interactions
             {
                 if (_guild is null)
                 {
-                    _guild = _guildService.GetGuildAsync(this.Guild.Id).Result;
+                    _guild = _dynastioData.GetGuildAsync(this.Guild.Id).Result;
                 }
                 return _guild;
             }

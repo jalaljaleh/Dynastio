@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Net;
 using Discord.WebSocket;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 using Dynastio.Bot.Services;
 
 using System.Net.Http.Headers;
@@ -18,8 +18,8 @@ namespace Dynastio.Bot.Interactions.modules
     [RequireGuildOfficial]
     public class Leaderboard : CustomInteractionModuleBase
     {
-        public UserService _userService { get; set; }
-        public IDynastioBotDatabase _database { get; set; }
+        public DynastioData _dynastioData { get; set; }
+        public DynastioData _database { get; set; }
 
         [RateLimit(60)]
         [SlashCommand("rank", "user rank")]

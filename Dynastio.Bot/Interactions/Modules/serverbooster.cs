@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Net;
 using Discord.WebSocket;
-using static Dynastio.Bot.Data.Guild;
-using Dynastio.Bot.Data;
+using static Dynastio.Data.Guild;
+using Dynastio.Data;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
@@ -21,9 +21,9 @@ namespace Dynastio.Bot.Interactions.modules
     [RateLimit(60, 1, RateLimit.RateLimitType.User)]
     public class ServerBoosterModule : CustomInteractionModuleBase
     {
-        public UserService _userService { get; set; }
+        public DynastioData _dynastioData { get; set; }
         public DiscordSocketClient _discord { get; set; }
-        public IDynastioBotDatabase _db { get; set; }
+        public DynastioData _db { get; set; }
 
         [RequireGuildOfficial]
         [SlashCommand("gift", "get your redeem code", false, RunMode.Sync)]
@@ -72,12 +72,12 @@ namespace Dynastio.Bot.Interactions.modules
 
             Context.BotUser.LastBoostGift = DateTime.UtcNow;
 
-            await _userService.UpdateAsync(Context.BotUser);
+            await _dynastioData.UpdateAsync(Context.BotUser);
 
             await _db.DeleteAsync(result);
 
-            await _discord.GetGuild(GuildService._officialGuildId)
-                    .GetTextChannel(RankService._scoreChannelId)
+            await _discord.GetGuild(Global.Guilds.OfficialGuild)
+                    .GetTextChannel(Channels.ChannelIds[Channels.GuildChannelType.RewardChannel])
                     .SendMessageAsync(
                     text: userMention,
                     embed: new EmbedBuilder()

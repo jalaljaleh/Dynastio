@@ -2,7 +2,7 @@
 using Discord.Rest;
 using Discord.WebSocket;
 using DnsClient.Protocol;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 using Dynastio.Bot.Managers;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,12 +25,12 @@ namespace Dynastio.Bot.Handlers
         private readonly IServiceProvider _services;
         private readonly Configuration _configuration;
         private readonly GuildService _guildService;
-        private readonly UserService _usersService;
+        private readonly DynastioData _usersService;
         private readonly RankService _rankService;
         private readonly GraphicService _graphicService;
         private readonly DynastioClient _dynastioClient;
         private readonly RepeaterService _repeaterService;
-        private readonly IDynastioBotDatabase _database;
+        private readonly DynastioData _database;
 
         public EventHandler(IServiceProvider services)
         {
@@ -39,11 +39,11 @@ namespace Dynastio.Bot.Handlers
             _configuration = _services.GetRequiredService<Configuration>();
             _guildService = _services.GetService<GuildService>();
             _rankService = _services.GetService<RankService>();
-            _usersService = _services.GetService<UserService>();
+            _usersService = _services.GetService<DynastioData>();
             _graphicService = _services.GetService<GraphicService>();
             _dynastioClient = _services.GetService<DynastioClient>();
             _repeaterService = _services.GetRequiredService<RepeaterService>();
-            _database = _services.GetRequiredService<IDynastioBotDatabase>();
+            _database = _services.GetRequiredService<DynastioData>();
 
             _client.Ready += _client_Ready;
 
@@ -52,10 +52,6 @@ namespace Dynastio.Bot.Handlers
 
         private async Task _client_Ready()
         {
-            if (Global.Main.IsDebug())
-                return;
-
-
             _repeaterService
                 .AddAction(RefreshStatusChannel, TimeSpan.FromMinutes(10));
 

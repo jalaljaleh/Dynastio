@@ -34,11 +34,13 @@ namespace Dynastio.Bot
         }
         public async Task<IResult> HandleCommand(SocketUserMessage message)
         {
-            var context = new CustomCommandContext(_discord, message);
+            if (message is null || _config is null || _config.Prefix is null) return null;
 
             var argPos = 0;
             if (!message.HasStringPrefix(_config.Prefix, ref argPos))
                 return null;
+
+            var context = new CustomCommandContext(_discord, message);
 
             return await _commandService.ExecuteAsync(context, argPos, _services);
         }

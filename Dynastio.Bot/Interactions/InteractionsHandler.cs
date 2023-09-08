@@ -28,9 +28,6 @@ namespace Dynastio.Bot
             _client.Ready += _client_Ready;
             async Task _client_Ready()
             {
-                if (Global.Main.IsDebug())
-                    await _interactions.RegisterCommandsToGuildAsync(_config.DebugServerId, true);
-                else
                     await _interactions.RegisterCommandsGloballyAsync(true);
             }
 

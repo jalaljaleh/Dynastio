@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using static Dynastio.Bot.Channels;
 using static Dynastio.Bot.GuildService;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -31,17 +32,22 @@ namespace Dynastio.Bot
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _guildService = services.GetRequiredService<GuildService>();
          
-            if (Global.Main.IsDebug())
-                return;
 
             _discord.Ready += _discord_Ready;
         }
-
+        public enum WebhookChannels
+        {
+            DeleteMessage,
+            EditedMessage,
+            Timeout,
+            Reward
+        }
         private async Task _discord_Ready()
         {
             await AddClient(WebhookChannels.DeleteMessage, GuildChannelType.DeletedMessages);
             await AddClient(WebhookChannels.EditedMessage, GuildChannelType.EditedMessages);
             await AddClient(WebhookChannels.Timeout, GuildChannelType.TimeOut);
+            await AddClient(WebhookChannels.Reward, GuildChannelType.RewardChannel);
         }
 
         private async Task AddClient(WebhookChannels webhooktype, GuildChannelType channelType)
@@ -52,6 +58,12 @@ namespace Dynastio.Bot
             _clients.Add(webhooktype, new DiscordWebhookClient(webhook));
         }
         Dictionary<WebhookChannels, DiscordWebhookClient> _clients = new();
+        public async Task<ulong> LogRewardAsync(string text = null, bool isTTS = false, IEnumerable<Embed> embeds = null, string username = null, string avatarUrl = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageComponent components = null, MessageFlags flags = MessageFlags.None, ulong? threadId = null, string threadName = null)
+        {
+            if (!_clients.TryGetValue(WebhookChannels.Reward, out DiscordWebhookClient client)) return 0;
+
+            return await client.SendMessageAsync(text, isTTS, embeds, username, avatarUrl, options, allowedMentions, components, flags, threadId, threadName);
+        }
         public async Task<ulong> LogTimeOutAsync(Embed embed, IUser moderator)
         {
             if (!_clients.TryGetValue(WebhookChannels.Timeout, out DiscordWebhookClient client)) return 0;
@@ -111,11 +123,6 @@ namespace Dynastio.Bot
                      username: newMessage.Author.Username,
                      avatarUrl: newMessage.Author.GetAvatarUrl() ?? newMessage.Author.GetDefaultAvatarUrl());
         }
-        public enum WebhookChannels
-        {
-            DeleteMessage,
-            EditedMessage,
-            Timeout
-        }
+      
     }
 }

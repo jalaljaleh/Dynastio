@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Net;
 using Discord.WebSocket;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Interactions.AutoCompeletes;
 using Dynastio.Bot.Interactions.Forms;
@@ -20,9 +20,9 @@ namespace Dynastio.Bot.Interactions.modules
     public class AccountsModule : CustomInteractionModuleBase
     {
         public GuildService _guildService { get; set; }
-        public UserService _userService { get; set; }
+        public DynastioData _dynastioData { get; set; }
         public InternetService _internetService { get; set; }
-        public IDynastioBotDatabase _database { get; set; }
+        public DynastioData _database { get; set; }
         public DynastioClient _dynastio { get; set; }
 
 
@@ -98,7 +98,7 @@ namespace Dynastio.Bot.Interactions.modules
 
             Context.BotUser.SwitchAccount(ref selectedAccount);
 
-            await _userService.UpdateAsync(Context.BotUser);
+            await _dynastioData.UpdateAsync(Context.BotUser);
 
             await FollowupAsync(userMention, embed: this["done"].ToEmbed(this["account_switched"], Color.Green));
 
@@ -143,7 +143,7 @@ namespace Dynastio.Bot.Interactions.modules
             
             selectedAccount.SetReminder(newReminder);
 
-            await _userService.UpdateAsync(Context.BotUser);
+            await _dynastioData.UpdateAsync(Context.BotUser);
 
             await FollowupAsync(userMention, embed: "Account updated.".ToEmbed());
         }
@@ -192,7 +192,7 @@ namespace Dynastio.Bot.Interactions.modules
                     return;
                 }
 
-                var targetUser = await _userService.GetUserByAccountIdAsync(id);
+                var targetUser = await _dynastioData.GetUserByAccountIdAsync(id);
                 if (targetUser != null)
                 {
                     await FollowupAsync(userMention, embed: $"This account has been added by {targetUser.Id.ToUserMention()} already.".ToEmbed(this["unauthorized", Color.Red]));
@@ -210,7 +210,7 @@ namespace Dynastio.Bot.Interactions.modules
 
                 Context.BotUser.Accounts.Add(account);
                 Context.BotUser.SwitchAccount(ref account);
-                await _userService.UpdateAsync(Context.BotUser);
+                await _dynastioData.UpdateAsync(Context.BotUser);
 
                 await FollowupAsync(userMention, embed: this["account_added"].ToEmbed(this["account_added.title"], Color.Green));
 

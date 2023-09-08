@@ -6,15 +6,15 @@ using System.Net;
 using MongoDB;
 using MongoDB.Bson;
 
-namespace Dynastio.Bot.Data
+namespace Dynastio.Data
 {
-    public class MongoDbContext : IDynastioBotDatabase
+    internal class MongoDbContext : IDynastioDatabase
     {
         private IMongoDatabase _dynastio;
         private IMongoCollection<User> _users => _dynastio.GetCollection<User>("Users");
         private IMongoCollection<Guild> _guilds => _dynastio.GetCollection<Guild>("Guilds");
         private IMongoCollection<RedeemCode> _redeemCodes => _dynastio.GetCollection<RedeemCode>("RedeemCodes");
-        private IMongoCollection<YoutuberVideo> _youtuber_videos => _dynastio.GetCollection<YoutuberVideo>("youtuber_videos");
+
 
         private MongoClient _db { get; set; }
         public MongoDbContext(string mongoConnection)
@@ -47,32 +47,7 @@ namespace Dynastio.Bot.Data
         }
 
 
-        public async Task<List<YoutuberVideo>> GetYoutuberVideosAsync(int skip = 0, int take = 20)
-        {
-            var result = this._youtuber_videos.AsQueryable()
-                .Skip(skip)
-                .Take(take)
-                        .ToList();
-            return await Task.FromResult(result);
-        }
-        public async Task<bool> InsertAsync(YoutuberVideo video)
-        {
-            _youtuber_videos.InsertOne(video);
-            return await Task.FromResult(true);
-        }
-        public async Task<bool> DeleteAsync(YoutuberVideo video)
-        {
-            _youtuber_videos.DeleteOne(a => a.videoId == video.videoId);
-            return await Task.FromResult(true);
-        }
-        public async Task<YoutuberVideo> GetYotuberVideoAsync(string url)
-        {
-            var result = _youtuber_videos.AsQueryable()
-                  .Where(a => a.videoId == url)
-                  .FirstOrDefault();
-            return await Task.FromResult(result);
-        }
-
+        
         public async Task<Guild> GetGuildAsync(ulong Id)
         {
             var result = _guilds.AsQueryable()
@@ -127,17 +102,7 @@ namespace Dynastio.Bot.Data
             var result = _users.Find(filter).FirstOrDefault();
             return await Task.FromResult(result);
         }
-        public async Task<List<User>> GetHonorLeaderboardAsync(int count = 10)
-        {
-            var filter = Builders<User>.Filter.Empty;
-            var sort = Builders<User>.Sort.Descending(a => a.Honor);
-            var result = await _users.FindAsync(filter, new FindOptions<User, User>()
-            {
-                Sort = sort,
-                Limit = count,
-            });
-            return result.ToList();
-        }
+     
         public async Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 15)
         {
             var filter = Builders<User>.Filter.Empty;

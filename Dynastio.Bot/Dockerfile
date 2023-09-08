@@ -6,7 +6,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["Dynastio.Bot/Dynastio.Bot.csproj", "Dynastio.Bot/"]
-COPY ["Dynastio.Bot.Data/Dynastio.Bot.Data.csproj", "Dynastio.Bot.Data/"]
+COPY ["Dynastio.Data/Dynastio.Data.csproj", "Dynastio.Data/"]
 COPY ["Dynastio.Bot.Global/Dynastio.Bot.Global.csproj", "Dynastio.Bot.Global/"]
 COPY ["Dynastio.Bot.Globalization/Dynastio.Bot.Globalization.csproj", "Dynastio.Bot.Globalization/"]
 COPY ["Dynastio.Bot.Test/Dynastio.Bot.Test.csproj", "Dynastio.Bot.Test/"]

@@ -2,7 +2,7 @@
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 using Dynastio.Bot.Globalization;
 using Dynastio.Bot.Handlers;
 using Dynastio.Bot.Managers;
@@ -35,26 +35,23 @@ namespace Dynastio.Bot
         {
             Global.Main.Log("Main Async", "Started");
 
-           var configuration = Configuration.LoadConfiguration(false);
-          //  var configuration = Configuration.LoadReleaseConfiguration();
-            //Configuration.UpdateConfiguration(configuration);
+            //var configuration = Configuration.LoadConfiguration(false);
+            var configuration = Configuration.LoadReleaseConfiguration();
+            Configuration.UpdateConfiguration(configuration);
 
-            var _db = new DynastioBotDatabase();
-            var db = await _db.GetInstanseAsync(configuration.DatabaseConnectionString, DynastioBotDatabase.DatabasesInstances.Mongodb);
 
             var services = new ServiceCollection()
                .AddSingleton(configuration)
-               .AddSingleton<DynastioBotDatabase>(_db)
-               .AddSingleton<IDynastioBotDatabase>(db)
+               .AddSingleton<DynastioData>(x => new DynastioData())
                .AddSingleton<DiscordSocketClient>(x => new DiscordSocketClient(new()
-               {
-                   GatewayIntents = GatewayIntents.All,
-                   AlwaysDownloadUsers = true,
+                {
+                    GatewayIntents = GatewayIntents.All,
+                    AlwaysDownloadUsers = true,
 
-                   MessageCacheSize = 1024,
-                   AlwaysDownloadDefaultStickers = false,
-                   DefaultRetryMode = RetryMode.AlwaysRetry,
-               }))
+                    MessageCacheSize = 1024,
+                    AlwaysDownloadDefaultStickers = false,
+                    DefaultRetryMode = RetryMode.AlwaysRetry,
+                }))
 
                .AddSingleton<InteractionService>(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                .AddSingleton<Handlers.EventHandler>()
@@ -94,10 +91,16 @@ namespace Dynastio.Bot
                 return Task.CompletedTask;
             };
 
+            var configuration = _services.GetService<Configuration>();
+
+            await _services.GetService<DynastioData>()
+                .InitializeAsync(configuration.DatabaseConnectionString, DynastioData.DatabasesInstances.Mongodb);
+
             _services.GetRequiredService<GlobalizationService>()
                 .LoadDirectory(FileManager.ToResourcePath("globalization"));
 
             _services.GetRequiredService<YoutubeService>();
+            _services.GetRequiredService<UserService>();
 
             _services.GetRequiredService<FeaturedVideosService>();
             _services.GetRequiredService<RepeaterService>();

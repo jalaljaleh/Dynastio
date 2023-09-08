@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Data
+namespace Dynastio.Data
 {
     internal static class StringExtentions
     {

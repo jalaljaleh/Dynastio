@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 using Dynastio.Net;
 
 namespace Dynastio.Bot.Interactions.modules.dynastio
@@ -12,13 +12,14 @@ namespace Dynastio.Bot.Interactions.modules.dynastio
     public class leaderboardModule : CustomInteractionModuleBase
     {
         public DynastioClient _dynastio { get; set; }
+        public DynastioData _dynastioData { get; set; }
         public UserService _userService { get; set; }
 
         [SlashCommand("rank", "user rank")]
         public async Task rank()
         {
             await DeferAsync();
-            var leaderboard = await _userService.GetActivityScoreLeaderboardAsync(10);
+            var leaderboard = await _dynastioData.GetActivityScoreLeaderboardAsync(10);
 
             string names = string.Join("\n.\n", leaderboard.Select(x => leaderboard.IndexOf(x) + 1 + $". <@{x.Id}>"));
             string levels = string.Join("", leaderboard.Select(x => x.activiy_level.ToString().ToMarkdown()));
@@ -88,7 +89,7 @@ namespace Dynastio.Bot.Interactions.modules.dynastio
         //{
         //    await DeferAsync();
 
-        //    var top10Honor = await UserService.Get10TopHonor();
+        //    var top10Honor = await DynastioData.Get10TopHonor();
         //    string content = top10Honor.ToStringTable(new[] { "#", this["index"], this["honor"], this["nickname"] },
         //        a => top10Honor.IndexOf(a) < 5 ? "🏆" : "",
         //        a => $"{(top10Honor.IndexOf(a) + 1).ToRegularCounter()}",

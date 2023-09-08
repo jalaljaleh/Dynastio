@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 
 namespace Dynastio.Bot.Interactions.AutoCompeletes
 {
     public class AutoCompeleteAccounts : AutocompleteHandler
     {
-        public UserService UserService { get; set; }
+        public DynastioData DynastioData { get; set; }
         public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
         {
             string match = autocompleteInteraction.Data.Current.Value.ToString();
@@ -21,7 +21,7 @@ namespace Dynastio.Bot.Interactions.AutoCompeletes
 
             User user = user_ is null || string.IsNullOrEmpty((string)user_.Value)
                 ? (context as CustomSocketInteractionContext).BotUser
-                : await UserService.GetUserAsync(ulong.Parse((string)user_.Value));
+                : await DynastioData.GetUserAsync(ulong.Parse((string)user_.Value));
 
             var accounts = string.IsNullOrEmpty(match)
                 ?

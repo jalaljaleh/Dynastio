@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Bot.Global;
 using Dynastio.Net;
+using Dynastio.Data;
 
 namespace Dynastio.Bot.Interactions.modules.moderators
 {
@@ -17,14 +18,14 @@ namespace Dynastio.Bot.Interactions.modules.moderators
     [Group("warn", "warn commands")]
     public class warnModule : CustomInteractionModuleBase
     {
-        public UserService _userService { get; set; }
+        public DynastioData _dynastioData { get; set; }
 
         [SlashCommand("add", "warn to a user")]
         public async Task add(IGuildUser user, [MaxLength(40)] string reason = "no reason provided")
         {
             await DeferAsync();
 
-            var targetUser = await _userService.GetUserAsync(user.Id);
+            var targetUser = await _dynastioData.GetUserAsync(user.Id);
 
             targetUser.Warns.Add(new Data.UserWarn()
             {
@@ -33,7 +34,7 @@ namespace Dynastio.Bot.Interactions.modules.moderators
                 SourceId = Context.User.Id
             });
 
-            await _userService.UpdateAsync(targetUser);
+            await _dynastioData.UpdateAsync(targetUser);
 
             var embed = new EmbedBuilder()
             {
@@ -72,7 +73,7 @@ namespace Dynastio.Bot.Interactions.modules.moderators
         {
             await DeferAsync();
 
-            var targetUser = await _userService.GetUserAsync(user.Id, false);
+            var targetUser = await _dynastioData.GetUserAsync(user.Id, false);
 
             var content = targetUser.Warns.Skip(page * 10).ToStringTable(new string[] {"#", "Created At", "Moderator", "Reason" },
                  a => targetUser.Warns.IndexOf(a) + ". ",
@@ -92,12 +93,12 @@ namespace Dynastio.Bot.Interactions.modules.moderators
         {
             await DeferAsync();
 
-            var targetUser = await _userService.GetUserAsync(user.Id, false);
+            var targetUser = await _dynastioData.GetUserAsync(user.Id, false);
             try
             {
                 targetUser.Warns.RemoveRange(0, count);
 
-                await _userService.UpdateAsync(targetUser);
+                await _dynastioData.UpdateAsync(targetUser);
             }
             catch
             {

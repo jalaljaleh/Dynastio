@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 
 namespace Dynastio.Bot.Interactions.AutoCompeletes
 {

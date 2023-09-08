@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 using Dynastio.Bot.Managers;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;

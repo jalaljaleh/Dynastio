@@ -6,155 +6,104 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
-using Dynastio.Bot.Data;
+using Dynastio.Data;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Discord.WebSocket;
+using Discord;
 
 namespace Dynastio.Bot
 {
     public class UserService
     {
-        private readonly ConcurrentBag<User> _users;
         private readonly DynastioClient _dynastioClient;
         private readonly GuildService _guildService;
-        private readonly IDynastioBotDatabase _db;
+        private readonly DiscordSocketClient _discord;
+        private readonly DynastioData _dynastioData;
         private readonly IServiceProvider _services;
         public UserService(IServiceProvider services)
         {
             Global.Main.Log("User Service", "Start Async");
 
             this._dynastioClient = services.GetRequiredService<DynastioClient>();
-            this._db = services.GetRequiredService<IDynastioBotDatabase>();
+            this._dynastioData = services.GetRequiredService<DynastioData>();
             this._services = services;
             this._guildService = services.GetRequiredService<GuildService>();
-            this._users = new();
-        }
+            this._discord = services.GetRequiredService<DiscordSocketClient>();
 
-        public void ClearCache()
-        {
-            _users.Clear();
+            this._discord.UserJoined += _discord_UserJoined;
         }
-        public async Task<bool> UpdateAsync(User user)
+        private async Task _discord_UserJoined(SocketGuildUser discordUser)
         {
-            user.last_update = DateTime.UtcNow;
-            return await _db.UpdateAsync(user);
-        }
-        private bool _isActivityLeaderboardCached = false;
-        public async Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 15)
-        {
-            if (_isActivityLeaderboardCached)
-                return this._users
-                    .OrderByDescending(a => a.activiy_level)
-                    .ThenByDescending(a => a.activiy_score)
-                    .Take(count)
-                    .ToList();
-
-            var users = await this._db.GetActivityScoreLeaderboardAsync(count);
-            foreach (var user in users)
+            var botUser = await _dynastioData.GetUserAsync(discordUser.Id, false);
+            if (botUser is not null)
             {
-                if (IsCached(user.Id) is false)
-                    Cache(user);
+                var newRoles = await SyncRankedRoles(botUser.activiy_level, botUser.Id, discordUser);
             }
-            _isActivityLeaderboardCached = true;
-
-            return users;
         }
-
-        private bool _isHonorLeaderboardCached = false;
-        public async Task<List<User>> Get10TopHonor()
+        public async Task<IUserMessage> SendMessageAsync(ulong userId, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageComponent components = null, Embed[] embeds = null)
         {
-            if (_isHonorLeaderboardCached)
-                return this._users.OrderByDescending(a => a.Honor).Take(10).ToList();
-
-            var users = await this._db.GetHonorLeaderboardAsync(10);
-            foreach (var user in users)
-            {
-                if (IsCached(user.Id) is false)
-                    Cache(user);
-            }
-            _isHonorLeaderboardCached = true;
-            return users;
+            var user = await GetUserAsync(userId);
+            return await user.SendMessageAsync(text, isTTS, embed, options, allowedMentions, components, embeds);
         }
-        public async Task<User> GetUserAsync(ulong Id, bool New = true)
+        public async Task<IUser> GetUserAsync(ulong id)
         {
-            User user = _users.FirstOrDefault(x => x.Id == Id);
-            if (user is null)
-            {
-                user = await _db.GetUserAsync(Id);
-
-                if (user is null && New is true)
-                {
-                    user = await GetNewUserAsync(Id);
-
-                    await _guildService.SyncUserBadges(user);
-
-                    await _db.InsertAsync(user);
-                }
-                if (user != null)
-                {
-                    Cache(user);
-                    
-                    if ((DateTime.UtcNow - user.last_badges_sync).TotalDays > 3)
-                        await _guildService.SyncUserBadges(user);
-                }
-            }
-            return user;
+            return await _discord.GetUserAsync(id);
         }
-        async Task<User> GetNewUserAsync(ulong id)
+        public async Task<IGuildUser> GetGuildUserAsync(ulong id)
         {
-            var user = new User()
-            {
-                Id = id,
-                Accounts = new(),
-                Honor = 0,
-                LastHonorGift = DateTime.MinValue,
-                activiy_score = 0,
-                activiy_level = 0,
-                LastBoostGift = DateTime.MinValue,
-                game_accountId = 0,
-            };
+            return await Task.FromResult(_discord.Guilds.FirstOrDefault().GetUser(id));
+        }
+        public async Task UserRankedUpAsync(User user, IGuildUser discordUser, ITextChannel channel)
+        {
+            var newRoles = await SyncRankedRoles(user.activiy_level, user.Id, discordUser);
+            if (newRoles is null || newRoles.Count == 0)
+                return;
 
-            Profile profile;
-            try { profile = await _dynastioClient.GetUserProfileAsync("discord:" + id); }
-            catch
+            var latestDiscordRole = discordUser.Guild.Roles.FirstOrDefault(a => a.Id == newRoles.LastOrDefault());
+
+            await channel.SendMessageAsync(user.Id.ToUserMention(),
+                   embed: new EmbedBuilder()
+                   {
+                       Title = " You just got new rank 🎉",
+                       Description = $"🎉 You just got new rank **{user.activiy_level}** exp: **{user.activiy_score}**",
+                       Color = latestDiscordRole?.Color ?? Color.Orange,
+                       Fields = new List<EmbedFieldBuilder>()
+                                {
+                                         new EmbedFieldBuilder()
+                                         .WithName("Unlocked Roles")
+                                         .WithValue(string.Join(", ", newRoles.Select(a=> $"<@&{a}>")))
+                                         .WithIsInline(true)
+                                },
+                       ThumbnailUrl = latestDiscordRole.GetIconUrl() ?? ""
+                   }.Build());
+        }
+        public async Task<List<ulong>> SyncRankedRoles(int currentLevel, ulong userId, IGuildUser discordUser = null)
+        {
+            if (discordUser is null)
             {
-                profile = null;
+                discordUser = await GetGuildUserAsync(userId);
+
+                if (discordUser is null)
+                    return null;
             }
 
-            if (profile is not null)
-            {
-                var account = new UserAccount()
-                {
-                    Id = "discord:" + id,
-                    AddedAt = DateTime.UtcNow,
-                    PinCode = "none",
-                    IsDefault = true,
-                }.SetReminder("discord");
-                user.Accounts.Add(account);
-            }
+            var roles = discordUser.Guild.Roles
+                .Where(x => x.Name.StartsWith("rank: "))
+                .OrderBy(a => a.Position)
+                .Select(a => a.Id)
+                .ToList();
 
-            return user;
+            var reached = discordUser.RoleIds.Where(a => roles.Contains(a));
+            var toAdd = roles.GetRange(0, currentLevel);
+            toAdd.RemoveRange(0, reached.Count());
+
+            await discordUser.AddRolesAsync(toAdd);
+            return toAdd;
         }
 
-        public async Task<User> GetUserByAccountIdAsync(string accountId)
-        {
-            User user = _users.FirstOrDefault(x => x.GetAccount(accountId) != null);
-            if (user is null)
-            {
-                user = await _db.GetUserByAccountIdAsync(accountId);
-                if (user != null)
-                    Cache(user);
-            }
-            return user;
-        }
-        public void Cache(User user)
-        {
-            _users.Add(user);
-        }
-        public bool IsCached(ulong Id)
-        {
-            return this._users.FirstOrDefault(x => x.Id == Id) != null;
-        }
+
 
     }
 }

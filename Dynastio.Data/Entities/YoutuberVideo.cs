@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
 
-namespace Dynastio.Bot.Data
+namespace Dynastio.Data
 {
     [BsonIgnoreExtraElements]
     public class YoutuberVideo
@@ -14,9 +14,6 @@ namespace Dynastio.Bot.Data
         public string videoId { get; set; }
         public ulong user { get; set; }
         public DateTime createdAt { get; set; }
-        public string GetUrl()
-        {
-            return "https://www.youtube.com/watch?v=" + videoId;
-        }
+        
     }
 }
