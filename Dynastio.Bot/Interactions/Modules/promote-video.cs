@@ -43,7 +43,7 @@ namespace Dynastio.Bot.Interactions.Modules
             await (Context.Interaction as SocketMessageComponent).Message.DeleteAsync();
         }
         [SlashCommand("promote-video", "promote your dynastio video !", false, RunMode.Sync)]
-        public async Task promote([Autocomplete(typeof(AutoCompeleteYoutuberVideos))] string videoId)
+        public async Task promote([Autocomplete(typeof(AutoCompeleteYoutuberVideos))] string Video)
         {
             await DeferAsync();
 
@@ -59,8 +59,8 @@ namespace Dynastio.Bot.Interactions.Modules
                 return;
             }
 
-            var videos = await _youtubeService.GetVideoAsync(videoId);
-            if (videos is null || videos.Items.Any(a => a.Id == videoId) is false)
+            var videos = await _youtubeService.GetVideoAsync(Video);
+            if (videos is null || videos.Items.Any(a => a.Id == Video) is false)
             {
                 await FollowupAsync(embed:
                            ($"## Video not found\n" +
@@ -69,7 +69,7 @@ namespace Dynastio.Bot.Interactions.Modules
                 return;
             }
 
-            var video = videos.Items.FirstOrDefault(a => a.Id == videoId);
+            var video = videos.Items.FirstOrDefault(a => a.Id == Video);
 
             if (video.Snippet.ChannelId != BotUser.youtube_channel)
             {
@@ -80,7 +80,7 @@ namespace Dynastio.Bot.Interactions.Modules
                 return;
             }
 
-            string videoUrl = YoutubeService.GetUrlFromVideoId(videoId);
+            string videoUrl = YoutubeService.GetUrlFromVideoId(Video);
             var confirmChannel = Context.Guild.GetTextChannel(_guildService.GetChannelId(Channels.GuildChannelType.ConfirmPromoteVideos));
 
             var result = await confirmChannel.SendMessageAsync(
@@ -92,8 +92,8 @@ namespace Dynastio.Bot.Interactions.Modules
                 $"",
 
                 components: new ComponentBuilder()
-            .WithButton("Promoted", $"btn.promote-video:promoted:{Context.User.Id}:{videoId}", ButtonStyle.Success)
-            .WithButton("Not Promoted", $"btn.promote-video:not-promoted:{Context.User.Id}:{videoId}", ButtonStyle.Danger)
+            .WithButton("Promoted", $"btn.promote-video:promoted:{Context.User.Id}:{Video}", ButtonStyle.Success)
+            .WithButton("Not Promoted", $"btn.promote-video:not-promoted:{Context.User.Id}:{Video}", ButtonStyle.Danger)
             .WithButton("Promote 3 days", $"*3*", ButtonStyle.Primary, disabled: true, row: 1)
             .WithButton("Promote 5 days", $"*4*", ButtonStyle.Primary, disabled: true, row: 1)
             .WithButton("Custom Duration", $"*c*", ButtonStyle.Success, disabled: true, row: 1)
