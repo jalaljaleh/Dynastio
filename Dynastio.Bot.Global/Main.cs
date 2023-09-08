@@ -2,7 +2,7 @@
 {
     public class Main
     {
-        public const string version = "0.1.1.4-beta";
+        public const string version = "0.1.1.5-beta";
 
         public static DateTime StartUp { get; private set; } = DateTime.UtcNow;
 

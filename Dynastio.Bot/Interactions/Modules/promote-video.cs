@@ -35,8 +35,8 @@ namespace Dynastio.Bot.Interactions.Modules
         public async Task promotevideo(string action, ulong requester, string videoid)
         {
             await _userService.SendMessageAsync(requester,
-                $"# Promote Video" +
-                $"Your request to promote your youtube video**{(action == "promoted" ? "" : " not ")}confirmed** to be promoted.\n" +
+                $"# Promote Video\n" +
+                $"- Your request to promote your youtube video**{(action == "promoted" ? " " : " not ")}confirmed** to be promoted.\n" +
                 $"{YoutubeService.GetUrlFromVideoId(videoid)}")
                 .TryAsync();
 
@@ -83,11 +83,11 @@ namespace Dynastio.Bot.Interactions.Modules
             string videoUrl = YoutubeService.GetUrlFromVideoId(videoId);
             var confirmChannel = Context.Guild.GetTextChannel(_guildService.GetChannelId(Channels.GuildChannelType.ConfirmPromoteVideos));
 
-            var result = await confirmChannel.SendMessageAsync(videoUrl,
+            var result = await confirmChannel.SendMessageAsync($"\n{videoUrl}\n",
                 embed: new EmbedBuilder()
                 {
                     Description =
-                    $"# {video.Snippet.Title}\n{video.Snippet.Description}\n" +
+                    $"# {video.Snippet.Title.TryRemove(40)}\n{video.Snippet.Description.TryRemove(3200)}\n" +
                     $"{videoUrl.ToMarkdown()}",
                 }
                 .AddField("Requester", userMention, true)
