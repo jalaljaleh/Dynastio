@@ -87,15 +87,15 @@ namespace Dynastio.Bot.Interactions.Modules
                 embed: new EmbedBuilder()
                 {
                     Description =
-                    $"# {video.Snippet.Title.TryRemove(40)}\n{video.Snippet.Description.TryRemove(3200)}\n" +
+                    $"# {video.Snippet?.Title.TryRemove(40) ?? "Title not found"}\n{video.Snippet?.Description.TryRemove(3200) ?? "No Description"}\n" +
                     $"{videoUrl.ToMarkdown()}",
                 }
                 .AddField("Requester", userMention, true)
-                .AddField("Published At", video.Snippet.PublishedAt.Value.ToDiscordUnixTimestampFormat(), true)
-                .AddField("Channel Title", video.Snippet.ChannelTitle, true)
-                .AddField("Channel Id", video.Snippet.ChannelId, true)
+                .AddField("Published At", video.Snippet.PublishedAt.HasValue ? video.Snippet.PublishedAt.Value.ToDiscordUnixTimestampFormat() : "Unknown", true)
+                .AddField("Channel Title", video.Snippet?.ChannelTitle ?? "Unknown", true)
+                .AddField("Channel Id", video.Snippet?.ChannelId ?? BotUser.youtube_channel, true)
                 .AddField("Video Id", videoId, true)
-                .AddField("Default Language", video.Snippet.DefaultLanguage, true)
+                .AddField("Default Language", video.Snippet?.DefaultLanguage ?? "Unkonwn", true)
                 .Build(),
 
                 components: new ComponentBuilder()
@@ -117,7 +117,7 @@ namespace Dynastio.Bot.Interactions.Modules
                        ($"## Request Sent Succesfuly !\n" +
                        $"- Your video verified and sent to developers, we will inform you the result !")
                        .ToEmbed("", thumbnailUrl: video?.Snippet?.Thumbnails?.Default__?.Url ?? "", color: Color.Green),
-                      
+
                         result.result.Embeds.FirstOrDefault()
                     });
             }
