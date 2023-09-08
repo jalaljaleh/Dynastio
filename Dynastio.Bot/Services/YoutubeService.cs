@@ -37,8 +37,8 @@ namespace Dynastio.Bot
 
             string nextpagetoken = " ";
 
-            while (nextpagetoken != null)
-            {
+            //while (nextpagetoken != null)
+            //{
                 var searchListRequest = youtube.Search.List("snippet");
                 searchListRequest.MaxResults = 50;
                 searchListRequest.ChannelId = channelId;
@@ -54,7 +54,7 @@ namespace Dynastio.Bot
 
                 nextpagetoken = searchListResponse.NextPageToken;
 
-            }
+            //}
             return Task.FromResult(res);
         }
         public Task<List<SearchResult>> SearchVideoByKeyword(string keyword)

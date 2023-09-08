@@ -124,6 +124,7 @@ namespace Dynastio.Bot.Interactions.Modules
         public class AutoCompeleteYoutuberVideos : AutocompleteHandler
         {
             public YoutubeService youtubeService { get; set; }
+            static Dictionary<string, List<SearchResult>> _cached = new();
             public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
             {
                 string match = autocompleteInteraction.Data.Current.Value.ToString().ToLower();
@@ -133,15 +134,20 @@ namespace Dynastio.Bot.Interactions.Modules
                 if (string.IsNullOrEmpty(user.youtube_channel))
                     return await Task.FromResult(AutocompletionResult.FromError(InteractionCommandError.UnmetPrecondition, "Youtube channel not found."));
 
-                var videos = await youtubeService.GetAllChannelVideos(user.youtube_channel);
-                videos = videos
-                    .Where(
-                    a =>  a.Snippet.Title .ToLower() .Contains(match))
-                    .Take(25).ToList();
+                if (_cached[user.youtube_channel] is null)
+                {
+                    var videos = await youtubeService.GetAllChannelVideos(user.youtube_channel);
 
+                    videos = videos
+                        .Where(
+                        a => a.Snippet.Title.ToLower().Contains(match))
+                        .Take(25).ToList();
+
+                    _cached[user.youtube_channel] = videos;
+                }
                 var result = new List<AutocompleteResult>();
 
-                foreach (var v in videos)
+                foreach (var v in _cached[user.youtube_channel])
                 {
                     result.Add(new AutocompleteResult()
                     {
