@@ -84,10 +84,9 @@ namespace Dynastio.Bot.Interactions.Modules
             var confirmChannel = Context.Guild.GetTextChannel(_guildService.GetChannelId(Channels.GuildChannelType.ConfirmPromoteVideos));
 
             var result = await confirmChannel.SendMessageAsync(
-                $"✦•··························• Dynast.io •··························•✦\r\n" +
-                $"# {video.Snippet?.Title.TryRemove(40) ?? "No Title"}\n" +
+                $"## ✦•··························• Dynast.io •··························•✦\r\n" +
+                $"- Published: " + (video.Snippet.PublishedAt.HasValue ? video.Snippet.PublishedAt.Value.ToDiscordUnixTimestampFormat() : "Unknown") + "\n" +
                 $"- User: {userMention}\n" +
-                $"- Published:" + (video.Snippet.PublishedAt.HasValue ? video.Snippet.PublishedAt.Value.ToDiscordUnixTimestampFormat() : "Unknown") + "\n" +
                 $"- Url: {videoUrl}\n" +
                 $"{videoUrl.ToMarkdown()}\n" +
                 $"",
@@ -98,7 +97,6 @@ namespace Dynastio.Bot.Interactions.Modules
             .WithButton("Promote 3 days", $"*3*", ButtonStyle.Primary, disabled: true, row: 1)
             .WithButton("Promote 5 days", $"*4*", ButtonStyle.Primary, disabled: true, row: 1)
             .WithButton("Custom Duration", $"*c*", ButtonStyle.Success, disabled: true, row: 1)
-            .WithButton("Open in Browser", null, ButtonStyle.Link, null, videoUrl, row: 2)
               .Build())
                 .TryAsync();
 
@@ -128,7 +126,7 @@ namespace Dynastio.Bot.Interactions.Modules
             public YoutubeService youtubeService { get; set; }
             public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
             {
-                string match = autocompleteInteraction.Data.Current.Value.ToString();
+                string match = autocompleteInteraction.Data.Current.Value.ToString().ToLower();
 
                 var user = (context as CustomSocketInteractionContext).BotUser;
 
@@ -136,10 +134,14 @@ namespace Dynastio.Bot.Interactions.Modules
                     return await Task.FromResult(AutocompletionResult.FromError(InteractionCommandError.UnmetPrecondition, "Youtube channel not found."));
 
                 var videos = await youtubeService.GetAllChannelVideos(user.youtube_channel);
+                videos = videos
+                    .Where(
+                    a =>  a.Snippet.Title .ToLower() .Contains(match))
+                    .Take(25).ToList();
 
                 var result = new List<AutocompleteResult>();
 
-                foreach (var v in videos.Where(a => a.Snippet.Title.Contains(match)).Take(25))
+                foreach (var v in videos)
                 {
                     result.Add(new AutocompleteResult()
                     {

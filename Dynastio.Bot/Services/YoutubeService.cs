@@ -44,7 +44,7 @@ namespace Dynastio.Bot
                 searchListRequest.ChannelId = channelId;
                 searchListRequest.PageToken = nextpagetoken;
                 searchListRequest.Type = "video";
-
+                searchListRequest.Order = SearchResource.ListRequest.OrderEnum.Date;
                 // Call the search.list method to retrieve results matching the specified query term.
                 var searchListResponse = searchListRequest.Execute();
 
