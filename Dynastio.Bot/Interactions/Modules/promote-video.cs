@@ -85,9 +85,9 @@ namespace Dynastio.Bot.Interactions.Modules
 
             var result = await confirmChannel.SendMessageAsync(
                 $"✦•··························• Dynast.io •··························•✦\r\n" +
-                $"# {video.Snippet?.Title.TryRemove(40) ?? "Title not found"} + {(video.Snippet.PublishedAt.HasValue ? video.Snippet.PublishedAt.Value.ToDiscordUnixTimestampFormat() : "Unknown")}\n" +
-                $"- Description: {video.Snippet?.Description.TryRemove(3000).ToMarkdown() ?? "No Description"}\n" +
-                $"- Requester: {userMention}\n" +
+                $"# {video.Snippet?.Title.TryRemove(40) ?? "No Title"}\n" +
+                $"- User: {userMention}\n" +
+                $"- Published:" + (video.Snippet.PublishedAt.HasValue ? video.Snippet.PublishedAt.Value.ToDiscordUnixTimestampFormat() : "Unknown") + "\n" +
                 $"- Url: {videoUrl}\n" +
                 $"{videoUrl.ToMarkdown()}\n" +
                 $"",
@@ -111,8 +111,6 @@ namespace Dynastio.Bot.Interactions.Modules
                        ($"## Request Sent Succesfuly !\n" +
                        $"- Your video verified and sent to developers, we will inform you the result !")
                        .ToEmbed("", thumbnailUrl: video?.Snippet?.Thumbnails?.Default__?.Url ?? "", color: Color.Green),
-
-                       new EmbedBuilder(){Description= result.result.Content}.Build()
                     });
             }
             else
@@ -131,14 +129,22 @@ namespace Dynastio.Bot.Interactions.Modules
             public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
             {
                 string match = autocompleteInteraction.Data.Current.Value.ToString();
-                var videos = await youtubeService.GetAllChannelVideos((context as CustomSocketInteractionContext).BotUser.youtube_channel);
+
+                var user = (context as CustomSocketInteractionContext).BotUser;
+
+                if (string.IsNullOrEmpty(user.youtube_channel))
+                    return await Task.FromResult(AutocompletionResult.FromError(InteractionCommandError.UnmetPrecondition, "Youtube channel not found."));
+
+                var videos = await youtubeService.GetAllChannelVideos(user.youtube_channel);
+
                 var result = new List<AutocompleteResult>();
+
                 foreach (var v in videos.Where(a => a.Snippet.Title.Contains(match)).Take(25))
                 {
                     result.Add(new AutocompleteResult()
                     {
                         Name = v.Snippet.Title.TryRemove(80),
-                        Value = v.Id
+                        Value = v.Id.VideoId
                     });
                 }
                 return await Task.FromResult(AutocompletionResult.FromSuccess(result.Take(25)));

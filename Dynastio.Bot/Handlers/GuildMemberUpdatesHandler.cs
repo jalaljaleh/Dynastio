@@ -16,13 +16,13 @@ using Dynastio.Bot.Global;
 
 namespace Dynastio.Bot.Handlers
 {
-    internal class GuildMemberUpdatesHandler
+    internal class MemberUpdateshandler
     {
         private readonly DiscordSocketClient _client;
         private readonly IServiceProvider _services;
 
 
-        public GuildMemberUpdatesHandler(IServiceProvider services)
+        public MemberUpdateshandler(IServiceProvider services)
         {
             _services = services;
             _client = _services.GetRequiredService<DiscordSocketClient>();

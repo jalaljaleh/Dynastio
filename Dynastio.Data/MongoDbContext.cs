@@ -26,7 +26,7 @@ namespace Dynastio.Data
 
             _db = new MongoClient(settings);
 
-            _dynastio = _db.GetDatabase(Main.IsDebug() ? "Dynastio_Debug" : "Dynastio");
+            _dynastio = _db.GetDatabase("Dynastio");
 
             Main.Log("Mongodb", "Initialized");
         }

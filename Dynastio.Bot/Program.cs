@@ -59,7 +59,7 @@ namespace Dynastio.Bot
                .AddSingleton<InteractionsHandler>()
                .AddSingleton<CommandsHandler>()
                .AddSingleton<MessageHandler>()
-               .AddSingleton<MemberUpdatesHandler>()
+               .AddSingleton<GuildMemberUpdatesHandler>()
 
                .AddSingleton<RepeaterService>()
 
@@ -108,7 +108,7 @@ namespace Dynastio.Bot
 
             _services.GetRequiredService<Handlers.EventHandler>();
             _services.GetRequiredService<MessageHandler>();
-            _services.GetRequiredService<MemberUpdatesHandler>();
+            _services.GetRequiredService<GuildMemberUpdatesHandler>();
 
             _services.GetRequiredService<WebhookService>();
 
