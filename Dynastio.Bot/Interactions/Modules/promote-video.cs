@@ -84,17 +84,13 @@ namespace Dynastio.Bot.Interactions.Modules
             var confirmChannel = Context.Guild.GetTextChannel(_guildService.GetChannelId(Channels.GuildChannelType.ConfirmPromoteVideos));
 
             var result = await confirmChannel.SendMessageAsync(
-                $"" +
-                $"# {video.Snippet?.Title.TryRemove(40) ?? "Title not found"}\n" +
-                $" {video.Snippet?.Description.TryRemove(3000) ?? "No Description"}\n" +
+                $"✦•··························• Dynast.io •··························•✦\r\n" +
+                $"# {video.Snippet?.Title.TryRemove(40) ?? "Title not found"} + {(video.Snippet.PublishedAt.HasValue ? video.Snippet.PublishedAt.Value.ToDiscordUnixTimestampFormat() : "Unknown")}\n" +
+                $"- Description: {video.Snippet?.Description.TryRemove(3000).ToMarkdown() ?? "No Description"}\n" +
                 $"- Requester: {userMention}\n" +
-                $"- Published At: {(video.Snippet.PublishedAt.HasValue ? video.Snippet.PublishedAt.Value.ToDiscordUnixTimestampFormat() : "Unknown")}\n" +
-                $"- Channel Title: {video.Snippet?.ChannelTitle ?? "Unknown"}\n" +
-                $"- Channel Id: {video.Snippet?.ChannelId ?? BotUser.youtube_channel}\n" +
-                $"- Video Id: {videoId}\n" +
-                $"- Default Language {video.Snippet?.DefaultLanguage ?? "Unkonwn"}\n" +
                 $"- Url: {videoUrl}\n" +
-                $"{videoUrl.ToMarkdown()}",
+                $"{videoUrl.ToMarkdown()}\n" +
+                $"",
 
                 components: new ComponentBuilder()
             .WithButton("Promoted", $"btn.promote-video:promoted:{Context.User.Id}:{videoId}", ButtonStyle.Success)
