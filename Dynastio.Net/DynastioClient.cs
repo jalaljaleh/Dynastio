@@ -222,7 +222,7 @@ namespace Dynastio.Net
         }
         public async Task<bool> GetUserPincodeStatusAsync(string Id, string pincode)
         {
-            var result = await GetAsync(_baseAddress + "/api/check_pincode?uid={Id}&pin={pincode}");
+            var result = await GetAsync(_baseAddress + $"/api/check_pincode?uid={Id}&pin={pincode}");
             var data = JsonConvert.DeserializeObject<DataType<bool>>(result);
             return data.data;
         }
