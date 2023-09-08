@@ -83,20 +83,18 @@ namespace Dynastio.Bot.Interactions.Modules
             string videoUrl = YoutubeService.GetUrlFromVideoId(videoId);
             var confirmChannel = Context.Guild.GetTextChannel(_guildService.GetChannelId(Channels.GuildChannelType.ConfirmPromoteVideos));
 
-            var result = await confirmChannel.SendMessageAsync($"\n{videoUrl}\n",
-                embed: new EmbedBuilder()
-                {
-                    Description =
-                    $"# {video.Snippet?.Title.TryRemove(40) ?? "Title not found"}\n{video.Snippet?.Description.TryRemove(3200) ?? "No Description"}\n" +
-                    $"{videoUrl.ToMarkdown()}",
-                }
-                .AddField("Requester", userMention, true)
-                .AddField("Published At", video.Snippet.PublishedAt.HasValue ? video.Snippet.PublishedAt.Value.ToDiscordUnixTimestampFormat() : "Unknown", true)
-                .AddField("Channel Title", video.Snippet?.ChannelTitle ?? "Unknown", true)
-                .AddField("Channel Id", video.Snippet?.ChannelId ?? BotUser.youtube_channel, true)
-                .AddField("Video Id", videoId, true)
-                .AddField("Default Language", video.Snippet?.DefaultLanguage ?? "Unkonwn", true)
-                .Build(),
+            var result = await confirmChannel.SendMessageAsync(
+                $"" +
+                $"# {video.Snippet?.Title.TryRemove(40) ?? "Title not found"}\n" +
+                $" {video.Snippet?.Description.TryRemove(3000) ?? "No Description"}\n" +
+                $"- Requester: {userMention}\n" +
+                $"- Published At: {(video.Snippet.PublishedAt.HasValue ? video.Snippet.PublishedAt.Value.ToDiscordUnixTimestampFormat() : "Unknown")}\n" +
+                $"- Channel Title: {video.Snippet?.ChannelTitle ?? "Unknown"}\n" +
+                $"- Channel Id: {video.Snippet?.ChannelId ?? BotUser.youtube_channel}\n" +
+                $"- Video Id: {videoId}\n" +
+                $"- Default Language {video.Snippet?.DefaultLanguage ?? "Unkonwn"}\n" +
+                $"- Url: {videoUrl}\n" +
+                $"{videoUrl.ToMarkdown()}",
 
                 components: new ComponentBuilder()
             .WithButton("Promoted", $"btn.promote-video:promoted:{Context.User.Id}:{videoId}", ButtonStyle.Success)
@@ -118,7 +116,7 @@ namespace Dynastio.Bot.Interactions.Modules
                        $"- Your video verified and sent to developers, we will inform you the result !")
                        .ToEmbed("", thumbnailUrl: video?.Snippet?.Thumbnails?.Default__?.Url ?? "", color: Color.Green),
 
-                        result.result.Embeds.FirstOrDefault()
+                       new EmbedBuilder(){Description= result.result.Content}.Build()
                     });
             }
             else
