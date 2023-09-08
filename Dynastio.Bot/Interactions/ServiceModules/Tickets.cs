@@ -62,6 +62,14 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
             var thread = await channel.CreateThreadAsync(Context.User.Username, ThreadType.PrivateThread, ThreadArchiveDuration.ThreeDays, null, false, 0);
 
+            var accounts = (BotUser.Accounts?.ToStringTable(new string[] { "#", this["account"] + " |", "Id |" },
+                                      a => BotUser.Accounts.IndexOf(a) + 1,
+                                      a => a.Reminder,
+                                      a => a.Id) +
+                                      "                 ").ToMarkdown()
+
+                                      ?? this["no_account_found"].ToMarkdown();
+
             var message = await thread.SendMessageAsync(
                 $"## <@{Context.User.Id}>:\n" +
                 $"### {form.Title1}\n" +
@@ -69,13 +77,10 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
                 embed: new EmbedBuilder()
                 {
-                    Description = (BotUser.Accounts?.ToStringTable(new string[] { "#", this["account"] + " |", "Id |" },
-                                      a => BotUser.Accounts.IndexOf(a) + 1,
-                                      a => a.Reminder,
-                                      a => a.Id) +
-                                      "                 ").ToMarkdown()
-
-                                      ?? this["no_account_found"].ToMarkdown(),
+                    Description =
+                    accounts + "\n" +
+                    ($"Connected Youtube Channel: {BotUser.youtube_channel}\n" +
+                    $"Game Ranked Account: {BotUser.game_accountId}\n").ToMarkdown(),
                     Author = new EmbedAuthorBuilder()
                     {
                         Name = Context.User.Username,
@@ -89,8 +94,9 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                 }.Build(),
 
                 components: new ComponentBuilder()
-              .WithButton("Delete", $"btn.ticket:unrelated:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
               .WithButton("Archive", $"btn.ticket:close:{channel.Id}:{thread.Id}", ButtonStyle.Success)
+              .WithButton("Delete", $"btn.ticket:unrelated:{channel.Id}:{thread.Id}", ButtonStyle.Danger)
+              .WithButton("Ban User Tickets", $"btn.ticket:ban:{channel.Id}:{thread.Id}", ButtonStyle.Danger, null, null, true)
               .Build());
 
             await Task.Delay(100);
@@ -184,10 +190,6 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
                     await channel.SendMessageAsync($"{user.Mention} <#{thread.Id}> ticket ` deleted ` by {Context.User.Mention} !", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
 
-                    break;
-
-                case "leave":
-                    await thread.RemoveUserAsync(Context.User as IGuildUser);
                     break;
 
             }
