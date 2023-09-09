@@ -1,4 +1,5 @@
-﻿using Google.Apis.YouTube.v3;
+﻿
+using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Dynastio.Bot
 {
@@ -30,6 +32,26 @@ namespace Dynastio.Bot
         public static string GetUrlFromVideoId(string videoId)
         {
             return "https://www.youtube.com/watch?v=" + videoId;
+        }
+
+        public List<YTFeeds> GetChannelFeed(string channelId)
+        {
+            var doc = XDocument.Load("https://www.youtube.com/feeds/videos.xml?channel_id=" + channelId);
+            XNamespace xmlns = "http://www.w3.org/2005/Atom";
+            XNamespace media = "http://search.yahoo.com/mrss/";
+            var query =
+                from entry in doc.Root.Elements(xmlns + "entry")
+                let grp = entry.Element(media + "group")
+                select new YTFeeds
+                {
+                    Title = (string)grp.Element(media + "title"),
+                    Description = (string)grp.Element(media + "description"),
+                    Video = (string)grp.Element(media + "player").Attribute("url"),
+                    Image = grp.Elements(media + "thumbnail")
+                        .Select(e => (string)e.Attribute("url"))
+                        .First(),
+                };
+            return query.ToList();
         }
         public Task<List<SearchResult>> GetAllChannelVideos(string channelId)
         {
@@ -82,5 +104,13 @@ namespace Dynastio.Bot
             VideoListResponse response = await listRequest.ExecuteAsync();
             return response;
         }
+    }
+
+    public class YTFeeds
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Video { get; set; }
+        public string Image { get; set; }
     }
 }

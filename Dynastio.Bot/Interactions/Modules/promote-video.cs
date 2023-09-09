@@ -134,7 +134,7 @@ namespace Dynastio.Bot.Interactions.Modules
                 if (string.IsNullOrEmpty(user.youtube_channel))
                     return await Task.FromResult(AutocompletionResult.FromError(InteractionCommandError.UnmetPrecondition, "Youtube channel not found."));
 
-                if (_cached[user.youtube_channel] is null)
+                if (!_cached.Keys.Any(a => a == user.youtube_channel))
                 {
                     var videos = await youtubeService.GetAllChannelVideos(user.youtube_channel);
 

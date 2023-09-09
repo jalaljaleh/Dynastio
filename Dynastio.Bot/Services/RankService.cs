@@ -51,6 +51,7 @@ namespace Dynastio.Bot
             if (_score_channels.Contains(message.Channel.Id) is false)
                 return (false, false, null, null);
 
+            
             var user = await _dynastioData.GetUserAsync(message.Author.Id);
             var discordUser = message.Author as IGuildUser;
 
