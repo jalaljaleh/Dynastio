@@ -138,12 +138,13 @@ namespace Dynastio.Bot.Interactions.Modules
                 {
                     var videos = await youtubeService.GetAllChannelVideos(user.youtube_channel);
 
+                    _cached[user.youtube_channel] = videos;
+
                     videos = videos
                         .Where(
                         a => a.Snippet.Title.ToLower().Contains(match))
                         .Take(25).ToList();
 
-                    _cached[user.youtube_channel] = videos;
                 }
                 var result = new List<AutocompleteResult>();
 
