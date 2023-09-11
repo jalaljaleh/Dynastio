@@ -24,6 +24,7 @@ namespace Dynastio.Data
 
         Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 15);
         Task<User> GetUserByAccountIdAsync(string Id);
+        Task<User> GetUserByConnectedAccountIdAsync(string accountId);
         Task<User> GetUserByYoutubeChannelIdAsync(string Id);
         Task<bool> UpdateManyAsync(List<User> users);
         Task<bool> DeleteAsync(User user);

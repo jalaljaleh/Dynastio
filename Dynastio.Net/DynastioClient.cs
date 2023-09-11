@@ -57,7 +57,7 @@ namespace Dynastio.Net
 
             //_client.BaseAddress = new Uri("https://auth.dynast.io/");
 
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));          
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Add(tokenKey, tokenValue);
         }
 
@@ -88,7 +88,7 @@ namespace Dynastio.Net
         }
         private async Task<string> PostAsync(string url, object input)
         {
-            
+
 
             using (var requestContent = new StringContent(ConvertToJsonString(input), Encoding.UTF8, MediaTypeJson))
             {
@@ -121,7 +121,7 @@ namespace Dynastio.Net
         }
 
         private async Task<string> GetAsync(string url)
-        {      
+        {
             using (var response = await _client.GetAsync(url))
             {
                 response.EnsureSuccessStatusCode();
@@ -136,7 +136,7 @@ namespace Dynastio.Net
 
         private async Task<string> PutAsync(string url, HttpContent content)
         {
-            
+
 
             using (var response = await _client.PutAsync(url, content))
             {
@@ -147,7 +147,7 @@ namespace Dynastio.Net
 
         private async Task<string> DeleteAsync(string url)
         {
-            
+
 
             using (var response = await _client.DeleteAsync(url))
             {
@@ -209,14 +209,14 @@ namespace Dynastio.Net
             var result = await GetAsync("https://dynast.cloud/changelog.txt");
             return JsonConvert.DeserializeObject<string>(result);
         }
-        public async Task<DiscordRank> UpdateDiscordRank(string accountId,DiscordRank rank)
+        public async Task<DiscordRank> UpdateDiscordRank(string accountId, int rank)
         {
-            var result = await PostAsync<DataType<DiscordRank>>(_baseAddress + $"/write_api/set_user_discord_rank?uid={accountId}", rank);
+            var result = await PostAsync<DataType<DiscordRank>>(_baseAddress + $"/write_api/set_user_discord_rank?uid={accountId}", new DiscordRank(rank));
             return result.data;
         }
         public async Task<List<Leaderboardcoin>> GetLeaderboardcoinsAsync()
         {
-            var result = await GetAsync(_baseAddress +"/api/get_top_by_coins");
+            var result = await GetAsync(_baseAddress + "/api/get_top_by_coins");
             var data = JsonConvert.DeserializeObject<DataType<Leaderboardcoin[]>>(result);
             return data.data.ToList();
         }

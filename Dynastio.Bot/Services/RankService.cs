@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Dynastio.Data;
+using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Concurrent;
@@ -15,16 +16,20 @@ namespace Dynastio.Bot
     public class RankService
     {
         private readonly DynastioData _dynastioData;
+        private readonly DynastioClient _dynastioClient;
         private readonly GuildService _guildService;
         private readonly UserService _userService;
         private readonly DiscordSocketClient _discord;
+        private readonly WebhookService _webhook;
         private readonly IServiceProvider _services;
         public RankService(IServiceProvider services)
         {
             this._discord = services.GetRequiredService<DiscordSocketClient>();
             this._dynastioData = services.GetRequiredService<DynastioData>();
+            this._dynastioClient = services.GetRequiredService<DynastioClient>();
             this._guildService = services.GetRequiredService<GuildService>();
             this._userService = services.GetRequiredService<UserService>();
+            this._webhook = services.GetRequiredService<WebhookService>();
             this._services = services;
         }
 
@@ -45,13 +50,21 @@ namespace Dynastio.Bot
             1098608343947415575,//
             1098263349873082438,//
         };
+
+
+        public int CalculateLevelReward(int level, int maxLevel = 40, int maxReward = 10000)
+        {
+            int b = 1 / maxLevel;
+            var a = maxReward / (Math.Exp(1) - 1);
+            return (int)Math.Round(a * (Math.Exp(b * level) - 1));
+        }
         public async Task<(bool xpResult, bool levelupResult, User user, IGuildUser discordUser)> TryAddMessageXpAsync(IUserMessage message)
         {
             if (message.Channel is null) return (false, false, null, null);
             if (_score_channels.Contains(message.Channel.Id) is false)
                 return (false, false, null, null);
 
-            
+
             var user = await _dynastioData.GetUserAsync(message.Author.Id);
             var discordUser = message.Author as IGuildUser;
 
@@ -60,12 +73,37 @@ namespace Dynastio.Bot
                 int messageXp = GetMessageXp(discordUser);
                 IncreaseUserXp(user, messageXp);
 
-
                 var levelupResult = TryLevelUpUser(user);
                 var updated = await UpdateUserAsync(user, levelupResult);
+
                 if (levelupResult)
                 {
-                    // should impelement game reward here ?!!
+                    bool isGameAccountConnected = string.IsNullOrEmpty(user.game_accountId);
+
+                    if (isGameAccountConnected)
+                    {
+                        // remove when game updated !
+                        if(false)
+                        await _dynastioClient.UpdateDiscordRank(user.game_accountId, user.activiy_level);
+                    }
+
+                    var role = _userService.GetHighestRankedRoleUser(discordUser);
+
+                    await _webhook.LogRewardAsync(discordUser.Mention, embeds: new List<Embed>(){ new EmbedBuilder()
+                            {
+                                Title = "New Level Unlocked",
+                                Description = $"🎉 You just unlocked new level **{user.activiy_level}**",
+                                Color = isGameAccountConnected ? (role?.Color ?? Color.Orange) : Color.Red,
+                                Fields = new List<EmbedFieldBuilder>()
+                                {
+                                    new EmbedFieldBuilder()
+                                    .WithName("Unlocked Rewards")
+                                    .WithValue(isGameAccountConnected ? $"You just got **{CalculateLevelReward(user.activiy_level)}** coins !":$"You will receive your rewards when you have connected your game account, use `/accounts connect` command.")
+                                    .WithIsInline(true),
+                                },
+                                ThumbnailUrl =  "https://cdn.discordapp.com/attachments/1111209352095871028/1111209352217509938/openiron.png"
+                            }.Build() });
+
                 }
                 return (true, levelupResult, user, discordUser);
             }

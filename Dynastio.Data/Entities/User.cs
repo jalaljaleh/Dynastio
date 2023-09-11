@@ -29,7 +29,7 @@ namespace Dynastio.Data
         public string youtube_channel { get; set; }
         public int activiy_level { get; set; }
         public long activiy_score { get; set; }
-        public ulong game_accountId { get; set; } = 0;
+        public string game_accountId { get; set; } = string.Empty;
         public List<BotUserPermission> LockedPermissions { get; set; } = new();
         public bool HasPermission(BotUserPermission per)
         {

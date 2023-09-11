@@ -145,6 +145,17 @@ namespace Dynastio.Data
             }
             return user;
         }
+        public async Task<User> GetUserByConnectedAccountIdAsync(string accountId)
+        {
+            User user = _users.FirstOrDefault(x => x.game_accountId == accountId);
+            if (user is null)
+            {
+                user = await dbContext.GetUserByConnectedAccountIdAsync(accountId);
+                if (user != null)
+                    Cache(user);
+            }
+            return user;
+        }
         public async Task<bool> UpdateAsync(User user)
         {
             user.last_update = DateTime.UtcNow;

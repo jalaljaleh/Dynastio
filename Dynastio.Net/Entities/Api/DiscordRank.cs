@@ -9,6 +9,11 @@ namespace Dynastio.Net
 {
     public class DiscordRank
     {
+        public DiscordRank(int rank)
+        {
+            Rank = rank;
+        }
+
         [JsonProperty("rank")]
         public int Rank { get; set; }
     }

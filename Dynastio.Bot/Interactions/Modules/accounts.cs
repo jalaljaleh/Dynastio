@@ -188,7 +188,7 @@ namespace Dynastio.Bot.Interactions.modules
                 bool authorized = await _dynastio.GetUserPincodeStatusAsync(id, form.PinCode.Trim());
                 if (authorized is false)
                 {
-                    await FollowupAsync(userMention, embed: this["error.addaccount.unauthorized"].ToEmbed(this["error.addaccount.unauthorized.title"]));
+                    await FollowupAsync(userMention, embed: this["error.addaccount.unauthorized.pincode"].ToEmbed(this["error.addaccount.unauthorized.title"]));
                     return;
                 }
 
@@ -216,6 +216,47 @@ namespace Dynastio.Bot.Interactions.modules
 
                 await _guildService.SyncUserBadges(Context.BotUser);
             }
+        }
+
+        [RateLimit(15)]
+        [SlashCommand("connect", "connect account to the profile", false, RunMode.Sync)]
+        public async Task connect(string AccountId, string PinCode)
+        {
+            await DeferAsync();
+
+            if (string.IsNullOrEmpty(Context.BotUser.game_accountId) is false)
+            {
+                await FollowupAsync(userMention, embed: this["error.unauthorized.connected-already"].ToEmbed(this["unauthorized"], Color.Red));
+                return;
+            }
+
+            string id = AccountId.Trim().Remove("id:", "Id:", "ID:", "iD:"); // don't use tolower
+
+            if (id.Contains("discord") && !id.Contains(Context.User.Id.ToString()))
+            {
+                await FollowupAsync(userMention, embed: this["error.unauthorized.discord"].ToEmbed(this["unauthorized"], Color.Orange));
+                return;
+            }
+
+            bool authorized = await _dynastio.GetUserPincodeStatusAsync(id, PinCode.Trim());
+            if (authorized is false)
+            {
+                await FollowupAsync(userMention, embed: this["error.addaccount.unauthorized.pincode"].ToEmbed(this["error.addaccount.unauthorized.title"]));
+                return;
+            }
+
+            var targetUser = await _dynastioData.GetUserByConnectedAccountIdAsync(id);
+            if (targetUser != null)
+            {
+                await FollowupAsync(userMention, embed: $"This account has been connected by {targetUser.Id.ToUserMention()} already.".ToEmbed(this["unauthorized", Color.Red]));
+                return;
+            }
+
+            Context.BotUser.game_accountId = id;
+            await _dynastioData.UpdateAsync(Context.BotUser);
+
+            await FollowupAsync(userMention, embed: "Account connected succesfuly to your profile !".ToEmbed(this["account_connected.title"], Color.Green));
+
         }
 
     }

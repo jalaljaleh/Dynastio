@@ -19,6 +19,7 @@ namespace Dynastio.Bot
     {
         private readonly DynastioClient _dynastioClient;
         private readonly GuildService _guildService;
+        private readonly WebhookService _webhook;
         private readonly DiscordSocketClient _discord;
         private readonly DynastioData _dynastioData;
         private readonly IServiceProvider _services;
@@ -30,6 +31,7 @@ namespace Dynastio.Bot
             this._dynastioData = services.GetRequiredService<DynastioData>();
             this._services = services;
             this._guildService = services.GetRequiredService<GuildService>();
+            this._webhook = services.GetRequiredService<WebhookService>();
             this._discord = services.GetRequiredService<DiscordSocketClient>();
 
             this._discord.UserJoined += _discord_UserJoined;
@@ -51,6 +53,13 @@ namespace Dynastio.Bot
         {
             return await _discord.GetUserAsync(id);
         }
+        public IRole GetHighestRankedRoleUser(IGuildUser user = null)
+        {
+            return user.Guild.Roles
+                .Where(a => a.Name.StartsWith("rank: "))
+                .OrderBy(a=>a.Position)
+                .FirstOrDefault();
+        }
         public async Task<IGuildUser> GetGuildUserAsync(ulong id)
         {
             return await Task.FromResult(_discord.Guilds.FirstOrDefault().GetUser(id));
@@ -62,6 +71,7 @@ namespace Dynastio.Bot
                 return;
 
             var latestDiscordRole = discordUser.Guild.Roles.FirstOrDefault(a => a.Id == newRoles.LastOrDefault());
+
 
             await channel.SendMessageAsync(user.Id.ToUserMention(),
                    embed: new EmbedBuilder()

@@ -23,7 +23,7 @@ namespace Dynastio.Bot.Test
         }
         public static int getMax(int lvl)
         {
-                return (((lvl + 250) * (int)Math.Pow(lvl+1, 2.1))) + 4000;
+                return (((lvl + 147) * (int)Math.Pow(lvl, 1.1))) ;
         }
     }
 

@@ -94,7 +94,8 @@ namespace Dynastio.Bot.Interactions.modules
                                       a => a.GetAccountService(),
                                       a => a.AddedAt.ToRelative()) + "                 ").ToMarkdown()
 
-                                      ?? this["no_account_found"].ToMarkdown()),
+                                      ?? this["no_account_found"].ToMarkdown()) +
+                                      $"Main Account: {buser.game_accountId}".ToMarkdown(),
 
                         Color = Color.Orange,
                         Url = "https://www.youtube.com/channel/UCW0PmC1B8jjhpKLHciFp0xA/?sub_confirmation=1"
@@ -119,6 +120,7 @@ namespace Dynastio.Bot.Interactions.modules
                 else await FollowupAsync(Context.User.Id.ToUserMention(),
                         embed: (
                         $"User: {user.Mention}" +
+                        $"\nMain Account: ` {buser.game_accountId} `" +
                         $"\nAccounts Count: ` {buser.Accounts.Count} `" +
                         $"\nReminder: `{selectedAccount.Reminder}`" +
                         $"\nAccount Id: `{selectedAccount.Id}`" +

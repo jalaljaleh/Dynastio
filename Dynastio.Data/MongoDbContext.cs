@@ -96,6 +96,13 @@ namespace Dynastio.Data
             var result = _users.Find(filter).FirstOrDefault();
             return await Task.FromResult(result);
         }
+        public async Task<User> GetUserByConnectedAccountIdAsync(string Id)
+        {
+            var filter = Builders<User>.Filter.Where(a => a.game_accountId == Id);
+            var result = _users.Find(filter).FirstOrDefault();
+            return await Task.FromResult(result);
+        }
+
         public async Task<User> GetUserByYoutubeChannelIdAsync(string Id)
         {
             var filter = Builders<User>.Filter.Where(a => a.youtube_channel == Id);
