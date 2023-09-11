@@ -52,11 +52,15 @@ namespace Dynastio.Bot
         };
 
 
-        public int CalculateLevelReward(int level, int maxLevel = 40, int maxReward = 10000)
+        public double CalculateReward(int level)
         {
-            int b = 1 / maxLevel;
-            var a = maxReward / (Math.Exp(1) - 1);
-            return (int)Math.Round(a * (Math.Exp(b * level) - 1));
+            const int maxLevel = 40;
+            const double maxReward = 10000;
+            double b = 1.0 / maxLevel;
+
+            double a = maxReward / (Math.Exp(1) - 1);
+
+            return Math.Round(a * (Math.Exp(b * level) - 1));
         }
         public async Task<(bool xpResult, bool levelupResult, User user, IGuildUser discordUser)> TryAddMessageXpAsync(IUserMessage message)
         {
@@ -92,13 +96,13 @@ namespace Dynastio.Bot
                     await _webhook.LogRewardAsync(discordUser.Mention, embeds: new List<Embed>(){ new EmbedBuilder()
                             {
                                 Title = "New Level Unlocked",
-                                Description = $"🎉 You just unlocked new level **{user.activiy_level}**",
+                                Description = $"🎉 You just unlocked new level **{user.activiy_level}**, your reward unlocked !",
                                 Color = isGameAccountConnected ? (role?.Color ?? Color.Orange) : Color.Red,
                                 Fields = new List<EmbedFieldBuilder>()
                                 {
                                     new EmbedFieldBuilder()
                                     .WithName("Unlocked Rewards")
-                                    .WithValue(isGameAccountConnected ? $"You just got **{CalculateLevelReward(user.activiy_level)}** coins !":$"You will receive your rewards when you have connected your game account, use `/accounts connect` command.")
+                                    .WithValue(isGameAccountConnected ? $"You just got **{CalculateReward(user.activiy_level)}** coins !":$"You will receive your rewards when you have connected your game account, use `/accounts connect` command.")
                                     .WithIsInline(true),
                                 },
                                 ThumbnailUrl =  "https://cdn.discordapp.com/attachments/1111209352095871028/1111209352217509938/openiron.png"

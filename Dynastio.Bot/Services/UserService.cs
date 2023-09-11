@@ -70,7 +70,7 @@ namespace Dynastio.Bot
             if (newRoles is null || newRoles.Count == 0)
                 return;
 
-            var latestDiscordRole = discordUser.Guild.Roles.FirstOrDefault(a => a.Id == newRoles.LastOrDefault());
+            var latestDiscordRole = GetHighestRankedRoleUser(discordUser);
 
 
             await channel.SendMessageAsync(user.Id.ToUserMention(),
@@ -105,8 +105,10 @@ namespace Dynastio.Bot
                 .Select(a => a.Id)
                 .ToList();
 
-            var reached = discordUser.RoleIds.Where(a => roles.Contains(a));
+            var reached = roles.Where(a => discordUser.RoleIds.Contains(a));
+
             var toAdd = roles.GetRange(0, currentLevel);
+
             toAdd.RemoveRange(0, reached.Count());
 
             await discordUser.AddRolesAsync(toAdd);

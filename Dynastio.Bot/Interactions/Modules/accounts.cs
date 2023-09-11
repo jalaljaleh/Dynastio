@@ -223,7 +223,7 @@ namespace Dynastio.Bot.Interactions.modules
         public async Task coonectaccounts()
         {
             var modal = new ModalBuilder(this["modal.account.add.title"], $"accounts connect")
-               .AddTextInput(new TextInputBuilder(this["account_id"], "id", TextInputStyle.Short, "google:0000000000000000000", 1, 150, true, null))
+               .AddTextInput(new TextInputBuilder(this["account_id"], "id", TextInputStyle.Short, "youtube:0000000000000000000", 1, 150, true, null))
                .AddTextInput(new TextInputBuilder(this["pincode"], "pincode", TextInputStyle.Short, this["XXX-XXX-XXX"], 11, 11, true, null))
                .Build();
 
@@ -232,7 +232,7 @@ namespace Dynastio.Bot.Interactions.modules
 
         [RateLimit(15)]
         [ModalInteraction("accounts connect", true,RunMode.Sync)]
-        public async Task connect(FormAddAccount form)
+        public async Task connect(FormConnectAccount form)
         {
             await DeferAsync();
 
