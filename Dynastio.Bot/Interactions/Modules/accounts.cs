@@ -218,19 +218,31 @@ namespace Dynastio.Bot.Interactions.modules
             }
         }
 
+        [RateLimit(10)]
+        [SlashCommand("connect", "connect an account to the bot")]
+        public async Task coonectaccounts()
+        {
+            var modal = new ModalBuilder(this["modal.account.add.title"], $"accounts connect")
+               .AddTextInput(new TextInputBuilder(this["account_id"], "id", TextInputStyle.Short, "google:0000000000000000000", 1, 150, true, null))
+               .AddTextInput(new TextInputBuilder(this["pincode"], "pincode", TextInputStyle.Short, this["XXX-XXX-XXX"], 11, 11, true, null))
+               .Build();
+
+            await Context.OverridedInteraction.RespondWithModalAsync(modal);
+        }
+
         [RateLimit(15)]
-        [SlashCommand("connect", "connect account to the profile", false, RunMode.Sync)]
-        public async Task connect(string AccountId, string PinCode)
+        [ModalInteraction("accounts connect", true,RunMode.Sync)]
+        public async Task connect(FormAddAccount form)
         {
             await DeferAsync();
 
-            if (string.IsNullOrEmpty(Context.BotUser.game_accountId) is false)
+            if (string.IsNullOrEmpty(Context.BotUser.gameAccountId) is false)
             {
                 await FollowupAsync(userMention, embed: this["error.unauthorized.connected-already"].ToEmbed(this["unauthorized"], Color.Red));
                 return;
             }
 
-            string id = AccountId.Trim().Remove("id:", "Id:", "ID:", "iD:"); // don't use tolower
+            string id = form.Id.Trim().Remove("id:", "Id:", "ID:", "iD:"); // don't use tolower
 
             if (id.Contains("discord") && !id.Contains(Context.User.Id.ToString()))
             {
@@ -238,7 +250,7 @@ namespace Dynastio.Bot.Interactions.modules
                 return;
             }
 
-            bool authorized = await _dynastio.GetUserPincodeStatusAsync(id, PinCode.Trim());
+            bool authorized = await _dynastio.GetUserPincodeStatusAsync(id, form.PinCode.Trim());
             if (authorized is false)
             {
                 await FollowupAsync(userMention, embed: this["error.addaccount.unauthorized.pincode"].ToEmbed(this["error.addaccount.unauthorized.title"]));
@@ -252,7 +264,7 @@ namespace Dynastio.Bot.Interactions.modules
                 return;
             }
 
-            Context.BotUser.game_accountId = id;
+            Context.BotUser.gameAccountId = id;
             await _dynastioData.UpdateAsync(Context.BotUser);
 
             await FollowupAsync(userMention, embed: "Account connected succesfuly to your profile !".ToEmbed(this["account_connected.title"], Color.Green));

@@ -37,7 +37,7 @@ namespace Dynastio.Data
                 Main.Log("Mongodb", "Start Session Async ..");
 
                 await _db.StartSessionAsync();
-
+              
                 Main.Log("Mongodb", "Session Started.");
             }
             catch
@@ -47,7 +47,7 @@ namespace Dynastio.Data
         }
 
 
-        
+
         public async Task<Guild> GetGuildAsync(ulong Id)
         {
             var result = _guilds.AsQueryable()
@@ -98,7 +98,7 @@ namespace Dynastio.Data
         }
         public async Task<User> GetUserByConnectedAccountIdAsync(string Id)
         {
-            var filter = Builders<User>.Filter.Where(a => a.game_accountId == Id);
+            var filter = Builders<User>.Filter.Where(a => a.gameAccountId == Id);
             var result = _users.Find(filter).FirstOrDefault();
             return await Task.FromResult(result);
         }
@@ -109,7 +109,7 @@ namespace Dynastio.Data
             var result = _users.Find(filter).FirstOrDefault();
             return await Task.FromResult(result);
         }
-     
+
         public async Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 15)
         {
             var filter = Builders<User>.Filter.Empty;

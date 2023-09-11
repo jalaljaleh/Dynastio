@@ -147,7 +147,7 @@ namespace Dynastio.Data
         }
         public async Task<User> GetUserByConnectedAccountIdAsync(string accountId)
         {
-            User user = _users.FirstOrDefault(x => x.game_accountId == accountId);
+            User user = _users.FirstOrDefault(x => x.gameAccountId == accountId);
             if (user is null)
             {
                 user = await dbContext.GetUserByConnectedAccountIdAsync(accountId);

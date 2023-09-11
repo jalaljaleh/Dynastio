@@ -80,7 +80,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
                     Description =
                     accounts + "\n" +
                     ($"Connected Youtube Channel: {BotUser.youtube_channel}\n" +
-                    $"Game Ranked Account: {BotUser.game_accountId}\n").ToMarkdown(),
+                    $"Game Ranked Account: {BotUser.gameAccountId}\n").ToMarkdown(),
                     Author = new EmbedAuthorBuilder()
                     {
                         Name = Context.User.Username,
