@@ -51,7 +51,6 @@ namespace Dynastio.Bot
             1098263349873082438,//
         };
 
-
         public double CalculateReward(int level)
         {
             const int maxLevel = 40;
