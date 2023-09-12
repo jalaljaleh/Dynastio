@@ -25,33 +25,45 @@ namespace Dynastio.Bot
                 ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
             };
 
-            new Program()
-                .MainAsync()
-                .GetAwaiter()
-                .GetResult();
+            while (true)
+            {
+                try
+                {
+                    new Program()
+                        .MainAsync()
+                        .GetAwaiter()
+                        .GetResult();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+
+                Task.Delay(TimeSpan.FromSeconds(60));
+            }
         }
 
         public async Task MainAsync()
         {
             Global.Main.Log("Main Async", "Started");
 
-           var configuration = Configuration.LoadConfiguration(false);
-         //  var configuration = Configuration.LoadReleaseConfiguration();
-         //  Configuration.UpdateConfiguration(configuration);
+            var configuration = Configuration.LoadConfiguration(false);
+            //  var configuration = Configuration.LoadReleaseConfiguration();
+            //  Configuration.UpdateConfiguration(configuration);
 
 
             var services = new ServiceCollection()
                .AddSingleton(configuration)
                .AddSingleton<DynastioData>(x => new DynastioData())
                .AddSingleton<DiscordSocketClient>(x => new DiscordSocketClient(new()
-                {
-                    GatewayIntents = GatewayIntents.All,
-                    AlwaysDownloadUsers = true,
+               {
+                   GatewayIntents = GatewayIntents.All,
+                   AlwaysDownloadUsers = true,
 
-                    MessageCacheSize = 1024,
-                    AlwaysDownloadDefaultStickers = false,
-                    DefaultRetryMode = RetryMode.AlwaysRetry,
-                }))
+                   MessageCacheSize = 1024,
+                   AlwaysDownloadDefaultStickers = false,
+                   DefaultRetryMode = RetryMode.AlwaysRetry,
+               }))
 
                .AddSingleton<InteractionService>(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                .AddSingleton<Handlers.EventHandler>()
