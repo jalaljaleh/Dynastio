@@ -52,7 +52,7 @@ namespace Dynastio.Bot.Interactions.modules
                 return;
             }
 
-            var result = await _db.GetRedeemCodeAsync(RedeemCode.RedeemType.Boost_Server);
+            var result = await _db.GetRedeemCodeAsync(RedeemCode.RedeemType.Coin_100);
             if (result is null)
             {
                 await message.ModifyAsync(x => x.Embed = $"No any more redeem code found, only 15 redeem codes are available each month.".ToEmbed());

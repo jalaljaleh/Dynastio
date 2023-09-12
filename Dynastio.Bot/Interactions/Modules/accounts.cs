@@ -227,7 +227,7 @@ namespace Dynastio.Bot.Interactions.modules
                .AddTextInput(new TextInputBuilder(this["pincode"], "pincode", TextInputStyle.Short, this["XXX-XXX-XXX"], 11, 11, true, null))
                .Build();
 
-            await Context.OverridedInteraction.RespondWithModalAsync(modal);
+            await Context.Interaction.RespondWithModalAsync(modal);
         }
 
         [RateLimit(15)]

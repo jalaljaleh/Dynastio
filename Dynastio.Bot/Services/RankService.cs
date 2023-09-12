@@ -95,7 +95,7 @@ namespace Dynastio.Bot
                     await _webhook.LogRewardAsync(discordUser.Mention, embeds: new List<Embed>(){ new EmbedBuilder()
                             {
                                 Title = "New Level Unlocked",
-                                Description = $"🎉 You just unlocked new level **{user.activiy_level}**, your reward unlocked !",
+                                Description = $"🎉 You just unlocked new level **{user.activiy_level}**, level reward unlocked !",
                                 Color = isGameAccountConnected ? (role?.Color ?? Color.Orange) : Color.Red,
                                 Fields = new List<EmbedFieldBuilder>()
                                 {

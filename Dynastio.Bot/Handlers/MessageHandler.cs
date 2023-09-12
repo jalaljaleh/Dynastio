@@ -30,6 +30,7 @@ namespace Dynastio.Bot.Handlers
             _services = services;
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _commandHandler = services.GetRequiredService<CommandsHandler>();
+            _userService = services.GetRequiredService<UserService>();
             _dynastioData = services.GetRequiredService<DynastioData>();
             _rankService = services.GetRequiredService<RankService>();
             _guildService = services.GetRequiredService<GuildService>();
