@@ -25,8 +25,7 @@ namespace Dynastio.Bot
                 ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
             };
 
-            while (true)
-            {
+
                 try
                 {
                     new Program()
@@ -39,8 +38,7 @@ namespace Dynastio.Bot
                     Console.WriteLine(e);
                 }
 
-                Task.Delay(TimeSpan.FromSeconds(60));
-            }
+                Task.Delay(-1);
         }
 
         public async Task MainAsync()
