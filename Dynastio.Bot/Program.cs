@@ -25,20 +25,19 @@ namespace Dynastio.Bot
                 ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
             };
 
+            try
+            {
+                new Program()
+                    .MainAsync()
+                    .GetAwaiter()
+                    .GetResult();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
-                try
-                {
-                    new Program()
-                        .MainAsync()
-                        .GetAwaiter()
-                        .GetResult();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-
-                Task.Delay(-1);
+            Task.Delay(-1);
         }
 
         public async Task MainAsync()
