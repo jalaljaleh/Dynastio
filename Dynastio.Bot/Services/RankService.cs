@@ -35,11 +35,13 @@ namespace Dynastio.Bot
 
         public const int _nextScoreTime = 60;
         public const int _updateUserTime = 240;
+        public const int maxLevel = 40;
+        public const double maxReward = 10000;
         public static int[] _randomScore = { 40, 80 };
         public static int[] _randomScoreServerBooster = { 50, 100 };
         public static int getMax(int lvl)
         {
-            return (((lvl + 250) * (int)Math.Pow(lvl + 1, 2.1))) + 3600;
+            return (((lvl + 250) * (int)Math.Pow(lvl + 1, 2.1))) + 7200;
         }
         private ulong[] _score_channels = {
             480966712318099487, //
@@ -51,10 +53,8 @@ namespace Dynastio.Bot
             1098263349873082438,//
         };
 
-        public double CalculateReward(int level)
+        public static double CalculateReward(int level)
         {
-            const int maxLevel = 40;
-            const double maxReward = 10000;
             double b = 1.0 / maxLevel;
 
             double a = maxReward / (Math.Exp(1) - 1);
@@ -67,11 +67,10 @@ namespace Dynastio.Bot
             if (_score_channels.Contains(message.Channel.Id) is false)
                 return (false, false, null, null);
 
-
             var user = await _dynastioData.GetUserAsync(message.Author.Id);
             var discordUser = message.Author as IGuildUser;
 
-            if (IsXpIncreaseable(user))
+            if (IsXpIncreaseable(user,message.CleanContent))
             {
                 int messageXp = GetMessageXp(discordUser);
                 IncreaseUserXp(user, messageXp);
@@ -86,8 +85,8 @@ namespace Dynastio.Bot
                     if (isGameAccountConnected)
                     {
                         // remove when game updated !
-                        if(false)
-                        await _dynastioClient.UpdateDiscordRank(user.gameAccountId, user.activiy_level);
+                        if (false)
+                            await _dynastioClient.UpdateDiscordRank(user.gameAccountId, user.activiy_level);
                     }
 
                     var role = _userService.GetHighestRankedRoleUser(discordUser);
@@ -117,6 +116,13 @@ namespace Dynastio.Bot
             max = getMax(level);
             return xp > max;
         }
+        public int GetMessageXp(IGuildUser user)
+        {
+            var isServerBooster = user is not { PremiumSince: null };
+            int[] score = isServerBooster ? _randomScoreServerBooster : _randomScore;
+
+            return Global.Main.Random.Next(score[0], score[1]);
+        }
         public bool TryLevelUpUser(User _user)
         {
             if (IsLevelIncreaseable(_user.activiy_score, _user.activiy_level, out int max))
@@ -127,15 +133,11 @@ namespace Dynastio.Bot
             }
             return false;
         }
-        public int GetMessageXp(IGuildUser user)
+        public bool IsXpIncreaseable(User user, string messageContent)
         {
-            var isServerBooster = user is not { PremiumSince: null };
-            int[] score = isServerBooster ? _randomScoreServerBooster : _randomScore;
+            if (string.IsNullOrEmpty(messageContent)) return false;
+            if (messageContent.Length < 10) return false;
 
-            return Global.Main.Random.Next(score[0], score[1]);
-        }
-        public bool IsXpIncreaseable(User user)
-        {
             var last_activiy_score_time = DateTime.UtcNow - user.last_activiy_score_time;
             return last_activiy_score_time.TotalSeconds > _nextScoreTime;
         }
