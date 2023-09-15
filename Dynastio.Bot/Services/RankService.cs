@@ -37,10 +37,13 @@ namespace Dynastio.Bot
         public const int _updateUserTime = 240;
         public const int maxLevel = 40;
         public const double maxReward = 10000;
-        public static int[] _randomScore = { 40, 80 };
-        public static int[] _randomScoreServerBooster = { 50, 100 };
+        public static int[] _randomScore = { 10, 20 };
+        public static int[] _randomScoreServerBooster = { 15, 30 };
         public static int getMax(int lvl)
         {
+            if (lvl is 0)
+                return (((lvl + 250) * (int)Math.Pow(lvl + 1, 2.1)));
+
             return (((lvl + 250) * (int)Math.Pow(lvl + 1, 2.1))) + 7200;
         }
         private ulong[] _score_channels = {
@@ -70,7 +73,7 @@ namespace Dynastio.Bot
             var user = await _dynastioData.GetUserAsync(message.Author.Id);
             var discordUser = message.Author as IGuildUser;
 
-            if (IsXpIncreaseable(user,message.CleanContent))
+            if (IsXpIncreaseable(user, message.CleanContent))
             {
                 int messageXp = GetMessageXp(discordUser);
                 IncreaseUserXp(user, messageXp);

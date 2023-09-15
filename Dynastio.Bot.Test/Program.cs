@@ -7,10 +7,12 @@ namespace Dynastio.Bot.Test
         public static void Main()
         {
             int ii = 0;
+            int iii = 0;
            for(int i =0;i < 42;i++)
             {
-                Console.WriteLine(i + "    " + CalculateReward(i));
                 ii += getMax(i);
+                iii += (int)CalculateReward(i);
+                Console.WriteLine(i + "    " + getMax(i) + "    " + ii + "        " + CalculateReward(i) + "     " + iii);
             }
             Console.WriteLine(ii);
         }
@@ -34,7 +36,7 @@ namespace Dynastio.Bot.Test
         }
         public static int getMax(int lvl)
         {
-                return (((lvl + 147) * (int)Math.Pow(lvl, 1.1))) ;
+            return (((lvl + 250) * (int)Math.Pow(lvl + 1, 2.1))) + 7200;
         }
     }
 
