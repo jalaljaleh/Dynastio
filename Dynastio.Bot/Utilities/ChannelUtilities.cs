@@ -10,11 +10,11 @@ namespace Dynastio.Bot.Utilities
 {
     public class ChannelUtilities
     {
-        public static async Task<List<IMessage>> GetChannelMessageAsync(ITextChannel channel, int count)
+        public static async Task<List<IMessage>> GetChannelMessageAsync(ITextChannel channel, int count, Direction direction = Direction.Before)
         {
             List<IMessage> msgs = new();
             ulong lastMessageId = 0;
-            int _count = count >= 100 ? 100 : count;
+            int _count = count > 100 ? 100 : count;
             do
             {
                 var channelMessages = lastMessageId is 0
@@ -23,7 +23,7 @@ namespace Dynastio.Bot.Utilities
                     .FlattenAsync()
                     .TryAsync()
 
-                    : await channel.GetMessagesAsync(lastMessageId, Direction.After, _count - msgs.Count)
+                    : await channel.GetMessagesAsync(lastMessageId, direction, _count - msgs.Count)
                     .FlattenAsync()
                     .TryAsync();
 
@@ -40,7 +40,7 @@ namespace Dynastio.Bot.Utilities
                     await Task.Delay(150);
                     lastMessageId = lastmessage.Id;
                 }
-                
+
             } while (lastMessageId != 0);
 
             return msgs;

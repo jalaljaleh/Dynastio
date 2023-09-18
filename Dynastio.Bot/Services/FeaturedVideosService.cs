@@ -38,7 +38,9 @@ namespace Dynastio.Bot
         {
             var postChannel = _guildService.GetTextChannel(Channels.GuildChannelType.FeaturedVideos);
             if (postChannel == null) return;
+
             var expireChannel = _guildService.GetTextChannel(Channels.GuildChannelType.FeaturedVideosExpired);
+            if (expireChannel == null) return;
 
             var msgs = await ChannelUtilities.GetChannelMessageAsync(postChannel, 3000);
 
@@ -50,20 +52,16 @@ namespace Dynastio.Bot
             {
                 var post = posts.FirstOrDefault(a => a.Content.Contains(video.Url));
                 if (post is null)
-                {
                     await PostVideoAsync(postChannel, video);
-                }
                 else
-                {
                     posts.Remove(post);
-                }
             }
 
             foreach (var x in posts)
             {
                 await ExpireVideoAsync(x, expireChannel)
                     .TryAsync();
-                
+
                 await Task.Delay(Global.Main.Random.Next(500, 5000));
             };
 
@@ -88,12 +86,13 @@ namespace Dynastio.Bot
         public async Task ExpireVideoAsync(IMessage msg, ITextChannel channel)
         {
             var content = msg.Content.Replace("Expire", "Expired");
+
             var msg1 = await channel.SendMessageAsync(
                 content +
                 "\n### Likes: " + (msg.Reactions?.FirstOrDefault().Value.ReactionCount ?? 0));
 
             await Task.Delay(80);
-           
+
             await msg1.CrosspostAsync()
                 .TryAsync();
         }
