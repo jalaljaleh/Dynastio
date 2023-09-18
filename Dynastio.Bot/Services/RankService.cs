@@ -37,14 +37,16 @@ namespace Dynastio.Bot
         public const int _updateUserTime = 240;
         public const int maxLevel = 40;
         public const double maxReward = 10000;
-        public static int[] _randomScore = { 10, 20 };
-        public static int[] _randomScoreServerBooster = { 15, 30 };
+        public static int[] _randomScore = { 40, 60 };
+        public static int[] _randomScoreServerBooster = { 50, 80 };
         public static int getMax(int lvl)
         {
             if (lvl is 0)
-                return (((lvl + 250) * (int)Math.Pow(lvl + 1, 2.1)));
+                return _getMax(lvl);
 
-            return (((lvl + 250) * (int)Math.Pow(lvl + 1, 2.1))) + 7200;
+            return _getMax(lvl) + 10000;
+
+            int _getMax(int _lvl) => (_lvl < 21 ? 900 : +600) * (int)Math.Pow(_lvl + 1, 2.1);
         }
         private ulong[] _score_channels = {
             480966712318099487, //
@@ -73,7 +75,7 @@ namespace Dynastio.Bot
             var user = await _dynastioData.GetUserAsync(message.Author.Id);
             var discordUser = message.Author as IGuildUser;
 
-            if (IsXpIncreaseable(user, message.CleanContent))
+            if (IsXpIncreaseable(discordUser, user, message.CleanContent))
             {
                 int messageXp = GetMessageXp(discordUser);
                 IncreaseUserXp(user, messageXp);
@@ -136,10 +138,11 @@ namespace Dynastio.Bot
             }
             return false;
         }
-        public bool IsXpIncreaseable(User user, string messageContent)
+        public bool IsXpIncreaseable(IGuildUser discordUser, User user, string messageContent)
         {
             if (string.IsNullOrEmpty(messageContent)) return false;
             if (messageContent.Length < 10) return false;
+            if (discordUser.CreatedAt.Month < 3) return false;
 
             var last_activiy_score_time = DateTime.UtcNow - user.last_activiy_score_time;
             return last_activiy_score_time.TotalSeconds > _nextScoreTime;

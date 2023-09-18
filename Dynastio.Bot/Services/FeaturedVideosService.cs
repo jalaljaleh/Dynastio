@@ -41,30 +41,34 @@ namespace Dynastio.Bot
 
             var msgs = await ChannelUtilities.GetChannelMessageAsync(postChannel, 3000);
 
-            List<IMessage> postsToDelete = msgs
+            List<IMessage> posts = msgs
                 .Where(a => a.Source == MessageSource.Bot)
                 .ToList();
 
-            var uploadedVideos = postsToDelete.Select(a => a.Content).ToList();
             foreach (var video in _dynastioClient.FeaturedVideos.OrderByDescending(a => a.ExpireAt))
             {
-                var toDeletePost = postsToDelete.FirstOrDefault(a => a.Content.Contains(video.Url));
-                if (toDeletePost != null)
-                    postsToDelete.Remove(toDeletePost);
-
-                if (uploadedVideos.Any(a => a.Contains(video.Url)))
-                    continue;
-
-                await PostVideoAsync(postChannel, video);        
+                var post = posts.FirstOrDefault(a => a.Content.Contains(video.Url));
+                if (post is null)
+                {
+                    await PostVideoAsync(postChannel, video);
+                }
+                else
+                {
+                    posts.Remove(post);
+                }
             }
 
-            foreach (var x in postsToDelete)
+            foreach (var x in posts)
             {
-                await ExpireVideoAsync(x, expireChannel);
+                await ExpireVideoAsync(x, expireChannel)
+                    .TryAsync();
+                
+                await Task.Delay(Global.Main.Random.Next(500, 5000));
             };
 
-            await postChannel.DeleteMessagesAsync(postsToDelete);
+            await postChannel.DeleteMessagesAsync(posts);
         }
+
         public async Task PostVideoAsync(ITextChannel channel, FeaturedVideos video)
         {
             var msg = await channel.SendMessageAsync(
@@ -86,11 +90,11 @@ namespace Dynastio.Bot
             var msg1 = await channel.SendMessageAsync(
                 content +
                 "\n### Likes: " + (msg.Reactions?.FirstOrDefault().Value.ReactionCount ?? 0));
+
             await Task.Delay(80);
-
-            await msg1.CrosspostAsync();
-
-            await Task.Delay(Global.Main.Random.Next(500, 5000));
+           
+            await msg1.CrosspostAsync()
+                .TryAsync();
         }
     }
 }

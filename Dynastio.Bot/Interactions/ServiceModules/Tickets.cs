@@ -72,15 +72,15 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
             var message = await thread.SendMessageAsync(
                 $"## <@{Context.User.Id}>:\n" +
-                $"### {form.Title1}\n" +
+                $"## {form.Title1}\n" +
                 $"{form.Description}\n\n",
 
                 embed: new EmbedBuilder()
                 {
                     Description =
                     accounts + "\n" +
-                    ($"Connected Youtube Channel: {BotUser.youtube_channel}\n" +
-                    $"Game Ranked Account: {BotUser.gameAccountId}\n").ToMarkdown(),
+                    ($"Youtube: {BotUser.youtube_channel}\n" +
+                    $"Account: {BotUser.gameAccountId}\n").ToMarkdown(),
                     Author = new EmbedAuthorBuilder()
                     {
                         Name = Context.User.Username,
@@ -107,7 +107,7 @@ namespace Dynastio.Bot.Interactions.ServiceModules
             await FollowupAsync($"## Done\nYour ticket created, click here: {thread.Mention}.", ephemeral: true);
             await Task.Delay(100);
 
-            await Context.User.SendMessageAsync($"Your ticket created, click here: {thread.Mention}")
+            await Context.User.SendMessageAsync($"Your ticket created, click here: {thread.Mention} !")
                 .TryAsync();
 
         }
