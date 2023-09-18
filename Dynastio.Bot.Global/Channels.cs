@@ -18,7 +18,9 @@ namespace Dynastio.Bot
             General,
             MemberChannel,
             RewardChannel,
-            ConfirmPromoteVideos
+            ConfirmPromoteVideos,
+            FeaturedVideos,
+            FeaturedVideosExpired,
         }
         public readonly static Dictionary<GuildChannelType, ulong> ChannelIds = new()
         {
@@ -31,6 +33,10 @@ namespace Dynastio.Bot
             { GuildChannelType.MemberChannel, 1109020050163240990},
             { GuildChannelType.RewardChannel, 1108998382996946964},
             { GuildChannelType.ConfirmPromoteVideos, 1147964955547668600},
+            { GuildChannelType.FeaturedVideos, 1136917780516585472},
+            { GuildChannelType.FeaturedVideosExpired, 1137030131970494524},
         };
+
+        public static ulong Get(GuildChannelType channel) => ChannelIds[channel];
     }
 }

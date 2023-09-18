@@ -23,7 +23,7 @@ namespace Dynastio.Bot.Utilities
                     .FlattenAsync()
                     .TryAsync()
 
-                    : await channel.GetMessagesAsync(lastMessageId, Direction.Before, _count - msgs.Count)
+                    : await channel.GetMessagesAsync(lastMessageId, Direction.After, _count - msgs.Count)
                     .FlattenAsync()
                     .TryAsync();
 

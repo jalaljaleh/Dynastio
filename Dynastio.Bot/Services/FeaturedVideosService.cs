@@ -16,6 +16,7 @@ namespace Dynastio.Bot
         private readonly DynastioClient _dynastioClient;
         private readonly RepeaterService _repeaterService;
         private readonly DiscordSocketClient _client;
+        private readonly GuildService _guildService;
         private IServiceProvider _services;
         public FeaturedVideosService(IServiceProvider services)
         {
@@ -23,6 +24,7 @@ namespace Dynastio.Bot
             _dynastioClient = _services.GetService<DynastioClient>();
             _client = _services.GetService<DiscordSocketClient>();
             _repeaterService = _services.GetRequiredService<RepeaterService>();
+            _guildService = _services.GetRequiredService<GuildService>();
 
             _client.Ready += _client_Ready;
         }
@@ -31,13 +33,12 @@ namespace Dynastio.Bot
         {
             _repeaterService.AddAction(RefreshChannelAsync, TimeSpan.FromMinutes(35));
         }
-        const ulong _channelId = 1136917780516585472;
 
         private async Task RefreshChannelAsync()
         {
-            var postChannel = _client.Guilds.First().GetTextChannel(_channelId);
+            var postChannel = _guildService.GetTextChannel(Channels.GuildChannelType.FeaturedVideos);
             if (postChannel == null) return;
-            var expireChannel = _client.Guilds.First().GetTextChannel(1137030131970494524);
+            var expireChannel = _guildService.GetTextChannel(Channels.GuildChannelType.FeaturedVideosExpired);
 
             var msgs = await ChannelUtilities.GetChannelMessageAsync(postChannel, 3000);
 

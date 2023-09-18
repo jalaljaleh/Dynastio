@@ -1,6 +1,8 @@
 ﻿using Discord.Interactions;
+using Discord.Rest;
 using Discord.WebSocket;
 using Dynastio.Bot.Interactions;
+using Dynastio.Bot.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 

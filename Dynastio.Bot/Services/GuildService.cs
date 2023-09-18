@@ -33,7 +33,19 @@ namespace Dynastio.Bot
             this._discord = services.GetRequiredService<DiscordSocketClient>();
             this._services = services;
         }
-
+        public ITextChannel GetTextChannel(ulong Id)
+        {
+            return this._discord.Guilds
+                .FirstOrDefault()
+                .GetTextChannel(Id);
+        }
+        public ITextChannel GetTextChannel(Channels.GuildChannelType channelType)
+        {
+            var channelId = GetChannelId(channelType);
+            return this._discord.Guilds
+                .FirstOrDefault()
+                .GetTextChannel(channelId);
+        }
         public ulong GetChannelId(Channels.GuildChannelType t)
         {
             return Channels.ChannelIds[t];
