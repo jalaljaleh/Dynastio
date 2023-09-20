@@ -29,16 +29,7 @@ namespace Dynastio.Bot.Handlers
 
         private async Task _client_UserJoined(SocketGuildUser joinedUser)
         {
-            await DiscordStream.SendFileAsync(
-                channel: joinedUser.Guild.GetTextChannel(1109020050163240990),
-                img: await _graphicService.GetWelcomeImage(joinedUser),
-                joinedUser.Id + ".jpg",
-                joinedUser.Id.ToUserMention(),
-            embed: new EmbedBuilder()
-            {
-                Description = $"A wild {joinedUser.Id.ToUserMention()} appears !",
-                ImageUrl = $"attachment://{joinedUser.Id}.jpg"
-            }.Build());
+           
         }
     }
 }

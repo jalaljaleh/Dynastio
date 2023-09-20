@@ -23,6 +23,7 @@ namespace Dynastio.Bot
         private readonly DynastioData _db;
         private readonly IServiceProvider _services;
         private readonly DiscordSocketClient _discord;
+        private readonly GraphicService _graphicService;
 
         public GuildService(IServiceProvider services)
         {
@@ -31,8 +32,26 @@ namespace Dynastio.Bot
             this._dynastioClient = services.GetRequiredService<DynastioClient>();
             this._db = services.GetRequiredService<DynastioData>();
             this._discord = services.GetRequiredService<DiscordSocketClient>();
+            this._graphicService = _services.GetService<GraphicService>();
             this._services = services;
+
+            this._discord.UserJoined += _discord_UserJoined;
         }
+
+        private async Task _discord_UserJoined(SocketGuildUser joinedUser)
+        {
+            await DiscordStream.SendFileAsync(
+                channel: joinedUser.Guild.GetTextChannel(1109020050163240990),
+                img: await _graphicService.GetWelcomeImage(joinedUser),
+                joinedUser.Id + ".jpg",
+                joinedUser.Id.ToUserMention(),
+            embed: new EmbedBuilder()
+            {
+                Description = $"A wild {joinedUser.Id.ToUserMention()} appears !",
+                ImageUrl = $"attachment://{joinedUser.Id}.jpg"
+            }.Build());
+        }
+
         public ITextChannel GetTextChannel(ulong Id)
         {
             return this._discord.Guilds
