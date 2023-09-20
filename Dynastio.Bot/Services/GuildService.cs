@@ -32,7 +32,7 @@ namespace Dynastio.Bot
             this._dynastioClient = services.GetRequiredService<DynastioClient>();
             this._db = services.GetRequiredService<DynastioData>();
             this._discord = services.GetRequiredService<DiscordSocketClient>();
-            this._graphicService = _services.GetService<GraphicService>();
+            this._graphicService = services.GetService<GraphicService>();
             this._services = services;
 
             this._discord.UserJoined += _discord_UserJoined;
