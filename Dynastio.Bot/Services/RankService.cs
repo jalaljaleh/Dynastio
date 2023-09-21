@@ -181,7 +181,7 @@ namespace Dynastio.Bot
         }
         public static bool HasXpRequirements(IGuildUser user)
         {
-            if (user.CreatedAt.Month < 3) return false;
+            if (user.CreatedAt.Offset.Days < 89) return false;
             else return true;
         }
         public static bool HasXpRequirements(string messageContent)
