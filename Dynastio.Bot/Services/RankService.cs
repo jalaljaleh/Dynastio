@@ -38,7 +38,7 @@ namespace Dynastio.Bot
         public const int _updateUserTime = 240;
         public const int maxLevel = 40;
         public const double maxReward = 10000;
-        public const int _score = 30;
+        public const int _score = 50;
         public const int _boostersExpandableXp = 15;
         public const int _randomXp = 10;
         private ulong[] _score_channels = {
@@ -71,6 +71,7 @@ namespace Dynastio.Bot
 
             return Math.Round(a * (Math.Exp(b * level) - 1));
         }
+
         public async Task<(bool xpResult, bool levelupResult, User user, IGuildUser discordUser)> TryAddMessageXpAsync(IUserMessage message)
         {
             if (message.Channel is null) return (false, false, null, null);
@@ -133,8 +134,21 @@ namespace Dynastio.Bot
         }
         public static int GetAdditiveXp(IGuildUser user, User buser)
         {
-            var xp = GetServerBoosterXp(user);
-            return xp + (int)buser.activiy_score_additive;
+            var boosterXp = GetServerBoosterXp(user);
+            var achXp = GetServerAchievementsXp(user);
+
+            return
+                boosterXp +
+                achXp +
+                (int)buser.activiy_score_additive;
+        }
+        public static int GetServerAchievementsXp(IGuildUser user)
+        {
+            var achRoles = user.Guild.Roles
+                .Where(a => a.Name.StartsWith("ach:"))
+                .ToList() ?? new();
+
+            return achRoles.Count * 2;
         }
         public static int GetServerBoosterXp(IGuildUser user)
         {
