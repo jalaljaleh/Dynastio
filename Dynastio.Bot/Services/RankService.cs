@@ -37,17 +37,9 @@ namespace Dynastio.Bot
         public const int _updateUserTime = 240;
         public const int maxLevel = 40;
         public const double maxReward = 10000;
-        public static int[] _randomScore = { 40, 60 };
-        public static int[] _randomScoreServerBooster = { 50, 80 };
-        public static int getMax(int lvl)
-        {
-            if (lvl is 0)
-                return _getMax(lvl);
-
-            return _getMax(lvl) + 10000;
-
-            int _getMax(int _lvl) => (_lvl < 21 ? 900 : +600) * (int)Math.Pow(_lvl + 1, 2.1);
-        }
+        public const int _score = 30;
+        public const int _boostersExpandableXp = 15;
+        public const int _randomXp = 10;
         private ulong[] _score_channels = {
             480966712318099487, //
             486591124836974592, //
@@ -57,8 +49,20 @@ namespace Dynastio.Bot
             1098608343947415575,//
             1098263349873082438,//
         };
+        public static int getMax(int lvl)
+        {
+            if (lvl is 0)
+                return _getMax(lvl);
 
-        public static double CalculateReward(int level)
+            return _getMax(lvl) + 10000;
+
+            int _getMax(int _lvl) => (_lvl < 21 ? 900 : 600) * (int)Math.Pow(_lvl + 1, 2.1);
+        }
+        public static int RequiredXpToLevelUp(User user)
+        {
+            return (int)(getMax(user.activiy_level) - user.activiy_score);
+        }
+        public static double CalculateLevelReward(int level)
         {
             double b = 1.0 / maxLevel;
 
@@ -77,7 +81,7 @@ namespace Dynastio.Bot
 
             if (IsXpIncreaseable(discordUser, user, message.CleanContent))
             {
-                int messageXp = GetMessageXp(discordUser);
+                int messageXp = GetMessageXp(discordUser, user);
                 IncreaseUserXp(user, messageXp);
 
                 var levelupResult = TryLevelUpUser(user);
@@ -105,7 +109,7 @@ namespace Dynastio.Bot
                                 {
                                     new EmbedFieldBuilder()
                                     .WithName("Unlocked Rewards")
-                                    .WithValue(isGameAccountConnected ? $"You just got **{CalculateReward(user.activiy_level)}** coins !":$"You will receive your rewards when you have connected your game account, use `/accounts connect` command.")
+                                    .WithValue(isGameAccountConnected ? $"You just got **{CalculateLevelReward(user.activiy_level)}** coins !":$"You will receive your rewards when you have connected your game account, use `/accounts connect` command.")
                                     .WithIsInline(true),
                                 },
                                 ThumbnailUrl =  "https://cdn.discordapp.com/attachments/1111209352095871028/1111209352217509938/openiron.png"
@@ -116,27 +120,25 @@ namespace Dynastio.Bot
             }
             return (false, false, null, null);
         }
-        public bool IsLevelIncreaseable(long xp, int level, out int max)
+        public static int GetReachableMessageXp(IGuildUser user, User buser)
         {
-            max = getMax(level);
-            return xp > max;
+            var additiveXp = GetAdditiveXp(user, buser);
+            return _score + additiveXp;
         }
-        public int GetMessageXp(IGuildUser user)
+        public int GetMessageXp(IGuildUser user, User buser)
+        {
+            var xp = GetReachableMessageXp(user, buser);
+            return Global.Main.Random.Next(xp - _randomXp, xp + _randomXp);
+        }
+        public static int GetAdditiveXp(IGuildUser user, User buser)
+        {
+            var xp = GetServerBoosterXp(user);
+            return xp + (int)buser.activiy_score_additive;
+        }
+        public static int GetServerBoosterXp(IGuildUser user)
         {
             var isServerBooster = user is not { PremiumSince: null };
-            int[] score = isServerBooster ? _randomScoreServerBooster : _randomScore;
-
-            return Global.Main.Random.Next(score[0], score[1]);
-        }
-        public bool TryLevelUpUser(User _user)
-        {
-            if (IsLevelIncreaseable(_user.activiy_score, _user.activiy_level, out int max))
-            {
-                _user.activiy_score = _user.activiy_score - max;
-                _user.activiy_level++;
-                return true;
-            }
-            return false;
+            return isServerBooster ? _boostersExpandableXp : 0;
         }
         public bool IsXpIncreaseable(IGuildUser discordUser, User user, string messageContent)
         {
@@ -147,10 +149,25 @@ namespace Dynastio.Bot
             var last_activiy_score_time = DateTime.UtcNow - user.last_activiy_score_time;
             return last_activiy_score_time.TotalSeconds > _nextScoreTime;
         }
+        public bool IsLevelIncreaseable(long xp, int level, out int max)
+        {
+            max = getMax(level);
+            return xp > max;
+        }
         public void IncreaseUserXp(User user, int xp)
         {
             user.activiy_score = user.activiy_score + xp;
             user.last_activiy_score_time = DateTime.UtcNow;
+        }
+        public bool TryLevelUpUser(User _user)
+        {
+            if (IsLevelIncreaseable(_user.activiy_score, _user.activiy_level, out int max))
+            {
+                _user.activiy_score = _user.activiy_score - max;
+                _user.activiy_level++;
+                return true;
+            }
+            return false;
         }
         public async Task<bool> UpdateUserAsync(User user, bool force = false)
         {

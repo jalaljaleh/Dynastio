@@ -16,6 +16,7 @@ namespace Dynastio.Bot.Interactions.modules
 {
 
     [RequireGuildOfficial]
+    [RequireContext(ContextType.Guild)]
     public class Leaderboard : CustomInteractionModuleBase
     {
         public DynastioData _dynastioData { get; set; }
@@ -37,34 +38,38 @@ namespace Dynastio.Bot.Interactions.modules
             var nextRole = _rankedRoles[BotUser.activiy_level + 1];
 
             var isServerBooster = Context.User as IGuildUser is not { PremiumSince: null };
-            int[] score = isServerBooster ? RankService._randomScoreServerBooster : RankService._randomScore;
 
             var message = await FollowupAsync(userMention,
                  embed: new EmbedBuilder()
                  {
                      Title = $"Level {BotUser.activiy_level}",
-                     Description = $"Your are level **{BotUser.activiy_level}** You need **{RankService.getMax(BotUser.activiy_level) - BotUser.activiy_score}** more xp to get new level.",
+                     Description = $"Your are level **{BotUser.activiy_level}** You need **{RankService.RequiredXpToLevelUp(BotUser)}** more xp to get new level.",
                      Color = latestRole?.Color ?? Color.Orange,
                      Fields = new List<EmbedFieldBuilder>()
                     {
                            new EmbedFieldBuilder()
-                        .WithName("Level")
+                        .WithName("Current Level")
                         .WithValue( $"Level: **{BotUser.activiy_level}**\n"+ $"Xp: **{BotUser.activiy_score.Metric()}**")
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()
-                        .WithName("Level Reward")
-                        .WithValue( $"**{RankService.CalculateReward(BotUser.activiy_level + 1)}** Coins")
+                        .WithName("Unlocked Reward")
+                        .WithValue( $"**{RankService.CalculateLevelReward(BotUser.activiy_level + 1)}** Coins")
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()
-                        .WithName("Level Role")
+                        .WithName("Unlocked Role")
                         .WithValue( $"<@&{nextRole.Id}>")
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()
-                        .WithName("Accessible-Xp")
-                        .WithValue($"{score[0]} - {score[1]}")
+                        .WithName("Xp Details")
+                        .WithValue(
+                             $"Message XP: {RankService._score}\n"+
+                             $"Random: ±{RankService._randomXp}\n"+
+                             $"Server Booster: +{RankService.GetServerBoosterXp(Context.User as IGuildUser)}\n"+
+                             $"User Additive: ±{BotUser.activiy_score_additive}\n"+
+                             $"Reachable: {RankService.GetReachableMessageXp(Context.User as IGuildUser,Context.BotUser)}\n")
                         .WithIsInline(true),
 
                     },
