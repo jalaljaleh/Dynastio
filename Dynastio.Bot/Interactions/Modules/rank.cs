@@ -82,8 +82,7 @@ namespace Dynastio.Bot.Interactions.modules
                              $"**User Achievements:** `+ {RankService.GetServerAchievementsXp(Context.User as IGuildUser)} `\n"+
                              $"**User Warns:** ` {(userWarns >= 0 ? "+" : '-') } {userWarns}`\n"+
                              $"**Random:** ` ± {RankService._randomXp} `\n"+
-                             $"**Reachable:** ` {reachableXp - RankService._randomXp} - {reachableXp + RankService._randomXp} `\n"+
-                             $"**User Xp Requirements:** ` {(RankService.HasXpRequirements(Context.User as IGuildUser) ? "Yes" : "No")} `\n")
+                             $"**Reachable:** ` {reachableXp - RankService._randomXp} - {reachableXp + RankService._randomXp} `\n")
                         .WithIsInline(false),
 
                     },

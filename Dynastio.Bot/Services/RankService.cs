@@ -174,15 +174,9 @@ namespace Dynastio.Bot
         {
             if (string.IsNullOrEmpty(messageContent)) return false;
             if (!HasXpRequirements(messageContent)) return false;
-            if (!HasXpRequirements(discordUser)) return false;
 
             var last_activiy_score_time = DateTime.UtcNow - user.last_activiy_score_time;
             return last_activiy_score_time.TotalSeconds > _nextScoreTime;
-        }
-        public static bool HasXpRequirements(IGuildUser user)
-        {
-            if (user.CreatedAt.Offset.TotalDays > 89) return true;
-            else return false;
         }
         public static bool HasXpRequirements(string messageContent)
         {
