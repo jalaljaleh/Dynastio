@@ -39,7 +39,6 @@ namespace Dynastio.Bot.Interactions.modules
 
             var isServerBooster = Context.User as IGuildUser is not { PremiumSince: null };
             var reachableXp = RankService.GetReachableMessageXp(Context.User as IGuildUser, Context.BotUser);
-            var userWarns = RankService.GetWarnsXp(BotUser);
 
             var message = await FollowupAsync(userMention,
                  embed: new EmbedBuilder()
@@ -80,7 +79,7 @@ namespace Dynastio.Bot.Interactions.modules
                              $"**Server Booster:** ` + {RankService.GetServerBoosterXp(Context.User as IGuildUser)} `\n"+
                              $"**User Additive:** ` + {BotUser.activiy_score_additive} `\n"+
                              $"**User Achievements:** `+ {RankService.GetServerAchievementsXp(Context.User as IGuildUser)} `\n"+
-                             $"**User Warns:** ` {(userWarns >= 0 ? "+" : '-') } {userWarns}`\n"+
+                             $"**User Warns:** ` {RankService.GetWarnsXp(BotUser)}`\n"+
                              $"**Random:** ` ± {RankService._randomXp} `\n"+
                              $"**Reachable:** ` {reachableXp - RankService._randomXp} - {reachableXp + RankService._randomXp} `\n")
                         .WithIsInline(false),
