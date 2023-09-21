@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -143,11 +144,19 @@ namespace Dynastio.Bot
         public bool IsXpIncreaseable(IGuildUser discordUser, User user, string messageContent)
         {
             if (string.IsNullOrEmpty(messageContent)) return false;
-            if (messageContent.Length < 10) return false;
-            if (discordUser.CreatedAt.Month < 3) return false;
+            if (!HasXpRequirements(messageContent)) return false;
+            if (!HasXpRequirements(discordUser)) return false;
 
             var last_activiy_score_time = DateTime.UtcNow - user.last_activiy_score_time;
             return last_activiy_score_time.TotalSeconds > _nextScoreTime;
+        }
+        public static bool HasXpRequirements(IGuildUser user)
+        {
+            return user.CreatedAt.Month < 3 ? false : true;
+        }
+        public static bool HasXpRequirements(string messageContent)
+        {
+            return messageContent.Length < 10 ? false : true;
         }
         public bool IsLevelIncreaseable(long xp, int level, out int max)
         {
