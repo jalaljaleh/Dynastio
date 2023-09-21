@@ -181,11 +181,11 @@ namespace Dynastio.Bot
         }
         public static bool HasXpRequirements(IGuildUser user)
         {
-            return user.CreatedAt.Month < 3 ? false : true;
+            return user.CreatedAt.Month < 3 is true ? false : true;
         }
         public static bool HasXpRequirements(string messageContent)
         {
-            return messageContent.Length < 10 ? false : true;
+            return messageContent.Length < 10 is true ? false : true;
         }
         public bool IsLevelIncreaseable(long xp, int level, out int max)
         {
