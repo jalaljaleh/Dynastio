@@ -75,14 +75,14 @@ namespace Dynastio.Bot.Interactions.modules
                          new EmbedFieldBuilder()
                         .WithName("Xp Details")
                         .WithValue(
-                             $"**Message XP:** + {RankService._score}\n"+
-                             $"**Server Booster:** + {RankService.GetServerBoosterXp(Context.User as IGuildUser)}\n"+
-                             $"**User Additive:** + {BotUser.activiy_score_additive}\n"+
-                             $"**User Achievements:** + {RankService.GetServerAchievementsXp(Context.User as IGuildUser)}\n"+
-                             $"**User Warns:** ± {RankService.GetWarnsXp(BotUser)}\n"+
-                             $"**Random:** ± {RankService._randomXp}\n"+
-                             $"**Reachable:** {reachableXp - RankService._randomXp} - {reachableXp + RankService._randomXp}\n"+
-                             $"**User Xp Requirements:** {(RankService.HasXpRequirements(Context.User as IGuildUser) is true ? "Yes" : "No")}\n")
+                             $"**Message XP:** ` + {RankService._score} `\n"+
+                             $"**Server Booster:** ` + {RankService.GetServerBoosterXp(Context.User as IGuildUser)} `\n"+
+                             $"**User Additive:** ` + {BotUser.activiy_score_additive}\n"+
+                             $"**User Achievements:** + {RankService.GetServerAchievementsXp(Context.User as IGuildUser)} `\n"+
+                             $"**User Warns:** ` ± {RankService.GetWarnsXp(BotUser)} `\n"+
+                             $"**Random:** ` ± {RankService._randomXp} `\n"+
+                             $"**Reachable:** ` {reachableXp - RankService._randomXp} - {reachableXp + RankService._randomXp} `\n"+
+                             $"**User Xp Requirements:** ` {(RankService.HasXpRequirements(Context.User as IGuildUser) is true ? "Yes" : "No")} `\n")
                         .WithIsInline(false),
 
                     },
