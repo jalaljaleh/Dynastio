@@ -158,12 +158,8 @@ namespace Dynastio.Bot
             if (user.Warns.Count == 0)
                 return 5;
 
-            int xp = Math.Abs(user.Warns.Count / 5);
-
-            if (xp > 0) return 0;
-
-            if (xp < -10) return -10;
-            return xp;
+            if (user.Warns.Count < 10) return Math.Abs(user.Warns.Count);
+            return Math.Abs(user.Warns.Count);
         }
         public static int GetServerBoosterXp(IGuildUser user)
         {
