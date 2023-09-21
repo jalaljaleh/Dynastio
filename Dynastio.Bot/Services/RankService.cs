@@ -147,8 +147,8 @@ namespace Dynastio.Bot
 
         public static int GetServerAchievementsXp(IGuildUser user)
         {
-            var achRoles = user.Guild.Roles
-                .Where(a => a.Name.StartsWith("ach:"))
+            var achRoles = (user as SocketGuildUser).Roles
+                .Where(a => a.Name.StartsWith("ach: "))
                 .ToList() ?? new();
 
             return achRoles.Count * 2;
