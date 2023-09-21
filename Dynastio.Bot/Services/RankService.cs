@@ -136,12 +136,15 @@ namespace Dynastio.Bot
         {
             var boosterXp = GetServerBoosterXp(user);
             var achXp = GetServerAchievementsXp(user);
+            var warnsXp = GetWarnsXp(buser);
 
             return
                 boosterXp +
                 achXp +
+                warnsXp +
                 (int)buser.activiy_score_additive;
         }
+
         public static int GetServerAchievementsXp(IGuildUser user)
         {
             var achRoles = user.Guild.Roles
@@ -149,6 +152,18 @@ namespace Dynastio.Bot
                 .ToList() ?? new();
 
             return achRoles.Count * 2;
+        }
+        public static int GetWarnsXp(User user)
+        {
+            if (user.Warns.Count == 0)
+                return 5;
+
+            int xp = Math.Abs(user.Warns.Count / 5);
+
+            if (xp > 0) return 0;
+
+            if (xp < -10) return -10;
+            return xp;
         }
         public static int GetServerBoosterXp(IGuildUser user)
         {
