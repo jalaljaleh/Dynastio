@@ -16,6 +16,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Dynastio.Bot.Interactions.modules.dynastio.toplistModule;
+using Dynastio.Bot.Global;
+using System.Data;
 
 namespace Dynastio.Bot.Handlers
 {
@@ -59,14 +61,15 @@ namespace Dynastio.Bot.Handlers
             //_repeaterService
             //    .AddFunction(EidMubarakEvent(), TimeSpan.FromHours(1), TimeSpan.FromHours(1));
 
-
             await _client.Guilds.First()
                 .GetTextChannel(1109911020341837825)
                 .SendMessageAsync("Ready !")
-                .TryAsync();
+            .TryAsync();
+
+
         }
 
-        
+
         private async Task RefreshStatusChannel()
         {
             var players = _dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).OrderByDescending(a => a.Score).Take(17).ToList();

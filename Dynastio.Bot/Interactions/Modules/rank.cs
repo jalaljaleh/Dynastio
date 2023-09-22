@@ -27,27 +27,28 @@ namespace Dynastio.Bot.Interactions.modules
         public async Task rank()
         {
             await DeferAsync();
+            try
+            {
+                var _rankedRoles = Context.Guild.Roles
+                               .Where(x => x.Name.StartsWith("rank: "))
+                               .OrderBy(a => a.Position)
+                               .ToList();
 
-            var _rankedRoles = Context.Guild.Roles
-                           .Where(x => x.Name.StartsWith("rank: "))
-                           .OrderBy(a => a.Position)
-                           .ToList();
+                var rankedRoles = _rankedRoles.Select(a => a.Id);
+                SocketRole latestRole = _rankedRoles[BotUser.activiy_level - 1] ?? null;
+                SocketRole nextRole = _rankedRoles[BotUser.activiy_level + 1] ?? null;
 
-            var rankedRoles = _rankedRoles.Select(a => a.Id);
-            SocketRole latestRole = _rankedRoles[BotUser.activiy_level - 1] ?? null;
-            SocketRole nextRole = _rankedRoles[BotUser.activiy_level + 1] ?? null;
+                var isServerBooster = Context.User as IGuildUser is not { PremiumSince: null };
+                var reachableXp = RankService.GetReachableMessageXp(Context.User as IGuildUser, Context.BotUser);
 
-            var isServerBooster = Context.User as IGuildUser is not { PremiumSince: null };
-            var reachableXp = RankService.GetReachableMessageXp(Context.User as IGuildUser, Context.BotUser);
-
-            var message = await FollowupAsync(userMention,
-                 embed: new EmbedBuilder()
-                 {
-                     Title = $"Level {BotUser.activiy_level}",
-                     Description = $"Your are level **{BotUser.activiy_level}** and {latestRole?.Mention ?? "none"} ranked role.",
-                     Color = latestRole?.Color ?? Color.Orange,
-                     Fields = new List<EmbedFieldBuilder>()
-                    {
+                var message = await FollowupAsync(userMention,
+                     embed: new EmbedBuilder()
+                     {
+                         Title = $"Level {BotUser.activiy_level}",
+                         Description = $"Your are level **{BotUser.activiy_level}** and {latestRole?.Mention ?? "none"} ranked role.",
+                         Color = latestRole?.Color ?? Color.Orange,
+                         Fields = new List<EmbedFieldBuilder>()
+                        {
                            new EmbedFieldBuilder()
                         .WithName("Current Status")
                         .WithValue(
@@ -84,9 +85,14 @@ namespace Dynastio.Bot.Interactions.modules
                              $"**Reachable:** ` {reachableXp - RankService._randomXp} - {reachableXp + RankService._randomXp} `\n")
                         .WithIsInline(false),
 
-                    },
-                     ThumbnailUrl = latestRole.GetIconUrl() ?? ""
-                 }.Build());
+                        },
+                         ThumbnailUrl = latestRole.GetIconUrl() ?? ""
+                     }.Build());
+            }
+            catch
+            {
+                var message = await FollowupAsync(userMention, embed: "You are not ranked yet !".ToEmbed());
+            }
 
         }
 

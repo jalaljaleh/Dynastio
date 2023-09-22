@@ -44,9 +44,9 @@ namespace Dynastio.Bot
         {
             Global.Main.Log("Main Async", "Started");
 
-           var configuration = Configuration.LoadConfiguration(false);
+            var configuration = Configuration.LoadConfiguration(false);
            // var configuration = Configuration.LoadReleaseConfiguration();
-          // Configuration.UpdateConfiguration(configuration);
+           // Configuration.UpdateConfiguration(configuration);
 
 
             var services = new ServiceCollection()
@@ -103,7 +103,7 @@ namespace Dynastio.Bot
             var configuration = _services.GetService<Configuration>();
 
             await _services.GetService<DynastioData>()
-                .InitializeAsync(configuration.DatabaseConnectionString, DynastioData.DatabasesInstances.Mongodb);
+                 .InitializeAsync(configuration.DatabaseConnectionString, DynastioData.DatabasesInstances.Mongodb);
 
             _services.GetRequiredService<GlobalizationService>()
                 .LoadDirectory(FileManager.ToResourcePath("globalization"));
@@ -128,9 +128,9 @@ namespace Dynastio.Bot
             await client.LoginAsync(TokenType.Bot, _services.GetRequiredService<Configuration>().BotToken);
             await client.StartAsync();
 
+
             await Task.Delay(Timeout.Infinite);
         }
-
 
     }
 }
