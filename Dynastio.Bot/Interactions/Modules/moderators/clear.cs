@@ -18,7 +18,7 @@ namespace Dynastio.Bot.Interactions.modules.moderators
     public class clearModule : CustomInteractionModuleBase
     {
         [SlashCommand("clear", "clear messages")]
-        public async Task clear(int count, Direction direction = Direction.Before, string fromMessageId = "")
+        public async Task clear(int count, IGuildUser user, Direction direction = Direction.Before, string fromMessageId = "")
         {
             await DeferAsync();
 
@@ -41,7 +41,7 @@ namespace Dynastio.Bot.Interactions.modules.moderators
                 }
             }
 
-            messages = messages.Where(x => (DateTime.UtcNow - x.CreatedAt.UtcDateTime).TotalDays < 14)
+            messages = messages.Where(x => (DateTime.UtcNow - x.CreatedAt.UtcDateTime).TotalDays < 14 && user != null ? x.Author.Id == user.Id : true)
                 .ToList();
 
             await channel.DeleteMessagesAsync(messages);
