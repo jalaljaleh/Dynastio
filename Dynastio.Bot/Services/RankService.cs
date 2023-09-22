@@ -94,11 +94,8 @@ namespace Dynastio.Bot
                     bool isGameAccountConnected = string.IsNullOrEmpty(user.gameAccountId);
 
                     if (isGameAccountConnected)
-                    {
-                        // remove when game updated !
-                        if (false)
-                            await _dynastioClient.UpdateDiscordRank(user.gameAccountId, user.activiy_level);
-                    }
+                        await _dynastioClient.UpdateDiscordRank(user.gameAccountId, user.activiy_level);
+
 
                     var role = _userService.GetHighestRankedRoleUser(discordUser);
 

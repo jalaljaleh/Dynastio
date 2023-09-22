@@ -37,7 +37,18 @@ namespace Dynastio.Data
                 Main.Log("Mongodb", "Start Session Async ..");
 
                 await _db.StartSessionAsync();
-              
+
+                //var filter = Builders<User>.Filter.Where(a => a.activiy_level > 5);
+                //var result = _users.Find(filter);
+                //var users = await result.ToListAsync();
+                //foreach (var u in users)
+                //{
+                //    u.activiy_level = 5;
+                //    u.activiy_score = 0;
+                //    u.activiy_score_additive = u.activiy_level / 5;
+                //}
+                //await UpdateManyAsync(users);
+
                 Main.Log("Mongodb", "Session Started.");
             }
             catch
