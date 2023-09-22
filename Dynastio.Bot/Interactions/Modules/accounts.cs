@@ -11,6 +11,7 @@ using Dynastio.Data;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Interactions.AutoCompeletes;
 using Dynastio.Bot.Interactions.Forms;
+using DnsClient.Internal;
 
 namespace Dynastio.Bot.Interactions.modules
 {
@@ -168,14 +169,15 @@ namespace Dynastio.Bot.Interactions.modules
         }
 
         private const int _maxAccounts = 20;
-
+        string GetAccountIdFromString(string id)=> id.Remove("id:", "Id:", "ID:", "iD:").Trim();
+        
         [RateLimit(10)]
         [ModalInteraction("accounts add", true,RunMode.Sync)]
         public async Task add(FormAddAccount form)
         {
             await DeferAsync();
 
-            string id = form.Id.Trim().Remove("id:", "Id:", "ID:", "iD:"); // don't use tolower
+            string id = GetAccountIdFromString(form.Id); // don't use tolower
 
             if (id.Contains("discord") && !id.Contains(Context.User.Id.ToString()))
                 await FollowupAsync(userMention, embed: this["error.unauthorized.discord"].ToEmbed(this["unauthorized"], Color.Orange));
@@ -242,7 +244,7 @@ namespace Dynastio.Bot.Interactions.modules
                 return;
             }
 
-            string id = form.Id.Trim().Remove("id:", "Id:", "ID:", "iD:"); // don't use tolower
+            string id = GetAccountIdFromString(form.Id);
 
             if (id.Contains("discord") && !id.Contains(Context.User.Id.ToString()))
             {
