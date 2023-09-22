@@ -42,7 +42,7 @@ namespace Dynastio.Bot.Interactions.modules
                     return;
                 }
 
-                bool isGameAccountConnected = string.IsNullOrEmpty(buser.gameAccountId);
+                bool isGameAccountConnected = !string.IsNullOrEmpty(buser.gameAccountId);
 
                 if (isGameAccountConnected is false)
                 {
