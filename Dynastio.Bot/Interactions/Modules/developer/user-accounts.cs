@@ -25,9 +25,35 @@ namespace Dynastio.Bot.Interactions.modules
         public InternetService _internetService { get; set; }
         public RankService _rankService { get; set; }
         public DiscordSocketClient _discord { get; set; }
-        public DynastioData _database { get; set; }
+        public DynastioClient _dynastioClient { get; set; }
 
+        [Group("rank-system", "user commands")]
+        public class xpModule : developerModule
+        {
+            [SlashCommand("sync", "dynastio accounts")]
+            public async Task sync(IGuildUser user)
+            {
+                await DeferAsync();
 
+                var buser = await _dynastioData.GetUserAsync(user.Id, false);
+                if (buser is null)
+                {
+                    await FollowupAsync("no any result found.");
+                    return;
+                }
+
+                bool isGameAccountConnected = string.IsNullOrEmpty(buser.gameAccountId);
+
+                if (isGameAccountConnected is false)
+                {
+                    await FollowupAsync("account not connected.");
+                    return;
+                }
+                await _dynastioClient.UpdateDiscordRank(buser.gameAccountId, buser.activiy_level);
+
+                await FollowupAsync("request sent !");
+            }
+        }
         [SlashCommand("permission", "user permission")]
         public async Task permission(IGuildUser user, BotUserPermission permission, bool Has)
         {

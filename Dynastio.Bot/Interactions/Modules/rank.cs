@@ -20,7 +20,8 @@ namespace Dynastio.Bot.Interactions.modules
     public class Leaderboard : CustomInteractionModuleBase
     {
         public DynastioData _dynastioData { get; set; }
-        public DynastioData _database { get; set; }
+        public DynastioClient _dynastClient { get; set; }
+
 
         [RateLimit(60)]
         [SlashCommand("rank", "user rank")]
@@ -74,13 +75,13 @@ namespace Dynastio.Bot.Interactions.modules
                         .WithIsInline(true),
 
                          new EmbedFieldBuilder()
-                        .WithName("Xp Details")
+                        .WithName("Calculate Xp")
                         .WithValue(
                              $"**Message XP:** ` + {RankService._score} `\n"+
                              $"**Server Booster:** ` + {RankService.GetServerBoosterXp(Context.User as IGuildUser)} `\n"+
-                             $"**User Additive:** ` + {BotUser.activiy_score_additive} `\n"+
-                             $"**User Achievements:** `+ {RankService.GetServerAchievementsXp(Context.User as IGuildUser)} `\n"+
-                             $"**User Warns:** ` {RankService.GetWarnsXp(BotUser)}`\n"+
+                             $"**Additive:** ` + {BotUser.activiy_score_additive} `\n"+
+                             $"**Achievements:** `+ {RankService.GetServerAchievementsXp(Context.User as IGuildUser)} `\n"+
+                             $"**Warns:** ` {(RankService.GetWarnsXp(BotUser) >0 ? "+" : "")} {RankService.GetWarnsXp(BotUser)}`\n"+
                              $"**Random:** ` ± {RankService._randomXp} `\n"+
                              $"**Reachable:** ` {reachableXp - RankService._randomXp} - {reachableXp + RankService._randomXp} `\n")
                         .WithIsInline(false),
