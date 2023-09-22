@@ -91,7 +91,7 @@ namespace Dynastio.Bot
 
                 if (levelupResult)
                 {
-                    bool isGameAccountConnected = string.IsNullOrEmpty(user.gameAccountId);
+                    bool isGameAccountConnected = !string.IsNullOrEmpty(user.gameAccountId);
 
                     if (isGameAccountConnected)
                         await _dynastioClient.UpdateDiscordRank(user.gameAccountId, user.activiy_level);
