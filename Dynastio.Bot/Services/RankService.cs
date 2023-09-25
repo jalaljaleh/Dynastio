@@ -53,11 +53,14 @@ namespace Dynastio.Bot
         public static int getMax(int lvl)
         {
             if (lvl is 0)
-                return _getMax(lvl);
+                return _getMax(lvl + 1);
 
-            return _getMax(lvl) + 10000;
+            if (lvl is 1)
+                return _getMax(lvl + 3);
 
-            int _getMax(int _lvl) => (_lvl < 21 ? 900 : 600) * (int)Math.Pow(_lvl + 1, 2.1);
+            return _getMax(lvl);
+
+            int _getMax(int _lvl) => (_lvl * 400) * (int)Math.Pow(_lvl + 1, 1.2);
         }
         public static int RequiredXpToLevelUp(User user)
         {

@@ -6,45 +6,58 @@ namespace Dynastio.Bot.Test
     {
         public static void Main()
         {
-            int ii = 0;
-            int iii = 0;
-            for (int i = 0; i < 42; i++)
+            int totallLevel = 0;
+            int totallReward = 0;
+            Console.WriteLine("Level\tXp\tReward\tMessages\tHours\tdays\tOffest");
+
+            for (int level = 0; level < 42; level++)
             {
-                ii += getMax(i);
-                iii += (int)CalculateReward(i);
-                Console.WriteLine(i + "    " + getMax(i) + "    " + ii + "        " + CalculateReward(i) + "     " + iii + "     " + CaclculateMessage(getMax(i)) + " msg");
+                totallLevel += getMax(level);
+                totallReward += (int)CalculateLevelReward(level);
+
+                int messages = getMax(level) / 50;
+                int hours = messages / 60;
+                int days = hours / 24;
+                Console.WriteLine(level + "\t" + getMax(level) + "\t" + CalculateLevelReward(level) + "\t" + messages  + "\t\t" + hours + "\t" + days + "\t" + days * 12);
             }
-            Console.WriteLine(ii);
+
         }
-        static double CaclculateMessage(int xp)
+        public const int _nextScoreTime = 60;
+        public const int _updateUserTime = 240;
+        public const int maxLevel = 40;
+        public const double maxReward = 10000;
+        public const int _score = 50;
+        public const int _boostersExpandableXp = 15;
+        public const int _randomXp = 10;
+        private ulong[] _score_channels = {
+            480966712318099487, //
+            486591124836974592, //
+            1098632452274135112,//
+            1098918867255967814,//
+            1098248723013841026,//
+            1098608343947415575,//
+            1098263349873082438,//
+        };
+        public static int getMax(int lvl)
         {
-            return xp / 50;
+            if (lvl is 0)
+                return _getMax(lvl + 1);
+
+            if (lvl is 1)
+                return _getMax(lvl + 3);
+
+            return _getMax(lvl);
+
+            int _getMax(int _lvl) => (_lvl * 400) * (int)Math.Pow(_lvl + 1, 1.2);
         }
-        static double CalculateReward(int level)
+
+        public static double CalculateLevelReward(int level)
         {
-            const int maxLevel = 40;
-            const double maxReward = 10000;
             double b = 1.0 / maxLevel;
 
             double a = maxReward / (Math.Exp(1) - 1);
 
             return Math.Round(a * (Math.Exp(b * level) - 1));
-        }
-        public async Task Test()
-        {
-            DynastioClient dc = new DynastioClient("");
-
-
-            Console.ReadLine();
-        }
-        public static int getMax(int lvl)
-        {
-            if (lvl is 0)
-                return _getMax(lvl);
-
-            return _getMax(lvl) + 10000;
-
-            int _getMax(int _lvl) => (_lvl < 21 ? 900 : + 600) * (int)Math.Pow(_lvl + 1, 2.1);
         }
     }
 
