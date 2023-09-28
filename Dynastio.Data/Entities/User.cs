@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using System.Collections.Concurrent;
 using Dynastio.Net;
+using Dynastio.Bot.Global;
 
 namespace Dynastio.Data
 {
@@ -47,6 +48,10 @@ namespace Dynastio.Data
         {
                 LockedPermissions.Remove(per);
             return this;
+        }
+        public bool IsMainAccountConnected()
+        {
+            return !string.IsNullOrEmpty(this.gameAccountId);
         }
         public DateTime LastHonorGift { get; set; }
         public DateTime LastBoostGift { get; set; }

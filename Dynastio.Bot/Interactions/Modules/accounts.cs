@@ -17,6 +17,7 @@ namespace Dynastio.Bot.Interactions.modules
 {
 
     [RequireGuildOfficial]
+    [RequireContext(ContextType.Guild)]
     [Group("accounts", "manage your game accounts")]
     public class AccountsModule : CustomInteractionModuleBase
     {
@@ -25,6 +26,7 @@ namespace Dynastio.Bot.Interactions.modules
         public InternetService _internetService { get; set; }
         public DynastioData _database { get; set; }
         public DynastioClient _dynastio { get; set; }
+        public RankService _rankService { get; set; }
 
 
         [RateLimit(60)]
@@ -141,7 +143,7 @@ namespace Dynastio.Bot.Interactions.modules
                 await FollowupAsync("account not found.");
                 return;
             }
-            
+
             selectedAccount.SetReminder(newReminder);
 
             await _dynastioData.UpdateAsync(Context.BotUser);
@@ -169,10 +171,10 @@ namespace Dynastio.Bot.Interactions.modules
         }
 
         private const int _maxAccounts = 20;
-        string GetAccountIdFromString(string id)=> id.Remove("id:", "Id:", "ID:", "iD:").Trim();
-        
+        string GetAccountIdFromString(string id) => id.Remove("id:", "Id:", "ID:", "iD:").Trim();
+
         [RateLimit(10)]
-        [ModalInteraction("accounts add", true,RunMode.Sync)]
+        [ModalInteraction("accounts add", true, RunMode.Sync)]
         public async Task add(FormAddAccount form)
         {
             await DeferAsync();
@@ -233,7 +235,7 @@ namespace Dynastio.Bot.Interactions.modules
         }
 
         [RateLimit(15)]
-        [ModalInteraction("accounts connect", true,RunMode.Sync)]
+        [ModalInteraction("accounts connect", true, RunMode.Sync)]
         public async Task connect(FormConnectAccount form)
         {
             await DeferAsync();
@@ -268,6 +270,9 @@ namespace Dynastio.Bot.Interactions.modules
 
             Context.BotUser.gameAccountId = id;
             await _dynastioData.UpdateAsync(Context.BotUser);
+
+            bool result = await _rankService.UpdateGameDiscordRankAsync(BotUser);
+            await _rankService.LogRewardAsync(Context.User as IGuildUser, BotUser, result);
 
             await FollowupAsync(userMention, embed: "Account connected succesfuly to your profile !".ToEmbed(this["account_connected.title"], Color.Green));
 

@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Dynastio.Bot.Global;
 using Dynastio.Data;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
@@ -94,15 +95,30 @@ namespace Dynastio.Bot
 
                 if (levelupResult)
                 {
-                    bool isGameAccountConnected = !string.IsNullOrEmpty(user.gameAccountId);
+                    bool isGameAccountConnected = await UpdateGameDiscordRankAsync(user);
 
-                    if (isGameAccountConnected)
-                        await _dynastioClient.UpdateDiscordRank(user.gameAccountId, user.activiy_level);
+                    await LogRewardAsync(discordUser, user, isGameAccountConnected);
+                }
 
+                return (true, levelupResult, user, discordUser);
+            }
+            return (false, false, null, null);
+        }
+        public async Task<bool> UpdateGameDiscordRankAsync(User user)
+        {
+            bool isGameAccountConnected = user.IsMainAccountConnected();
+            if (isGameAccountConnected)
+            {
+                var rank = await _dynastioClient.UpdateDiscordRank(user.gameAccountId, user.activiy_level);
+                return true;
+            }
+            return false;
+        }
+        public async Task LogRewardAsync(IGuildUser discordUser, User user, bool isGameAccountConnected)
+        {
+            var role = _userService.GetHighestRankedRoleUser(discordUser);
 
-                    var role = _userService.GetHighestRankedRoleUser(discordUser);
-
-                    await _webhook.LogRewardAsync(discordUser.Mention, embeds: new List<Embed>(){ new EmbedBuilder()
+            await _webhook.LogRewardAsync(discordUser.Mention, embeds: new List<Embed>(){ new EmbedBuilder()
                             {
                                 Title = "New Level Unlocked",
                                 Description = $"🎉 You just unlocked new level **{user.activiy_level}**, level reward unlocked !",
@@ -116,11 +132,6 @@ namespace Dynastio.Bot
                                 },
                                 ThumbnailUrl =  "https://cdn.discordapp.com/attachments/1111209352095871028/1111209352217509938/openiron.png"
                             }.Build() });
-
-                }
-                return (true, levelupResult, user, discordUser);
-            }
-            return (false, false, null, null);
         }
         public static int GetReachableMessageXp(IGuildUser user, User buser)
         {
