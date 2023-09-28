@@ -96,6 +96,7 @@ namespace Dynastio.Bot
                 {
                     var p = await _dynastioClient.GetUserProfileAsync(a.Id);
                     profiles.Add(p);
+                    await Task.Delay(80);
                 }
                 catch { continue; }
             }
