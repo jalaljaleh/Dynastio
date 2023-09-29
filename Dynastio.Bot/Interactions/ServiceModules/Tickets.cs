@@ -78,8 +78,8 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
 
             var message = await thread.SendMessageAsync(
-                $"## <@{Context.User.Id}>:" +
-                $"# {form.Title1}" +
+                $"## <@{Context.User.Id}>:\n" +
+                $"# {form.Title1}\n" +
                 $"{form.Description}\n‌\n\n",
 
                 embed: new EmbedBuilder()
