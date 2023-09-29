@@ -70,17 +70,22 @@ namespace Dynastio.Bot.Interactions.ServiceModules
 
                                       ?? this["no_account_found"].ToMarkdown();
 
+            var details = 
+                $"Youtube: {BotUser.youtube_channel}\n" +
+                $"Account: {BotUser.gameAccountId}\n";
+
+            var content = accounts + details.ToMarkdown();
+
+
             var message = await thread.SendMessageAsync(
-                $"## <@{Context.User.Id}>:\n" +
-                $"## {form.Title1}\n" +
-                $"{form.Description}\n\n",
+                $"## <@{Context.User.Id}>:" +
+                $"# {form.Title1}" +
+                $"{form.Description}\n‌\n\n",
 
                 embed: new EmbedBuilder()
                 {
-                    Description =
-                    accounts + "\n" +
-                    ($"Youtube: {BotUser.youtube_channel}\n" +
-                    $"Account: {BotUser.gameAccountId}\n").ToMarkdown(),
+                    Description = content,
+
                     Author = new EmbedAuthorBuilder()
                     {
                         Name = Context.User.Username,

@@ -54,6 +54,7 @@ namespace Dynastio.Bot.Interactions.modules
                 await FollowupAsync("request sent !");
             }
         }
+       
         [SlashCommand("permission", "user permission")]
         public async Task permission(IGuildUser user, BotUserPermission permission, bool Has)
         {
