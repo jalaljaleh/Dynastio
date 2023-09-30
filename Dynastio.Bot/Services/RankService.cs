@@ -43,13 +43,13 @@ namespace Dynastio.Bot
         public const int _boostersExpandableXp = 15;
         public const int _randomXp = 10;
         private ulong[] _score_channels = {
-            480966712318099487, //
-            486591124836974592, //
-            1098632452274135112,//
-            1098918867255967814,//
-            1098248723013841026,//
-            1098608343947415575,//
-            1098263349873082438,//
+
+        };
+        private ulong[] _banned_score_channels = {
+             1098248723013841026, // Media
+        };
+        private ulong[] _score_categories = {
+            480416088790794250, // General
         };
         public static int getMax(int lvl)
         {
@@ -78,9 +78,23 @@ namespace Dynastio.Bot
 
         public async Task<(bool xpResult, bool levelupResult, User user, IGuildUser discordUser)> TryAddMessageXpAsync(IUserMessage message)
         {
-            if (message.Channel is null) return (false, false, null, null);
-            if (_score_channels.Contains(message.Channel.Id) is false)
-                return (false, false, null, null);
+
+            if (message.Channel is null) 
+                return default;
+
+            if (message.Channel is not ITextChannel txtChannel)
+                return default;
+
+            if (txtChannel.CategoryId.HasValue)
+            {
+                if (!_score_categories.Contains(txtChannel.CategoryId.Value)) 
+                    return default;
+
+                if (_banned_score_channels.Contains(message.Channel.Id))
+                    return default;
+            }
+            else if (!_score_channels.Contains(message.Channel.Id)) 
+                return default;
 
             var user = await _dynastioData.GetUserAsync(message.Author.Id);
             var discordUser = message.Author as IGuildUser;

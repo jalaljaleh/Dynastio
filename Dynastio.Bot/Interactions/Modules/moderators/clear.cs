@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Bot.Global;
 using Dynastio.Net;
+using MongoDB.Bson;
 
 namespace Dynastio.Bot.Interactions.modules.moderators
 {
@@ -18,7 +19,7 @@ namespace Dynastio.Bot.Interactions.modules.moderators
     public class clearModule : CustomInteractionModuleBase
     {
         [SlashCommand("clear", "clear messages")]
-        public async Task clear(int count, IGuildUser user, Direction direction = Direction.Before, string fromMessageId = "")
+        public async Task clear(int count, IGuildUser user = null, Direction direction = Direction.Before, string fromMessageId = "")
         {
             await DeferAsync();
 
@@ -40,8 +41,9 @@ namespace Dynastio.Bot.Interactions.modules.moderators
                     return;
                 }
             }
+            Func<IMessage, bool> filterUser = new Func<IMessage, bool>(x => user != null ? x.Author.Id == user.Id : true);
 
-            messages = messages.Where(x => (DateTime.UtcNow - x.CreatedAt.UtcDateTime).TotalDays < 14 && user != null ? x.Author.Id == user.Id : true)
+            messages = messages.Where(x => (DateTime.UtcNow - x.CreatedAt.UtcDateTime).TotalDays < 14 && filterUser.Invoke(x))
                 .ToList();
 
             await channel.DeleteMessagesAsync(messages);

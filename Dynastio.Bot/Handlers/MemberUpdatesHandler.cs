@@ -43,12 +43,12 @@ namespace Dynastio.Bot.Handlers
 
         readonly Dictionary<string, ulong> roleHeaders = new Dictionary<string, ulong>()
         {
-            { "ver:", 1121835049344569416},
-            { "ach:", 1113119762277482647},
-            { "mod:", 1113119662100709406},
-            { "badge:", 1113080837303455794},
-            { "rank:", 1113082402781282334},
-            { "bot:", 1149645412781801553},
+            { "ver: ", 1121835049344569416},
+            { "ach: ", 1113119762277482647},
+            { "mod: ", 1113119662100709406},
+            { "badge: ", 1113080837303455794},
+            { "rank: ", 1113082402781282334},
+            { "bot: ", 1149645412781801553},
         };
         async Task RolesChangedAsync(SocketGuildUser user)
         {
@@ -70,7 +70,7 @@ namespace Dynastio.Bot.Handlers
                 await user.AddRolesAsync(rolesToAdd);
 
             if (rolesToRemove.Any())
-                await user.RemoveRolesAsync(rolesToAdd);
+                await user.RemoveRolesAsync(rolesToRemove);
         }
         void CheckUserRoles(string startWith, ulong categoryId, SocketGuildUser user, out ulong add, out ulong remove)
         {
