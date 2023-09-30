@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Bot.Global;
 using Dynastio.Net;
+using Dynastio.Data;
 
 namespace Dynastio.Bot.Interactions.modules.moderators
 {
@@ -17,9 +18,10 @@ namespace Dynastio.Bot.Interactions.modules.moderators
     public class timeoutModule : CustomInteractionModuleBase
     {
         public WebhookService _webhookService { get; set; }
+        public DynastioData _dynastioData { get; set; }
 
         [SlashCommand("mute", "mute a user")]
-        public async Task mute(IGuildUser user, TimeType time, int value, string reason = "no reason provided")
+        public async Task mute(IGuildUser user, TimeType time, int value, string reason, bool warn = false)
         {
             await DeferAsync();
 
@@ -30,28 +32,41 @@ namespace Dynastio.Bot.Interactions.modules.moderators
                 return;
             }
 
-
             var timeSpan = TimeSpan.FromSeconds(time_);
 
             await user.SetTimeOutAsync(timeSpan);
+
+            if( warn )
+            {
+                var targetUser = await _dynastioData.GetUserAsync(user.Id);
+
+                targetUser.Warns.Add(new Data.UserWarn()
+                {
+                    Content = reason,
+                    CreatedAt = DateTime.UtcNow,
+                    SourceId = Context.User.Id
+                });
+
+                await _dynastioData.UpdateAsync(targetUser);
+            }
 
             var embed = new EmbedBuilder()
             {
                 Description = $"{user.Mention} You have been muted for ` {reason} `.",
                 ThumbnailUrl = user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl(),
-                Color = Color.DarkRed,
+                Color = Color.Red,
                 Fields = new List<EmbedFieldBuilder>()
                     {
                         new EmbedFieldBuilder()
                         {
-                            Name = "Duration",
-                            Value = value + " " + time.ToString(),
+                            Name = "Duration | Revoke",
+                            Value = value + " " + time.ToString() + " | " + (DateTime.UtcNow + timeSpan).ToDiscordUnixTimestampFormat(),
                             IsInline = true
                         },
-                         new EmbedFieldBuilder()
+                          new EmbedFieldBuilder()
                         {
-                            Name = "Revoke",
-                            Value =  (DateTime.UtcNow + timeSpan).ToDiscordUnixTimestampFormat(),
+                            Name = "Warn",
+                            Value = warn ? "`applied`": "`not applied`",
                             IsInline = true
                         },
                           new EmbedFieldBuilder()
