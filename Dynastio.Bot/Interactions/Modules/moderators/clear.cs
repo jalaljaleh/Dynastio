@@ -14,7 +14,6 @@ namespace Dynastio.Bot.Interactions.modules.moderators
     [EnabledInDm(false)]
     [RequireContext(ContextType.Guild)]
     [RequireBotPermission(ChannelPermission.ManageMessages)]
-    [RequireUserPermission(ChannelPermission.ManageMessages)]
     //[DefaultMemberPermissions(GuildPermission.ManageMessages)]
     public class clearModule : CustomInteractionModuleBase
     {

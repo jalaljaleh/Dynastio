@@ -39,9 +39,9 @@ namespace Dynastio.Bot
         public const int _updateUserTime = 240;
         public const int maxLevel = 40;
         public const double maxReward = 10000;
-        public const int _score = 50;
+        public const int _score = 40;
         public const int _boostersExpandableXp = 15;
-        public const int _randomXp = 10;
+        public const int _randomXp = 20;
         private ulong[] _score_channels = {
 
         };
@@ -61,7 +61,7 @@ namespace Dynastio.Bot
 
             return _getMax(lvl);
 
-            int _getMax(int _lvl) => (_lvl * 400) * (int)Math.Pow(_lvl + 1, 1.2);
+            int _getMax(int _lvl) => (_lvl * 450) * (int)Math.Pow(_lvl + 1, 1.2);
         }
         public static int RequiredXpToLevelUp(User user)
         {
@@ -181,10 +181,12 @@ namespace Dynastio.Bot
         public static int GetWarnsXp(User user)
         {
             if (user.Warns.Count == 0)
-                return 5;
+                return 10;
 
-            if (user.Warns.Count < 10) return user.Warns.Count * -1;
-            return user.Warns.Count * -1;
+            if (user.Warns.Count < 19)
+                return user.Warns.Count * -1;
+
+            return -20;
         }
         public static int GetServerBoosterXp(IGuildUser user)
         {
