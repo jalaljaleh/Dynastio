@@ -51,34 +51,19 @@ namespace Dynastio.Bot
             int i = 0;
             foreach (var video in _dynastioClient.FeaturedVideos.OrderByDescending(a => a.ExpireAt))
             {
-                try
-                {
                     var post = posts.FirstOrDefault(a => a.Content.Contains(video.Url));
-                    if (post is null && i < 5)
-                    {
-                        i++;
-                        await PostVideoAsync(postChannel, video);
-                    }
+                    if (post != null)           
+                        await PostVideoAsync(postChannel, video);  
                     else
                         posts.Remove(post);
-                }
-                catch
-                {
-                }
             }
 
             foreach (var x in posts)
             {
-                try
-                {
                     await ExpireVideoAsync(x, expireChannel)
                         .TryAsync();
 
                     await Task.Delay(Global.Main.Random.Next(1000, 5000));
-                }
-                catch
-                {
-                }
             };
 
             var result = await postChannel.DeleteMessagesAsync(posts).TryAsync();
@@ -97,7 +82,7 @@ namespace Dynastio.Bot
             var msg = await channel.SendMessageAsync(
                         $"## ✦•··························• Dynast.io •··························•✦\n" +
                         $"\n### Expire {video.ExpireAt.ToDiscordUnixTimestampFormat()}" +
-                        "\nUrl: " + video.Url +
+                        "\nUrl: " + video.Url + " " +
                         "\nGroup: " + video.Group +
                         "\nPriority: " + video.Priority);
 
@@ -106,7 +91,7 @@ namespace Dynastio.Bot
             await msg.AddReactionAsync(new Emoji("👍"))
                 .TryAsync();
 
-            await Task.Delay(Global.Main.Random.Next(150, 1000));
+            await Task.Delay(Global.Main.Random.Next(500, 1000));
         }
         public async Task ExpireVideoAsync(IMessage msg, ITextChannel channel)
         {
@@ -120,6 +105,8 @@ namespace Dynastio.Bot
 
             await msg1.CrosspostAsync()
                 .TryAsync();
+
+            await Task.Delay(Global.Main.Random.Next(500, 1000));
         }
     }
 }
