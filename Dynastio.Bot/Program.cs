@@ -45,7 +45,7 @@ namespace Dynastio.Bot
             Global.Main.Log("Main Async", "Started");
 
             Configuration configuration;
-            if (false)
+            if (true)
                 configuration = Configuration.LoadConfiguration(false);           
             else
             {
