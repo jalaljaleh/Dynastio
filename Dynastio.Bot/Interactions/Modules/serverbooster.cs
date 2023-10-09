@@ -10,7 +10,7 @@ using Discord.WebSocket;
 using static Dynastio.Data.Guild;
 using Dynastio.Data;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-
+using Dynastio.Bot.Global;
 
 namespace Dynastio.Bot.Interactions.modules
 {
@@ -76,8 +76,8 @@ namespace Dynastio.Bot.Interactions.modules
 
             await _db.DeleteAsync(result);
 
-            await _discord.GetGuild(Global.Guilds.OfficialGuild)
-                    .GetTextChannel(Channels.ChannelIds[Channels.GuildChannelType.RewardChannel])
+            await _discord.GetGuild(SavedGuilds.OfficialGuild)
+                    .GetTextChannel(SavedChannels.ChannelIds[SavedChannels.GuildChannelType.RewardChannel])
                     .SendMessageAsync(
                     text: userMention,
                     embed: new EmbedBuilder()

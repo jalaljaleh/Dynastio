@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot
 {
-    public class FeaturedVideosService
+    public class FVideosService
     {
         private readonly DynastioClient _dynastioClient;
         private readonly RepeaterService _repeaterService;
         private readonly DiscordSocketClient _client;
         private readonly GuildService _guildService;
         private IServiceProvider _services;
-        public FeaturedVideosService(IServiceProvider services)
+        public FVideosService(IServiceProvider services)
         {
             _services = services;
             _dynastioClient = _services.GetService<DynastioClient>();
@@ -31,15 +31,15 @@ namespace Dynastio.Bot
 
         private async Task _client_Ready()
         {
-            _repeaterService.AddAction(RefreshChannelAsync, TimeSpan.FromMinutes(35));
+            _repeaterService.AddAction(RefreshChannelAsync, TimeSpan.FromMinutes(120),TimeSpan.FromMinutes(20));
         }
 
         private async Task RefreshChannelAsync()
         {
-            var postChannel = _guildService.GetTextChannel(Channels.GuildChannelType.FeaturedVideos);
+            var postChannel = _guildService.GetTextChannel(SavedChannels.GuildChannelType.FeaturedVideos);
             if (postChannel == null) return;
 
-            var expireChannel = _guildService.GetTextChannel(Channels.GuildChannelType.FeaturedVideosExpired);
+            var expireChannel = _guildService.GetTextChannel(SavedChannels.GuildChannelType.FeaturedVideosExpired);
             if (expireChannel == null) return;
 
             var msgs = await ChannelUtilities.GetChannelMessageAsync(postChannel, 3000);
@@ -48,24 +48,48 @@ namespace Dynastio.Bot
                 .Where(a => a.Source == MessageSource.Bot)
                 .ToList();
 
+            int i = 0;
             foreach (var video in _dynastioClient.FeaturedVideos.OrderByDescending(a => a.ExpireAt))
             {
-                var post = posts.FirstOrDefault(a => a.Content.Contains(video.Url));
-                if (post is null)
-                    await PostVideoAsync(postChannel, video);
-                else
-                    posts.Remove(post);
+                try
+                {
+                    var post = posts.FirstOrDefault(a => a.Content.Contains(video.Url));
+                    if (post is null && i < 5)
+                    {
+                        i++;
+                        await PostVideoAsync(postChannel, video);
+                    }
+                    else
+                        posts.Remove(post);
+                }
+                catch
+                {
+                }
             }
 
             foreach (var x in posts)
             {
-                await ExpireVideoAsync(x, expireChannel)
-                    .TryAsync();
+                try
+                {
+                    await ExpireVideoAsync(x, expireChannel)
+                        .TryAsync();
 
-                await Task.Delay(Global.Main.Random.Next(500, 5000));
+                    await Task.Delay(Global.Main.Random.Next(1000, 5000));
+                }
+                catch
+                {
+                }
             };
 
-            await postChannel.DeleteMessagesAsync(posts);
+            var result = await postChannel.DeleteMessagesAsync(posts).TryAsync();
+            if (result is false)
+            {
+                posts.ForEach(async a =>
+                {
+                    await a.DeleteAsync();
+                    await Task.Delay(800);
+                });
+            }
         }
 
         public async Task PostVideoAsync(ITextChannel channel, FeaturedVideos video)
@@ -79,7 +103,8 @@ namespace Dynastio.Bot
 
             await Task.Delay(80);
 
-            await msg.AddReactionAsync(new Emoji("👍"));
+            await msg.AddReactionAsync(new Emoji("👍"))
+                .TryAsync();
 
             await Task.Delay(Global.Main.Random.Next(150, 1000));
         }

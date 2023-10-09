@@ -17,7 +17,7 @@ namespace Discord.Interactions
     {
         public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
         {
-            if (Users.Develoeprs.Contains(context.User.Id))
+            if (SavedUsers.Develoeprs.Contains(context.User.Id))
             {
                 return Task.FromResult(PreconditionResult.FromSuccess());
             }

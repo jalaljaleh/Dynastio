@@ -58,23 +58,23 @@ namespace Dynastio.Bot
                 .FirstOrDefault()
                 .GetTextChannel(Id);
         }
-        public ITextChannel GetTextChannel(Channels.GuildChannelType channelType)
+        public ITextChannel GetTextChannel(SavedChannels.GuildChannelType channelType)
         {
             var channelId = GetChannelId(channelType);
             return this._discord.Guilds
                 .FirstOrDefault()
                 .GetTextChannel(channelId);
         }
-        public ulong GetChannelId(Channels.GuildChannelType t)
+        public ulong GetChannelId(SavedChannels.GuildChannelType t)
         {
-            return Channels.ChannelIds[t];
+            return SavedChannels.ChannelIds[t];
         }
-        public async Task<IUserMessage> SendMessageAsync(Channels.GuildChannelType _channel, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageReference messageReference = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None)
+        public async Task<IUserMessage> SendMessageAsync(SavedChannels.GuildChannelType _channel, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageReference messageReference = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None)
         {
-            var guild = _discord.GetGuild(Guilds.OfficialGuild);
+            var guild = _discord.GetGuild(SavedGuilds.OfficialGuild);
             if (guild is null) return null;
 
-            var channel = guild.GetTextChannel(Channels.ChannelIds[_channel]) ?? await _discord.GetChannelAsync(Channels.ChannelIds[_channel]) as ITextChannel;
+            var channel = guild.GetTextChannel(SavedChannels.ChannelIds[_channel]) ?? await _discord.GetChannelAsync(SavedChannels.ChannelIds[_channel]) as ITextChannel;
             return await channel.SendMessageAsync(text, isTTS, embed, options, allowedMentions, messageReference, components, stickers, embeds, flags);
         }
         private const ulong _rolesHeader = 1113080837303455794;
@@ -105,7 +105,7 @@ namespace Dynastio.Bot
 
             var rolesToAdd = new List<ulong>();
             var rolesToRemove = new List<ulong>();
-            foreach (var role in Global.Roles.BadgeRoles)
+            foreach (var role in Global.SavedRoles.BadgeRoles)
             {
                 if (badges.Contains(role.Key) && !userRoles.Contains(role.Value))
                 {
@@ -132,7 +132,7 @@ namespace Dynastio.Bot
 
             return (rolesToAdd.ToArray(), rolesToRemove.ToArray());
         }
-        public Task<Guild> GetOfficialGuildAsync() => _db.GetGuildAsync(Guilds.OfficialGuild, false);
+        public Task<Guild> GetOfficialGuildAsync() => _db.GetGuildAsync(SavedGuilds.OfficialGuild, false);
     }
 
 }

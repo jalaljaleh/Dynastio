@@ -81,7 +81,7 @@ namespace Dynastio.Bot.Interactions.Modules
             }
 
             string videoUrl = YoutubeService.GetUrlFromVideoId(Video);
-            var confirmChannel = Context.Guild.GetTextChannel(_guildService.GetChannelId(Channels.GuildChannelType.ConfirmPromoteVideos));
+            var confirmChannel = Context.Guild.GetTextChannel(_guildService.GetChannelId(SavedChannels.GuildChannelType.ConfirmPromoteVideos));
 
             var result = await confirmChannel.SendMessageAsync(
                 $"## ✦•··························• Dynast.io •··························•✦\r\n" +

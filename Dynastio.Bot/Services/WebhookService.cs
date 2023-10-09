@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using static Dynastio.Bot.Channels;
+using static Dynastio.Bot.SavedChannels;
 using static Dynastio.Bot.GuildService;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -42,6 +42,7 @@ namespace Dynastio.Bot
             Timeout,
             Reward
         }
+        Dictionary<WebhookChannels, DiscordWebhookClient> _clients = new();
         private async Task _discord_Ready()
         {
             await AddClient(WebhookChannels.DeleteMessage, GuildChannelType.DeletedMessages);
@@ -57,7 +58,6 @@ namespace Dynastio.Bot
             var webhook = await ChannelUtilities.GetWebhookAsync(channel);
             _clients.Add(webhooktype, new DiscordWebhookClient(webhook));
         }
-        Dictionary<WebhookChannels, DiscordWebhookClient> _clients = new();
         public async Task<ulong> LogRewardAsync(string text = null, bool isTTS = false, IEnumerable<Embed> embeds = null, string username = null, string avatarUrl = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageComponent components = null, MessageFlags flags = MessageFlags.None, ulong? threadId = null, string threadName = null)
         {
             if (!_clients.TryGetValue(WebhookChannels.Reward, out DiscordWebhookClient client)) return 0;

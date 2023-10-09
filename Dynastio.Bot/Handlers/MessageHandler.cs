@@ -57,7 +57,7 @@ namespace Dynastio.Bot.Handlers
 
             if (channel is IGuildChannel guildChannel)
             {
-                if (guildChannel.GuildId != Guilds.OfficialGuild) return;
+                if (guildChannel.GuildId != SavedGuilds.OfficialGuild) return;
 
                 var _oldMessage = await oldMessage.GetOrDownloadAsync();
 
@@ -73,7 +73,7 @@ namespace Dynastio.Bot.Handlers
 
             if (channel.HasValue && channel.Value is IGuildChannel guildChannel)
             {
-                if (guildChannel.GuildId != Guilds.OfficialGuild) return;
+                if (guildChannel.GuildId != SavedGuilds.OfficialGuild) return;
 
                 var message = await cachedMessage.GetOrDownloadAsync();
                 if (message is null || message.Source != MessageSource.User)

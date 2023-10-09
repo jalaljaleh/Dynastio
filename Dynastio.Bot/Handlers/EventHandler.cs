@@ -55,7 +55,7 @@ namespace Dynastio.Bot.Handlers
         private async Task _client_Ready()
         {
             _repeaterService
-                .AddAction(RefreshStatusChannel, TimeSpan.FromMinutes(10));
+                .AddAction(RefreshStatusChannel, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5));
 
 
             //_repeaterService
@@ -72,30 +72,26 @@ namespace Dynastio.Bot.Handlers
 
         private async Task RefreshStatusChannel()
         {
-            var players = _dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).OrderByDescending(a => a.Score).Take(17).ToList();
-            var topPlayer = players.FirstOrDefault();
-            var tpmention = topPlayer.IsDiscordAuth ? "- <@" + topPlayer.Id.Replace("discord:", "") + ">" : "";
-            var content = players.ToStringTable(new[] { "#", "server", "score", "level", "nickname" },
-                a => players.IndexOf(a),
-                a => a.Parent.Label.TryRemove(18),
-                a => a.Score.Metric(),
-                a => a.Level.Metric(),
-                a => a.Nickname.RemoveLines().TryRemove(18))
+            var servers = _dynastioClient.OnlineServers.Where(a => a.IsPrivate == false).OrderByDescending(a => a.TopPlayerScore).Take(17).ToList();
+            var content = servers.ToStringTable(new[] { "#", "server", "score", "level", "nickname" },
+                a => servers.IndexOf(a),
+                a => a.Label.TryRemove(18),
+                a => a.TopPlayerScore.Metric(),
+                a => a.TopPlayerLevel.Metric(),
+                a => a.TopPlayerName.RemoveLines().TryRemove(18))
                 .ToMarkdown();
 
             var msgContent =
-                 $"## Dynast.io Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()}\n\n" +
+                 $"## ✦•···············• Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()} •···············•✦\n" +
 
-                 $"### Information \n" +
-                 $"- **Current Version**: {_dynastioClient.Version.CurrentVersion} [Download]({_dynastioClient.Version.DownloadUrl})\n" +
-
-                 $"### Servers and Players \n" +
-                 $"- `{_dynastioClient.OnlineServers.Count}` servers and `{_dynastioClient.OnlinePlayers.Count}` players are online:\n" +
-                 $" - ` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} ` public servers & ` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} ` players.\n" +
-                 $" - ` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} ` private servers & ` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} ` Players.\n" +
-                 $"\n" +
+                 $"- ` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} ` public servers & ` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} ` players.\n" +
+                 $"- ` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} ` private servers & ` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} ` Players.\n" +
 
                  $"\n{content}\n" +
+                 
+                 $"### ✦•··················• More •··················•✦" +
+                 $"- **Current Version**: {_dynastioClient.Version.CurrentVersion} [Download]({_dynastioClient.Version.DownloadUrl})\n" +
+
                  $"";
 
             var channel = await _client.GetChannelAsync(1124036365613539408);

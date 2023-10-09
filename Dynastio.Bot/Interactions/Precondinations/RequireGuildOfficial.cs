@@ -17,7 +17,7 @@ namespace Discord.Interactions
     {
         public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
         {
-            if (context.Guild.Id != Guilds.OfficialGuild)
+            if (context.Guild.Id != SavedGuilds.OfficialGuild)
                 return Task.FromResult(PreconditionResult.FromError(this.ErrorMessage ?? ((CustomSocketInteractionContext)context).UserLocale["require.role.developer"]));
 
             return Task.FromResult(PreconditionResult.FromSuccess());

@@ -44,9 +44,14 @@ namespace Dynastio.Bot
         {
             Global.Main.Log("Main Async", "Started");
 
-            var configuration = Configuration.LoadConfiguration(false);
-           // var configuration = Configuration.LoadReleaseConfiguration();
-           // Configuration.UpdateConfiguration(configuration);
+            Configuration configuration;
+            if (false)
+                configuration = Configuration.LoadConfiguration(false);           
+            else
+            {
+                configuration = Configuration.LoadReleaseConfiguration();
+                Configuration.UpdateConfiguration(configuration);
+            }
 
 
             var services = new ServiceCollection()
@@ -83,7 +88,7 @@ namespace Dynastio.Bot
                .AddSingleton<GlobalizationService>()
                .AddSingleton<YoutubeService>()
                .AddSingleton<InternetService>()
-               .AddSingleton<FeaturedVideosService>()
+               .AddSingleton<FVideosService>()
                .BuildServiceProvider();
 
 
@@ -111,7 +116,7 @@ namespace Dynastio.Bot
             _services.GetRequiredService<YoutubeService>();
             _services.GetRequiredService<UserService>();
 
-            _services.GetRequiredService<FeaturedVideosService>();
+            _services.GetRequiredService<FVideosService>();
             _services.GetRequiredService<RepeaterService>();
             _services.GetRequiredService<GraphicService>().Initialize();
 
