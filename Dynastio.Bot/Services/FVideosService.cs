@@ -48,11 +48,10 @@ namespace Dynastio.Bot
                 .Where(a => a.Source == MessageSource.Bot)
                 .ToList();
 
-            int i = 0;
             foreach (var video in _dynastioClient.FeaturedVideos.OrderByDescending(a => a.ExpireAt))
             {
                     var post = posts.FirstOrDefault(a => a.Content.Contains(video.Url));
-                    if (post != null)           
+                    if (post == null)           
                         await PostVideoAsync(postChannel, video);  
                     else
                         posts.Remove(post);
