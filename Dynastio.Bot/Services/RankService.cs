@@ -79,7 +79,7 @@ namespace Dynastio.Bot
         public async Task<(bool xpResult, bool levelupResult, User user, IGuildUser discordUser)> TryAddMessageXpAsync(IUserMessage message)
         {
 
-            if (message.Channel is null) 
+            if (message.Channel is null)
                 return default;
 
             if (message.Channel is not ITextChannel txtChannel)
@@ -87,13 +87,13 @@ namespace Dynastio.Bot
 
             if (txtChannel.CategoryId.HasValue)
             {
-                if (!_score_categories.Contains(txtChannel.CategoryId.Value)) 
+                if (!_score_categories.Contains(txtChannel.CategoryId.Value))
                     return default;
 
                 if (_banned_score_channels.Contains(message.Channel.Id))
                     return default;
             }
-            else if (!_score_channels.Contains(message.Channel.Id)) 
+            else if (!_score_channels.Contains(message.Channel.Id))
                 return default;
 
             var user = await _dynastioData.GetUserAsync(message.Author.Id);
@@ -147,15 +147,16 @@ namespace Dynastio.Bot
                                 ThumbnailUrl =  "https://cdn.discordapp.com/attachments/1111209352095871028/1111209352217509938/openiron.png"
                             }.Build() });
         }
-        public static int GetReachableMessageXp(IGuildUser user, User buser)
+        public static int[] GetReachableMessageXp(IGuildUser user, User buser)
         {
             var additiveXp = GetAdditiveXp(user, buser);
-            return _score + additiveXp;
+            int xp = _score + additiveXp;
+            return new int[] { xp - _randomXp, xp + _randomXp };
         }
         public int GetMessageXp(IGuildUser user, User buser)
         {
             var xp = GetReachableMessageXp(user, buser);
-            return Global.Main.Random.Next(xp - _randomXp, xp + _randomXp);
+            return Global.Main.Random.Next(xp[0], xp[1]);
         }
         public static int GetAdditiveXp(IGuildUser user, User buser)
         {

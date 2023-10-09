@@ -70,11 +70,6 @@ namespace Dynastio.Bot.Interactions.modules
                         .WithValue( $"<@&{nextRole.Id}>")
                         .WithIsInline(true),
 
-                          new EmbedFieldBuilder()
-                        .WithName("New Level")
-                        .WithValue($"You need **{RankService.RequiredXpToLevelUp(BotUser).Metric()}** more xp to get new level.")
-                        .WithIsInline(true),
-
                          new EmbedFieldBuilder()
                         .WithName("Calculate Xp")
                         .WithValue(
@@ -84,8 +79,13 @@ namespace Dynastio.Bot.Interactions.modules
                              $"**Achievements:** `+ {RankService.GetServerAchievementsXp(Context.User as IGuildUser)} `\n"+
                              $"**Warns:** ` {( warnsXp > 0 ? "+" : "")} {warnsXp}`\n"+
                              $"**Random:** ` ± {RankService._randomXp} `\n"+
-                             $"**Reachable:** ` {reachableXp - RankService._randomXp} - {reachableXp + RankService._randomXp} `\n")
-                        .WithIsInline(false),
+                             $"**Reachable:** ` {reachableXp[0]} / {reachableXp[1]} `\n")
+                        .WithIsInline(true),
+
+                          new EmbedFieldBuilder()
+                        .WithName("New Level")
+                        .WithValue($"**{RankService.RequiredXpToLevelUp(BotUser).Metric()}** xp to get new level.")
+                        .WithIsInline(true),
 
                         },
                          ThumbnailUrl = latestRole.GetIconUrl() ?? ""

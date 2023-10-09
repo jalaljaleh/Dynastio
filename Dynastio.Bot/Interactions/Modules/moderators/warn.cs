@@ -74,7 +74,7 @@ namespace Dynastio.Bot.Interactions.modules.moderators
 
             var targetUser = await _dynastioData.GetUserAsync(user.Id, false);
 
-            var content = targetUser.Warns.Skip(page * 10).ToStringTable(new string[] {"##", "Created At", "Moderator", "Reason" },
+            var content = targetUser.Warns.Skip(page * 10).ToStringTable(new string[] {"", "Created At", "Moderator", "Reason" },
                  a => targetUser.Warns.IndexOf(a) + ". ",
                  a => a.CreatedAt.ToRelative(),
                  a => a.SourceId.ToUserMention(),
