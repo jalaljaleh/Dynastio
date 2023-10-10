@@ -81,7 +81,7 @@ namespace Dynastio.Bot.Handlers
                 a => a.TopPlayerName.RemoveLines().TryRemove(18))
                 .ToMarkdown();
 
-            var privateServers = servers.Where(a=>a.IsPrivate).ToStringTable(new[] { "#", "server", "top player", "players count","Link" },
+            var privateServers = servers.Where(a=>a.IsPrivate).ToStringTable(new[] { "###", "server", "top player", "players count","Link" },
                a => servers.IndexOf(a),
                a => a.Label.TryRemove(18),
                a => a.TopPlayerName.RemoveLines().TryRemove(16),
