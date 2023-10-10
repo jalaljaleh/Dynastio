@@ -73,20 +73,18 @@ namespace Dynastio.Bot.Handlers
         private async Task RefreshStatusChannel()
         {
             var servers = _dynastioClient.OnlineServers.ToList();
-            var content = servers.Where(a => a.IsPrivate == false).OrderByDescending(a => a.TopPlayerScore).ToStringTable(new[] { "#", "server", "score", "level", "nickname" },
+            var content = servers.Where(a => !a.IsPrivate).OrderByDescending(a => a.TopPlayerScore).ToStringTable(new[] { "#", "server", "score", "players" },
                 a => servers.IndexOf(a),
                 a => a.Label.TryRemove(18),
                 a => a.TopPlayerScore.Metric(),
-                a => a.TopPlayerLevel.Metric(),
-                a => a.TopPlayerName.RemoveLines().TryRemove(18))
+                a => a.PlayersCount + "/" + a.ConnectionsLimit)
                 .ToMarkdown();
 
-            var privateServers = servers.Where(a=>a.IsPrivate).ToStringTable(new[] { "###", "server", "top player", "players count","Link" },
+            var privateServers = servers.Where(a => a.IsPrivate).ToStringTable(new[] { "###", "server", "players count", "Link" },
                a => servers.IndexOf(a),
                a => a.Label.TryRemove(18),
-               a => a.TopPlayerName.RemoveLines().TryRemove(16),
                a => a.PlayersCount,
-               a=> $"[Join](https://dynast.io/?direct={a.Ip}:{a.Port})");
+               a => $"[Join](https://dynast.io/?direct={a.Ip}:{a.Port})");
 
             var msgContent =
                  $"## ✦•···············• Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()} •···············•✦\n" +
