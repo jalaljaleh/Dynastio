@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using static Dynastio.Bot.Interactions.modules.dynastio.toplistModule;
 using Dynastio.Bot.Global;
 using System.Data;
+using System.Net.Mime;
 
 namespace Dynastio.Bot.Handlers
 {
@@ -72,39 +73,37 @@ namespace Dynastio.Bot.Handlers
 
         private async Task RefreshStatusChannel()
         {
-            var servers = _dynastioClient.OnlineServers.ToList();
-         
-            var content = servers.Where(a => !a.IsPrivate).OrderByDescending(a => a.TopPlayerScore).ToStringTable(new[] { "#", "server", "score", "players" },
+            var servers = _dynastioClient.OnlineServers;
+
+            var status =
+                 $"- ` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} ` public servers & ` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} ` players.\n" +
+                 $"- ` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} ` private servers & ` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} ` Players.\n";
+
+            var publicServers = servers.Where(a => !a.IsPrivate).OrderByDescending(a => a.TopPlayerScore).ToList().ToStringTable(new[] { "R", "server", "score", "players" },
                 a => servers.IndexOf(a),
                 a => a.Label.TryRemove(18),
                 a => a.TopPlayerScore.Metric(),
                 a => a.PlayersCount + "/" + a.ConnectionsLimit)
                 .ToMarkdown();
 
-            var privateServers = servers.Where(a => a.IsPrivate).ToStringTable(new[] { "###", "server", "players count", "Link" },
-               a => servers.IndexOf(a),
-               a => a.Label.TryRemove(18),
-               a => a.PlayersCount,
-               a => $"[Join](https://dynast.io/?direct={a.Ip}:{a.Port})");
+            var privateServers = servers.Where(a => a.IsPrivate).ToList().ToStringTable(new[] { "R", "Server", "Link" },
+               a => servers.IndexOf(a) + " |",
+               a => a.Label.TryRemove(18) + " |",
+               a => $"[[Join {a.PlayersCount}/{a.ConnectionsLimit}]](https://dynast.io/?direct={a.Ip}:{a.Port})");
 
-            var msgContent =
-                 $"## ✦•···············• Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()} •···············•✦\n" +
+            var details = 
+                 $"- **Current Version**: {_dynastioClient.Version.CurrentVersion} [Download]({_dynastioClient.Version.DownloadUrl})";
 
-                 $"- ` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} ` public servers & ` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} ` players.\n" +
-                 $"- ` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} ` private servers & ` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} ` Players.\n" +
-
-                 $"\n{content}\n" +
-
-                 $"### ✦•··············• Private Servers •··············•✦\n" +
-                 $"\n{privateServers}\n" +
-
-                 $"### ✦•··················• More •··················•✦\n" +
-                 $"- **Current Version**: {_dynastioClient.Version.CurrentVersion} [Download]({_dynastioClient.Version.DownloadUrl})\n" +
-
-                 $"";
+            Embed[] embds = new Embed[]
+            {
+                status.ToEmbed($" ✦•···············• Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()} •···············•✦"),
+                publicServers.ToEmbed("✦•··············• Public Servers •··············•✦"),
+                privateServers.ToEmbed("✦•··············• Private Servers •··············•✦"),
+                details.ToEmbed("✦•··················• More •··················•✦")
+            };
 
             var channel = await _client.GetChannelAsync(1124036365613539408);
-            await Utilities.ChannelUtilities.SendOrUpdateMessage((ITextChannel)channel, _client.CurrentUser.Id, "", msgContent.ToEmbed());
+            await Utilities.ChannelUtilities.SendOrUpdateMessage((ITextChannel)channel, _client.CurrentUser.Id, "", embds);
         }
 
     }
