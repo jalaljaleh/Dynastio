@@ -106,5 +106,6 @@ namespace Dynastio.Bot.Handlers
             await Utilities.ChannelUtilities.SendOrUpdateMessage((ITextChannel)channel, _client.CurrentUser.Id, "", embds);
         }
 
+
     }
 }
