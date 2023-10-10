@@ -79,19 +79,28 @@ namespace Dynastio.Bot.Handlers
                  $"- ` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} ` public servers & ` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} ` players.\n" +
                  $"- ` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} ` private servers & ` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} ` Players.\n";
 
-            var publicServers = servers.Where(a => !a.IsPrivate).OrderByDescending(a => a.TopPlayerScore).ToList().ToStringTable(new[] { "R", "server", "score", "players" },
-                a => servers.IndexOf(a),
+            var publicServers = servers
+                .Where(a => !a.IsPrivate)
+                .ToList()
+                .OrderByDescending(a => a.TopPlayerScore)
+
+                .ToStringTable(new[] { "R", "server", "score", "players" },
+                a => servers.IndexOf(a).ToRegularCounter(),
                 a => a.Label.TryRemove(18),
                 a => a.TopPlayerScore.Metric(),
                 a => a.PlayersCount + "/" + a.ConnectionsLimit)
                 .ToMarkdown();
 
-            var privateServers = servers.Where(a => a.IsPrivate).ToList().ToStringTable(new[] { "R", "Server", "Link" },
-               a => servers.IndexOf(a) + " |",
-               a => a.Label.TryRemove(18) + " |",
-               a => $"[[Join {a.PlayersCount}/{a.ConnectionsLimit}]](https://dynast.io/?direct={a.Ip}:{a.Port})");
+            var privateServers = servers
+                .Where(a => a.IsPrivate)
+                .ToList()
+                .OrderByDescending(a => a.PlayersCount)
+                .ToStringTable(new[] { "R", "Server", "Link" },
+               a => servers.IndexOf(a).ToRegularCounter() + " -> ",
+               a => "` " + a.Label.Replace("'", "").TryRemove(18) + " ` ",
+               a => $" **[[Join {a.PlayersCount}/{a.ConnectionsLimit}]](https://dynast.io/?direct={a.Ip}:{a.Port})**");
 
-            var details = 
+            var details =
                  $"- **Current Version**: {_dynastioClient.Version.CurrentVersion} [Download]({_dynastioClient.Version.DownloadUrl})";
 
             Embed[] embds = new Embed[]
