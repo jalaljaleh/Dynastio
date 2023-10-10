@@ -73,6 +73,7 @@ namespace Dynastio.Bot.Handlers
         private async Task RefreshStatusChannel()
         {
             var servers = _dynastioClient.OnlineServers.ToList();
+         
             var content = servers.Where(a => !a.IsPrivate).OrderByDescending(a => a.TopPlayerScore).ToStringTable(new[] { "#", "server", "score", "players" },
                 a => servers.IndexOf(a),
                 a => a.Label.TryRemove(18),
@@ -103,7 +104,7 @@ namespace Dynastio.Bot.Handlers
                  $"";
 
             var channel = await _client.GetChannelAsync(1124036365613539408);
-            await Utilities.ChannelUtilities.SendOrUpdateMessage((ITextChannel)channel, _client.CurrentUser.Id, msgContent);
+            await Utilities.ChannelUtilities.SendOrUpdateMessage((ITextChannel)channel, _client.CurrentUser.Id, "", msgContent.ToEmbed());
         }
 
     }
