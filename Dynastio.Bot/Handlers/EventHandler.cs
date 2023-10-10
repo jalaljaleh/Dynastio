@@ -75,28 +75,33 @@ namespace Dynastio.Bot.Handlers
         {
             var servers = _dynastioClient.OnlineServers;
 
-            var status =
-                 $"- ` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} ` public servers & ` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} ` players.\n" +
-                 $"- ` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} ` private servers & ` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} ` Players.\n";
 
             var publicServers = servers
                 .Where(a => !a.IsPrivate)
-                .ToList()
                 .OrderByDescending(a => a.TopPlayerScore)
+                .ToList();
 
-                .ToStringTable(new[] { "R", "server", "score", "players" },
+            var publicServersContent= publicServers.ToStringTable(new[] { "R", "server", "score", "players" },
                 a => servers.IndexOf(a).ToRegularCounter(),
                 a => a.Label.TryRemove(18),
                 a => a.TopPlayerScore.Metric(),
                 a => a.PlayersCount + "/" + a.ConnectionsLimit)
                 .ToMarkdown();
 
+            var status =
+                $" ✦•···············• Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()} •···············•✦\n" +
+                 $"- ` {_dynastioClient.OnlineServers.Where(a => !a.IsPrivate).Count()} ` public servers & ` {_dynastioClient.OnlinePlayers.Where(a => !a.Parent.IsPrivate).Count()} ` players.\n" +
+                 $"- ` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} ` private servers & ` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} ` Players.\n" +
+                 "✦•··············• Public Servers •··············•✦\n" +
+                 publicServersContent;
+
             var privateServers = servers
                 .Where(a => a.IsPrivate)
-                .ToList()
                 .OrderByDescending(a => a.PlayersCount)
-                .ToStringTable(new[] { "R", "Server", "Link" },
-               a => servers.IndexOf(a).ToRegularCounter() + " -> ",
+                .ToList();
+
+            var privateServersContent = privateServers.ToStringTable(new[] { "R..", "..Server........", "..Link.." },
+               a => servers.IndexOf(a).ToRegularCounter() + "**",
                a => "` " + a.Label.Replace("'", "").TryRemove(18) + " ` ",
                a => $" **[[Join {a.PlayersCount}/{a.ConnectionsLimit}]](https://dynast.io/?direct={a.Ip}:{a.Port})**");
 
@@ -105,9 +110,7 @@ namespace Dynastio.Bot.Handlers
 
             Embed[] embds = new Embed[]
             {
-                status.ToEmbed($" ✦•···············• Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()} •···············•✦"),
-                publicServers.ToEmbed("✦•··············• Public Servers •··············•✦"),
-                privateServers.ToEmbed("✦•··············• Private Servers •··············•✦"),
+                privateServersContent.ToEmbed("✦•··············• Private Servers •··············•✦"),
                 details.ToEmbed("✦•··················• More •··················•✦")
             };
 
