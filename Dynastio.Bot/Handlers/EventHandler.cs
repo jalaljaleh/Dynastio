@@ -81,6 +81,13 @@ namespace Dynastio.Bot.Handlers
                 a => a.TopPlayerName.RemoveLines().TryRemove(18))
                 .ToMarkdown();
 
+            var privateServers = servers.Where(a=>a.IsPrivate).ToStringTable(new[] { "#", "server", "top player", "players count","Link" },
+               a => servers.IndexOf(a),
+               a => a.Label.TryRemove(18),
+               a => a.TopPlayerName.RemoveLines().TryRemove(16),
+               a => a.PlayersCount,
+               a=> $"[Join](https://dynast.io/?direct={a.Ip}:{a.Port})");
+
             var msgContent =
                  $"## ✦•···············• Status {DateTime.UtcNow.ToDiscordUnixTimestampFormat()} •···············•✦\n" +
 
@@ -88,8 +95,11 @@ namespace Dynastio.Bot.Handlers
                  $"- ` {_dynastioClient.OnlineServers.Where(a => a.IsPrivate).Count()} ` private servers & ` {_dynastioClient.OnlinePlayers.Where(a => a.Parent.IsPrivate).Count()} ` Players.\n" +
 
                  $"\n{content}\n" +
-                 
-                 $"### ✦•··················• More •··················•✦" +
+
+                 $"### ✦•··············• Private Servers •··············•✦\n" +
+                 $"\n{privateServers}\n" +
+
+                 $"### ✦•··················• More •··················•✦\n" +
                  $"- **Current Version**: {_dynastioClient.Version.CurrentVersion} [Download]({_dynastioClient.Version.DownloadUrl})\n" +
 
                  $"";

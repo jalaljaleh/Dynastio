@@ -45,7 +45,7 @@ namespace Dynastio.Bot.Utilities
 
             return msgs;
         }
-        public static async Task SendOrUpdateMessage(ITextChannel channel, ulong botId, string txt)
+        public static async Task SendOrUpdateMessage(ITextChannel channel, ulong botId, string txt,Embed embed = default)
         {
             if (channel == null) return;
 
@@ -72,7 +72,11 @@ namespace Dynastio.Bot.Utilities
             if (targetMessage is not null)
             {
                 editionResult = await (targetMessage as IUserMessage)
-                    .ModifyAsync(x => { x.Content = txt; })
+                    .ModifyAsync(x =>
+                    {
+                        x.Content = txt;
+                        x.Embed = embed;
+                    })
                     .TryAsync();
 
                 if (editionResult is false)
