@@ -72,8 +72,8 @@ namespace Dynastio.Bot.Handlers
 
         private async Task RefreshStatusChannel()
         {
-            var servers = _dynastioClient.OnlineServers.Where(a => a.IsPrivate == false).OrderByDescending(a => a.TopPlayerScore).Take(17).ToList();
-            var content = servers.ToStringTable(new[] { "#", "server", "score", "level", "nickname" },
+            var servers = _dynastioClient.OnlineServers.ToList();
+            var content = servers.Where(a => a.IsPrivate == false).OrderByDescending(a => a.TopPlayerScore).ToStringTable(new[] { "#", "server", "score", "level", "nickname" },
                 a => servers.IndexOf(a),
                 a => a.Label.TryRemove(18),
                 a => a.TopPlayerScore.Metric(),
