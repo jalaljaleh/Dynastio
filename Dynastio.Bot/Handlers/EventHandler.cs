@@ -82,7 +82,7 @@ namespace Dynastio.Bot.Handlers
                 .ToList();
 
             var publicServersContent= publicServers.ToStringTable(new[] { "R", "server", "score", "players" },
-                a => servers.IndexOf(a).ToRegularCounter(),
+                a => publicServers.IndexOf(a).ToRegularCounter() + ".",
                 a => a.Label.TryRemove(18),
                 a => a.TopPlayerScore.Metric(),
                 a => a.PlayersCount + "/" + a.ConnectionsLimit)
@@ -101,12 +101,14 @@ namespace Dynastio.Bot.Handlers
                 .ToList();
 
             var privateServersContent = privateServers.ToStringTable(new[] { "R..", "..Server........", "..Link.." },
-               a => servers.IndexOf(a).ToRegularCounter() + "**",
+               a => privateServers.IndexOf(a).ToRegularCounter() + "**.",
                a => "` " + a.Label.Replace("'", "").TryRemove(18) + " ` ",
                a => $" **[[Join {a.PlayersCount}/{a.ConnectionsLimit}]](https://dynast.io/?direct={a.Ip}:{a.Port})**");
 
             var details =
-                 $"- **Current Version**: {_dynastioClient.Version.CurrentVersion} [Download]({_dynastioClient.Version.DownloadUrl})";
+                 $"- Current Version: {_dynastioClient.Version.CurrentVersion} [Download]({_dynastioClient.Version.DownloadUrl})\n" +
+                 $"- Featured Videos: {_dynastioClient.FeaturedVideos.Count}\n" +
+                 $"";
 
             Embed[] embds = new Embed[]
             {
@@ -115,7 +117,7 @@ namespace Dynastio.Bot.Handlers
             };
 
             var channel = await _client.GetChannelAsync(1124036365613539408);
-            await Utilities.ChannelUtilities.SendOrUpdateMessage((ITextChannel)channel, _client.CurrentUser.Id, "", embds);
+            await Utilities.ChannelUtilities.SendOrUpdateMessage((ITextChannel)channel, _client.CurrentUser.Id, status, embds);
         }
 
 
