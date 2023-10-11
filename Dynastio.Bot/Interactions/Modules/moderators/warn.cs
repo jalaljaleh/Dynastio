@@ -13,7 +13,7 @@ namespace Dynastio.Bot.Interactions.modules.moderators
 {
     [EnabledInDm(false)]
     [RequireContext(ContextType.Guild)]
-    [RequireBotPermission(GuildPermission.ModerateMembers)]
+    [RequireUserPermission(ChannelPermission.ManageMessages)]
     [Group("warn", "warn commands")]
     public class warnModule : CustomInteractionModuleBase
     {
