@@ -38,15 +38,25 @@ namespace Dynastio.Data
 
                 await _db.StartSessionAsync();
 
-                //var filter = Builders<User>.Filter.Where(a => a.activiy_level > 5);
+                //var filter = Builders<User>.Filter.Where(a => a.Warns.Any(a => a.CreatedAt.Day == DateTime.UtcNow.Day));
                 //var result = _users.Find(filter);
                 //var users = await result.ToListAsync();
                 //foreach (var u in users)
                 //{
-                //    u.activiy_level = 5;
-                //    u.activiy_score = 0;
-                //    u.activiy_score_additive = u.activiy_level / 5;
+                //    try
+                //    {
+                //        foreach (var w in u.Warns)
+                //        {
+                //            if (w.CreatedAt.Day == DateTime.UtcNow.Day)
+                //            {
+                //                u.Warns.Remove(w);
+                //                Main.Log("Mongodb", u.Id + " warn removed", ConsoleColor.Green);
+                //            }
+                //        }
+                //    }
+                //    catch { }
                 //}
+                //Main.Log("Mongodb",users.Count + " Task done");
                 //await UpdateManyAsync(users);
 
                 Main.Log("Mongodb", "Session Started.");
