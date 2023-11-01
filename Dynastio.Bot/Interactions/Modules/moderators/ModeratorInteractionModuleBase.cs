@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Interactions.Modules.moderators
 {
-    public class ModeratorInteractionModuleBase : InteractionModuleBase<CustomSocketInteractionContext>
-    {
+    //public class ModeratorInteractionModuleBase : InteractionModuleBase<CustomSocketInteractionContext>
+    //{
 
-        public ModeratorInteractionModuleBase() : base()
-        {
+    //    public ModeratorInteractionModuleBase() : base()
+    //    {
             
-        }
-    }
+    //    }
+    //}
 }
