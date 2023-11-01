@@ -33,6 +33,8 @@ namespace Dynastio.Data
         public int activiy_score_additive { get; set; } = 0;
        
         public string gameAccountId { get; set; } = string.Empty;
+
+
         public List<BotUserPermission> LockedPermissions { get; set; } = new();
         public bool HasPermission(BotUserPermission per)
         {
