@@ -83,7 +83,7 @@ namespace Dynastio.Bot
 
             //: ChestStyle.Orange;
 
-            Image image = Image.Load(FileManager.ToResourcePath($"Images/Chest/{"chest-orange".ToString().ToLower()}.png"));
+            Image image = Image.Load(FileManager.ToResourcePath($"Images/Chest/{"chest-winter".ToString().ToLower()}.png"));
 
             if (card is null || card.Chest is null)
             {
