@@ -48,7 +48,7 @@ namespace Dynastio.Bot.Test
 
             return _getMax(lvl);
 
-            int _getMax(int _lvl) => (_lvl * 400) * (int)Math.Pow(_lvl + 1, 1.2);
+            int _getMax(int _lvl) => (_lvl * 510) * (int)Math.Pow(_lvl + 1, 1.2);
         }
 
         public static double CalculateLevelReward(int level)
