@@ -19,37 +19,21 @@ namespace Dynastio.Bot.Globalization
         {
             get
             {
-                string result;
-                if (Words.TryGetValue(key, out string value))
-                {
-                    result = value;
-                }
-                else
-                {
-                    result = key;
-                };
-                return result;
+                if (!Words.TryGetValue(key, out string value))
+                    return key;
+
+                return value;
             }
         }
+
         public string this[string key, params object[] param]
         {
             get
             {
-                string result;
-                if (Words.TryGetValue(key, out string value))
-                {
-                    result = value;
-                }
-                else
-                {
-                    result = key;
-                };
-                var regex = new Regex(Regex.Escape("[x]"));
+                if (!Words.TryGetValue(key, out string value))
+                    return key;
 
-                for (int i = 0; i <= param.Length; i++)
-                    result = regex.Replace(result, (string)param[i], 1);
-
-                return result;
+                return string.Format(value, param);
             }
         }
     }

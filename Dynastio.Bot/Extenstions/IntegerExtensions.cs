@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot
+namespace Dynastio.Bot.Extenstions
 {
     public static class IntegerExtensions
     {
@@ -18,18 +18,7 @@ namespace Dynastio.Bot
 
             return result;
         }
-        public static string ToDiscordUnixTimeFromat(this int Value)
-        {
-            return $"<t:{(DateTime.UtcNow + TimeSpan.FromSeconds(Value)).ToUnixTimestamp()}:R>";
-        }
-        public static string ToUserMention(this ulong Id)
-        {
-            return Discord.MentionUtils.MentionUser(Id);
-        }
-        public static string ToChannelMention(this ulong Id)
-        {
-            return Discord.MentionUtils.MentionChannel(Id);
-        }
+
         public static string Metric(this ulong score)
         {
             if (score < 1) score = 1;

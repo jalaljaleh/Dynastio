@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot
+namespace Dynastio.Bot.Extenstions
 {
     public static class TaskExtenstions
     {

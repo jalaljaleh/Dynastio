@@ -10,7 +10,7 @@ namespace Dynastio.Bot
 {
     public static class DiscordUserExtenstions
     {
-        public static string GetAvailableAvatarUrl(this IUser user)
+        public static string TryGetAvatarUrl(this IUser user)
         {
             return user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl();
         }

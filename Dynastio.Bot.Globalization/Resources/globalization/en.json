@@ -1,8 +1,0 @@
-{
-  "server": "Server",
-  "score": "Score",
-  "level": "Level",
-  "team": "Team",
-  "nickname": "Nickname",
-  "accounts.require.default": "You have no any default account, select one then try again."
-}

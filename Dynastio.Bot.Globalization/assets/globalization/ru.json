@@ -1,0 +1,21 @@
+{
+  "access_denied": "Доступ запрещен.",
+  "cancel": "Отмена",
+  "menu_closes": "Это меню закрывается {0}",
+  "menu_closed_title": "Это меню закрыто из-за бездействия!",
+  "menu_closed_description": "Это меню закрыто из-за бездействия!",
+  "data_load_failure": "Бот столкнулся с ошибкой загрузки данных!",
+  "proccess_failed_title": "Процесс не удался",
+  "menu.dynastio.btn.profile.text": "Профиль",
+  "menu.dynastio.btn.teams.text": " {0} Команд",
+  "menu.dynastio.btn.players.text": " {0} Игроков",
+  "menu.profile.accounts.choose": "Выберите учетную запись для отображения!",
+  "account_selection": "Выбор учетной записи!",
+  "account_selection_description": "Выберите учетную запись, чтобы продолжить процесс. Если вы не подключили свою учетную запись, добавьте ее через меню настроек.",
+  "server": "Сервер",
+  "score": "Счет",
+  "level": "Уровень",
+  "team": "Команда",
+  "nickname": "Никнейм",
+  "accounts.require.default": "У вас нет учетной записи по умолчанию, выберите ее и повторите попытку."
+}

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
+
+		<ProjectReference Include="..\Dynastio.Net\Dynastio.Net.csproj" />
+
+		<Content Include="assets\**" CopyToOutputDirectory="PreserveNewest" />
+
+	</ItemGroup>
+
+
+</Project>

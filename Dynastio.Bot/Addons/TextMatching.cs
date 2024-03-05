@@ -10,7 +10,7 @@ namespace Dynastio.Bot.Addons
 
     public static class TextMatching
     {
-        public static bool IsMatched(string input, string search, int MaxDistance = 2) 
+        public static bool IsMatched(string input, string search, int MaxDistance = 2)
             => LevenshteinDistance(input, search) <= MaxDistance;
 
         private static int LevenshteinDistance(string s, string t)
@@ -31,7 +31,7 @@ namespace Dynastio.Bot.Addons
             {
                 for (int i = 1; i <= s.Length; i++)
                 {
-                    int substitutionCost = (s[i - 1] == t[j - 1]) ? 0 : 1;
+                    int substitutionCost = s[i - 1] == t[j - 1] ? 0 : 1;
                     d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + substitutionCost);
                 }
             }

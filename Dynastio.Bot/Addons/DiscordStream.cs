@@ -7,15 +7,16 @@ using System.Text;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
 using Discord.Webhook;
+using Image = SixLabors.ImageSharp.Image;
 
-namespace Dynastio.Bot
+namespace Dynastio.Bot.Addons
 {
     public class DiscordStream
     {
-        public static async Task<IUserMessage> FollowupWithFileAsync(IInteractionContext Context, SixLabors.ImageSharp.Image img, string fileName, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null)
+        public static async Task<IUserMessage> FollowupWithFileAsync(IInteractionContext Context, Image img, string fileName, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null)
         {
             IUserMessage msg;
-            using (var stream = new System.IO.MemoryStream())
+            using (var stream = new MemoryStream())
             {
                 try
                 {
@@ -30,16 +31,16 @@ namespace Dynastio.Bot
             }
             return msg;
         }
-        public static async Task<IUserMessage> SendFileAsync(ITextChannel channel, SixLabors.ImageSharp.Image img, string fileName, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, bool isSpoiler = false, AllowedMentions allowedMentions = null, MessageReference messageReference = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None)
+        public static async Task<IUserMessage> SendFileAsync(ITextChannel channel, Image img, string fileName, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, bool isSpoiler = false, AllowedMentions allowedMentions = null, MessageReference messageReference = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None)
         {
             IUserMessage msg;
-            using (var stream = new System.IO.MemoryStream())
+            using (var stream = new MemoryStream())
             {
                 try
                 {
                     img.SaveAsJpeg(stream);
                     img.Dispose();
-                    msg = await channel.SendFileAsync(stream, fileName,text,isTTS,embed,options,isSpoiler, allowedMentions, messageReference, components,stickers,embeds,flags);
+                    msg = await channel.SendFileAsync(stream, fileName, text, isTTS, embed, options, isSpoiler, allowedMentions, messageReference, components, stickers, embeds, flags);
                 }
                 finally
                 {

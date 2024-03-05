@@ -2,23 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Dynastio.Net.Entities
 {
-    public struct Cacheable<T>
+    internal class Cacheable<T>
     {
         private Func<Task<T>> _updateFunc;
-        private TimeSpan _time = TimeSpan.FromSeconds(1);
+        private TimeSpan _time;
         public Cacheable(TimeSpan millisecondsUpdateTime, Func<Task<T>> updateFunc)
         {
             _updateFunc = updateFunc;
             _time = millisecondsUpdateTime;
+            _valueTime = DateTime.MinValue;
         }
-
-        private DateTime _valueTime = DateTime.MinValue;
-
-        private T _value = default;
+        private DateTime _valueTime;
+        private T _value;
         public T Value
         {
             get
@@ -34,4 +34,9 @@ namespace Dynastio.Net.Entities
 
 
     }
+
 }
+
+
+
+

@@ -2,26 +2,34 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 	
   <ItemGroup>
-	  <PackageReference Include="Discord.Net" Version="3.12.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-	  <PackageReference Include="Google.Apis.YouTube.v3" Version="1.57.0.2756" />
-	  <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
-	  <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
+	  <PackageReference Include="Discord.Net" Version="3.13.1" />
+	  <PackageReference Include="Google.Apis.YouTube.v3" Version="1.67.0.3343" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+	 
+	  <ProjectReference Include="..\Dynastio.Bot.Database\Dynastio.Bot.Database.csproj" />	  
        <ProjectReference Include="..\Dynastio.Bot.Globalization\Dynastio.Bot.Globalization.csproj" />
        <ProjectReference Include="..\Dynastio.Bot.Global\Dynastio.Bot.Global.csproj" />
-       <ProjectReference Include="..\Dynastio.Data\Dynastio.Data.csproj" />
-	   	  
-	  <Content Include="Resources\**" CopyToOutputDirectory="PreserveNewest" />
+       <ProjectReference Include="..\Dynastio.Graphic\Dynastio.Graphic.csproj" />
  
   </ItemGroup>
+
 
 	
 	

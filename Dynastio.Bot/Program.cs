@@ -2,16 +2,15 @@
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Dynastio.Data;
 using Dynastio.Bot.Globalization;
-using Dynastio.Bot.Handlers;
-using Dynastio.Bot.Managers;
-using Dynastio.Bot.Services;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using SixLabors.ImageSharp;
-using System.Runtime.CompilerServices;
+using Dynastio.Bot.Entities;
+using Dynastio.Bot.Database;
+using Dynastio.Graphic;
+using Dynastio.Bot.Handlers;
+using Dynastio.Bot.Services;
 
 namespace Dynastio.Bot
 {
@@ -37,26 +36,36 @@ namespace Dynastio.Bot
                 Console.WriteLine(e);
             }
 
-            Task.Delay(TimeSpan.FromMinutes(20));
+            //Task.Delay(TimeSpan.FromMinutes(20));
         }
 
         public async Task MainAsync()
         {
             Global.Main.Log("Main Async", "Started");
 
-            Configuration configuration;
-            if (true)
-                configuration = Configuration.LoadConfiguration(false);           
-            else
-            {
-                configuration = Configuration.LoadReleaseConfiguration();
-                Configuration.UpdateConfiguration(configuration);
-            }
+            AppConfiguration configuration = AppConfiguration.LoadConfiguration();
 
-
-            var services = new ServiceCollection()
+            var services = new ServiceCollection();
+                services
                .AddSingleton(configuration)
-               .AddSingleton<DynastioData>(x => new DynastioData())
+
+               .AddSingleton<DynastioApi>(x => new DynastioApi(configuration.Tokens["dynastio-api"]))
+               .AddSingleton<DynastioBotDatabase>()
+               .AddSingleton<DynastioGraphic>()
+               .AddSingleton<DynastioBotGlobalization>()
+
+               .AddSingleton<UserService>()
+
+               .AddSingleton<RankingService>()
+
+               .AddSingleton<InteractionsHandler>()
+               .AddSingleton<InteractionService>()
+               .AddSingleton<EventsHandler>()
+               .AddSingleton<MessagesHandler>()
+               
+               .AddSingleton<RepeaterService>()
+               .AddSingleton<AdvertisingService>()
+
                .AddSingleton<DiscordSocketClient>(x => new DiscordSocketClient(new()
                {
                    GatewayIntents = GatewayIntents.All,
@@ -65,74 +74,46 @@ namespace Dynastio.Bot
                    MessageCacheSize = 1024,
                    AlwaysDownloadDefaultStickers = false,
                    DefaultRetryMode = RetryMode.AlwaysRetry,
-               }))
 
-               .AddSingleton<InteractionService>(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
-               .AddSingleton<Handlers.EventHandler>()
-               .AddSingleton<CommandService>()
-               .AddSingleton<InteractionsHandler>()
-               .AddSingleton<CommandsHandler>()
-               .AddSingleton<MessageHandler>()
-               .AddSingleton<GuildMemberUpdatesHandler>()
+                   UseSystemClock = false,
+                   UseInteractionSnowflakeDate = false,
+               }));
 
-               .AddSingleton<RepeaterService>()
-
-               .AddSingleton<DynastioClient>(x => new DynastioClient(configuration.DynastioApi))
-
-               .AddSingleton<UserService>()
-               .AddSingleton<GuildService>()
-               .AddSingleton<WebhookService>()
-
-               .AddSingleton<RankService>()
-               .AddSingleton<GraphicService>()
-               .AddSingleton<GlobalizationService>()
-               .AddSingleton<YoutubeService>()
-               .AddSingleton<InternetService>()
-               .AddSingleton<FVideosService>()
-               .BuildServiceProvider();
-
-
-            await RunAsync(services);
-
+            await RunAsync(services.BuildServiceProvider());
         }
         public async Task RunAsync(IServiceProvider _services)
         {
-            var client = _services.GetRequiredService<DiscordSocketClient>();
+            var configuration = _services.GetService<AppConfiguration>();
 
+            _services.GetRequiredService<DynastioApi>();
+
+            await _services.GetService<DynastioBotDatabase>()
+                 .InitializeAsync(configuration.Tokens["connectionstring-mongodb"], DynastioBotDatabase.DatabasesInstances.Mongodb);
+
+            _services.GetRequiredService<DynastioGraphic>().Initialize();
+
+            _services.GetRequiredService<DynastioBotGlobalization>().Initialize();
+
+            _services.GetRequiredService<UserService>();
+
+            _services.GetRequiredService<RankingService>();
+
+            _services.GetRequiredService<EventsHandler>();
+            _services.GetRequiredService<MessagesHandler>();
+
+            await _services.GetRequiredService<InteractionsHandler>().InitializeAsync();
+
+            await _services.GetRequiredService<AdvertisingService>().InitializeAsync();
+
+            var client = _services.GetRequiredService<DiscordSocketClient>();
             client.Log += (LogMessage arg) =>
             {
                 Console.WriteLine(arg.ToString());
                 return Task.CompletedTask;
             };
 
-            var configuration = _services.GetService<Configuration>();
-
-            await _services.GetService<DynastioData>()
-                 .InitializeAsync(configuration.DatabaseConnectionString, DynastioData.DatabasesInstances.Mongodb);
-
-            _services.GetRequiredService<GlobalizationService>()
-                .LoadDirectory(FileManager.ToResourcePath("globalization"));
-
-            _services.GetRequiredService<YoutubeService>();
-            _services.GetRequiredService<UserService>();
-
-            _services.GetRequiredService<FVideosService>();
-            _services.GetRequiredService<RepeaterService>();
-            _services.GetRequiredService<GraphicService>().Initialize();
-
-            _services.GetRequiredService<Handlers.EventHandler>();
-            _services.GetRequiredService<MessageHandler>();
-            _services.GetRequiredService<GuildMemberUpdatesHandler>();
-
-            _services.GetRequiredService<WebhookService>();
-
-            await _services.GetRequiredService<InteractionsHandler>().InitializeAsync();
-            await _services.GetRequiredService<CommandsHandler>().InitializeAsync();
-
-
-            await client.LoginAsync(TokenType.Bot, _services.GetRequiredService<Configuration>().BotToken);
+            await client.LoginAsync(TokenType.Bot, configuration.Tokens["discord-bot"]);
             await client.StartAsync();
-
 
             await Task.Delay(Timeout.Infinite);
         }

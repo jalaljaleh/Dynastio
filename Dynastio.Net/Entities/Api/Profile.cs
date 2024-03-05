@@ -9,26 +9,31 @@ namespace Dynastio.Net
 {
     public class Profile
     {
+        public Profile()
+        {
+
+        }
+
         [JsonProperty("coins")]
         public int Coins { get; set; }
 
         [JsonProperty("badges")]
-        public List<BadgeType> Badges { get; set; }
+        public List<BadgeType> Badges { get; set; } = new();
 
         [JsonProperty("latest_server")]
         public string LatestServer { get; set; }
 
         [JsonProperty("last_active_at")]
-        public DateTime LastActiveAt { get; set; }
+        public DateTime LastActiveAt { get; set; } = new();
 
         [JsonProperty("unlocked_recipes")]
-        public List<ItemType> UnlockedRecipes { get; set; }
+        public List<ItemType> UnlockedRecipes { get; set; } = new();
 
         [JsonProperty("unlocked_skins")]
-        public List<SkinType> UnlockedSkins { get; set; }
+        public List<SkinType> UnlockedSkins { get; set; } = new();
 
         [JsonProperty("unlocked_buildings")]
-        public List<EntityType> UnlockedBuildings { get; set; }
+        public List<EntityType> UnlockedBuildings { get; set; } = new();
 
         [JsonProperty("experience")]
         public int Experience { get; set; }

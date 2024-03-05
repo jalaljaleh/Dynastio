@@ -8,13 +8,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot
+namespace Dynastio.Bot.Addons
 {
     public static class TableParser
     {
         public static string ToStringTable<T>(this IEnumerable<T> values, string[] columnHeaders, params Func<T, object>[] valueSelectors)
         {
-            return ToStringTable(values.ToArray(), columnHeaders, valueSelectors);
+            return values.ToArray().ToStringTable(columnHeaders, valueSelectors);
         }
         public static string ToStringTable<T>(this T[] values, string[] columnHeaders, params Func<T, object>[] valueSelectors)
         {
@@ -27,7 +27,7 @@ namespace Dynastio.Bot
             {
                 arrValues[0, colIndex] = columnHeaders[colIndex];
             }
-            
+
             // Fill table rows
             for (int rowIndex = 1; rowIndex < arrValues.GetLength(0); rowIndex++)
             {
@@ -37,7 +37,7 @@ namespace Dynastio.Bot
                 }
             }
 
-            return ToStringTable(arrValues);
+            return arrValues.ToStringTable();
         }
 
         public static string ToStringTable(this string[,] arrValues)
@@ -52,7 +52,7 @@ namespace Dynastio.Bot
                     // Print cell
                     string cell = arrValues[rowIndex, colIndex];
                     cell = cell.PadRight(maxColumnsWidth[colIndex]);
-      
+
                     sb.Append(cell);
                     sb.Append(" ");
                 }

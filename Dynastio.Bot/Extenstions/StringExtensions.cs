@@ -12,7 +12,7 @@ namespace Dynastio.Bot
     {
         public static string RemoveHtmlTags(this string value)
         {
-            return Regex.Replace(value, "<.*?>", String.Empty);
+            return Regex.Replace(value, "<.*?>", string.Empty);
         }
         public static string ToBold(this string value)
         {
@@ -56,7 +56,7 @@ namespace Dynastio.Bot
         {
             return value.ToEmbedBuilder(title, thumbnailUrl, imageUrl, color).Build();
         }
-        public static Embed ToEmbed(this string value, string title,  Color color)
+        public static Embed ToEmbed(this string value, string title, Color color)
         {
             return value.ToEmbedBuilder(title, default, default, color).Build();
         }
