@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using Dynastio.Bot.Addons;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Interactions;
+using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Graphic;
 using Dynastio.Net;
 using System;
@@ -12,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Handlers.Interactions.Modules.buttons
+namespace Dynastio.Bot.Interactions.Modules.buttons
 {
     public class TeamsButton : BotInteractionModuleBase
     {
@@ -29,7 +30,7 @@ namespace Dynastio.Bot.Handlers.Interactions.Modules.buttons
             await DeferAsync();
 
 
-          //  await ModifyMessageAsync(embed: content.ToEmbed());
+            //  await ModifyMessageAsync(embed: content.ToEmbed());
         }
 
     }

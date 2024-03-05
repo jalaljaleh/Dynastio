@@ -11,8 +11,9 @@ using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Database;
 using MongoDB.Bson;
+using Dynastio.Bot.Interactions.Precondinations;
 
-namespace Dynastio.Bot.Handlers.Interactions.Modules.slashcommands
+namespace Dynastio.Bot.Interactions.Modules.slashcommands
 {
     [Group("developer", "developer")]
     [EnabledInDm(true)]
@@ -28,7 +29,7 @@ namespace Dynastio.Bot.Handlers.Interactions.Modules.slashcommands
             public async Task insert(string label, string url, AdsType type, int count, IUser user)
             {
                 await DeferAsync();
-                await advertisingService.InsertAndCache(new Database.Advertise()
+                await advertisingService.InsertAndCache(new Advertise()
                 {
                     Id = ObjectId.GenerateNewId(),
                     Label = label,

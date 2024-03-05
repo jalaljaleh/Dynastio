@@ -4,6 +4,8 @@ using Discord.WebSocket;
 using Dynastio.Bot.Addons;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Interactions;
+using Dynastio.Bot.Interactions.Enums;
+using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Graphic;
 using Dynastio.Net;
@@ -13,7 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Handlers.Interactions.Modules.buttons
+namespace Dynastio.Bot.Interactions.Modules.buttons
 {
     public class PlayersButton : BotInteractionModuleBase
     {

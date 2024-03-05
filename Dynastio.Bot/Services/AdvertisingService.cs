@@ -47,7 +47,7 @@ namespace Dynastio.Bot.Services
             var embedBottomAdvertises = ExploitationAdvertising(Database.AdsType.InlineEmbedDescription, size);
 
             string text = string.Join("  ", embedBottomAdvertises?.Select(a => $" [{a.Label}]({a.Url}) "));
-            return text;
+            return " " + text + " ";
         }
 
         public List<Advertise> ExploitationAdvertising(AdsType type, int take)

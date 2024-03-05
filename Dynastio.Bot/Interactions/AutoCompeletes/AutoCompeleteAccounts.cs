@@ -6,11 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
- 
-using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Database;
 
-namespace Dynastio.Bot.Interactions
+namespace Dynastio.Bot.Interactions.AutoCompeletes
 {
     public class AutoCompeleteAccounts : AutocompleteHandler
     {

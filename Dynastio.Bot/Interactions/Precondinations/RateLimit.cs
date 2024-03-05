@@ -5,7 +5,7 @@
  * Original (https://github.com/jalaljaleh/Template.Discord.Bot/)
  */
 
-namespace Dynastio.Bot.Interactions
+namespace Dynastio.Bot.Interactions.Precondinations
 {
     using System;
     using System.Collections.Generic;

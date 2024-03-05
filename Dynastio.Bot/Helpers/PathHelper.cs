@@ -30,7 +30,7 @@ namespace Dynastio.Bot
         }
         public static string GetEncryptedConfigFile()
         {
-            return Path.Combine(CurrentDirectory, @"../../../../data");
+            return Path.Combine(CurrentDirectory, @"../../../data");
         }
     }
 }

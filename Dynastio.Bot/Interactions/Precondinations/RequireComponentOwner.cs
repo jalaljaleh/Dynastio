@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using Dynastio;
 using Discord.Interactions;
 using Discord;
 
-namespace Dynastio.Bot.Interactions
+namespace Dynastio.Bot.Interactions.Precondinations
 {
 
     public class RequireComponentMessageMentionAttribute : PreconditionAttribute
     {
-        public override async Task<PreconditionResult> CheckRequirementsAsync(Discord.IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
+        public override async Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
         {
             if (context.Interaction is not SocketMessageComponent socket)
             {

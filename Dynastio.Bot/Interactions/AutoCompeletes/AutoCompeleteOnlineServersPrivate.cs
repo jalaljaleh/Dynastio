@@ -6,38 +6,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
- 
+
 using Dynastio.Bot.Extenstions;
 
-namespace Dynastio.Bot.Interactions
+namespace Dynastio.Bot.Interactions.AutoCompeletes
 {
-
-    public class AutoCompeleteOnlinePlayers : AutocompleteHandler
+    public class AutoCompeleteOnlineServersPrivate : AutocompleteHandler
     {
         public DynastioApi Dynastio { get; set; }
         public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
         {
             List<AutocompleteResult> results = new();
 
-            string match = autocompleteInteraction.Data.Current.Value.ToString().ToLower();
-            var server = autocompleteInteraction.Data.Options.FirstOrDefault(a => a.Name == "server");
+            string match = autocompleteInteraction.Data.Current.Value.ToString();
 
-            var players = Dynastio.OnlineServers.Where(
-                a => server != null ? a.Label.ToLower().Contains((string)server.Value) : true).ToList()
-                .SelectMany(a => a.Players)
-                .Where(a => a.Nickname.ToLower().Contains(match)).Take(25).ToList();
+            var servers = Dynastio.OnlineServers.Where(
+                a =>
+                a.IsPrivate == true &&
+                a.Label.ToLower().Contains(match)).Take(25).ToList();
 
-            foreach (var player in players)
+            foreach (var server in servers)
             {
                 results.Add(new AutocompleteResult()
                 {
-                    Name = player.Nickname.TryRemove(16),
-                    Value = player.UniqeId
+                    Name = server.Label.RemoveHtmlTags().TryRemove(98),
+                    Value = server.GetHashCode().ToString()
                 });
             }
             // max - 25 suggestions at a time (API limit)
             return await Task.FromResult(AutocompletionResult.FromSuccess(results));
         }
     }
-
 }

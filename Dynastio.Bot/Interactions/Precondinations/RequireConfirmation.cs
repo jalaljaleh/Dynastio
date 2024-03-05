@@ -4,7 +4,7 @@
  * Licensed under MIT (https://github.com/jalaljaleh/Template.Discord.Bot/blob/master/LICENSE.txt)
  * Original (https://github.com/jalaljaleh/Template.Discord.Bot/blob/master/Template/Interactions/Precondinations/RequireConfirmation.cs)
  */
-namespace Dynastio.Bot.Interactions
+namespace Dynastio.Bot.Interactions.Precondinations
 {
     using Discord;
     using Discord.Interactions;
@@ -52,7 +52,7 @@ namespace Dynastio.Bot.Interactions
                 .Build();
 
             var message = await context.Interaction.FollowupAsync(embed: embed, components: component);
-            var interactionResult = await DiscordInput.WaitForButtonFromMessageAsync(context, message, TimeSpan.FromSeconds(timeout), true, true, true);
+            var interactionResult = await context.WaitForButtonFromMessageAsync(message, TimeSpan.FromSeconds(timeout), true, true, true);
 
             await message.DeleteAsync();
 

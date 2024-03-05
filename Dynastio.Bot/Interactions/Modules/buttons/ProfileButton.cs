@@ -6,6 +6,8 @@ using Dynastio.Bot.Database;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Helpers;
 using Dynastio.Bot.Interactions;
+using Dynastio.Bot.Interactions.Modules.shared_buttons;
+using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Graphic;
 using Dynastio.Net;
@@ -15,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Handlers.Interactions.Modules.buttons
+namespace Dynastio.Bot.Interactions.Modules.buttons
 {
     public class ProfileButton : BotInteractionModuleBase
     {
@@ -75,7 +77,7 @@ namespace Dynastio.Bot.Handlers.Interactions.Modules.buttons
             };
             var message = await ModifyCurrentMessageAsync(Context.User.Mention, components: components, embed: embed.Build());
 
-            var result = await DiscordInput.WaitForSelectMenuFromMessageAsync(Context, message, TimeSpan.FromSeconds(30));
+            var result = await Context.WaitForSelectMenuFromMessageAsync(message, TimeSpan.FromSeconds(30));
             if (result is null || BotUser.GetAccountByHashCode(result.Data.Values.FirstOrDefault(), out UserAccount account) is null)
             {
                 await ModifyCurrentMessageAsync(
@@ -102,7 +104,7 @@ namespace Dynastio.Bot.Handlers.Interactions.Modules.buttons
 
             var image = await dynastioGraphic.GetProfileImageAsync(Context.User.TryGetAvatarUrl(), account.Reminder, profileCard.result);
 
-            await DiscordStream.FollowupWithFileAsync(Context, image, $"profile-card-{Context.User.Id}.png", Context.User.Mention,embed: adsService.GetInlineEmbedDescription().ToEmbed(imageUrl: $"attachment://profile-card-{Context.User.Id}.png"));
+            await DiscordStream.FollowupWithFileAsync(Context, image, $"profile-card-{Context.User.Id}.png", Context.User.Mention, embed: adsService.GetInlineEmbedDescription().ToEmbed(imageUrl: $"attachment://profile-card-{Context.User.Id}.png"));
         }
 
 

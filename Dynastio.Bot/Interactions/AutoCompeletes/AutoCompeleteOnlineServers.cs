@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
- 
+
 using Dynastio.Bot.Extenstions;
 
-namespace Dynastio.Bot.Interactions
+namespace Dynastio.Bot.Interactions.AutoCompeletes
 {
 
 

@@ -7,9 +7,8 @@
 
 using Discord;
 using Discord.Interactions;
-using Dynastio.Bot.Interactions;
 
-namespace Dynastio.Bot.Interactions
+namespace Dynastio.Bot.Interactions.Precondinations
 {
     public class RequireTeamMemberAttribute : PreconditionAttribute
     {

@@ -6,6 +6,7 @@ using Dynastio.Bot.Addons;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Globalization;
 using Dynastio.Bot.Interactions;
+using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Graphic;
 using Dynastio.Net;
@@ -17,7 +18,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Handlers.Interactions.Modules
+namespace Dynastio.Bot.Interactions.Modules.@shared_buttons
 {
     public class CancelButton : BotInteractionModuleBase
     {

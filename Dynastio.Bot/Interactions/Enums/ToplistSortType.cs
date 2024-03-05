@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Handlers.Interactions
+namespace Dynastio.Bot.Interactions.Enums
 {
     public enum ToplistSortType
     {

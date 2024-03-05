@@ -1,14 +1,16 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Dynastio.Bot.Handlers.Interactions.Modules.buttons;
 using Dynastio.Bot.Interactions;
+using Dynastio.Bot.Interactions.Modules.buttons;
+using Dynastio.Bot.Interactions.Modules.shared_buttons;
+using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Graphic;
 using Dynastio.Net;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Dynastio.Bot.Handlers.Interactions.Modules.slashcommands
+namespace Dynastio.Bot.Interactions.Modules.slashcommands
 {
     public class MenuModule : BotInteractionModuleBase
     {
@@ -29,14 +31,7 @@ namespace Dynastio.Bot.Handlers.Interactions.Modules.slashcommands
 
             await FollowupAsync(
                 text: Context.User.Mention + " " + contentAdvertises?.Url,
-                components: GetComponent(),
-                embed: new EmbedBuilder()
-                {
-                    Title = "Dynast.io Menu !",
-                    Description = "Welcome to the Dynast.io bot menu !" + "\n\n" + adsService.GetInlineEmbedDescription(),
-                    ThumbnailUrl =
-                    Context.Client.CurrentUser.TryGetAvatarUrl()
-                }.Build());
+                components: GetComponent());
 
         }
 
