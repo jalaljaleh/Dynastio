@@ -56,6 +56,10 @@ namespace Dynastio.Bot
         {
             return value.ToEmbedBuilder(title, thumbnailUrl, imageUrl, color).Build();
         }
+        public static Embed ToInformEmbed(this string value, string title = null, string thumbnailUrl = null, string imageUrl = null)
+        {
+            return value.ToEmbedBuilder(title, thumbnailUrl, imageUrl, Color.Orange).Build();
+        }
         public static Embed ToEmbed(this string value, string title, Color color)
         {
             return value.ToEmbedBuilder(title, default, default, color).Build();

@@ -18,19 +18,20 @@ namespace Dynastio.Bot.Interactions
 
     public class BotInteractionModuleBase : InteractionModuleBase<BotSocketInteractionContext>
     {
-
+        public string this[string key] { get => Context.UserLocale[key]; }
+        public string this[string key, params object[] @params] { get => Context.UserLocale[key, @params]; }
         public BotInteractionModuleBase() : base()
         {
 
         }
-        public AdvertisingService adsService { get => Context._ads; }
-
+        public AdvertisingService advertisingService { get => Context._ads; }
+        public DynastioBotDatabase dynastioBotDatabase { get => Context._dynastioData; }
         public User BotUser { get => Context.BotUser; }
         public Locale guildLocale { get => this.Context.GuildLocale; }
         public Locale userLocale { get => this.Context.UserLocale; }
-        public string this[string key] { get => Context.UserLocale[key]; }
-        public string this[string key, params object[] @params] { get => Context.UserLocale[key, @params]; }
 
+
+        public string BotAvatarUrl { get => this.Context.Client.CurrentUser.TryGetAvatarUrl(); }
 
         public IUserMessage CurrentMessage =>
              Context.Interaction.Type switch

@@ -17,7 +17,7 @@ namespace Dynastio.Bot.Database
             RankingSettings = new RankingSettings()
             {
                 IsEnabled = false,
-                Delay = 60,
+                MessageDelay = 60,
                 XpBoosters = 10,
                 XpPerMessage = 40,
                 XpRandom = 10,
@@ -39,10 +39,13 @@ namespace Dynastio.Bot.Database
     public class RankingSettings
     {
         public bool IsEnabled { get; set; }
+        public bool IsGameRewardEnabled { get; set; }
+
         public int XpPerMessage { get; set; }
         public int XpBoosters { get; set; }
         public int XpRandom { get; set; }
-        public int Delay { get; set; }
+        public int MessageDelay { get; set; }
+        public string RolesPrefix { get; set; }
         public ulong LogChannelId { get; set; }
         public string WebhookUrl { get; set; }
         public List<ulong> ChannelIds { get; set; }

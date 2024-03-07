@@ -46,10 +46,10 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
                                    a => a.Level.Metric(),
                                    a => a.Team.RemoveLines().TryRemove(6),
                                    a => a.Nickname.RemoveLines().TryRemove(12))
-                   .ToMarkdown() + "\n" + 
-                    adsService.GetInlineEmbedDescription();
+                   .ToMarkdown() + "\n" +
+                    advertisingService.GetInlineEmbedDescription();
 
-            await ModifyCurrentMessageAsync(embed: content.ToEmbed(userLocale["modal.dynastio.searchplayer.title"]));
+            await ModifyCurrentMessageAsync(embed: content.ToEmbed(userLocale["modal.dynastio.searchplayer.title", players.Count]));
         }
 
     }

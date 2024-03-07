@@ -26,7 +26,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
             List<Database.Advertise> advertise = new();
 
-            var contentAdvertises = adsService.ExploitationAdvertising(Database.AdsType.EmbedMessageContent, 1).FirstOrDefault();
+            var contentAdvertises = advertisingService.ExploitationAdvertising(Database.AdsType.EmbedMessageContent, 1).FirstOrDefault();
             advertise.Add(contentAdvertises);
 
             await FollowupAsync(
@@ -43,9 +43,10 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 .WithButton(TeamsButton.GetButton(userLocale, dynastio.OnlinePlayers.GroupBy(a => a.Team).Count()), 0)
                 .WithButton(PlayersSearchButton.GetButton(userLocale), 0)
 
-                .WithButton(ProfileButton.GetButton(userLocale, BotUser.Accounts.Any()), 1);
+                .WithButton(ProfileButton.GetButton(userLocale, BotUser.Accounts.Any()), 1)
+                .WithButton(RankButton.GetButton(userLocale), 1);
 
-            var advertises = adsService.ExploitationAdvertising(Database.AdsType.Buttons, 4);
+            var advertises = advertisingService.ExploitationAdvertising(Database.AdsType.Buttons, 4);
             foreach (var ad in advertises)
             {
                 cBuilder.WithButton(ad.Label, null, ButtonStyle.Link, string.IsNullOrEmpty(ad.Emoji) ? new Emoji(ad.Emoji) : null, ad.Url, false, 2);

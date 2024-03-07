@@ -17,7 +17,7 @@ namespace Dynastio.Bot.Handlers
         {
             _rankingService = services.GetRequiredService<RankingService>();
 
-          //  _discord.MessageReceived += _discord_MessageReceived;
+           _discord.MessageReceived += _discord_MessageReceived;
         }
 
         private async Task _discord_MessageReceived(SocketMessage rawMessage)

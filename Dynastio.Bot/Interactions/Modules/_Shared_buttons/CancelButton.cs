@@ -36,7 +36,7 @@ namespace Dynastio.Bot.Interactions.Modules.@shared_buttons
             await DeferAsync();
 
             await ModifyCurrentMessageAsync(
-                         embed: (userLocale["menu_closed_description"] + "\n\n" + adsService.GetInlineEmbedDescription())
+                         embed: (userLocale["menu_closed_description"] + "\n\n" + advertisingService.GetInlineEmbedDescription())
                                 .ToEmbed(userLocale["menu_closed_title"],
                                 Context.Client.CurrentUser.TryGetAvatarUrl()
                                 ));

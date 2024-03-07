@@ -28,14 +28,14 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
 
         public const string CustomId = "btn.dynastio.profile";
         public static Emoji Emoji => new Emoji("✨");
-        public static ButtonBuilder GetButton(Locale locale, bool isDisabled = false)
+        public static ButtonBuilder GetButton(Locale locale, bool isEnabled = false)
         {
             return new ButtonBuilder()
             {
                 Label = locale["btn.dynastio.profile.label"],
                 Style = ButtonStyle.Primary,
                 Emote = ProfileButton.Emoji,
-                IsDisabled = isDisabled,
+                IsDisabled = !isEnabled,
                 Url = null,
                 CustomId = ProfileButton.CustomId
             };
@@ -93,7 +93,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
             if (result is null || BotUser.GetAccountByHashCode(result.Data.Values.FirstOrDefault(), out UserAccount account) is null)
             {
                 await ModifyCurrentMessageAsync(
-                    embed: (userLocale["menu_closed_description"] + "\n\n" + adsService.GetInlineEmbedDescription())
+                    embed: (userLocale["menu_closed_description"] + "\n\n" + advertisingService.GetInlineEmbedDescription())
                            .ToEmbed(userLocale["menu_closed_title"],
                            Context.Client.CurrentUser.TryGetAvatarUrl()
                            ));
@@ -104,7 +104,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
             if (profileCard.isSuccesful is false)
             {
                 await ModifyCurrentMessageAsync(
-                    embed: (userLocale["data_load_failure"] + "\n\n" + adsService.GetInlineEmbedDescription())
+                    embed: (userLocale["data_load_failure"] + "\n\n" + advertisingService.GetInlineEmbedDescription())
                                                           .ToEmbed(
                                                                    userLocale["proccess_failed_title"],
                                                                    Context.Client.CurrentUser.TryGetAvatarUrl()
@@ -116,7 +116,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
 
             var image = await dynastioGraphic.GetProfileImageAsync(Context.User.TryGetAvatarUrl(), account.Reminder, profileCard.result);
 
-            await DiscordStream.FollowupWithFileAsync(Context, image, $"profile-card-{Context.User.Id}.png", Context.User.Mention, embed: adsService.GetInlineEmbedDescription().ToEmbed(imageUrl: $"attachment://profile-card-{Context.User.Id}.png"));
+            await DiscordStream.FollowupWithFileAsync(Context, image, $"profile-card-{Context.User.Id}.png", Context.User.Mention, embed: advertisingService.GetInlineEmbedDescription().ToEmbed(imageUrl: $"attachment://profile-card-{Context.User.Id}.png"));
         }
 
 

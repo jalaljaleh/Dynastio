@@ -13,4 +13,10 @@
 	  <Content Include="assets\**" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Remove="assets\globalization\tr.json" />
+    <None Remove="assets\globalization\uk.json" />
+  </ItemGroup>
+
 </Project>

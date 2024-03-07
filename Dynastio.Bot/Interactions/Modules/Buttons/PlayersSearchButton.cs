@@ -45,7 +45,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
             var modal = new ModalBuilder(userLocale["modal.dynastio.searchplayer.title"], SearchPlayerModal.CustomId)
 
              .AddTextInput(new TextInputBuilder(userLocale["nickname"], "nickname", TextInputStyle.Short, "Jaleh", 0, 16, false, null))
-             .AddTextInput(new TextInputBuilder(userLocale["team"], "team", TextInputStyle.Short, "Aliens", 0, 16, false, null))
+             .AddTextInput(new TextInputBuilder(userLocale["team"], "team", TextInputStyle.Short, "Team", 0, 16, false, null))
              .AddTextInput(new TextInputBuilder(userLocale["server"], "server", TextInputStyle.Short, "London-01", 0, 20, false, null))
              .AddTextInput(new TextInputBuilder(userLocale["score"], "score", TextInputStyle.Short, "1000", 0, 20, false, null))
              .AddTextInput(new TextInputBuilder(userLocale["level"], "level", TextInputStyle.Short, "10", 0, 5, false, null))

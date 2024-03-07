@@ -21,7 +21,7 @@ namespace Dynastio.Bot.Services
             if (webhooks == null || webhooks.Count == 0 || webhooks.Any(a => a.Name == "Dynast.io") is false)
             {
                 var webhook = await channel.CreateWebhookAsync("Dynast.io");
-                webhooks.Append(webhook);
+                webhooks = await channel.GetWebhooksAsync();
             }
             return webhooks.First(a => a.Name == "Dynast.io");
         }

@@ -16,7 +16,7 @@ namespace Dynastio.Bot.Interactions
 
     public class BotSocketInteractionContext : SocketInteractionContext
     {
-        private readonly DynastioBotDatabase _dynastioData;
+        public readonly DynastioBotDatabase _dynastioData;
         public readonly AdvertisingService _ads;
 
         private readonly DynastioBotGlobalization _globalization;

@@ -84,9 +84,9 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
                                     a => a.Team.RemoveLines().TryRemove(6),
                                     a => a.Nickname.RemoveLines().TryRemove(12))
                 .ToMarkdown() + "\n" + 
-                    adsService.GetInlineEmbedDescription();
+                    advertisingService.GetInlineEmbedDescription();
 
-            await ModifyCurrentMessageAsync(embed: content.ToEmbed(userLocale["btn.dynastio.players.label"]));
+            await ModifyCurrentMessageAsync(embed: content.ToEmbed(userLocale["btn.dynastio.players.label", players1.Count]));
         }
 
     }

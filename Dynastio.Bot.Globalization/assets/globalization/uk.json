@@ -1,0 +1,38 @@
+{
+
+  "btn.dynastio.teams.label": "{0} Команд",
+  "btn.dynastio.players.label": "{0} Гравців",
+  "btn.dynastio.profile.label": "Профіль",
+  "btn.dynastio.players.search.label": "Пошук",
+  "btn.bot.rank.label": "Рейтинг", // Rank translated to Рейтинг
+
+  "modal.dynastio.searchplayer.title": "Пошук Гравців",
+
+  "embed.rank.title": "Ваш Рівень {0}",
+  "embed.rank.description": "Поточна Роль: {0}\nПоточний Рівень: {1}\nПоточний XP: {2}xp\n\nНаступна Роль: {3}\nНаступний Рівень: {4}\nПотрібний XP: {5}",
+  "embed.rank.not_ranked.title": "У вас немає рейтингу",
+  "embed.rank.not_ranked.description": "У вас поки немає рейтингу, ваш рівень 0. Вам потрібно {0} XP, щоб досягти 1 рівня.",
+  "embed.rank.error.guild_ranking_disabled.title": "Недоступно!",
+  "embed.rank.error.guild_ranking_disabled.description": "На цьому сервері не ведеться ранжування користувачів!",
+
+  "menu.profile.accounts.choose": "Виберіть обліковий запис для відображення!",
+  "input_mode.title": "Завантаження інформації ..",
+  "input_mode.description": "Бот завантажує форму інформації, запитувану користувачем.",
+  "access_denied": "Доступ заборонено.",
+  "cancel": "Скасувати",
+  "menu_closes": "Це меню закриється через {0}",
+  "menu_closed_title": "Це меню закрито через неактивність!",
+  "menu_closed_description": "Це меню закрито через неактивність!",
+  "data_load_failure": "Бот стикнувся з помилкою завантаження даних!",
+  "proccess_failed_title": "Процес не виконано",
+  "account_selection": "Вибір облікового запису!",
+  "account_selection_description": "Виберіть обліковий запис для продовження. Якщо ви не підключили свій обліковий запис, додайте його через меню налаштувань.",
+
+  "server": "Сервер",
+  "score": "Очки",
+  "level": "Рівень",
+  "team": "Команда",
+  "nickname": "Псевдонім",
+
+  "accounts.require.default": "У вас немає облікового запису за замовчуванням, виберіть його та повторіть спробу."
+}
