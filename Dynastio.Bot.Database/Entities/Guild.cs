@@ -22,7 +22,7 @@ namespace Dynastio.Bot.Database
                 LogChannelId = 0,
                 RolesPrefix= null,
                 WebhookUrl = null,
-                MessageDelay = 60,
+                Delay = 60,
                 XpBoosters = 10,
                 XpPerMessage = 40,
                 XpRandom = 10,
@@ -49,17 +49,19 @@ namespace Dynastio.Bot.Database
         public int XpPerMessage { get; set; }
         public int XpBoosters { get; set; }
         public int XpRandom { get; set; }
-        public int MessageDelay { get; set; }
+        public int Delay { get; set; }
         public string RolesPrefix { get; set; }
         public ulong LogChannelId { get; set; }
         public string WebhookUrl { get; set; }
         public List<ulong> ChannelIds { get; set; }
+        
+        
         public bool IsLevelUpChannel(ulong channelId)
         {
             return ChannelIds.Any(a => a == channelId);
         }
     }
-    [BsonIgnoreExtraElements]
+
     public class GuildSubscription
     {
         public DateTime StartedAt { get; set; }

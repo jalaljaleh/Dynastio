@@ -43,7 +43,7 @@ namespace Dynastio.Bot.Services
                 if (messageContent.Length < 10) return false;
 
                 var messagesDelay = DateTime.UtcNow - uProfile.LastMessageTimestamp;
-                return messagesDelay.TotalSeconds > settings.MessageDelay;
+                return messagesDelay.TotalSeconds > settings.Delay;
             }
             if (IsXpIncreaseable(guild.RankingSettings, uProfile, message.CleanContent))
             {

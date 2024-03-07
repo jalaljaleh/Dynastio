@@ -46,12 +46,12 @@ namespace Dynastio.Bot.Database
 
                 await _db.StartSessionAsync();
 
-                // var filter = Builders<User>.Filter.Where(a => a.Warns.Any(a => a.CreatedAt.Day == DateTime.UtcNow.Day));
-                //var result = _users.Find(_ => true);
+                //var filter = Builders<Guild>.Filter.Where(a => true);
+                //var result = _guilds.Find(_ => true);
                 //var users = await result.ToListAsync();
                 //foreach (var u in users)
                 //{
-                //    u.LastUpdateTime = DateTime.MinValue;
+                //    u.Subscription.StartedAt = DateTime.MinValue;
                 //}
                 //Main.Log("Mongodb", users.Count + " Task done");
                 //await UpdateManyAsync(users);
@@ -152,7 +152,17 @@ namespace Dynastio.Bot.Database
                   .ToList();
             return await Task.FromResult(result);
         }
-
+        public async Task<bool> UpdateManyAsync(List<Guild> guild)
+        {
+            var updates = new List<WriteModel<Guild>>();
+            foreach (var _advertise in guild)
+            {
+                var filter = Builders<Guild>.Filter.Where(u => u.Id == _advertise.Id);
+                updates.Add(new ReplaceOneModel<Guild>(filter, _advertise));
+            }
+            await _guilds.BulkWriteAsync(updates, new BulkWriteOptions() { IsOrdered = false });
+            return await Task.FromResult(true);
+        }
 
 
 
