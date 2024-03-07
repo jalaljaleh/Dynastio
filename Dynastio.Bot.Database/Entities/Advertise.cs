@@ -23,9 +23,10 @@ namespace Dynastio.Bot.Database
         public DateTime StartedAt { get; set; }
         public DateTime FinishedAt { get; set; }
         public AdsType Type { get; set; }
-
         public int Count { get; set; }
         public int DisplayCount { get; set; }
+
+        public string Emoji { get; set; }
 
     }
 }

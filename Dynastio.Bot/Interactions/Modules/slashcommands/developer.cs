@@ -61,9 +61,22 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             }
 
             [SlashCommand("insert", "insert new ads")]
-            public async Task insert(string label, string url, AdsType type, int count, IUser user)
+            public async Task insert(string label, string url, AdsType type, int count, IUser user, string btnEmoji = null)
             {
                 await DeferAsync(true);
+
+                if (btnEmoji is not null)
+                {
+                    try
+                    {
+                        var emote = new Emoji(btnEmoji);
+                    }
+                    catch
+                    {
+                        await FollowupAsync("emoji not valid");
+                        return;
+                    }
+                }
 
                 var ad = new Advertise()
                 {
@@ -76,6 +89,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                     StartedAt = DateTime.UtcNow,
                     User = user.Id,
                     FinishedAt = DateTime.MinValue,
+                    Emoji = btnEmoji
                 };
                 await advertisingService.InsertAndCache(ad);
 

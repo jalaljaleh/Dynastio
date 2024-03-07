@@ -44,10 +44,10 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             GetTeamsButton(components, 0);
             GetProfileButton(components, 1);
 
-            var advertises = adsService.ExploitationAdvertising(Database.AdsType.Buttons, 2);
+            var advertises = adsService.ExploitationAdvertising(Database.AdsType.Buttons, 4);
             foreach (var ad in advertises)
             {
-                components.WithButton(ad.Label, null, ButtonStyle.Link, new Emoji("✨"), ad.Url, false, 2);
+                components.WithButton(ad.Label, null, ButtonStyle.Link, string.IsNullOrEmpty(ad.Emoji) ? new Emoji(ad.Emoji) : null, ad.Url, false, 2);
             }
 
             components.WithButton(CancelButton.GetButton(userLocale), 2);
