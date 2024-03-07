@@ -34,7 +34,11 @@ namespace Dynastio.Bot.Database
             }
             dbContext = await Task.FromResult<IDynastioDatabase>(null);
         }
-
+        public void ClearCache()
+        {
+            this._users.Clear();
+            this._guilds.Clear();
+        }
         public async Task<Advertise> GetAdAsync(ObjectId Id)
         {
             return await dbContext.GetAdvertisingAsync(Id);

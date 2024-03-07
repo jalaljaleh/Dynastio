@@ -114,6 +114,24 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                     }.Build());
             }
         }
+
+
+        [Group("cache", "cache")]
+        public class CacheModule : BotInteractionModuleBase
+        {
+
+            [SlashCommand("clear", "cache ")]
+            public async Task clear()
+            {
+                await DeferAsync(true);
+
+                this.Context._dynastioData.ClearCache();
+
+                await FollowupAsync(embed: "Done, user and guilds cleared.".ToEmbed("Successful Operator"));
+            }
+           
+           
+        }
     }
 
 }
