@@ -1,21 +1,30 @@
 {
+
+  "btn.dynastio.teams.label": "Команды {0}",
+  "btn.dynastio.players.label": "Игроки {0}",
+  "btn.dynastio.profile.label": "Профиль",
+  "btn.dynastio.players.search.label": "Поиск",
+
+  "modal.dynastio.searchplayer.title": "Поиск игроков",
+
+  "menu.profile.accounts.choose": "Выберите аккаунт для отображения!",
+  "input_mode.title": "Загрузка информации ..",
+  "input_mode.description": "Бот загружает информацию, запрошенную пользователем.",
   "access_denied": "Доступ запрещен.",
   "cancel": "Отмена",
-  "menu_closes": "Это меню закрывается {0}",
-  "menu_closed_title": "Это меню закрыто из-за бездействия!",
-  "menu_closed_description": "Это меню закрыто из-за бездействия!",
+  "menu_closes": "Меню закрывается через {0}",
+  "menu_closed_title": "Меню закрыто из-за неактивности!",
+  "menu_closed_description": "Меню закрыто из-за неактивности!",
   "data_load_failure": "Бот столкнулся с ошибкой загрузки данных!",
-  "proccess_failed_title": "Процесс не удался",
-  "menu.dynastio.btn.profile.text": "Профиль",
-  "menu.dynastio.btn.teams.text": " {0} Команд",
-  "menu.dynastio.btn.players.text": " {0} Игроков",
-  "menu.profile.accounts.choose": "Выберите учетную запись для отображения!",
-  "account_selection": "Выбор учетной записи!",
-  "account_selection_description": "Выберите учетную запись, чтобы продолжить процесс. Если вы не подключили свою учетную запись, добавьте ее через меню настроек.",
+  "proccess_failed_title": "Процесс не выполнен",
+  "account_selection": "Выбор аккаунта!",
+  "account_selection_description": "Выберите аккаунт для продолжения. Если вы не подключили свой аккаунт, добавьте его через меню настроек.",
+
   "server": "Сервер",
-  "score": "Счет",
+  "score": "Очки",
   "level": "Уровень",
   "team": "Команда",
   "nickname": "Никнейм",
-  "accounts.require.default": "У вас нет учетной записи по умолчанию, выберите ее и повторите попытку."
+
+  "accounts.require.default": "У вас нет аккаунта по умолчанию, выберите его и попробуйте снова."
 }
