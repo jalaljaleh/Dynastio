@@ -12,12 +12,14 @@ using Dynastio.Bot.Services;
 using Dynastio.Bot.Database;
 using MongoDB.Bson;
 using Dynastio.Bot.Interactions.Precondinations;
+using Dynastio.Bot.Addons;
 
 namespace Dynastio.Bot.Interactions.Modules.slashcommands
 {
     [Group("developer", "developer")]
     [EnabledInDm(true)]
     [RequireTeamMemberAttribute]
+    [DefaultMemberPermissions(GuildPermission.Administrator)]
     public class DeveloperModule : BotInteractionModuleBase
     {
         [Group("advertisement", "advertisement")]
@@ -25,11 +27,45 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
         {
             public AdvertisingService advertisingService { get; set; }
 
+            [SlashCommand("delete", "delete ads")]
+            public async Task delete(string Id)
+            {
+                await DeferAsync(true);
+
+                var target = advertisingService.GetRemainingAdvertises().FirstOrDefault(a => a.Id.ToString() == Id);
+
+                var ads = advertisingService.DeleteAdvertise(target);
+
+                await FollowupAsync(embed: "Done, the record deleted from the database.".ToEmbed("Successful Operator"));
+            }
+            [SlashCommand("current", "current ads")]
+            public async Task current(IUser user = null)
+            {
+                await DeferAsync(true);
+
+                var ads = advertisingService.GetRemainingAdvertises();
+
+                if (user is not null)
+                    ads = ads.Where(a => a.User == user.Id).ToList();
+
+                var content = ads.ToStringTable(new string[] { "Id", "Count", "Type", "StartedAt", "UserId" },
+
+                    a => a.Id.ToString(),
+                    a => a.DisplayCount + "/" + a.Count,
+                    a => (int)a.Type,
+                    a => a.StartedAt.ToString("d"),
+                    a => a.User);
+
+                await FollowupAsync(
+                    text: Context.User.Mention + "\n" + content.ToMarkdown());
+            }
+
             [SlashCommand("insert", "insert new ads")]
             public async Task insert(string label, string url, AdsType type, int count, IUser user)
             {
-                await DeferAsync();
-                await advertisingService.InsertAndCache(new Advertise()
+                await DeferAsync(true);
+
+                var ad = new Advertise()
                 {
                     Id = ObjectId.GenerateNewId(),
                     Label = label,
@@ -40,7 +76,8 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                     StartedAt = DateTime.UtcNow,
                     User = user.Id,
                     FinishedAt = DateTime.MinValue,
-                });
+                };
+                await advertisingService.InsertAndCache(ad);
 
                 await FollowupAsync(
                     text: Context.User.Mention,
@@ -48,7 +85,9 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                     {
                         Title = "Data inserted",
                         Description =
-                        ($"Label:  {label} \n" +
+                        (
+                        $"Id: {ad.Id}\n" +
+                        $"Label:  {label} \n" +
                         $"Url:  {url} \n" +
                         $"type:  {type} \n" +
                         $"count:  {count} \n" +

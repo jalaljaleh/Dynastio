@@ -24,6 +24,10 @@ namespace Dynastio.Bot
         {
             return Path.Combine(CurrentDirectory, $@"config.json");
         }
+        public static string GetDebugFile()
+        {
+            return Path.Combine(CurrentDirectory, $@"debug.json");
+        }
         public static string GetData()
         {
             return Path.Combine(CurrentDirectory, @"data");

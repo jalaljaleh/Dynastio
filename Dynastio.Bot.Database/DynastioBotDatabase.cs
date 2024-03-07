@@ -55,7 +55,10 @@ namespace Dynastio.Bot.Database
         {
             return await dbContext.GetAdsAsync(x => x.DisplayCount < x.Count);
         }
-
+        public async Task<bool> DeleteAsync(Advertise _advertise)
+        {
+            return await dbContext.DeleteAsync(_advertise);
+        }
 
         public async Task<T> GetEntityAsync<T>(EntityType entity) where T : EntityBase
         {

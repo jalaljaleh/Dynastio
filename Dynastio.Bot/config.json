@@ -1,10 +1,10 @@
-//{
-//  "Tokens": {
-//    "discord-bot": "",
-//    "dynastio-api": "",
-//    "connectionstring-mongodb": ""
-//  },
+{
+  "Tokens": {
+    "discord-bot": "",
+    "dynastio-api": "",
+    "connectionstring-mongodb": ""
+  },
 
-//  "DebugServerId": 0
+  "DebugServerId": 0
 
-//}
+}

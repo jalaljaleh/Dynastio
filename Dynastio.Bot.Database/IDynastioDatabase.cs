@@ -18,6 +18,7 @@ namespace Dynastio.Bot.Database
         Task<Advertise> GetAdvertisingAsync(ObjectId Id);
         Task<bool> InsertAsync(Advertise _advertise);
         Task<bool> UpdateAsync(Advertise _advertise);
+        Task<bool> DeleteAsync(Advertise _advertise);
         Task<bool> UpdateManyAsync(List<Advertise> _advertise);
         Task<List<Advertise>> GetAdsAsync(Func<Advertise, bool> predicate);
 

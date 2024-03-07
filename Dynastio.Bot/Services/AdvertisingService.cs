@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Dynastio.Bot.Database;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,18 +13,18 @@ namespace Dynastio.Bot.Services
 {
     public class AdvertisingService : ServicesBase
     {
-        public RepeaterService repeaterService { get; set; }
+        private readonly RepeaterService repeaterService;
 
-        private List<Advertise> _advertising;
-        private ConcurrentStack<Advertise> _toUpdate = new();
+        private List<Advertise> _remainedAdvertising;
+        private readonly ConcurrentStack<Advertise> _toUpdate = new();
         public AdvertisingService(IServiceProvider services) : base(services)
         {
             repeaterService = services.GetRequiredService<RepeaterService>();
-            _advertising = new();
+            _remainedAdvertising = new();
         }
         public async Task InitializeAsync()
         {
-            _advertising = await _db.GetAvailableAdsAsync();
+            _remainedAdvertising = await _db.GetAvailableAdsAsync();
             repeaterService.AddAction(RefreshRecords, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
         }
         async Task RefreshRecords()
@@ -38,21 +39,22 @@ namespace Dynastio.Bot.Services
         public async Task<bool> InsertAndCache(Advertise advertise)
         {
             await _db.InsertAsync(advertise);
-            _advertising.Add(advertise);
+            _remainedAdvertising.Add(advertise);
             return true;
         }
 
-        public string GetInlineEmbedDescription(int size = 4)
+        public async Task DeleteAdvertise(Advertise advertise)
         {
-            var embedBottomAdvertises = ExploitationAdvertising(Database.AdsType.InlineEmbedDescription, size);
-
-            string text = string.Join("  ", embedBottomAdvertises?.Select(a => $" [{a.Label}]({a.Url}) "));
-            return " " + text + " ";
+            _remainedAdvertising.Remove(advertise);
+            await _db.DeleteAsync(advertise);
         }
-
+        public List<Advertise> GetRemainingAdvertises()
+        {
+            return _remainedAdvertising;
+        }
         public List<Advertise> ExploitationAdvertising(AdsType type, int take)
         {
-            var res = _advertising.Where(a => a.Type == type).OrderBy(a => a.DisplayCount).Take(take);
+            var res = _remainedAdvertising.Where(a => a.Type == type).OrderBy(a => a.DisplayCount).Take(take);
             foreach (var advertise in res)
             {
                 advertise.DisplayCount++;
@@ -61,7 +63,7 @@ namespace Dynastio.Bot.Services
                 {
                     advertise.FinishedAt = DateTime.UtcNow;
 
-                    _advertising.Remove(advertise);
+                    _remainedAdvertising.Remove(advertise);
 
                     _db.UpdateAsync(advertise).GetAwaiter().GetResult();
 
@@ -74,6 +76,13 @@ namespace Dynastio.Bot.Services
         public Advertise ExploitationAdvertise(AdsType type)
         {
             return ExploitationAdvertising(type, 1).FirstOrDefault();
+        }
+        public string GetInlineEmbedDescription(int size = 4)
+        {
+            var embedBottomAdvertises = ExploitationAdvertising(Database.AdsType.InlineEmbedDescription, size);
+
+            string text = string.Join("  ", embedBottomAdvertises?.Select(a => $" [{a.Label}]({a.Url}) "));
+            return " " + text + " ";
         }
     }
 }

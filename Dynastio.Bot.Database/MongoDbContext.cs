@@ -27,11 +27,14 @@ namespace Dynastio.Bot.Database
             Main.Log("Mongodb", "Initialize Async..");
 
             var settings = MongoClientSettings.FromConnectionString(mongoConnection);
-           // settings.ServerApi = new ServerApi(ServerApiVersion.V1);
+            // settings.ServerApi = new ServerApi(ServerApiVersion.V1);
 
             _db = new MongoClient(settings);
 
-            _dynastio = _db.GetDatabase("Dynastio");
+            if (Main.IsDebug())
+                _dynastio = _db.GetDatabase("Dynastio_Debug");
+            else
+                _dynastio = _db.GetDatabase("Dynastio");
 
             Main.Log("Mongodb", "Initialized");
         }
@@ -43,7 +46,7 @@ namespace Dynastio.Bot.Database
 
                 await _db.StartSessionAsync();
 
-               // var filter = Builders<User>.Filter.Where(a => a.Warns.Any(a => a.CreatedAt.Day == DateTime.UtcNow.Day));
+                // var filter = Builders<User>.Filter.Where(a => a.Warns.Any(a => a.CreatedAt.Day == DateTime.UtcNow.Day));
                 //var result = _users.Find(_ => true);
                 //var users = await result.ToListAsync();
                 //foreach (var u in users)
@@ -77,6 +80,12 @@ namespace Dynastio.Bot.Database
         public async Task<bool> UpdateAsync(Advertise Advertise)
         {
             _advertising.ReplaceOne(a => a.Id == Advertise.Id, Advertise);
+            return await Task.FromResult(true);
+        }
+        public async Task<bool> DeleteAsync(Advertise Advertise)
+        {
+            var filter = Builders<Advertise>.Filter.Where(u => u.Id == Advertise.Id);
+            _advertising.DeleteOne(filter);
             return await Task.FromResult(true);
         }
         public async Task<bool> UpdateManyAsync(List<Advertise> Advertise)
