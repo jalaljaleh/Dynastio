@@ -30,7 +30,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             advertise.Add(contentAdvertises);
 
             await FollowupAsync(
-                text: Context.User.Mention + " " + contentAdvertises?.Url,
+                text: Context.User.Mention + " " + contentAdvertises?.GetEmbedLink(),
                 components: GetComponent());
 
         }

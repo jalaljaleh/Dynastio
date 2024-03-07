@@ -7,9 +7,7 @@ namespace Dynastio.Bot.Database
     {
         EmbedMessageContent = 0,
         InlineEmbedDescription,
-        Buttons,
-        DMButton,
-        DMMessageContent,
+        Buttons
     }
     public class Advertise
     {
@@ -27,6 +25,11 @@ namespace Dynastio.Bot.Database
         public int DisplayCount { get; set; }
 
         public string Emoji { get; set; }
+
+        public string GetEmbedLink()
+        {
+            return $"[{Label}]({Url})";
+        }
 
     }
 }
