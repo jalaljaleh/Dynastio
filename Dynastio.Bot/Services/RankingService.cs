@@ -54,10 +54,10 @@ namespace Dynastio.Bot.Services
 
                 messageXp = new Random().Next(messageXp - guild.RankingSettings.XpRandom, messageXp + guild.RankingSettings.XpRandom);
 
-                await AddXpAsync(guild, user, discordUser, txtChannel.Guild, uProfile, messageXp);
+                await AddXpAsync(guild, user, discordUser, txtChannel.Guild, uProfile, messageXp,txtChannel);
             }
         }
-        public async Task<bool> AddXpAsync(Guild guild, User user, IUser dUser, IGuild dGuild, GuildProfile sProfile, int count)
+        public async Task<bool> AddXpAsync(Guild guild, User user, IUser dUser, IGuild dGuild, GuildProfile sProfile, int count,ITextChannel channel)
         {
             sProfile.LastMessageTimestamp = DateTime.UtcNow;
             sProfile.Xp += count;
@@ -72,7 +72,7 @@ namespace Dynastio.Bot.Services
 
                 try
                 {
-                    await AnnouncementUserLevelUpAsync(guild, sProfile, dUser, dGuild).TryAsync();
+                    await AnnouncementUserLevelUpAsync(guild, sProfile, dUser, dGuild, channel).TryAsync();
                     await RequestGameLevelUpRewards(guild, user, sProfile).TryAsync();
                     await RequestRoleLevelUpRewards(guild, dUser as IGuildUser, sProfile.Level).TryAsync();
                 }
@@ -137,7 +137,7 @@ namespace Dynastio.Bot.Services
             }
             return false;
         }
-        public async Task<bool> AnnouncementUserLevelUpAsync(Guild bGuild, GuildProfile sProfile, IUser dUser, IGuild dGuild, bool tryMode = true)
+        public async Task<bool> AnnouncementUserLevelUpAsync(Guild bGuild, GuildProfile sProfile, IUser dUser, IGuild dGuild, ITextChannel sourceChannel, bool tryMode = true)
         {
             if (bGuild.RankingSettings.LogChannelId == 0) return false;
 
@@ -170,6 +170,17 @@ namespace Dynastio.Bot.Services
 
             try
             {
+                if(tryMode is false)
+                await sourceChannel.SendMessageAsync(text: dUser.Mention,
+                                    embeds: new Embed[]{ new EmbedBuilder()
+                                    {
+                                        Author = new EmbedAuthorBuilder(){ Name = dUser.Username, IconUrl = dUser.TryGetAvatarUrl()},
+                                        Title = $"🎉 You just got new level **{sProfile.Level}**  !",
+                                        Description =content,
+                                        Color = Color.Green,
+                                        ThumbnailUrl = dUser.TryGetAvatarUrl(),
+                                    }.Build() });
+
                 var webhook = new DiscordWebhookClient(bGuild.RankingSettings.WebhookUrl);
 
                 await webhook.SendMessageAsync(
@@ -194,7 +205,7 @@ namespace Dynastio.Bot.Services
                 bGuild.RankingSettings.WebhookUrl = null;
 
                 if (tryMode)
-                    return await AnnouncementUserLevelUpAsync(bGuild, sProfile, dUser, dGuild, false);
+                    return await AnnouncementUserLevelUpAsync(bGuild, sProfile, dUser, dGuild,sourceChannel, false);
 
                 await _db.UpdateAsync(bGuild);
                 return false;
