@@ -1,23 +1,26 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/runtime:7.0 AS base
+FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
+USER app
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Dynastio.Bot/Dynastio.Bot.csproj", "Dynastio.Bot/"]
-COPY ["Dynastio.Data/Dynastio.Data.csproj", "Dynastio.Data/"]
+COPY ["Dynastio.Bot.Database/Dynastio.Bot.Database.csproj", "Dynastio.Bot.Database/"]
 COPY ["Dynastio.Bot.Global/Dynastio.Bot.Global.csproj", "Dynastio.Bot.Global/"]
-COPY ["Dynastio.Bot.Globalization/Dynastio.Bot.Globalization.csproj", "Dynastio.Bot.Globalization/"]
-COPY ["Dynastio.Bot.Test/Dynastio.Bot.Test.csproj", "Dynastio.Bot.Test/"]
 COPY ["Dynastio.Net/Dynastio.Net.csproj", "Dynastio.Net/"]
-RUN dotnet restore "Dynastio.Bot/Dynastio.Bot.csproj"
+COPY ["Dynastio.Bot.Globalization/Dynastio.Bot.Globalization.csproj", "Dynastio.Bot.Globalization/"]
+COPY ["Dynastio.Graphic/Dynastio.Graphic.csproj", "Dynastio.Graphic/"]
+RUN dotnet restore "./Dynastio.Bot/Dynastio.Bot.csproj"
 COPY . .
 WORKDIR "/src/Dynastio.Bot"
-RUN dotnet build "Dynastio.Bot.csproj" -c Release -o /app/build
+RUN dotnet build "./Dynastio.Bot.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Dynastio.Bot.csproj" -c Release -o /app/publish /p:UseAppHost=false
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./Dynastio.Bot.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

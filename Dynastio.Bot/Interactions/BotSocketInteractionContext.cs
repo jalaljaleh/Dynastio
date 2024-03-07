@@ -11,17 +11,20 @@ namespace Dynastio.Bot.Interactions
     using Discord.WebSocket;
     using Dynastio.Bot.Database;
     using Dynastio.Bot.Globalization;
+    using Dynastio.Bot.Services;
     using Microsoft.Extensions.DependencyInjection;
 
     public class BotSocketInteractionContext : SocketInteractionContext
     {
         private readonly DynastioBotDatabase _dynastioData;
+        public readonly AdvertisingService _ads;
 
         private readonly DynastioBotGlobalization _globalization;
         private readonly IServiceProvider _services;
         public BotSocketInteractionContext(DiscordSocketClient client, SocketInteraction interaction, IServiceProvider services, User user = null, Guild guild = null) : base(client, interaction)
         {
             _services = services;
+            _ads = _services.GetRequiredService<AdvertisingService>();
             _dynastioData = _services.GetRequiredService<DynastioBotDatabase>();
             _globalization = _services.GetRequiredService<DynastioBotGlobalization>();
 

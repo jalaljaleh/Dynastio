@@ -1,4 +1,6 @@
 {
+  "input_mode.title": "Loading information ..",
+  "input_mode.description": "The bot is loading the information form requested by the user.",
   "access_denied": "Access Denied.",
   "cancel": "Cancel",
   "menu_closes": "This menu closes {0}",

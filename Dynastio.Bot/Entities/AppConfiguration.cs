@@ -14,21 +14,36 @@ namespace Dynastio.Bot.Entities
         public Dictionary<string, string> Tokens = new Dictionary<string, string>();
         public ulong DebugServerId { get; set; }
 
+
         public static AppConfiguration LoadConfiguration(/*bool addLocalEnv*/)
         {
-         //   Environment.SetEnvironmentVariable("config-key", "");
-           
-            //var value = File.ReadAllText(PathHelper.GetConfigFile());
-            //var config = JsonConvert.DeserializeObject<AppConfiguration>(value);
-            //WriteEncryptedConfiguration(config);
+            if (Main.IsDebug())
+                return LoadDebugConfiguration();
 
             var value = File.ReadAllText(PathHelper.GetData());
             var clearValue = Encryption.Decrypt(value, Environment.GetEnvironmentVariable("config-key"));
             var config = JsonConvert.DeserializeObject<AppConfiguration>(clearValue);
 
+            return config ?? throw new Exception("null config");
+        }
+
+
+        public static AppConfiguration LoadDebugConfiguration()
+        {
+            // Environment.SetEnvironmentVariable("config-key", "");
+            //var value = File.ReadAllText(PathHelper.GetConfigFile());
+            //var config = JsonConvert.DeserializeObject<AppConfiguration>(value);
+            //WriteEncryptedConfiguration(config);
+
+            var value = File.ReadAllText(PathHelper.GetConfigFile());
+            var config = JsonConvert.DeserializeObject<AppConfiguration>(value);
+            //WriteEncryptedConfiguration(config);
+
 
             return config ?? throw new Exception("null config");
         }
+
+        
 
         public static void WriteEncryptedConfiguration(AppConfiguration config)
         {

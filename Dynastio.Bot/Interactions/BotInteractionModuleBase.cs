@@ -12,6 +12,7 @@ namespace Dynastio.Bot.Interactions
     using Dynastio.Bot.Database;
     using Dynastio.Bot.Extenstions;
     using Dynastio.Bot.Globalization;
+    using Dynastio.Bot.Services;
 
     public class BotInteractionModuleBase : InteractionModuleBase<BotSocketInteractionContext>
     {
@@ -20,6 +21,7 @@ namespace Dynastio.Bot.Interactions
         {
 
         }
+        public AdvertisingService adsService { get => Context._ads; }
 
         public User BotUser { get => Context.BotUser; }
         public Locale guildLocale { get => this.Context.GuildLocale; }
@@ -40,6 +42,13 @@ namespace Dynastio.Bot.Interactions
                  x.Flags = null;
              });
             return (Context.Interaction as SocketMessageComponent).Message;
+        }
+        public async Task ModifyCurrentMessageToInputModeAsync()
+        {
+             await ModifyCurrentMessageAsync(
+                Context.User.Mention,
+                embed: userLocale["input_mode.description"].ToEmbed(userLocale["input_mode.title"], thumbnailUrl: Context.Client.CurrentUser.TryGetAvatarUrl())
+                );
         }
         public async Task<bool> DeleteCurrentMessageAsync()
         {
