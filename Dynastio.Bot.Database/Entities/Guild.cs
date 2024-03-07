@@ -17,6 +17,11 @@ namespace Dynastio.Bot.Database
             RankingSettings = new RankingSettings()
             {
                 IsEnabled = false,
+                ChannelIds = new(),
+                IsGameRewardEnabled = false,
+                LogChannelId = 0,
+                RolesPrefix= null,
+                WebhookUrl = null,
                 MessageDelay = 60,
                 XpBoosters = 10,
                 XpPerMessage = 40,
