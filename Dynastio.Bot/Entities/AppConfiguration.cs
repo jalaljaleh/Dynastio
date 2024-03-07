@@ -17,8 +17,9 @@ namespace Dynastio.Bot.Entities
 
         public static AppConfiguration LoadConfiguration(/*bool addLocalEnv*/)
         {
-            if (Main.IsDebug())
-                return LoadDebugConfiguration();
+            //if (Main.IsDebug())
+            //    return LoadDebugConfiguration();
+            //Environment.SetEnvironmentVariable("config-key", "");
 
             var value = File.ReadAllText(PathHelper.GetData());
             var clearValue = Encryption.Decrypt(value, Environment.GetEnvironmentVariable("config-key"));
@@ -30,17 +31,12 @@ namespace Dynastio.Bot.Entities
 
         public static AppConfiguration LoadDebugConfiguration()
         {
-            // Environment.SetEnvironmentVariable("config-key", "");
-            //var value = File.ReadAllText(PathHelper.GetConfigFile());
-            //var config = JsonConvert.DeserializeObject<AppConfiguration>(value);
-            //WriteEncryptedConfiguration(config);
-
             var value = File.ReadAllText(PathHelper.GetConfigFile());
             var config = JsonConvert.DeserializeObject<AppConfiguration>(value);
-            //WriteEncryptedConfiguration(config);
+            WriteEncryptedConfiguration(config);
 
 
-            return config ?? throw new Exception("null config");
+           return config ?? throw new Exception("null config");
         }
 
         
@@ -55,7 +51,7 @@ namespace Dynastio.Bot.Entities
                 var serializeConfig = JsonConvert.SerializeObject(config);
                 var encryptedConfig = Encryption.Encrypt(serializeConfig, _configKey);
 
-                File.WriteAllText(PathHelper.GetEncryptedConfigFile(), encryptedConfig);
+                Console.WriteLine(encryptedConfig);
 
                 Global.Main.Log("Config Service", "Configuration file updated succesfully.");
             }
