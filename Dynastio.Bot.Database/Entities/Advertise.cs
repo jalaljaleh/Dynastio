@@ -28,7 +28,7 @@ namespace Dynastio.Bot.Database
 
         public string GetEmbedLink()
         {
-            return $"[{Label}]({Url})";
+            return $" [{Label}]({Url}) ";
         }
 
     }

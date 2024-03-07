@@ -3,6 +3,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Dynastio.Bot.Addons;
 using Dynastio.Bot.Extenstions;
+using Dynastio.Bot.Globalization;
 using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Enums;
 using Dynastio.Bot.Interactions.Precondinations;
@@ -19,12 +20,24 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
 {
     public class PlayersButton : BotInteractionModuleBase
     {
+        public const string CustomId = "btn.dynastio.players";
+        public static Emoji Emoji => new Emoji("⚔️");
+        public static ButtonBuilder GetButton(Locale locale, int playersCount)
+        {
+            return new ButtonBuilder()
+            {
+                Label = locale["btn.dynastio.players.label", playersCount],
+                Style = ButtonStyle.Primary,
+                Emote = PlayersButton.Emoji,
+                IsDisabled = false,
+                Url = null,
+                CustomId = PlayersButton.CustomId
+            };
+        }
+
         public DynastioApi dynastio { get; set; }
         public DynastioGraphic dynastioGraphic { get; set; }
-        public AdvertisingService adsService { get; set; }
-
-        public const string CustomId = "btn.dynastio.players.online";
-        public static Emoji Emoji => new Emoji("⚔️");
+       
 
         [RequireComponentMessageMention]
         [ComponentInteraction(CustomId)]
@@ -64,16 +77,16 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
 
             var players1 = players.Skip((page - 1) * take).Take(take).ToList();
             var content = players1.ToStringTable(new[] { "#", Context.UserLocale["server"], Context.UserLocale["score"], Context.UserLocale["level"], Context.UserLocale["team"], Context.UserLocale["nickname"] },
-                a => players.IndexOf(a),
-                a => a.Parent.Label.TryRemove(16),
-                a => a.Score.Metric(),
-                a => a.Level.Metric(),
-                a => a.Team.RemoveLines().TryRemove(6),
-                a => a.Nickname.RemoveLines().TryRemove(12))
-                .ToMarkdown() +
-                "\n" + adsService.GetInlineEmbedDescription();
+                                    a => players.IndexOf(a),
+                                    a => a.Parent.Label.TryRemove(16),
+                                    a => a.Score.Metric(),
+                                    a => a.Level.Metric(),
+                                    a => a.Team.RemoveLines().TryRemove(6),
+                                    a => a.Nickname.RemoveLines().TryRemove(12))
+                .ToMarkdown() + "\n" + 
+                    adsService.GetInlineEmbedDescription();
 
-            await ModifyCurrentMessageAsync(embed: content.ToEmbed());
+            await ModifyCurrentMessageAsync(embed: content.ToEmbed(userLocale["btn.dynastio.players.label"]));
         }
 
     }

@@ -6,15 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _Test.Interactions.Forms
+namespace Dynastio.Bot.Interactions.Modules.Modals.Forms
 {
-    public class GenericInputModal<T1> : IModal
+    public class GenericInputModalForm<T1> : IModal
     {
         public string Title => string.Empty;
         [ModalTextInput("1")]
         public T1 First { get; set; }
     }
-    public class GenericInputModal<T1, T2> : GenericInputModal<T1>
+    public class GenericInputModal<T1, T2> : GenericInputModalForm<T1>
     {
         [ModalTextInput("2")]
         public T2 Second { get; set; }

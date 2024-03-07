@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using Dynastio.Bot.Addons;
 using Dynastio.Bot.Database;
 using Dynastio.Bot.Extenstions;
+using Dynastio.Bot.Globalization;
 using Dynastio.Bot.Helpers;
 using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Modules.shared_buttons;
@@ -23,11 +24,22 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
     {
         public DynastioApi dynastio { get; set; }
         public DynastioGraphic dynastioGraphic { get; set; }
-        public AdvertisingService adsService { get; set; }
 
 
         public const string CustomId = "btn.dynastio.profile";
         public static Emoji Emoji => new Emoji("✨");
+        public static ButtonBuilder GetButton(Locale locale, bool isDisabled = false)
+        {
+            return new ButtonBuilder()
+            {
+                Label = locale["btn.dynastio.profile.label"],
+                Style = ButtonStyle.Primary,
+                Emote = ProfileButton.Emoji,
+                IsDisabled = isDisabled,
+                Url = null,
+                CustomId = ProfileButton.CustomId
+            };
+        }
 
         [RequireComponentMessageMention]
         [ComponentInteraction(CustomId)]

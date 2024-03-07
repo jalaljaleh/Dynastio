@@ -24,7 +24,7 @@ namespace Dynastio.Bot.Interactions.Modules.@shared_buttons
     {
         public DynastioApi dynastio { get; set; }
         public DynastioGraphic dynastioGraphic { get; set; }
-        public AdvertisingService adsService { get; set; }
+        
 
 
 

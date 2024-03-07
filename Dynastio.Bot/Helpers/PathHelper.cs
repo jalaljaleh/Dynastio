@@ -26,7 +26,7 @@ namespace Dynastio.Bot
         }
         public static string GetDebugFile()
         {
-            return Path.Combine(CurrentDirectory, $@"debug.json");
+            return Path.Combine(CurrentDirectory, $@"C:\Users\Jaleh\source\repos\jalaljaleh\Dynastio\Dynastio.Bot\debug.json");
         }
         public static string GetData()
         {

@@ -3,6 +3,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Dynastio.Bot.Addons;
 using Dynastio.Bot.Extenstions;
+using Dynastio.Bot.Globalization;
 using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Graphic;
@@ -20,9 +21,20 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
         public DynastioApi dynastio { get; set; }
         public DynastioGraphic dynastioGraphic { get; set; }
 
-        public const string CustomId = "btn.dynastio.teams.online";
+        public const string CustomId = "btn.dynastio.teams";
         public static Emoji Emoji => new Emoji("🎪");
-
+        public static ButtonBuilder GetButton(Locale locale, int teamsCount)
+        {
+            return new ButtonBuilder()
+            {
+                Label = locale["btn.dynastio.teams.label", teamsCount],
+                Style = ButtonStyle.Primary,
+                Emote = TeamsButton.Emoji,
+                IsDisabled = true,
+                Url = null,
+                CustomId = TeamsButton.CustomId
+            };
+        }
         [RequireComponentMessageMention]
         [ComponentInteraction(CustomId)]
         public async Task ExecuteAsync()

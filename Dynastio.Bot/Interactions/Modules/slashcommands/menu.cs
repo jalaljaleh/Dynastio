@@ -16,7 +16,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
     {
         public DynastioApi dynastio { get; set; }
         public DynastioGraphic dynastioGraphic { get; set; }
-        public AdvertisingService adsService { get; set; }
+
 
         [SlashCommand("menu", "dynastio menu")]
         [RateLimit(6, 1)]
@@ -38,61 +38,21 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
         private MessageComponent GetComponent()
         {
-            var components = new ComponentBuilder();
+            var cBuilder = new ComponentBuilder()
+                .WithButton(PlayersButton.GetButton(userLocale, dynastio.OnlinePlayers.Count), 0)
+                .WithButton(TeamsButton.GetButton(userLocale, dynastio.OnlinePlayers.GroupBy(a => a.Team).Count()), 0)
+                .WithButton(PlayersSearchButton.GetButton(userLocale), 0)
 
-            GetTopPlayerButton(components, 0);
-            GetTeamsButton(components, 0);
-            GetProfileButton(components, 1);
+                .WithButton(ProfileButton.GetButton(userLocale, BotUser.Accounts.Any()), 1);
 
             var advertises = adsService.ExploitationAdvertising(Database.AdsType.Buttons, 4);
             foreach (var ad in advertises)
             {
-                components.WithButton(ad.Label, null, ButtonStyle.Link, string.IsNullOrEmpty(ad.Emoji) ? new Emoji(ad.Emoji) : null, ad.Url, false, 2);
+                cBuilder.WithButton(ad.Label, null, ButtonStyle.Link, string.IsNullOrEmpty(ad.Emoji) ? new Emoji(ad.Emoji) : null, ad.Url, false, 2);
             }
 
-            components.WithButton(CancelButton.GetButton(userLocale), 2);
-            return components.Build();
-        }
-        private void GetProfileButton(ComponentBuilder cb, int row)
-        {
-            if (Context.BotUser.Accounts.Any() is false) return;
-
-            var btn = new ButtonBuilder()
-            {
-                Label = userLocale["menu.dynastio.btn.profile.text"],
-                Style = ButtonStyle.Primary,
-                Emote = ProfileButton.Emoji,
-                IsDisabled = false,
-                Url = null,
-                CustomId = ProfileButton.CustomId
-            };
-            cb.WithButton(btn, row);
-        }
-        private void GetTeamsButton(ComponentBuilder cb, int row)
-        {
-            var btn = new ButtonBuilder()
-            {
-                Label = userLocale["menu.dynastio.btn.teams.text", dynastio.OnlinePlayers.GroupBy(a => a.Team).Count()],
-                Style = ButtonStyle.Primary,
-                Emote = TeamsButton.Emoji,
-                IsDisabled = true,
-                Url = null,
-                CustomId = TeamsButton.CustomId
-            };
-            cb.WithButton(btn, row);
-        }
-        private void GetTopPlayerButton(ComponentBuilder cb, int row)
-        {
-            var btn = new ButtonBuilder()
-            {
-                Label = userLocale["menu.dynastio.btn.players.text", dynastio.OnlinePlayers.Count],
-                Style = ButtonStyle.Primary,
-                Emote = PlayersButton.Emoji,
-                IsDisabled = false,
-                Url = null,
-                CustomId = PlayersButton.CustomId
-            };
-            cb.WithButton(btn, row);
+            cBuilder.WithButton(CancelButton.GetButton(userLocale), 2);
+            return cBuilder.Build();
         }
 
     }

@@ -15,7 +15,7 @@ namespace Dynastio.Bot.Entities
         public ulong DebugServerId { get; set; }
 
 
-        public static AppConfiguration LoadConfiguration(/*bool addLocalEnv*/)
+        public static AppConfiguration LoadConfiguration()
         {
             if (Main.IsDebug())
                 return LoadDebugConfiguration();

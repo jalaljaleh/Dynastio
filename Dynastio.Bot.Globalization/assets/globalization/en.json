@@ -1,4 +1,13 @@
 {
+
+  "btn.dynastio.teams.label": " {0} Teams",
+  "btn.dynastio.players.label": " {0} Players",
+  "btn.dynastio.profile.label": "Profile",
+  "btn.dynastio.players.search.label": "Search",
+
+  "modal.dynastio.searchplayer.title": "Search Players",
+
+  "menu.profile.accounts.choose": "Choose the account to display !",
   "input_mode.title": "Loading information ..",
   "input_mode.description": "The bot is loading the information form requested by the user.",
   "access_denied": "Access Denied.",
@@ -8,16 +17,14 @@
   "menu_closed_description": "This menu closed due to Inactivity !",
   "data_load_failure": "The bot has encountered a data loading error !",
   "proccess_failed_title": "Process failed",
-  "menu.dynastio.btn.profile.text": "Profile",
-  "menu.dynastio.btn.teams.text": " {0} Teams",
-  "menu.dynastio.btn.players.text": " {0} Players",
-  "menu.profile.accounts.choose": "Choose the account to display !",
   "account_selection": "Account Selection !",
   "account_selection_description": "Select an account to continue the process. If you have not connected your account, add it through the settings menu.",
+
   "server": "Server",
   "score": "Score",
   "level": "Level",
   "team": "Team",
   "nickname": "Nickname",
+
   "accounts.require.default": "You have no any default account, select one then try again."
 }

@@ -6,6 +6,7 @@
  */
 namespace Dynastio.Bot.Interactions
 {
+    using Amazon.SecurityToken.Model;
     using Discord;
     using Discord.Interactions;
     using Discord.WebSocket;
@@ -13,6 +14,7 @@ namespace Dynastio.Bot.Interactions
     using Dynastio.Bot.Extenstions;
     using Dynastio.Bot.Globalization;
     using Dynastio.Bot.Services;
+    using Microsoft.VisualBasic;
 
     public class BotInteractionModuleBase : InteractionModuleBase<BotSocketInteractionContext>
     {
@@ -29,9 +31,18 @@ namespace Dynastio.Bot.Interactions
         public string this[string key] { get => Context.UserLocale[key]; }
         public string this[string key, params object[] @params] { get => Context.UserLocale[key, @params]; }
 
+
+        public IUserMessage CurrentMessage =>
+             Context.Interaction.Type switch
+             {
+                 InteractionType.ModalSubmit => (Context.Interaction as SocketModal).Message,
+                 InteractionType.MessageComponent => (Context.Interaction as SocketMessageComponent).Message,
+                 _ => null
+             };
+
         public async Task<IUserMessage> ModifyCurrentMessageAsync(string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null, RequestOptions options = null, MessageComponent components = null, Embed embed = null)
         {
-            await (Context.Interaction as SocketMessageComponent).Message.ModifyAsync(x =>
+            await CurrentMessage.ModifyAsync(x =>
              {
                  x.Content = text;
                  x.AllowedMentions = allowedMentions;
@@ -41,18 +52,18 @@ namespace Dynastio.Bot.Interactions
                  x.Embeds = embeds;
                  x.Flags = null;
              });
-            return (Context.Interaction as SocketMessageComponent).Message;
+            return CurrentMessage;
         }
         public async Task ModifyCurrentMessageToInputModeAsync()
         {
-             await ModifyCurrentMessageAsync(
-                Context.User.Mention,
-                embed: userLocale["input_mode.description"].ToEmbed(userLocale["input_mode.title"], thumbnailUrl: Context.Client.CurrentUser.TryGetAvatarUrl())
-                );
+            await ModifyCurrentMessageAsync(
+               Context.User.Mention,
+               embed: userLocale["input_mode.description"].ToEmbed(userLocale["input_mode.title"], thumbnailUrl: Context.Client.CurrentUser.TryGetAvatarUrl())
+               );
         }
         public async Task<bool> DeleteCurrentMessageAsync()
         {
-            return await (Context.Interaction as SocketMessageComponent).Message.DeleteAsync().TryAsync();
+            return await CurrentMessage.DeleteAsync().TryAsync();
         }
     }
 
