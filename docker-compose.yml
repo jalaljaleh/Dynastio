@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  dynastio.bot:
+    image: ${DOCKER_REGISTRY-}dynastiobot
+    build:
+      context: .
+      dockerfile: Dynastio.Bot/Dockerfile
