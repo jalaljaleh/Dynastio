@@ -33,7 +33,14 @@ namespace Dynastio.Bot.Globalization
                 if (!Words.TryGetValue(key, out string value))
                     return key;
 
-                return string.Format(value, param);
+                try
+                {
+                   return string.Format(value, param);
+                }
+                catch
+                {
+                    return key;
+                }
             }
         }
     }

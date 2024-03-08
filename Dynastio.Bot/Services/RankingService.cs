@@ -8,6 +8,7 @@ using Google.Apis.YouTube.v3.Data;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -54,10 +55,10 @@ namespace Dynastio.Bot.Services
 
                 messageXp = new Random().Next(messageXp - guild.RankingSettings.XpRandom, messageXp + guild.RankingSettings.XpRandom);
 
-                await AddXpAsync(guild, user, discordUser, txtChannel.Guild, uProfile, messageXp,txtChannel);
+                await AddXpAsync(guild, user, discordUser, txtChannel.Guild, uProfile, messageXp, txtChannel);
             }
         }
-        public async Task<bool> AddXpAsync(Guild guild, User user, IUser dUser, IGuild dGuild, GuildProfile sProfile, int count,ITextChannel channel)
+        public async Task<bool> AddXpAsync(Guild guild, User user, IUser dUser, IGuild dGuild, GuildProfile sProfile, int count, ITextChannel channel)
         {
             sProfile.LastMessageTimestamp = DateTime.UtcNow;
             sProfile.Xp += count;
@@ -72,58 +73,65 @@ namespace Dynastio.Bot.Services
 
                 try
                 {
-                    await AnnouncementUserLevelUpAsync(guild, sProfile, dUser, dGuild, channel).TryAsync();
-                    await RequestGameLevelUpRewards(guild, user, sProfile).TryAsync();
-                    await RequestRoleLevelUpRewards(guild, dUser as IGuildUser, sProfile.Level).TryAsync();
+                    await NotifyUserLevelUpAsync(guild, sProfile, dUser, dGuild, channel).TryAsync();
+                    await SynchronizeGameUser(guild, user, sProfile).TryAsync();
+                    await SynchronizeUserRolesAsync(guild, dUser as IGuildUser, sProfile.Level).TryAsync();
                 }
                 catch { }
             }
             var updated = await UpdateUserAsync(user, isLevelUpPossible);
             return updated;
         }
-        public async Task DisableGuildRankingModuleAsync(Guild guild)
+        public async Task SetUnqualifiedGuildAsync(Guild guild)
         {
             guild.RankingSettings.IsEnabled = false;
             await _db.UpdateAsync(guild);
         }
-        public async Task<bool> RequestRoleLevelUpRewards(Guild guild, IGuildUser user, int level)
+
+        public IEnumerable<IRole> GetGuildRankingRoles(IGuild guild, string rolePrefix)
         {
-            if (guild.RankingSettings.IsEnabled is false || user is null)
-                return false;
+            return guild.Roles
+                                .Where(x => x.Name.StartsWith(rolePrefix + " "))
+                                .OrderBy(a => a.Position);
+        }
+        public IEnumerable<IRole> GetUserRankingRoles(IGuildUser user, IEnumerable<IRole> serverRankingRoles)
+        {
+            return serverRankingRoles.Where(a => user.RoleIds.Contains(a.Id));
+        }
+        public async Task<bool> SynchronizeUserRolesAsync(Guild guild, IGuildUser user, int level)
+        {
+            if (guild.RankingSettings.IsEnabled is false) return false;
 
-            var roles = user.Guild.Roles
-                                .Where(x => x.Name.StartsWith(guild.RankingSettings.RolesPrefix + " "))
-                                .OrderBy(a => a.Position)
-                                .Select(a => a.Id)
-                                .ToList();
-
-
-            var reached = roles.Where(a => user.RoleIds.Contains(a));
-
-            // Rules are not created or not match with the prefix
-            if (roles is null || roles.Count == 0)
+            var serverRoles = GetGuildRankingRoles(user.Guild, guild.RankingSettings.RolesPrefix).ToList();
+            if (serverRoles?.Any() == false)
             {
-                await DisableGuildRankingModuleAsync(guild);
                 return false;
             }
-            // end of roles
-            if (level >= roles.Count)
-                return false;
 
-            var toAdd = roles.GetRange(0, level);
-            toAdd.RemoveRange(0, reached.Count());
+            var userRoles = GetUserRankingRoles(user, serverRoles).ToList();
 
-            var result = await user.AddRolesAsync(toAdd).TryAsync();
+            // Everything is okay
+            if (serverRoles.Count == userRoles.Count)
+                return true;
+
+            // when roles are few
+            if (serverRoles.Count < level)
+                level = serverRoles.Count;
+
+            var toAdd = serverRoles.GetRange(userRoles.Count - 1 < 0 ? 0 : userRoles.Count - 1, (level - userRoles.Count)+1 );
+
+            var result = await user.AddRolesAsync(toAdd)
+                .TryAsync();
 
             // role permission required
-            if (result)
+            if (result is false)
             {
-                await DisableGuildRankingModuleAsync(guild);
+                await SetUnqualifiedGuildAsync(guild);
                 return false;
             }
             return true;
         }
-        public async Task<bool> RequestGameLevelUpRewards(Guild guild, User user, GuildProfile sProfile)
+        public async Task<bool> SynchronizeGameUser(Guild guild, User user, GuildProfile sProfile)
         {
             if (guild.RankingSettings.IsGameRewardEnabled)
             {
@@ -137,81 +145,44 @@ namespace Dynastio.Bot.Services
             }
             return false;
         }
-        public async Task<bool> AnnouncementUserLevelUpAsync(Guild bGuild, GuildProfile sProfile, IUser dUser, IGuild dGuild, ITextChannel sourceChannel, bool tryMode = true)
+        public async Task<bool> NotifyUserLevelUpAsync(Guild bGuild, GuildProfile sProfile, IUser dUser, IGuild dGuild, ITextChannel sourceChannel)
         {
-            if (bGuild.RankingSettings.LogChannelId == 0) return false;
-
-            if (string.IsNullOrEmpty(bGuild.RankingSettings.WebhookUrl))
+            ITextChannel loggChannel = null;
+            if (bGuild.RankingSettings.LogChannelId != 0)
             {
-                // permission problems
-                try
+                loggChannel = await dGuild.GetTextChannelAsync(bGuild.RankingSettings.LogChannelId);
+                if (loggChannel is null)
                 {
-                    var channel = await dGuild.GetTextChannelAsync(bGuild.RankingSettings.LogChannelId);
-
-                    var targetWebhook = await WebhookService.GetWebhookAsync(channel);
-
-                    bGuild.RankingSettings.WebhookUrl = WebhookService.GetWebhookUrl(targetWebhook);
-                    await _db.UpdateAsync(bGuild);
-                }
-                catch
-                {
-                    //  Announce the server admin
-                    bGuild.RankingSettings.LogChannelId = 0;
-                    await _db.UpdateAsync(bGuild);
+                    await SetUnqualifiedGuildAsync(bGuild);
                     return false;
                 }
             }
-            var content = $"You just got new level, you are level **{sProfile.Level}** and **{sProfile.Xp.Metric()}** xp  !";
 
-            if (bGuild.RankingSettings.IsGameRewardEnabled)
-                content += $"\n\nIngame Reward: You got **{DynastioApiHelper.GetLevelCoinsReward(sProfile.Level)} coins** for your reward.";
-            else
-                content += $"\n\nIngame Reward: Coin rewards is not supported in this server.";
+            var embed = string.Format(
+                "You just got new level, you are level **{0}** and **{1}** xp  !{2}",
 
-            try
-            {
-                if(tryMode is false)
-                await sourceChannel.SendMessageAsync(text: dUser.Mention,
-                                    embeds: new Embed[]{ new EmbedBuilder()
-                                    {
-                                        Author = new EmbedAuthorBuilder(){ Name = dUser.Username, IconUrl = dUser.TryGetAvatarUrl()},
-                                        Title = $"🎉 You just got new level **{sProfile.Level}**  !",
-                                        Description =content,
-                                        Color = Color.Green,
-                                        ThumbnailUrl = dUser.TryGetAvatarUrl(),
-                                    }.Build() });
+                sProfile.Level,
+                sProfile.Xp.Metric(),
 
-                var webhook = new DiscordWebhookClient(bGuild.RankingSettings.WebhookUrl);
+                (bGuild.RankingSettings.IsGameRewardEnabled
+                ? $"\n\nIngame Reward: You got **{DynastioApiHelper.GetLevelCoinsReward(sProfile.Level)} coins** for your reward."
+                : $"\n\nIngame Reward: Coin rewards is not supported in this server.")
 
-                await webhook.SendMessageAsync(
-                                    text: dUser.Mention,
-                                    username: dGuild.Name + "'s Ranking",
-                                    avatarUrl: _discord.CurrentUser.TryGetAvatarUrl(),
-                                    embeds: new Embed[]{ new EmbedBuilder()
-                                    {
-                                        Author = new EmbedAuthorBuilder(){ Name = dUser.Username, IconUrl = dUser.TryGetAvatarUrl()},
-                                        Title = $"🎉 You just got new level **{sProfile.Level}**  !",
-                                        Description =content,
-                                        Color = Color.Green,
-                                        ThumbnailUrl = dUser.TryGetAvatarUrl(),
-                                    }.Build() });
-            }
-            catch (Exception e)
-            {
-                // Should use this ?!  /Consider network or discord api downs & ratelimit
-                //// if (e.InnerException.Equals("Could not find a webhook with the supplied credentials."))
-                //  Announce the server admin
+                    ).ToEmbed(
+                title: $"🎉 You just got new level **{sProfile.Level}**  !",
+                thumbnailUrl: dUser.TryGetAvatarUrl(),
+                color: Color.Green);
 
-                bGuild.RankingSettings.WebhookUrl = null;
 
-                if (tryMode)
-                    return await AnnouncementUserLevelUpAsync(bGuild, sProfile, dUser, dGuild,sourceChannel, false);
+            await sourceChannel.SendMessageAsync(dUser.Mention, embed: embed).TryAsync();
 
-                await _db.UpdateAsync(bGuild);
-                return false;
-            }
 
-            return true;
+            var result = await loggChannel.SendMessageAsync(dUser.Mention, embed: embed).TryAsync();
+
+            if (result.isSuccesful is false)
+                await SetUnqualifiedGuildAsync(bGuild);
+
+            return result.isSuccesful;
         }
         public async Task<bool> UpdateUserAsync(User user, bool force = false)
         {

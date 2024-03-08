@@ -9,7 +9,7 @@
   "modal.dynastio.searchplayer.title": "Oyuncuları Ara",
 
   "embed.rank.title": "{0}. Seviyeniz",
-  "embed.rank.description": "Şu Anki Rol: {0}\nŞu Anki Seviye: {1}\nŞu Anki XP: {2}xp\n\nSonraki Rol: {3}\nSonraki Seviye: {4}\nGerekli XP: {5}",
+  "embed.rank.description": "Şu Anki Rol: {0}\nŞu Anki Seviye: {1}\nŞu Anki XP: {2}xp\n\nSonraki Rol: {3}\nGerekli XP: {4}",
   "embed.rank.not_ranked.title": "Sıralamada Değilsiniz",
   "embed.rank.not_ranked.description": "Henüz sıralamalarda değilsiniz, seviyeniz 0. 1. seviyeye ulaşmak için {0} XP gerekli.",
   "embed.rank.error.guild_ranking_disabled.title": "Kullanılamaz!",

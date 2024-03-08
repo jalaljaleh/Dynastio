@@ -21,6 +21,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
     {
         public DynastioApi dynastio { get; set; }
         public DynastioGraphic dynastioGraphic { get; set; }
+        public RankingService rankingService { get; set; }
 
         public const string CustomId = "btn.bot.rank";
         public static Emoji Emoji => new Emoji("💫");
@@ -44,6 +45,9 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
 
             var guild = Context.BotGuild;
 
+          //  guild.RankingSettings.IsEnabled = true;
+
+
             if (guild.RankingSettings.IsEnabled is false)
             {
                 await ModifyCurrentMessageAsync(embed: userLocale["embed.rank.error.guild_ranking_disabled.description"].ToInformEmbed(userLocale["embed.rank.error.guild_ranking_disabled.title"], BotAvatarUrl));
@@ -57,38 +61,30 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
                 return;
             }
 
-            var prefix = guild.RankingSettings.RolesPrefix;
-
-            var roles = Context.Guild.Roles
-                              .Where(x => x.Name.StartsWith(prefix + " "))
-                              .OrderBy(a => a.Position)
-                              .ToList();
-
-            // Rules are not created or not match with the prefix
-            if (roles is null || roles.Count == 0)
+            var guildRankRoles = rankingService.GetGuildRankingRoles(Context.Guild, guild.RankingSettings.RolesPrefix);
+            if (guildRankRoles is null || guildRankRoles.Count() == 0)
             {
-                guild.RankingSettings.IsEnabled = false;
-                await dynastioBotDatabase.UpdateAsync(guild);
-                await ModifyCurrentMessageAsync(embed: userLocale["embed.rank.error.guild_ranking_disabled.description"].ToInformEmbed(userLocale["embed.rank.error.guild_ranking_disabled.title"], BotAvatarUrl));
+                await ModifyCurrentMessageAsync(embed: userLocale["embed.rank.error.guild_ranking_disabled.description"].ToInformEmbed(userLocale["embed.rank.error.guild_ranking_disabled.title"], BotAvatarUrl))
+                    .TryAsync();
+
+                await rankingService.SetUnqualifiedGuildAsync(Context.BotGuild);
                 return;
             }
+            
+            var userRankRoles = rankingService.GetUserRankingRoles(Context.User as IGuildUser, guildRankRoles);
+            if (userRankRoles is null || userRankRoles.Count() == 0)
+            {
+                await rankingService.SynchronizeUserRolesAsync(Context.BotGuild, Context.User as IGuildUser, Context.BotUser.GetRankingProfile(Context.Guild.Id).Level);
+                userRankRoles = rankingService.GetUserRankingRoles(Context.User as IGuildUser, guildRankRoles);
+            }
 
-            var roleIds = roles.Select(a => a.Id);
-
-            SocketRole currentRole = roles.Count > rank.Level
-                ? roles[rank.Level - 1]
-                : roles.Last();
-
-            SocketRole nextRole = roles.Count > rank.Level
-                ? roles[rank.Level]
-                : roles.Last();
-
+            var currentRole = userRankRoles.Last();
 
             var embed = new EmbedBuilder()
             {
                 Title = userLocale["embed.rank.title", rank.Level],
                 Description =
-                userLocale["embed.rank.description", currentRole.Mention, rank.Level, rank.Xp, nextRole.Mention, rank.Level + 1, RankingService.GetLevelUpRequirementXp(rank)] +
+                userLocale["embed.rank.description", currentRole.Mention, rank.Level, rank.Xp, rank.Level + 1, RankingService.GetLevelUpRequirementXp(rank)] +
                 "\n\n" +
                 advertisingService.GetInlineEmbedDescription(),
 

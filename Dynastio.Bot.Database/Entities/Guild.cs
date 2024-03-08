@@ -40,7 +40,7 @@ namespace Dynastio.Bot.Database
             return Subscription.EndsAt > DateTime.UtcNow;
         }
     }
-
+    [BsonIgnoreExtraElements]
     public class RankingSettings
     {
         public bool IsEnabled { get; set; }

@@ -23,8 +23,11 @@ namespace Dynastio.Bot.Database
         public DateTime LastUpdateTime { get; set; } = DateTime.MinValue;
 
         public string gameAccountId { get; set; } = string.Empty;
+
         public List<UserAccount> Accounts { get; set; } = new();
         public List<GuildProfile> GuildProfiles { get; set; } = new();
+        
+
         public GuildProfile GetRankingProfile(ulong guildId)
         {
             var rankingProfile = GuildProfiles.FirstOrDefault(a => a.GuildId == guildId);
@@ -60,6 +63,8 @@ namespace Dynastio.Bot.Database
             Accounts.ForEach(a => a.IsDefault = false);
             userAccount.IsDefault = true;
         }
+        [BsonIgnore]
+        public bool IsAccountVerified { get => string.IsNullOrEmpty(gameAccountId); }
     }
 
 

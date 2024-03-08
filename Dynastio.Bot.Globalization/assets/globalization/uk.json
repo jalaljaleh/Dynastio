@@ -9,7 +9,7 @@
   "modal.dynastio.searchplayer.title": "Пошук Гравців",
 
   "embed.rank.title": "Ваш Рівень {0}",
-  "embed.rank.description": "Поточна Роль: {0}\nПоточний Рівень: {1}\nПоточний XP: {2}xp\n\nНаступна Роль: {3}\nНаступний Рівень: {4}\nПотрібний XP: {5}",
+  "embed.rank.description": "Поточна Роль: {0}\nПоточний Рівень: {1}\nПоточний XP: {2}xp\n\nНаступна Роль: {3}\nПотрібний XP: {4}",
   "embed.rank.not_ranked.title": "У вас немає рейтингу",
   "embed.rank.not_ranked.description": "У вас поки немає рейтингу, ваш рівень 0. Вам потрібно {0} XP, щоб досягти 1 рівня.",
   "embed.rank.error.guild_ranking_disabled.title": "Недоступно!",

@@ -9,7 +9,7 @@
   "modal.dynastio.searchplayer.title": "Поиск игроков",
 
   "embed.rank.title": "Ваш уровень {0}",
-  "embed.rank.description": "Текущая роль: {0}\nТекущий уровень: {1}\nТекущий опыт: {2}xp\n\nСледующая роль: {3}\nСледующий уровень: {4}\nТребуемый опыт: {5}",
+  "embed.rank.description": "Текущая роль: {0}\nТекущий уровень: {1}\nТекущий опыт: {2}xp\n\nСледующая роль: {3}\nТребуемый опыт: {4}",
   "embed.rank.not_ranked.title": "У вас нет ранга",
   "embed.rank.not_ranked.description": "У вас пока нет ранга, ваш уровень 0. Вам нужно {0} опыта, чтобы достичь 1 уровня.",
   "embed.rank.error.guild_ranking_disabled.title": "Недоступно !",

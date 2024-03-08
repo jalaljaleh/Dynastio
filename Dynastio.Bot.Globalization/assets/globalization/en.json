@@ -9,7 +9,7 @@
   "modal.dynastio.searchplayer.title": "Search Players",
 
   "embed.rank.title": "You are level {0}",
-  "embed.rank.description": "**Current Role**: {0}\n**Current Level**: {1}\n**Current Xp**:{2}xp\n\n**Next Role**: {3}\n**Next Level:** {4}\n**Require Xp**: {5}",
+  "embed.rank.description": "**Current Role**: {0}\n**Current Level**: {1}\n**Current Xp**:{2}xp\n\n**Next Role**: {3}\n**Require Xp**: {4}",
   "embed.rank.not_ranked.title": "You are not ranked",
   "embed.rank.not_ranked.description": "You are not ranked yet, you are level 0. You need **{0}** xp to reach level 1.",
   "embed.rank.error.guild_ranking_disabled.title": "Not Available !",
