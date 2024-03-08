@@ -9,6 +9,7 @@ using Dynastio.Bot.Handlers;
 using Dynastio.Bot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using SixLabors.ImageSharp;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Dynastio.Bot.Events
 {
@@ -24,14 +25,18 @@ namespace Dynastio.Bot.Events
         private async Task _discord_Ready()
         {
             _repeaterService.AddAction(SetBotStatus, TimeSpan.FromMinutes(10));
-            
+            await SendMessageToTeamOwners().TryAsync();
+        }
+        public async Task SendMessageToTeamOwners()
+        {
+            var _application = await _discord.GetApplicationInfoAsync();
+            await _application.Team.TeamMembers.FirstOrDefault().User.SendMessageAsync("ready ..");
         }
         public async Task SetBotStatus()
         {
             await _discord.SetStatusAsync(UserStatus.Idle);
 
             await _discord.SetGameAsync(_discord.Guilds.Count + " servers " + _discord.Guilds.Select(a => a.MemberCount).Sum().Metric() + " Members", "https://www.youtube.com/watch?v=v74AQTvjtSg", ActivityType.Streaming);
-
         }
 
     }

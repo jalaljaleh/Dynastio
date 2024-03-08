@@ -2,7 +2,11 @@
 {
     public class Main
     {
-        public const string version = "0.1.1.5-beta";
+        public Main()
+        {
+            version = "0.4.1-beta" + Random.Next(0, 1000);
+        }
+        public static string version { get; internal set; } = "";
 
         public static DateTime StartUp { get; private set; } = DateTime.UtcNow;
 

@@ -15,6 +15,8 @@
   "embed.rank.error.guild_ranking_disabled.title": "Not Available !",
   "embed.rank.error.guild_ranking_disabled.description": "This server does not rank users !",
 
+
+
   "menu.profile.accounts.choose": "Choose the account to display !",
   "input_mode.title": "Loading information ..",
   "input_mode.description": "The bot is loading the information form requested by the user.",

@@ -22,6 +22,18 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
     [DefaultMemberPermissions(GuildPermission.Administrator)]
     public class DeveloperModule : BotInteractionModuleBase
     {
+        [SlashCommand("ping", "ping ")]
+        public async Task ping()
+        {
+            await DeferAsync(true);
+
+            await FollowupAsync(
+                embed: ($"Successful Operator" +
+                       $"ping: {Context.Client.Latency}\n" +
+                       $"start up: {Main.StartUp.UnixTimestampDiscordFormat()}\n" +
+                       $"version: {Main.version}\n" +
+                       $"").ToEmbed("Pong !"));
+        }
         [Group("advertisement", "advertisement")]
         public class AdvertisementModule : BotInteractionModuleBase
         {
@@ -129,8 +141,8 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
                 await FollowupAsync(embed: "Done, user and guilds cleared.".ToEmbed("Successful Operator"));
             }
-           
-           
+
+
         }
     }
 

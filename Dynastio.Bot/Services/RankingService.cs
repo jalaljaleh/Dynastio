@@ -26,7 +26,7 @@ namespace Dynastio.Bot.Services
             _userService = services.GetRequiredService<UserService>();
             _dynastioApi = services.GetRequiredService<DynastioApi>();
         }
-
+        
         public async Task TryAddMessageXpAsync(Guild guild, User user, IUserMessage message)
         {
             if (guild.RankingSettings.IsEnabled is false) return;
@@ -73,7 +73,7 @@ namespace Dynastio.Bot.Services
 
                 try
                 {
-                    await NotifyUserLevelUpAsync(guild, sProfile, dUser, dGuild, channel).TryAsync();
+                    await NotifyUserLevelUpAsync(user, guild, sProfile, dUser, dGuild, channel).TryAsync();
                     await SynchronizeGameUser(guild, user, sProfile).TryAsync();
                     await SynchronizeUserRolesAsync(guild, dUser as IGuildUser, sProfile.Level).TryAsync();
                 }
@@ -118,7 +118,7 @@ namespace Dynastio.Bot.Services
             if (serverRoles.Count < level)
                 level = serverRoles.Count;
 
-            var toAdd = serverRoles.GetRange(userRoles.Count - 1 < 0 ? 0 : userRoles.Count - 1, (level - userRoles.Count)+1 );
+            var toAdd = serverRoles.GetRange(userRoles.Count - 1 < 0 ? 0 : userRoles.Count - 1, (level - userRoles.Count) + 1);
 
             var result = await user.AddRolesAsync(toAdd)
                 .TryAsync();
@@ -145,7 +145,7 @@ namespace Dynastio.Bot.Services
             }
             return false;
         }
-        public async Task<bool> NotifyUserLevelUpAsync(Guild bGuild, GuildProfile sProfile, IUser dUser, IGuild dGuild, ITextChannel sourceChannel)
+        public async Task<bool> NotifyUserLevelUpAsync(User user, Guild bGuild, GuildProfile sProfile, IUser dUser, IGuild dGuild, ITextChannel sourceChannel)
         {
             ITextChannel loggChannel = null;
             if (bGuild.RankingSettings.LogChannelId != 0)
@@ -159,18 +159,23 @@ namespace Dynastio.Bot.Services
             }
 
             var embed = string.Format(
-                "You just got new level, you are level **{0}** and **{1}** xp  !{2}",
+                "🎉 You just got new level, you are level **{0}** and **{1}** xp  !{2}",
 
                 sProfile.Level,
                 sProfile.Xp.Metric(),
 
                 (bGuild.RankingSettings.IsGameRewardEnabled
-                ? $"\n\nIngame Reward: You got **{DynastioApiHelper.GetLevelCoinsReward(sProfile.Level)} coins** for your reward."
-                : $"\n\nIngame Reward: Coin rewards is not supported in this server.")
+                ? $"\n\n🎉 Ingame Reward: You got **{DynastioApiHelper.GetLevelCoinsReward(sProfile.Level)} coins** for your reward." + (
 
+                user.IsAccountConnected
+                  ? $"\n\n✨ Note: Your reward has been added to your account **{UserAccount.GetAccountService(user.gameAccountId)}** directly !✨"
+                  : "\n\n⚠️ **Note:** Connect your game account to get the reward. ⚠️")
+
+
+                : $"\n\nIngame Reward: Coin rewards is not supported in this server.")
                     ).ToEmbed(
-                title: $"🎉 You just got new level **{sProfile.Level}**  !",
-                thumbnailUrl: dUser.TryGetAvatarUrl(),
+                title: $"🎉 You just got new level **{sProfile.Level}**  !🎉",
+                thumbnailUrl: Global.Resource.RewardImageUrl,
                 color: Color.Green);
 
 
