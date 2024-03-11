@@ -165,10 +165,10 @@ namespace Dynastio.Bot.Services
                 sProfile.Xp.Metric(),
 
                 (bGuild.RankingSettings.IsGameRewardEnabled
-                ? $"\n\n🎉 Ingame Reward: You got **{DynastioApiHelper.GetLevelCoinsReward(sProfile.Level)} coins** for your reward." + (
+                ? $"\n\n Ingame Reward: You got **{DynastioApiHelper.GetLevelCoinsReward(sProfile.Level)} coins** for your reward." + (
 
                 user.IsAccountConnected
-                  ? $"\n\n✨ Note: Your reward has been added to your account **{UserAccount.GetAccountService(user.gameAccountId)}** directly !✨"
+                  ? $"\n\n✨ Note: Your reward has been added to your account **{UserAccount.GetAccountService(user.gameAccountId)}** directly !"
                   : "\n\n⚠️ **Note:** Connect your game account to get the reward. ⚠️")
 
 
@@ -204,12 +204,7 @@ namespace Dynastio.Bot.Services
         }
         public static int GetCurrentLevelXpRequirement(int lvl)
         {
-            if (lvl is 0)
-                return _getMax(lvl + 1);
-
-            return _getMax(lvl);
-
-            int _getMax(int _lvl) => _lvl * 510 * (int)Math.Pow(_lvl + 1, 1.2);
+            return ((lvl + 1) * 510) * (int)Math.Pow(lvl + 1, 1.2);
         }
     }
 }

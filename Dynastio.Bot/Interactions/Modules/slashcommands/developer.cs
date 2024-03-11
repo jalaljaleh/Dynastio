@@ -13,6 +13,7 @@ using Dynastio.Bot.Database;
 using MongoDB.Bson;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Addons;
+using System.Reflection;
 
 namespace Dynastio.Bot.Interactions.Modules.slashcommands
 {
@@ -31,7 +32,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 embed: ($"Successful Operator" +
                        $"ping: {Context.Client.Latency}\n" +
                        $"start up: {Main.StartUp.UnixTimestampDiscordFormat()}\n" +
-                       $"version: {Main.version}\n" +
+                       $"version: {Assembly.GetCallingAssembly().GetHashCode().ToString()}\n" +
                        $"").ToEmbed("Pong !"));
         }
         [Group("advertisement", "advertisement")]

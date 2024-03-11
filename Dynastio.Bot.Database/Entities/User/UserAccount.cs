@@ -20,7 +20,7 @@ namespace Dynastio.Bot.Database
 
 
         [BsonDefaultValue("none")]
-        public string Reminder { get; internal set; } = "none";
+        public string Reminder { get; internal set; }
 
         public UserAccount SetReminder(string text)
         {
@@ -38,6 +38,7 @@ namespace Dynastio.Bot.Database
         public string Email { get; set; } = "none";
         public string GetAccountService() => Id.Split(":")[0];
         public static string GetAccountService(string Id) => Id.Split(":")[0];
+        public static string GetAccountId(string Id) => Id.Split(":")[1];
 
     }
 

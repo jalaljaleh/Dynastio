@@ -29,6 +29,7 @@ namespace Dynastio.Bot.Interactions
         public User BotUser { get => Context.BotUser; }
         public Locale guildLocale { get => this.Context.GuildLocale; }
         public Locale userLocale { get => this.Context.UserLocale; }
+        public string userMention => Context.User.Mention;
 
 
         public string BotAvatarUrl { get => this.Context.Client.CurrentUser.TryGetAvatarUrl(); }

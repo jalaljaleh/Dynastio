@@ -12,6 +12,8 @@ using System.Linq;
 
 namespace Dynastio.Bot.Interactions.Modules.slashcommands
 {
+    [EnabledInDm(false)]
+    [RequireBotPermission(ChannelPermission.EmbedLinks)]
     public class MenuModule : BotInteractionModuleBase
     {
         public DynastioApi dynastio { get; set; }
@@ -44,7 +46,9 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 .WithButton(PlayersSearchButton.GetButton(userLocale), 0)
 
                 .WithButton(ProfileButton.GetButton(userLocale, BotUser.Accounts.Any()), 1)
-                .WithButton(RankButton.GetButton(userLocale), 1);
+                .WithButton(RankButton.GetButton(userLocale), 1)
+
+                .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19),2);
 
             var advertises = advertisingService.ExploitationAdvertising(Database.AdsType.Buttons, 4);
             foreach (var ad in advertises)

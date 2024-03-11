@@ -5,8 +5,18 @@
   "btn.dynastio.profile.label": "Profile",
   "btn.dynastio.players.search.label": "Search",
   "btn.bot.rank.label": "Rank",
-
+  "btn.dynastio.accounts.add.label": "Add Account",
   "modal.dynastio.searchplayer.title": "Search Players",
+  "modal.dynastio.accounts.add.unauthorized": "The entered account does not belong to you.",
+  "modal.dynastio.accounts.add.unauthorized.maxaccountlimit.description": "You have reached the maximum. Cannot add more account.",
+  "modal.dynastio.accounts.add.unauthorized.maxaccountlimit.description.title": "You have reached the maximum",
+  "modal.dynastio.accounts.add.unauthorized.duplicated.title": "The account has been added already",
+  "modal.dynastio.accounts.add.unauthorized.duplicated.description": "The account has already been added. You cannot enter an account twice",
+  "modal.dynastio.accounts.add.unauthorized.pincode.description": "Wrong Pincode",
+  "modal.dynastio.accounts.add.unauthorized.pincode.title": "Your account pin code is not valid. Make sure you entered it correctly",
+  "modal.dynastio.accounts.add.unauthorized.used.description": "This account has already been entered by another user {1}.",
+  "modal.dynastio.accounts.add.succeeful.description": "Account successfully added. You can use it.",
+  "modal.dynastio.accounts.add.succeeful.title": "Account added",
 
   "embed.rank.title": "You are level {0}",
   "embed.rank.description": "**Current Role**: {0}\n**Current Level**: {1}\n**Current Xp**:{2}xp\n\n**Next Role**: {3}\n**Require Xp**: {4}",
@@ -29,7 +39,7 @@
   "proccess_failed_title": "Process failed",
   "account_selection": "Account Selection !",
   "account_selection_description": "Select an account to continue the process. If you have not connected your account, add it through the settings menu.",
-
+  "unauthorized": null,
   "server": "Server",
   "score": "Score",
   "level": "Level",
