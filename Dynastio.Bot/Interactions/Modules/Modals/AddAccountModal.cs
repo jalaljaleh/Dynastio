@@ -26,7 +26,7 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
         public async Task Execute(AddAccountModalForm form)
         {
             await DeferAsync();
-            string id = UserAccount.GetAccountId(form.Id); // don't use tolower
+            string id = form.Id.Remove("id:", "Id:", "ID:", "iD:").Trim(); // don't use tolower
 
             // check if its his own discord user account
             if (id.Contains("discord") && !id.Contains(Context.User.Id.ToString()))

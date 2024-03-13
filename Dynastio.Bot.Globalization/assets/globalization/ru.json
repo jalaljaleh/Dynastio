@@ -5,6 +5,7 @@
   "btn.dynastio.profile.label": "Профиль",
   "btn.dynastio.players.search.label": "Поиск",
   "btn.bot.rank.label": "Ранг", // Rank translated to Ранг
+  "btn.dynastio.accounts.add.label": "Добавить аккаунт",
 
   "modal.dynastio.searchplayer.title": "Поиск игроков",
   "modal.dynastio.accounts.add.unauthorized": "Введенная учетная запись вам не принадлежит.",
@@ -12,8 +13,8 @@
   "modal.dynastio.accounts.add.unauthorized.maxaccountlimit.description.title": "Вы достигли максимума",
   "modal.dynastio.accounts.add.unauthorized.duulated.title": "Учетная запись уже добавлена",
   "modal.dynastio.accounts.add.unauthorized.duliced.description": "Учетная запись уже добавлена. Вы не можете ввести учетную запись дважды",
-  "modal.dynastio.accounts.add.unauthorized.pincode.description": "Неправильный пин-код",
-  "modal.dynastio.accounts.add.unauthorized.pincode.title": "Пин-код вашей учетной записи недействителен. Убедитесь, что вы ввели его правильно",
+  "modal.dynastio.accounts.add.unauthorized.pincode.description": "Пин-код вашей учетной записи недействителен. Убедитесь, что вы ввели его правильно.",
+  "modal.dynastio.accounts.add.unauthorized.pincode.title": "Неправильный пин-код",
   "modal.dynastio.accounts.add.unauthorized.used.description": "Эта учетная запись уже введена другим пользователем {1}.",
   "modal.dynastio.accounts.add.succeeful.description": "Аккаунт успешно добавлен. Вы можете использовать его.",
   "modal.dynastio.accounts.add.succeeful.title": "Аккаунт добавлен",

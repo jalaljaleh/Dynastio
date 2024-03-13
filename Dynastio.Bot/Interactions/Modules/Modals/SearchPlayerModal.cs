@@ -49,6 +49,15 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
                    .ToMarkdown() + "\n" +
                     advertisingService.GetInlineEmbedDescription();
 
+            content +=
+                ($"\n# Filters" +
+                $"\n{Context.UserLocale["nickname"]}: {modal.PlayerNickname}" +
+                $"\n{Context.UserLocale["server"]}: {modal.Server}" +
+                $"\n{Context.UserLocale["score"]}: {modal.PlayerScore}" +
+                $"\n{Context.UserLocale["level"]}: {modal.PlayerLevel}" +
+                $"\n{Context.UserLocale["team"]}: {modal.Team}" +
+                $"").ToMarkdown();
+
             await ModifyCurrentMessageAsync(embed: content.ToEmbed(userLocale["modal.dynastio.searchplayer.title", players.Count]));
         }
 
