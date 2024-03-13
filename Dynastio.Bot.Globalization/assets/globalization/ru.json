@@ -6,6 +6,8 @@
   "btn.dynastio.players.search.label": "Поиск",
   "btn.bot.rank.label": "Ранг", // Rank translated to Ранг
   "btn.dynastio.accounts.add.label": "Добавить аккаунт",
+  "btn.dynastio.leaderboard.label": "Таблица лидеров",
+
 
   "modal.dynastio.searchplayer.title": "Поиск игроков",
   "modal.dynastio.accounts.add.unauthorized": "Введенная учетная запись вам не принадлежит.",

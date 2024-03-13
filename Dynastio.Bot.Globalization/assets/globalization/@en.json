@@ -6,6 +6,9 @@
   "btn.dynastio.players.search.label": "Search",
   "btn.bot.rank.label": "Rank",
   "btn.dynastio.accounts.add.label": "Add Account",
+  "btn.dynastio.leaderboard.label": "Leaderboard",
+
+
   "modal.dynastio.searchplayer.title": "Search Players",
   "modal.dynastio.accounts.add.unauthorized": "The entered account does not belong to you.",
   "modal.dynastio.accounts.add.unauthorized.maxaccountlimit.description": "You have reached the maximum. Cannot add more account.",

@@ -29,10 +29,10 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
             {
                 Label = locale["btn.dynastio.teams.label", teamsCount],
                 Style = ButtonStyle.Primary,
-                Emote = TeamsButton.Emoji,
+                Emote = Emoji,
                 IsDisabled = true,
                 Url = null,
-                CustomId = TeamsButton.CustomId
+                CustomId = CustomId
             };
         }
         [RequireComponentMessageMention]

@@ -36,7 +36,7 @@ namespace Dynastio.Net
             _version = new Cacheable<Version>(TimeSpan.FromSeconds(500), GetVersionAsync);
             _changelog = new Cacheable<string>(TimeSpan.FromSeconds(500), GetChangeLogAsync);
             _leaderboardcoin = new Cacheable<List<Leaderboardcoin>>(TimeSpan.FromSeconds(250), GetLeaderboardcoinsAsync);
-            _leaderboardscore = new Cacheable<Leaderboardscore[][]>(TimeSpan.FromSeconds(250), GetLeaderboardscoresAsync);
+            _leaderboardscore = new Cacheable<List<Leaderboardscore>>(TimeSpan.FromSeconds(250), GetLeaderboardscoresAsync);
             _featuredVideos = new Cacheable<List<FeaturedVideos>>(TimeSpan.FromMinutes(29), GetFeaturedVideosAsync);
 
             CreateHttpClient();
@@ -48,16 +48,14 @@ namespace Dynastio.Net
         private readonly Cacheable<Version> _version;
         private readonly Cacheable<string> _changelog;
         private readonly Cacheable<List<Leaderboardcoin>> _leaderboardcoin;
-        private readonly Cacheable<Leaderboardscore[][]> _leaderboardscore;
+        private readonly Cacheable<List<Leaderboardscore>> _leaderboardscore;
         private readonly Cacheable<List<FeaturedVideos>> _featuredVideos;
 
         public Version Version { get => _version.Value; }
         public List<Player> OnlinePlayers { get => _players.Value; }
         public List<Server> OnlineServers { get => _servers.Value; }
         public List<Leaderboardcoin> Leaderboardcoins { get => _leaderboardcoin.Value; }
-        public List<Leaderboardscore> LeaderboardscoresDaily { get => _leaderboardscore.Value.ToArray()[0].ToList(); }
-        public List<Leaderboardscore> LeaderboardscoresWeekly { get => _leaderboardscore.Value.ToArray()[1].ToList(); }
-        public List<Leaderboardscore> LeaderboardscoresMonthly { get => _leaderboardscore.Value.ToArray()[2].ToList(); }
+        public List<Leaderboardscore> Leaderboardscore { get => _leaderboardscore.Value; }
         public string Changelog { get => _changelog.Value; }
         public List<FeaturedVideos> FeaturedVideos { get => _featuredVideos.Value; }
 
@@ -107,10 +105,10 @@ namespace Dynastio.Net
             var data = JsonConvert.DeserializeObject<DataType<bool>>(result);
             return data.data;
         }
-        public async Task<Leaderboardscore[][]> GetLeaderboardscoresAsync()
+        public async Task<List<Leaderboardscore>> GetLeaderboardscoresAsync()
         {
             var result = await GetAsync(_baseAddress + "/leaderboard/list_all");
-            var data = JsonConvert.DeserializeObject<DataType<Leaderboardscore[][]>>(result);
+            var data = JsonConvert.DeserializeObject<DataType<List<Leaderboardscore>>>(result);
             return data.data;
         }
         public async Task<UserRank> GetUserRankAsync(string playerId)
