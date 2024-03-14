@@ -27,6 +27,7 @@ namespace Dynastio.Bot.Interactions
         public AdvertisingService advertisingService { get => Context._ads; }
         public DynastioBotDatabase dynastioBotDatabase { get => Context._dynastioData; }
         public User BotUser { get => Context.BotUser; }
+        public Guild BotGuild { get => Context.BotGuild; }
         public Locale guildLocale { get => this.Context.GuildLocale; }
         public Locale userLocale { get => this.Context.UserLocale; }
         public string userMention => Context.User.Mention;

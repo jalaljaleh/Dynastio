@@ -20,8 +20,7 @@ namespace Dynastio.Bot.Database
                 ChannelIds = new(),
                 IsGameRewardEnabled = false,
                 LogChannelId = 0,
-                RolesPrefix= null,
-                WebhookUrl = null,
+                RolesPrefix = null,
                 Delay = 60,
                 XpBoosters = 10,
                 XpPerMessage = 40,
@@ -39,6 +38,18 @@ namespace Dynastio.Bot.Database
         {
             return Subscription.EndsAt > DateTime.UtcNow;
         }
+        public override string ToString()
+        {
+            return
+                $"Id: {Id}\n" +
+                $" **Rank Module**: {(RankingSettings.IsEnabled ? "Enabled" : "Disabled")}\n" +
+                $"Id: {Id}\n" +
+                $"Id: {Id}\n" +
+                $"Id: {Id}\n" +
+                $"Id: {Id}\n" +
+                $"Id: {Id}\n" +
+                $"";
+        }
     }
     [BsonIgnoreExtraElements]
     public class RankingSettings
@@ -52,14 +63,14 @@ namespace Dynastio.Bot.Database
         public int Delay { get; set; }
         public string RolesPrefix { get; set; }
         public ulong LogChannelId { get; set; }
-        public string WebhookUrl { get; set; }
         public List<ulong> ChannelIds { get; set; }
-        
-        
+
+
         public bool IsLevelUpChannel(ulong channelId)
         {
             return ChannelIds.Any(a => a == channelId);
         }
+
     }
 
     public class GuildSubscription

@@ -59,7 +59,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 cBuilder.WithButton(ad.Label, null, ButtonStyle.Link, string.IsNullOrEmpty(ad.Emoji) ? new Emoji(ad.Emoji) : null, ad.Url, false, 2);
             }
 
-            cBuilder.WithButton(CancelButton.GetButton(userLocale), 4);
+            cBuilder.WithButton(CancelButton.GetButton(userLocale), 3);
             return cBuilder.Build();
         }
 
