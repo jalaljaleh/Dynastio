@@ -29,7 +29,8 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
             var players = dynastio.OnlinePlayers
                 .Where(a =>
                         a.IsMatched(modal.PlayerNickname ?? "") &&
-                        a.Parent.IsMatched(modal.Server ?? ""))
+                        a.Parent.IsMatched(modal.Server ?? "") &&
+                        a.Parent.IsPrivate == false)
                 .ToList();
 
             if (int.TryParse(modal.PlayerLevel, out var level))
@@ -59,7 +60,7 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
                 $" -{Context.UserLocale["level"]}: -q {modal.PlayerLevel}" +
                 $" -{Context.UserLocale["team"]}: -q {modal.Team}" +
                 $"\n" +
-                $"-c {dynastio.OnlinePlayers} players, -r {players.Count} players -c {dynastio.OnlineServers} servers" +
+                $"-c {dynastio.OnlinePlayers.Count} players, -r {players.Count} players -c {dynastio.OnlineServers.Count} servers" +
                 $"").ToMarkdown();
 
             await ModifyCurrentMessageAsync(embed: content.ToEmbed(userLocale["modal.dynastio.searchplayer.title", players.Count]));

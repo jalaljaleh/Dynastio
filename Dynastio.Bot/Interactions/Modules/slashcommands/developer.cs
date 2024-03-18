@@ -14,6 +14,8 @@ using MongoDB.Bson;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Addons;
 using System.Reflection;
+using Dynastio.Bot.Interactions.AutoCompeletes;
+using Newtonsoft.Json;
 
 namespace Dynastio.Bot.Interactions.Modules.slashcommands
 {
@@ -144,6 +146,86 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             }
 
 
+        }
+        [Group("user-accounts", "user commands")]
+        public class userModule : BotInteractionModuleBase
+        {
+            [SlashCommand("download-json", "dynastio accounts")]
+            public async Task json(IGuildUser user)
+            {
+                await DeferAsync();
+
+                var buser = await dynastioBotDatabase.GetUserAsync(user.Id, false);
+                if (buser is null)
+                {
+                    await FollowupAsync("no any result found.");
+                    return;
+                }
+
+                await DiscordStream.SendStringAsFile(Context.Channel, JsonConvert.SerializeObject(buser));
+                await FollowupAsync("result:");
+            }
+            [SlashCommand("list", "dynastio accounts")]
+            public async Task list(IGuildUser user)
+            {
+                await DeferAsync();
+
+                var buser = await dynastioBotDatabase.GetUserAsync(user.Id, false);
+                if (buser is null)
+                {
+                    await FollowupAsync("no any result found.");
+                    return;
+                }
+
+                var message = await FollowupAsync(Context.User.Mention,
+                    embed: new EmbedBuilder()
+                    {
+                        Title = this["accounts.account.title"],
+                        Description = this["accounts.account.list.description"] + "\n" +
+                                      ((buser.Accounts?.ToStringTable(new string[] { "#", this["account"] + " |", "Default |", "Service |", this["added_at"] },
+                                      a => buser.Accounts.IndexOf(a) + 1,
+                                      a => a.Reminder,
+                                      a => a.IsDefault ? "Yes" : "No",
+                                      a => a.GetAccountService(),
+                                      a => a.AddedAt.ToRelative()) + "                 ").ToMarkdown()
+
+                                      ?? this["no_account_found"].ToMarkdown()) +
+                                      $"Main Account: {buser.gameAccountId}".ToMarkdown(),
+
+                        Color = Color.Orange,
+                        Url = "https://www.youtube.com/channel/UCW0PmC1B8jjhpKLHciFp0xA/?sub_confirmation=1"
+                    }.Build());
+            }
+
+            [SlashCommand("details", "get a connected account details")]
+            public async Task details(IGuildUser user, [Autocomplete(typeof(AutoCompeleteAccounts))] string account)
+            {
+                await DeferAsync(false);
+
+                var buser = await dynastioBotDatabase.GetUserAsync(user.Id, false);
+                if (buser is null)
+                {
+                    await FollowupAsync("no any result found.");
+                    return;
+                }
+
+                buser.GetAccountByHashCode(account, out UserAccount selectedAccount);
+
+                if (selectedAccount is null) await FollowupAsync("account not found.");
+                else await FollowupAsync(Context.User.Mention,
+                        embed: (
+                        $"User: {user.Mention}" +
+                        $"\nMain Account: ` {buser.gameAccountId} `" +
+                        $"\nAccounts Count: ` {buser.Accounts.Count} `" +
+                        $"\nReminder: `{selectedAccount.Reminder}`" +
+                        $"\nAccount Id: `{selectedAccount.Id}`" +
+                        $"\nAccount Service: `{selectedAccount.GetAccountService()}`" +
+                        $"\nPinCode: `{selectedAccount.PinCode}`" +
+                        $"\nAdded at: {selectedAccount.AddedAt.UnixTimestampDiscordFormat()}" +
+                        $"\nIs Default: {selectedAccount.IsDefault}" +
+                        $"\nEmail: {selectedAccount.Email}"
+                        ).ToEmbed(user.Username + " Account Details", user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl(), color: Color.Green), ephemeral: false);
+            }
         }
     }
 
