@@ -6,7 +6,6 @@ using Dynastio.Bot.Database;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Globalization;
 using Dynastio.Bot.Helpers;
-using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Modules.shared_buttons;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
@@ -18,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Interactions.Modules.buttons
+namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
 {
     public class ProfileButton : BotInteractionModuleBase
     {
@@ -34,10 +33,10 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
             {
                 Label = locale["btn.dynastio.profile.label"],
                 Style = ButtonStyle.Primary,
-                Emote = ProfileButton.Emoji,
+                Emote = Emoji,
                 IsDisabled = !isEnabled,
                 Url = null,
-                CustomId = ProfileButton.CustomId
+                CustomId = CustomId
             };
         }
 

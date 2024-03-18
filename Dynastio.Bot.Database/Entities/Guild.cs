@@ -14,26 +14,11 @@ namespace Dynastio.Bot.Database
     {
         public Guild()
         {
-            RankingSettings = new RankingSettings()
-            {
-                IsEnabled = false,
-                ChannelIds = new(),
-                IsGameRewardEnabled = false,
-                LogChannelId = 0,
-                RolesPrefix = null,
-                Delay = 60,
-                XpBoosters = 10,
-                XpPerMessage = 40,
-                XpRandom = 10,
-            };
-            Subscription = new GuildSubscription()
-            {
-                History = new()
-            };
+           
         }
         public ulong Id { get; set; }
-        public GuildSubscription Subscription { get; set; }
-        public RankingSettings RankingSettings { get; set; }
+        public GuildSubscription Subscription { get; set; } = new();
+        public RankingSettings RankingSettings { get; set; } = new();
         public bool HasSubscription()
         {
             return Subscription.EndsAt > DateTime.UtcNow;
@@ -54,6 +39,18 @@ namespace Dynastio.Bot.Database
     [BsonIgnoreExtraElements]
     public class RankingSettings
     {
+        public RankingSettings()
+        {
+            IsEnabled = false;
+            ChannelIds = new();
+            IsGameRewardEnabled = false;
+            LogChannelId = 0;
+            RolesPrefix = "rank: ";
+            Delay = 60;
+            XpBoosters = 10;
+            XpPerMessage = 40;
+            XpRandom = 10;
+        }
         public bool IsEnabled { get; set; }
         public bool IsGameRewardEnabled { get; set; }
 
@@ -63,7 +60,7 @@ namespace Dynastio.Bot.Database
         public int Delay { get; set; }
         public string RolesPrefix { get; set; }
         public ulong LogChannelId { get; set; }
-        public List<ulong> ChannelIds { get; set; }
+        public List<ulong> ChannelIds { get; set; } = new();
 
 
         public bool IsLevelUpChannel(ulong channelId)

@@ -2,6 +2,7 @@
 using Discord.Interactions;
 using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Modules.buttons;
+using Dynastio.Bot.Interactions.Modules.Buttons.dynastio;
 using Dynastio.Bot.Interactions.Modules.shared_buttons;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
@@ -51,13 +52,14 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
 
                 .WithButton(LeaderboardButton.GetButton(userLocale),2)
-                .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19),2);
+                .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19),2)
+
+                .WithButton(VersionButton.GetButton(userLocale),3);
 
             var advertises = advertisingService.ExploitationAdvertising(Database.AdsType.Buttons, 4);
             foreach (var ad in advertises)
-            {
                 cBuilder.WithButton(ad.Label, null, ButtonStyle.Link, string.IsNullOrEmpty(ad.Emoji) ? new Emoji(ad.Emoji) : null, ad.Url, false, 2);
-            }
+            
 
             cBuilder.WithButton(CancelButton.GetButton(userLocale), 3);
             return cBuilder.Build();

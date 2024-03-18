@@ -19,7 +19,7 @@ namespace Dynastio.Bot.Events
             var bGuild = await _db.GetGuildAsync(dGuild.Id);
 
             // remove extra guilds for unverified bots..
-            if (_discord.Guilds.Count > 70)
+            if (_discord.Guilds.Count > 75)
             {
                 foreach (var removeG in _discord.Guilds.OrderBy(a => a.MemberCount))
                 {

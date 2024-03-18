@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using Dynastio.Bot.Addons;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Globalization;
-using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Enums;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
@@ -15,8 +14,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dynastio.Extenstions;
 
-namespace Dynastio.Bot.Interactions.Modules.buttons
+namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
 {
     public class PlayersButton : BotInteractionModuleBase
     {
@@ -28,16 +28,16 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
             {
                 Label = locale["btn.dynastio.players.label", playersCount],
                 Style = ButtonStyle.Primary,
-                Emote = PlayersButton.Emoji,
+                Emote = Emoji,
                 IsDisabled = false,
                 Url = null,
-                CustomId = PlayersButton.CustomId
+                CustomId = CustomId
             };
         }
 
         public DynastioApi dynastio { get; set; }
         public DynastioGraphic dynastioGraphic { get; set; }
-       
+
 
         [RequireComponentMessageMention]
         [ComponentInteraction(CustomId)]
@@ -83,7 +83,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
                                     a => a.Level.Metric(),
                                     a => a.Team.RemoveLines().TryRemove(6),
                                     a => a.Nickname.RemoveLines().TryRemove(12))
-                .ToMarkdown() + "\n" + 
+                .ToMarkdown() + "\n" +
                     advertisingService.GetInlineEmbedDescription();
 
             await ModifyCurrentMessageAsync(embed: content.ToEmbed(userLocale["btn.dynastio.players.label", players1.Count]));

@@ -10,6 +10,13 @@ namespace Dynastio.Net
 {
     public class Server
     {
+        public bool IsMatched(string nickname)
+        {
+            return Label.ToLower().Trim().Contains(nickname.ToLower().Trim());
+        }
+
+
+
         [JsonProperty("peer_key")]
         public long? PeerKey { get; set; }
 

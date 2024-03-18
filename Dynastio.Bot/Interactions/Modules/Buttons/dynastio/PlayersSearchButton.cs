@@ -5,7 +5,6 @@ using Discord.WebSocket;
 using Dynastio.Bot.Addons;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Globalization;
-using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Enums;
 using Dynastio.Bot.Interactions.Modules.Modals;
 using Dynastio.Bot.Interactions.Precondinations;
@@ -18,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Interactions.Modules.buttons
+namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
 {
     public class PlayersSearchButton : BotInteractionModuleBase
     {
@@ -31,10 +30,10 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
             {
                 Label = locale["btn.dynastio.players.search.label"],
                 Style = ButtonStyle.Primary,
-                Emote = PlayersSearchButton.Emoji,
+                Emote = Emoji,
                 IsDisabled = false,
                 Url = null,
-                CustomId = PlayersSearchButton.CustomId
+                CustomId = CustomId
             };
         }
 
@@ -56,6 +55,6 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
             await ModifyCurrentMessageToInputModeAsync();
         }
 
-      
+
     }
 }

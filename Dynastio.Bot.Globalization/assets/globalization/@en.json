@@ -7,7 +7,7 @@
   "btn.bot.rank.label": "Rank",
   "btn.dynastio.accounts.add.label": "Add Account",
   "btn.dynastio.leaderboard.label": "Leaderboard",
-
+  "btn.dynastio.version.title": "Version",
 
   "modal.dynastio.searchplayer.title": "Search Players",
   "modal.dynastio.accounts.add.unauthorized": "The entered account does not belong to you.",

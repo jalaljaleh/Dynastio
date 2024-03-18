@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dynastio.Extenstions;
 
 namespace Dynastio.Bot.Interactions.Modules.Modals
 {
@@ -27,8 +28,8 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
 
             var players = dynastio.OnlinePlayers
                 .Where(a =>
-                        a.Nickname.ToLower().Contains(modal.PlayerNickname) &&
-                        a.Parent.Label.ToLower().Contains(modal.Server))
+                        a.IsMatched(modal.PlayerNickname ?? "") &&
+                        a.Parent.IsMatched(modal.Server ?? ""))
                 .ToList();
 
             if (int.TryParse(modal.PlayerLevel, out var level))
@@ -51,11 +52,14 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
 
             content +=
                 ($"\n# Filters" +
-                $"\n{Context.UserLocale["nickname"]}: {modal.PlayerNickname}" +
-                $"\n{Context.UserLocale["server"]}: {modal.Server}" +
-                $"\n{Context.UserLocale["score"]}: {modal.PlayerScore}" +
-                $"\n{Context.UserLocale["level"]}: {modal.PlayerLevel}" +
-                $"\n{Context.UserLocale["team"]}: {modal.Team}" +
+                $"\n" +
+                $"-{Context.UserLocale["nickname"]}: -q {modal.PlayerNickname}" +
+                $" -{Context.UserLocale["server"]}: -q {modal.Server}" +
+                $" -{Context.UserLocale["score"]}: -q {modal.PlayerScore}" +
+                $" -{Context.UserLocale["level"]}: -q {modal.PlayerLevel}" +
+                $" -{Context.UserLocale["team"]}: -q {modal.Team}" +
+                $"\n" +
+                $"-c {dynastio.OnlinePlayers} players, -r {players.Count} players -c {dynastio.OnlineServers} servers" +
                 $"").ToMarkdown();
 
             await ModifyCurrentMessageAsync(embed: content.ToEmbed(userLocale["modal.dynastio.searchplayer.title", players.Count]));

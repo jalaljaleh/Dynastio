@@ -44,8 +44,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                         IsInline = true,
                         Name = "Details",
                         Value =
-                                $"Started : {subscription.StartedAt.UnixTimestampDiscordFormat()}\n" +
-                                $"Ends : {subscription.EndsAt.UnixTimestampDiscordFormat()}\n" +
+                                $"Started : {subscription.StartedAt.UnixTimestampDiscordFormat()} & Ends : {subscription.EndsAt.UnixTimestampDiscordFormat()}\n" +
                                 $"Subscribed By: <@{subscription.UserId}> \n"
                     }
                 }
@@ -56,7 +55,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             var rankingModule = new EmbedBuilder()
             {
                 Title = $"Ranking Module Is {(rank.IsEnabled ? "Enabled" : "Disabled")}",
-                Description = "Ranking users based on the number of messages they send can be a useful tool for managing channels and members in Discord. Considering the number of messages sent, users can be recognized as the most active members. This ranking can serve as an indicator of user activity within the Discord community.",
+                Description = "Ranking users based on the number of messages they send.",
                 Fields = new List<EmbedFieldBuilder>()
                 {
                     new EmbedFieldBuilder()
@@ -69,7 +68,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                                 $"Random Xp: ` {rank.XpRandom} `\n" +
                                 $"Delay: ` {rank.Delay} `\n",
                     },
-                     new EmbedFieldBuilder()
+                    new EmbedFieldBuilder()
                     {
                         IsInline = true,
                         Name = "Reward",
@@ -83,7 +82,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                         Name = "Xp Channels",
                         Value =
                                  $"Level Up Channel: <#{rank.LogChannelId}>\n" +
-                                 $"Xp channels: {string.Join(", ", rank.ChannelIds.Select(a => $"<#{a}>"))}\n"
+                                 $"Xp channels: {string.Join(", ", rank.ChannelIds?.Select(a => $"<#{a}>") ?? null)}\n"
                     }
                 },
                 Color = rank.IsEnabled ? Color.Green : Color.Red,

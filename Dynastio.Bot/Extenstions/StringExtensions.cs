@@ -18,30 +18,7 @@ namespace Dynastio.Bot
         {
             return $"**{value}**";
         }
-        public static string Join(this IEnumerable<string> value, string spearator)
-        {
-            return string.Join(spearator, value);
-        }
-
-        public static string Remove(this string value, params string[] txt)
-        {
-            foreach (var x in txt)
-                value = value.Replace(x, "");
-            return value;
-        }
-        public static string RemoveLines(this string Value)
-        {
-            return Regex.Replace(Value, "\\t|\\n|\\r|\\r\\n|\\n\\r|", "");
-        }
-
-        public static string TryRemove(this string value, int maxLength, bool dots = true)
-        {
-            if (value.Length > maxLength)
-            {
-                return value.Substring(0, maxLength) + (dots ? ".." : "");
-            }
-            return value;
-        }
+     
         public static EmbedBuilder ToEmbedBuilder(this string value, string title = null, string thumbnailUrl = null, string imageUrl = null, Color color = default)
         {
             EmbedBuilder builder = new EmbedBuilder();

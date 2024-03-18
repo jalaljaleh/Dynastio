@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using Dynastio.Bot.Addons;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Globalization;
-using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Graphic;
@@ -15,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Interactions.Modules.buttons
+namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
 {
     public class RankButton : BotInteractionModuleBase
     {
@@ -31,10 +30,10 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
             {
                 Label = locale["btn.bot.rank.label"],
                 Style = ButtonStyle.Primary,
-                Emote = RankButton.Emoji,
+                Emote = Emoji,
                 IsDisabled = false,
                 Url = null,
-                CustomId = RankButton.CustomId
+                CustomId = CustomId
             };
         }
         [RequireComponentMessageMention]
@@ -45,7 +44,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
 
             var guild = Context.BotGuild;
 
-          //  guild.RankingSettings.IsEnabled = true;
+            //  guild.RankingSettings.IsEnabled = true;
 
 
             if (guild.RankingSettings.IsEnabled is false)
@@ -70,7 +69,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
                 await rankingService.SetUnqualifiedGuildAsync(Context.BotGuild);
                 return;
             }
-            
+
             var userRankRoles = rankingService.GetUserRankingRoles(Context.User as IGuildUser, guildRankRoles);
             if (userRankRoles is null || userRankRoles.Count() == 0)
             {

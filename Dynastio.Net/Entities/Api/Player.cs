@@ -1,8 +1,10 @@
 ﻿
+using Dynastio.Extenstions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,20 +18,32 @@ namespace Dynastio.Net
         internal Player Update(Server parent)
         {
             Parent = parent;
-            UniqeId = "hash$" + (Parent.Label + InternalId).GetHashCode();
+
+            UniqeId = "hash$" + (this.Nickname + InternalId).GetHashCode();
+
+            SearchableNickname = Nickname.ToLower().Trim().ToSafeChars() + " " + Nickname;
+
             return this;
+        }
+        public bool IsMatched(string nickname)
+        {
+            return SearchableNickname.Contains(nickname.ToLower().Trim());
         }
 
         [JsonIgnore]
         public string UniqeId { get; set; } = "";
-        
+
+        [JsonIgnore]
+        public string SearchableNickname { get; set; } = "";
+
+        [JsonIgnore]
+        public string SafeNickname { get; set; } = "";
+
         [JsonIgnore]
         public bool IsAuth => !string.IsNullOrEmpty(Id);
-        
+
         [JsonIgnore]
         public bool IsDiscordAuth => IsAuth && Id.Contains("discord:");
-        
-
 
         [JsonIgnore]
         public Server Parent { get; set; }
@@ -57,7 +71,7 @@ namespace Dynastio.Net
         public int Level { get; set; }
 
         [JsonProperty("team")]
-        public string Team { get; set; }
+        public string Team { get; set; } = "";
 
 
 
