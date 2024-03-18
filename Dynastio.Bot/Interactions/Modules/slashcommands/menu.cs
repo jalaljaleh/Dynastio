@@ -56,12 +56,21 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
                 .WithButton(VersionButton.GetButton(userLocale),3);
 
+            cBuilder.WithButton(CancelButton.GetButton(userLocale), 4);
+
+
             var advertises = advertisingService.ExploitationAdvertising(Database.AdsType.Buttons, 4);
             foreach (var ad in advertises)
-                cBuilder.WithButton(ad.Label, null, ButtonStyle.Link, string.IsNullOrEmpty(ad.Emoji) ? new Emoji(ad.Emoji) : null, ad.Url, false, 2);
+                cBuilder.WithButton(
+                    ad.Label,
+                    null,
+                    ButtonStyle.Link,
+                    string.IsNullOrEmpty(ad.Emoji) ? null : new Emoji(ad.Emoji),
+                    ad.Url,
+                    false,
+                    4);
             
 
-            cBuilder.WithButton(CancelButton.GetButton(userLocale), 3);
             return cBuilder.Build();
         }
 

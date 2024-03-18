@@ -51,7 +51,10 @@ namespace Dynastio.Bot.Database
                 //var users = await result.ToListAsync();
                 //foreach (var u in users)
                 //{
-                //    u.Subscription.StartedAt = DateTime.MinValue;
+                //    if (u.HasSubscription()) continue;
+
+                //    u.RankingSettings = new();
+                //    u.Subscription = new();
                 //}
                 //Main.Log("Mongodb", users.Count + " Task done");
                 //await UpdateManyAsync(users);

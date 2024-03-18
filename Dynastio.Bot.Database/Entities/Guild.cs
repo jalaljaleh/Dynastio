@@ -36,6 +36,7 @@ namespace Dynastio.Bot.Database
                 $"";
         }
     }
+
     [BsonIgnoreExtraElements]
     public class RankingSettings
     {
@@ -69,7 +70,7 @@ namespace Dynastio.Bot.Database
         }
 
     }
-
+    [BsonIgnoreExtraElements]
     public class GuildSubscription
     {
         public DateTime StartedAt { get; set; }
