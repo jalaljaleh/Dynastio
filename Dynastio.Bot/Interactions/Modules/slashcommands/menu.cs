@@ -13,15 +13,17 @@ using System.Linq;
 
 namespace Dynastio.Bot.Interactions.Modules.slashcommands
 {
-    [EnabledInDm(false)]
+    
     [RequireContext(ContextType.Guild)]
     [RequireBotPermission(ChannelPermission.EmbedLinks)]
+    [RequireBotPermission(ChannelPermission.AttachFiles)]
+    [RequireBotPermission(ChannelPermission.SendMessages)]
     public class MenuModule : BotInteractionModuleBase
     {
         public DynastioApi dynastio { get; set; }
         public DynastioGraphic dynastioGraphic { get; set; }
 
-
+        [IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
         [SlashCommand("menu", "dynastio menu")]
         [RateLimit(6, 1)]
         public async Task menu()

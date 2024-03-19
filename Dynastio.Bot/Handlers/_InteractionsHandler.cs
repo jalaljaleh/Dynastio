@@ -48,12 +48,15 @@ namespace Dynastio.Bot.Handlers
                 if (DiscordInput.IsFromDiscordInput(interaction)) return;
             }
 
-            if (users.Contains(interaction.User.Id))
+            if (interaction.Type is not Discord.InteractionType.ApplicationCommandAutocomplete)
             {
-                await interaction.RespondAsync(embed: "Another interaction is running.".ToEmbed("Wait .."));
-                return;
+                if (users.Contains(interaction.User.Id))
+                {
+                    await interaction.RespondAsync(embed: "Another interaction is running.".ToEmbed("Wait .."));
+                    return;
+                }
+                users.Add(interaction.User.Id);
             }
-            users.Add(interaction.User.Id);
 
             var ctx = new BotSocketInteractionContext(_discord, interaction, _services);
             await _interactions.ExecuteCommandAsync(ctx, _services);

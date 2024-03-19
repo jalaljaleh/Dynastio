@@ -20,9 +20,9 @@ using Newtonsoft.Json;
 namespace Dynastio.Bot.Interactions.Modules.slashcommands
 {
     [Group("developer", "developer")]
-    [EnabledInDm(true)]
     [RequireTeamMemberAttribute]
     [DefaultMemberPermissions(GuildPermission.Administrator)]
+    [IntegrationType(ApplicationIntegrationType.UserInstall)]
     public class DeveloperModule : BotInteractionModuleBase
     {
         [SlashCommand("ping", "ping ")]

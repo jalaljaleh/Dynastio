@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace Dynastio.Bot.Interactions.Modules.slashcommands
 {
-    [EnabledInDm(false)]
+    
     [RequireContext(ContextType.Guild)]
     [RequireBotPermission(ChannelPermission.EmbedLinks)]
     public class AdminModule : BotInteractionModuleBase
