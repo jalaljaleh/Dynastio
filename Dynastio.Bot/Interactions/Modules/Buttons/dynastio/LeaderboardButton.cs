@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dynastio.Extenstions;
 using System.Runtime.CompilerServices;
+using Dynastio.Bot.Interactions.Modules.shared_buttons;
 
 namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
 {
@@ -58,6 +59,8 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
                     .WithButton("PvP - Daily", CustomId.Replace("*", "6"), ButtonStyle.Secondary, new Emoji("⚔️"), null, false, 2)
                     .WithButton("PvP - Weekly", CustomId.Replace("*", "7"), ButtonStyle.Secondary, new Emoji("⚔️"), null, false, 2)
                     .WithButton("PvP - Monthly", CustomId.Replace("*", "8"), ButtonStyle.Secondary, new Emoji("⚔️"), null, false, 2)
+
+                    .WithButton(CancelButton.GetButton(userLocale),3)
                     .Build();
 
                 await ModifyCurrentMessageAsync(userMention + " " + contentAdvertises?.GetEmbedLink(), components: cb);
