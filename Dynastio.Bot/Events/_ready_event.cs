@@ -24,6 +24,7 @@ namespace Dynastio.Bot.Events
 
         private async Task _discord_Ready()
         {
+
             _repeaterService.AddAction(SetBotStatus, TimeSpan.FromMinutes(10));
             await SendMessageToTeamOwners().TryAsync();
         }

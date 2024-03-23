@@ -14,15 +14,20 @@ namespace Dynastio.Bot.Database
     {
         public Guild()
         {
-           
+
         }
         public ulong Id { get; set; }
         public GuildSubscription Subscription { get; set; } = new();
         public RankingSettings RankingSettings { get; set; } = new();
+
+        //public bool IsDeleteMessageEnabled { get; set; }
+
         public bool HasSubscription()
         {
             return Subscription.EndsAt > DateTime.UtcNow;
         }
+
+
         public override string ToString()
         {
             return
@@ -36,9 +41,26 @@ namespace Dynastio.Bot.Database
                 $"";
         }
     }
+    public interface GuildModuleBase
+    {
+        bool IsEnabled { get; set; }
+    }
+
+    //public class GuildDeleteMessageModule : GuildModuleBase
+    //{
+    //    public GuildDeleteMessageModule()
+    //    {
+    //        IsEnabled = false;
+    //    }
+    //    public bool IsEnabled { get; set; }
+
+    //    public ulong DefaultLogChannelId { get; set; }
+    //    public ulong ModeratorsLogChannelId { get; set; }
+
+    //}
 
     [BsonIgnoreExtraElements]
-    public class RankingSettings
+    public class RankingSettings : GuildModuleBase
     {
         public RankingSettings()
         {

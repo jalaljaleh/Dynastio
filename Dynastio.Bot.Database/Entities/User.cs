@@ -63,6 +63,9 @@ namespace Dynastio.Bot.Database
             Accounts.ForEach(a => a.IsDefault = false);
             userAccount.IsDefault = true;
         }
+        public string GetAccountService() => gameAccountId.Split(":")[0];
+
+
         [BsonIgnore]
         public bool IsAccountConnected { get => string.IsNullOrEmpty(gameAccountId); }
     }

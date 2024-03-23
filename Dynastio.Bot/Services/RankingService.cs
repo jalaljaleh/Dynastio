@@ -26,7 +26,7 @@ namespace Dynastio.Bot.Services
             _userService = services.GetRequiredService<UserService>();
             _dynastioApi = services.GetRequiredService<DynastioApi>();
         }
-        
+
         public async Task TryAddMessageXpAsync(Guild guild, User user, IUserMessage message)
         {
             if (guild.RankingSettings.IsEnabled is false) return;
@@ -38,14 +38,7 @@ namespace Dynastio.Bot.Services
             var discordUser = message.Author as IGuildUser;
             var uProfile = user.GetRankingProfile(guild.Id);
 
-            bool IsXpIncreaseable(RankingSettings settings, GuildProfile uProfile, string messageContent)
-            {
-                if (string.IsNullOrEmpty(messageContent)) return false;
-                if (messageContent.Length < 10) return false;
 
-                var messagesDelay = DateTime.UtcNow - uProfile.LastMessageTimestamp;
-                return messagesDelay.TotalSeconds > settings.Delay;
-            }
             if (IsXpIncreaseable(guild.RankingSettings, uProfile, message.CleanContent))
             {
                 int messageXp = guild.RankingSettings.XpPerMessage;
@@ -57,6 +50,14 @@ namespace Dynastio.Bot.Services
 
                 await AddXpAsync(guild, user, discordUser, txtChannel.Guild, uProfile, messageXp, txtChannel);
             }
+        }
+        bool IsXpIncreaseable(RankingSettings settings, GuildProfile uProfile, string messageContent)
+        {
+            if (string.IsNullOrEmpty(messageContent)) return false;
+            if (messageContent.Length < 10) return false;
+
+            var messagesDelay = DateTime.UtcNow - uProfile.LastMessageTimestamp;
+            return messagesDelay.TotalSeconds > settings.Delay;
         }
         public async Task<bool> AddXpAsync(Guild guild, User user, IUser dUser, IGuild dGuild, GuildProfile sProfile, int count, ITextChannel channel)
         {
@@ -168,7 +169,7 @@ namespace Dynastio.Bot.Services
                 ? $"\n\n Ingame Reward: You got **{DynastioApiHelper.GetLevelCoinsReward(sProfile.Level)} coins** for your reward." + (
 
                 user.IsAccountConnected
-                  ? $"\n\n✨ Note: Your reward has been added to your account **{UserAccount.GetAccountService(user.gameAccountId)}** directly !"
+                  ? $"\n\n✨ Note: Your reward has been added to your account **{user.GetAccountService()}** directly !"
                   : "\n\n⚠️ **Note:** Connect your game account to get the reward. ⚠️")
 
 
@@ -176,7 +177,7 @@ namespace Dynastio.Bot.Services
                     ).ToEmbed(
                 title: $"🎉 You just got new level **{sProfile.Level}**  !🎉",
                 thumbnailUrl: Global.Resource.RewardImageUrl,
-                color: Color.Green);
+                color: (user.IsAccountConnected & bGuild.RankingSettings.IsGameRewardEnabled) ? Color.Green : Color.Red);
 
 
             await sourceChannel.SendMessageAsync(dUser.Mention, embed: embed).TryAsync();

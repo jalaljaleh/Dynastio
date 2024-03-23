@@ -23,17 +23,13 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
         public DynastioApi dynastio { get; set; }
         public DynastioGraphic dynastioGraphic { get; set; }
 
-        [IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
         [SlashCommand("menu", "dynastio menu")]
         [RateLimit(6, 1)]
         public async Task menu()
         {
             await DeferAsync();
 
-            List<Database.Advertise> advertise = new();
-
             var contentAdvertises = advertisingService.ExploitationAdvertising(Database.AdsType.EmbedMessageContent, 1).FirstOrDefault();
-            advertise.Add(contentAdvertises);
 
             await FollowupAsync(
                 text: Context.User.Mention + " " + contentAdvertises?.GetEmbedLink(),

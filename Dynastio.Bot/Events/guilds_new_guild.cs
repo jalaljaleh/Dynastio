@@ -7,9 +7,9 @@ using Dynastio.Bot.Handlers;
 
 namespace Dynastio.Bot.Events
 {
-    internal class guilds_new_event : HandlersBase
+    internal class guilds_new_guild : HandlersBase
     {
-        public guilds_new_event(IServiceProvider services) : base(services)
+        public guilds_new_guild(IServiceProvider services) : base(services)
         {
             _discord.JoinedGuild += _discord_JoinedGuild;
         }

@@ -19,7 +19,7 @@ namespace Dynastio.Bot.Entities
         {
             if (Main.IsDebug())
                 return LoadDebugConfiguration();
-            //Environment.SetEnvironmentVariable("config-key", "");
+          //  Environment.SetEnvironmentVariable("config-key", "");
 
             var value = File.ReadAllText(PathHelper.GetData());
             var clearValue = Encryption.Decrypt(value, Environment.GetEnvironmentVariable("config-key"));

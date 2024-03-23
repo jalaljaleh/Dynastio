@@ -29,7 +29,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
             return new ButtonBuilder()
             {
                 Label = locale["btn.dynastio.players.search.label"],
-                Style = ButtonStyle.Primary,
+                Style = ButtonStyle.Success,
                 Emote = Emoji,
                 IsDisabled = false,
                 Url = null,
