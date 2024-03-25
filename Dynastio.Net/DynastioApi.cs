@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Http;
@@ -41,7 +42,6 @@ namespace Dynastio.Net
 
             CreateHttpClient();
         }
-
 
         private readonly Cacheable<List<Player>> _players;
         private readonly Cacheable<List<Server>> _servers;

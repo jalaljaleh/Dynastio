@@ -15,7 +15,10 @@ namespace Dynastio.Net
             return Label.ToLower().Trim().Contains(nickname.ToLower().Trim());
         }
 
-
+        public string GetDirectLink()
+        {
+            return $"https://dynast.io/?direct={Ip}:{Port}";
+        }
 
         [JsonProperty("peer_key")]
         public long? PeerKey { get; set; }

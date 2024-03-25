@@ -8,6 +8,8 @@
   "btn.dynastio.accounts.add.label": "Add Account",
   "btn.dynastio.leaderboard.label": "Leaderboard",
   "btn.dynastio.version.title": "Version",
+  "btn.dynastio.privateservers.label": "Private Servers",
+
 
   "modal.dynastio.searchplayer.title": "Search Players",
   "modal.dynastio.accounts.add.unauthorized": "The entered account does not belong to you.",
@@ -42,12 +44,13 @@
   "proccess_failed_title": "Process failed",
   "account_selection": "Account Selection !",
   "account_selection_description": "Select an account to continue the process. If you have not connected your account, add it through the settings menu.",
-  "unauthorized": null,
+  "unauthorized": "unauthorized",
+
   "server": "Server",
   "score": "Score",
   "level": "Level",
   "team": "Team",
   "nickname": "Nickname",
-
+  "join": "Join",
   "accounts.require.default": "You have no any default account, select one then try again."
 }

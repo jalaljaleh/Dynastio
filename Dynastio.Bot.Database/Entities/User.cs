@@ -12,6 +12,7 @@ using Dynastio.Bot.Global;
 
 namespace Dynastio.Bot.Database
 {
+
     [BsonIgnoreExtraElements]
     public class User
     {

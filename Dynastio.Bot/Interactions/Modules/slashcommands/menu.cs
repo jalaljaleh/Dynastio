@@ -43,6 +43,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             var cBuilder = new ComponentBuilder()
                 .WithButton(PlayersButton.GetButton(userLocale, dynastio.OnlinePlayers.Count), 0)
                 .WithButton(TeamsButton.GetButton(userLocale, dynastio.OnlinePlayers.GroupBy(a => a.Team).Count()), 0)
+                .WithButton(PrivateServersButton.GetButton(userLocale, dynastio.OnlineServers.Where(a=>a.IsPrivate).Count()), 0)
                 .WithButton(PlayersSearchButton.GetButton(userLocale), 0)
 
                 .WithButton(ProfileButton.GetButton(userLocale, BotUser.Accounts.Any()), 1)

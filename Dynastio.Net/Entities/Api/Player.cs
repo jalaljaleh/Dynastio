@@ -19,7 +19,7 @@ namespace Dynastio.Net
         {
             Parent = parent;
 
-            UniqeId = "hash$" + (this.Nickname + InternalId).GetHashCode();
+            UniqeId = "hash$" + ( InternalId ).GetHashCode();
 
             SearchableNickname = Nickname.ToLower().Trim().ToSafeChars() + " " + Nickname;
 
@@ -47,7 +47,6 @@ namespace Dynastio.Net
 
         [JsonIgnore]
         public Server Parent { get; set; }
-
 
         [JsonProperty("internal_id")]
         public ulong InternalId { get; set; } = 0;
