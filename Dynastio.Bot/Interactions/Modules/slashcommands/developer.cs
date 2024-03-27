@@ -16,6 +16,7 @@ using Dynastio.Bot.Addons;
 using System.Reflection;
 using Dynastio.Bot.Interactions.AutoCompeletes;
 using Newtonsoft.Json;
+using Dynastio.Bot.Handlers;
 
 namespace Dynastio.Bot.Interactions.Modules.slashcommands
 {
@@ -37,6 +38,39 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                        $"version: {Assembly.GetCallingAssembly().GetHashCode().ToString()}\n" +
                        $"").ToEmbed("Pong !"));
         }
+
+
+        [Group("guilds", "guild")]
+        public class GuildModule : BotInteractionModuleBase
+        {
+            [Group("roles", "roles")]
+            public class rolesModule : BotInteractionModuleBase
+            {
+                public EventsHandler eventsHandler { get; set; }
+                [SlashCommand("set", "set ")]
+                public async Task set(RoleType roletype, IRole role)
+                {
+                    await DeferAsync(true);
+
+                    this.BotGuild.AddUpdateRole(roletype, role.Id);
+
+                    await UpdateBotGuildAsync();
+
+                    await FollowupAsync(embed: "Done, user and guilds cleared.".ToEmbed("Successful Operator"));
+                }
+                [SlashCommand("sync", "sync ")]
+                public async Task sync()
+                {
+                    await DeferAsync(true);
+
+                    await eventsHandler._ready_event.SyncSub();
+
+                    await FollowupAsync(embed: "Done .".ToEmbed("Successful Operator"));
+                }
+            }
+        }
+
+
         [Group("advertisement", "advertisement")]
         public class AdvertisementModule : BotInteractionModuleBase
         {

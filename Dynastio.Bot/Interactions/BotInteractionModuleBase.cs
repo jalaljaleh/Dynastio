@@ -15,6 +15,7 @@ namespace Dynastio.Bot.Interactions
     using Dynastio.Bot.Globalization;
     using Dynastio.Bot.Services;
     using Microsoft.VisualBasic;
+    using System.ComponentModel;
 
     public class BotInteractionModuleBase : InteractionModuleBase<BotSocketInteractionContext>
     {
@@ -31,10 +32,7 @@ namespace Dynastio.Bot.Interactions
         public Locale guildLocale { get => this.Context.GuildLocale; }
         public Locale userLocale { get => this.Context.UserLocale; }
         public string userMention => Context.User.Mention;
-
-
         public string BotAvatarUrl { get => this.Context.Client.CurrentUser.TryGetAvatarUrl(); }
-
         public IUserMessage CurrentMessage =>
              Context.Interaction.Type switch
              {
@@ -42,7 +40,14 @@ namespace Dynastio.Bot.Interactions
                  InteractionType.MessageComponent => (Context.Interaction as SocketMessageComponent).Message,
                  _ => null
              };
-
+        public async Task<bool> UpdateBotGuildAsync()
+        {
+           return await this.dynastioBotDatabase.UpdateAsync(this.BotGuild);
+        }
+        public async Task<bool> UpdateBotUserAsync()
+        {
+            return await this.dynastioBotDatabase.UpdateAsync(this.BotUser);
+        }
         public async Task<IUserMessage> ModifyCurrentMessageAsync(string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null, RequestOptions options = null, MessageComponent components = null, Embed embed = null)
         {
             await CurrentMessage.ModifyAsync(x =>

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Handlers
 {
-    internal abstract class HandlersBase
+    public abstract class HandlersBase
     {
         public readonly IServiceProvider _services;
         public readonly DiscordSocketClient _discord;

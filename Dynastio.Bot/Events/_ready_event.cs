@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Dynastio.Bot.Database;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Handlers;
 using Dynastio.Bot.Services;
@@ -13,7 +15,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Dynastio.Bot.Events
 {
-    internal class ready_event : HandlersBase
+    public class ready_event : HandlersBase
     {
         private readonly RepeaterService _repeaterService;
         public ready_event(IServiceProvider services) : base(services)
@@ -27,6 +29,50 @@ namespace Dynastio.Bot.Events
 
             _repeaterService.AddAction(SetBotStatus, TimeSpan.FromMinutes(10));
             await SendMessageToTeamOwners().TryAsync();
+            await SyncSub().TryAsync();
+        }
+        public async Task SyncSub()
+        {
+            var owners = _discord.Guilds.Select(a => a.OwnerId);
+            var subscriptionGuilds = await _db.GetSubscriptioGuildsAsync();
+            foreach (var subscribedGuild in subscriptionGuilds.Where(a => _discord.GetGuild(a.Id) != null))
+            {
+                if (subscribedGuild.TryGetRole(Database.RoleType.SubscriptionGuildAdmin, out ulong adminRole) is false)
+                    continue;
+
+                foreach (var newGuild in _discord.Guilds)
+                {
+                    try
+                    {
+                        var discordSubscribedGuild = _discord.GetGuild(subscribedGuild.Id);
+
+                        var members = discordSubscribedGuild.Roles.FirstOrDefault(a => a.Id == adminRole).Members;
+                        foreach(var member in members)
+                        {
+                            if (owners.Contains(member.Id))
+                            {
+
+                            }
+                            else
+                            {
+                               await member.RemoveRoleAsync(adminRole);
+                            }
+                        }
+
+                        var owner = discordSubscribedGuild.GetUser(newGuild.OwnerId);
+                        if (owner != null)
+                        {
+                            await owner.AddRoleAsync(adminRole);
+                        }
+                    }
+                    catch
+                    {
+                        subscribedGuild.TryRemoveRole(Database.RoleType.SubscriptionGuildAdmin);
+                        await _db.UpdateAsync(subscribedGuild);
+                    }
+                }
+
+            }
         }
         public async Task SendMessageToTeamOwners()
         {

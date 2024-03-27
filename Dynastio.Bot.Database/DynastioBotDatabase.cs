@@ -79,6 +79,10 @@ namespace Dynastio.Bot.Database
 
         public async Task<List<Guild>> GetGuildsWithoutSubscriptionAsync()
         {
+            return await dbContext.GetGuildsAsync(a => a.Subscription.EndsAt < DateTime.UtcNow);
+        }
+        public async Task<List<Guild>> GetSubscriptioGuildsAsync()
+        {                                                         
             return await dbContext.GetGuildsAsync(a => a.Subscription.EndsAt > DateTime.UtcNow);
         }
         public async Task<Guild> GetGuildAsync(ulong Id, bool New = true, Action<Guild> action = null)

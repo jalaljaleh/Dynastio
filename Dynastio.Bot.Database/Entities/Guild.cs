@@ -21,7 +21,19 @@ namespace Dynastio.Bot.Database
         public RankingSettings RankingSettings { get; set; } = new();
 
         //public bool IsDeleteMessageEnabled { get; set; }
-
+        public Dictionary<RoleType, ulong> Roles { get; set; } = new();
+        public bool TryGetRole(RoleType role, out ulong roleId)
+        {
+            return Roles.TryGetValue(role, out roleId);
+        }
+        public void AddUpdateRole(RoleType type, ulong roleId)
+        {
+            Roles[type] = roleId;
+        }
+        public bool TryRemoveRole(RoleType type)
+        {
+            return Roles.Remove(type, out _); 
+        }
         public bool HasSubscription()
         {
             return Subscription.EndsAt > DateTime.UtcNow;
@@ -40,6 +52,10 @@ namespace Dynastio.Bot.Database
                 $"Id: {Id}\n" +
                 $"";
         }
+    }
+    public enum RoleType
+    {
+        SubscriptionGuildAdmin = 0,
     }
     public interface GuildModuleBase
     {
