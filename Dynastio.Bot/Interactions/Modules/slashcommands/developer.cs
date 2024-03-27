@@ -43,11 +43,10 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
         [Group("guilds", "guild")]
         public class GuildModule : BotInteractionModuleBase
         {
-            [Group("roles", "roles")]
-            public class rolesModule : BotInteractionModuleBase
-            {
+
                 public EventsHandler eventsHandler { get; set; }
-                [SlashCommand("set", "set ")]
+
+                [SlashCommand("roles-set", "set ")]
                 public async Task set(RoleType roletype, IRole role)
                 {
                     await DeferAsync(true);
@@ -58,7 +57,8 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
                     await FollowupAsync(embed: "Done, user and guilds cleared.".ToEmbed("Successful Operator"));
                 }
-                [SlashCommand("sync", "sync ")]
+
+                [SlashCommand("roles-sync", "sync ")]
                 public async Task sync()
                 {
                     await DeferAsync(true);
@@ -67,7 +67,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
                     await FollowupAsync(embed: "Done .".ToEmbed("Successful Operator"));
                 }
-            }
+            
         }
 
 
