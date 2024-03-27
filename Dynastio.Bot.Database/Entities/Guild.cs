@@ -28,7 +28,14 @@ namespace Dynastio.Bot.Database
         }
         public void AddUpdateRole(RoleType type, ulong roleId)
         {
-            Roles[type] = roleId;
+            if (Roles.TryAdd(type, roleId))
+            {
+
+            }
+            else
+            {
+                Roles[type] = roleId;
+            }
         }
         public bool TryRemoveRole(RoleType type)
         {
