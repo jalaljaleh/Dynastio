@@ -37,7 +37,7 @@ namespace Dynastio.Bot.Events
             var subscriptionGuilds = await _db.GetSubscriptioGuildsAsync();
             foreach (var subscribedGuild in subscriptionGuilds.Where(a => _discord.GetGuild(a.Id) != null))
             {
-                if (subscribedGuild.TryGetRole(Database.GuildRoleType.SubscriptionGuildAdmin, out ulong adminRole) is false)
+                if (subscribedGuild.PartnersRoleId == 0)
                     continue;
 
                 foreach (var newGuild in _discord.Guilds)
@@ -46,7 +46,7 @@ namespace Dynastio.Bot.Events
                     {
                         var discordSubscribedGuild = _discord.GetGuild(subscribedGuild.Id);
 
-                        var members = discordSubscribedGuild.Roles.FirstOrDefault(a => a.Id == adminRole).Members;
+                        var members = discordSubscribedGuild.Roles.FirstOrDefault(a => a.Id == subscribedGuild.PartnersRoleId).Members;
                         foreach(var member in members)
                         {
                             if (owners.Contains(member.Id))
@@ -55,19 +55,19 @@ namespace Dynastio.Bot.Events
                             }
                             else
                             {
-                               await member.RemoveRoleAsync(adminRole);
+                               await member.RemoveRoleAsync(subscribedGuild.PartnersRoleId);
                             }
                         }
 
                         var owner = discordSubscribedGuild.GetUser(newGuild.OwnerId);
                         if (owner != null)
                         {
-                            await owner.AddRoleAsync(adminRole);
+                            await owner.AddRoleAsync(subscribedGuild.PartnersRoleId);
                         }
                     }
                     catch
                     {
-                        subscribedGuild.TryRemoveRole(Database.GuildRoleType.SubscriptionGuildAdmin);
+                        subscribedGuild.PartnersRoleId = 0;
                         await _db.UpdateAsync(subscribedGuild);
                     }
                 }

@@ -47,7 +47,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                     {
                         IsInline = true,
                         Name = "Partners",
-                        Value = $"Partner Role: {BotGuild.GetRole(Database.GuildRoleType.SubscriptionGuildAdmin).ToDiscordRole()}\n"
+                        Value = $"Partner Role: {BotGuild.PartnersRoleId.ToDiscordRole()}\n"
                     }
                 }
             }.Build();

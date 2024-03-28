@@ -10,19 +10,7 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Database
 {
-    public enum GuildRoleType
-    {
-        SubscriptionGuildAdmin = 0,
-    }
-    public class GuildRole
-    {
-        [BsonId]
-        public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
 
-        public GuildRoleType Type { get; set; }
-
-        public ulong RoleId { get; set; }
-    }
     [BsonIgnoreExtraElements]
     public class Guild
     {
@@ -36,37 +24,8 @@ namespace Dynastio.Bot.Database
         public RankingSettings RankingSettings { get; set; } = new();
 
         //public bool IsDeleteMessageEnabled { get; set; }
-        public List<GuildRole> Roles { get; set; } = new();
+        public ulong PartnersRoleId { get; set; }
 
-        public ulong GetRole(GuildRoleType role)
-        {
-          return Roles?.FirstOrDefault(a => a.Type == role)?.RoleId ?? 0;
-        }
-        public bool TryGetRole(GuildRoleType role, out ulong roleId)
-        {
-            var result = Roles.FirstOrDefault(a => a.Type == role);
-            roleId = result?.RoleId ?? 0;
-            return result != null;
-        }
-        public void AddOrUpdateRole(GuildRoleType type, ulong roleId)
-        {
-            var result = Roles.FirstOrDefault(a => a.Type == type);
-            if (result is null)
-            {
-                result = new GuildRole()
-                {
-                    Type = type,
-                    RoleId = roleId
-                };
-                Roles.Add(result);
-                return;
-            }
-            result.RoleId = roleId;
-        }
-        public bool TryRemoveRole(GuildRoleType type)
-        {
-            return Roles.Remove(Roles.FirstOrDefault(a => a.Type == type));
-        }
         public bool HasSubscription()
         {
             return Subscription.EndsAt > DateTime.UtcNow;

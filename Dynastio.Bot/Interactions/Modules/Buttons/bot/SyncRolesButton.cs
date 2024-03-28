@@ -42,21 +42,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
         {
             await this.DeferAsync();
 
-            if (BotGuild.TryGetRole(Database.GuildRoleType.SubscriptionGuildAdmin, out ulong roleId))
-            {
-                if (this.Context.Client.Guilds.Any(a => a.OwnerId == Context.User.Id))
-                {
-
-
-
-                    return;
-                }
-
-                await ModifyCurrentMessageAsync(userMention, embed: "You have not invited the bot to your own server.".ToInformEmbed("Guild not found"));
-                return;
-            }
-            await ModifyCurrentMessageAsync(userMention, embed: "This guild is not support GUILD_ADMIN_Subscription".ToInformEmbed("Not Supported"));
-        }
+                  }
 
     }
 }
