@@ -68,7 +68,7 @@ namespace Dynastio.Bot.Database
 
 
         [BsonIgnore]
-        public bool IsAccountConnected { get => string.IsNullOrEmpty(gameAccountId); }
+        public bool IsAccountConnected { get => !string.IsNullOrEmpty(gameAccountId); }
     }
 
 

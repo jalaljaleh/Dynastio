@@ -160,7 +160,7 @@ namespace Dynastio.Bot.Services
             }
 
             var embed = string.Format(
-                "🎉 You just got new level, you are level **{0}** and **{1}** xp  !{2}",
+                " You just got new level, you are level **{0}** and **{1}** xp  !{2}",
 
                 sProfile.Level,
                 sProfile.Xp.Metric(),
