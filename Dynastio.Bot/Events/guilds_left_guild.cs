@@ -36,7 +36,8 @@ namespace Dynastio.Bot.Events
 
                     if (owner != null)
                     {
-                        await owner.RemoveRoleAsync(subscribedGuild.PartnersRoleId);
+                        if (owner.Roles.Select(a => a.Id).Contains(subscribedGuild.PartnersRoleId))
+                            await owner.RemoveRoleAsync(subscribedGuild.PartnersRoleId);
                     }
                 }
                 catch

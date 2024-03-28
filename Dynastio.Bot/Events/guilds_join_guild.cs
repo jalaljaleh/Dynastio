@@ -23,28 +23,37 @@ namespace Dynastio.Bot.Events
         }
         public async Task AddSubscriptionGuildAdminRoleAsync(SocketGuild newGuild)
         {
-            var subscriptionGuilds = await _db.GetSubscriptioGuildsAsync();
-            foreach (var subscribedGuild in subscriptionGuilds.Where(a => _discord.GetGuild(a.Id) != null))
-            {
-                if (subscribedGuild.PartnersRoleId == 0)
-                    continue;
+            _ = Task.Run(async () =>
+             {
 
-                try
-                {
-                    var discordSubscribedGuild = _discord.GetGuild(subscribedGuild.Id);
-                    var owner = discordSubscribedGuild.GetUser(newGuild.OwnerId);
+                 await Task.Delay(5000);
 
-                    if (owner != null)
-                    {
-                        await owner.AddRoleAsync(subscribedGuild.PartnersRoleId);
-                    }
-                }
-                catch
-                {
-                    subscribedGuild.PartnersRoleId = 0;
-                    await _db.UpdateAsync(subscribedGuild);
-                }
-            }
+                 var subscriptionGuilds = await _db.GetSubscriptioGuildsAsync();
+                 foreach (var subscribedGuild in subscriptionGuilds.Where(a => _discord.GetGuild(a.Id) != null))
+                 {
+                     if (subscribedGuild.PartnersRoleId == 0)
+                         continue;
+
+                     try
+                     {
+                         var discordSubscribedGuild = _discord.GetGuild(subscribedGuild.Id);
+                         var owner = discordSubscribedGuild.GetUser(newGuild.OwnerId);
+
+                         if (owner != null)
+                         {
+                             if (owner.Roles.Select(a => a.Id).Contains(subscribedGuild.PartnersRoleId))
+                                 continue;
+
+                             await owner.AddRoleAsync(subscribedGuild.PartnersRoleId);
+                         }
+                     }
+                     catch
+                     {
+                         subscribedGuild.PartnersRoleId = 0;
+                         await _db.UpdateAsync(subscribedGuild);
+                     }
+                 }
+             });
         }
         public async Task LeaveExtraGuildsAsync()
         {

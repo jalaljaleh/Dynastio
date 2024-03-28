@@ -47,22 +47,23 @@ namespace Dynastio.Bot.Events
                         var discordSubscribedGuild = _discord.GetGuild(subscribedGuild.Id);
 
                         var members = discordSubscribedGuild.Roles.FirstOrDefault(a => a.Id == subscribedGuild.PartnersRoleId).Members;
-                        foreach(var member in members)
+                        foreach (var member in members)
                         {
-                            if (owners.Contains(member.Id))
+                            if (!owners.Contains(member.Id))
                             {
-
-                            }
-                            else
-                            {
-                               await member.RemoveRoleAsync(subscribedGuild.PartnersRoleId);
+                                await member.RemoveRoleAsync(subscribedGuild.PartnersRoleId);
+                                await Task.Delay(1000);
                             }
                         }
 
                         var owner = discordSubscribedGuild.GetUser(newGuild.OwnerId);
                         if (owner != null)
                         {
+                            if (owner.Roles.Select(a => a.Id).Contains(subscribedGuild.PartnersRoleId))
+                                continue;
+
                             await owner.AddRoleAsync(subscribedGuild.PartnersRoleId);
+                            await Task.Delay(1000);
                         }
                     }
                     catch
