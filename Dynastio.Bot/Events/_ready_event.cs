@@ -37,7 +37,7 @@ namespace Dynastio.Bot.Events
             var subscriptionGuilds = await _db.GetSubscriptioGuildsAsync();
             foreach (var subscribedGuild in subscriptionGuilds.Where(a => _discord.GetGuild(a.Id) != null))
             {
-                if (subscribedGuild.TryGetRole(Database.RoleType.SubscriptionGuildAdmin, out ulong adminRole) is false)
+                if (subscribedGuild.TryGetRole(Database.GuildRoleType.SubscriptionGuildAdmin, out ulong adminRole) is false)
                     continue;
 
                 foreach (var newGuild in _discord.Guilds)
@@ -67,7 +67,7 @@ namespace Dynastio.Bot.Events
                     }
                     catch
                     {
-                        subscribedGuild.TryRemoveRole(Database.RoleType.SubscriptionGuildAdmin);
+                        subscribedGuild.TryRemoveRole(Database.GuildRoleType.SubscriptionGuildAdmin);
                         await _db.UpdateAsync(subscribedGuild);
                     }
                 }

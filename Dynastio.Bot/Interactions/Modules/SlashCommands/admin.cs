@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Dynastio.Bot.Addons;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Modules.buttons;
@@ -8,6 +9,7 @@ using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Graphic;
 using Dynastio.Net;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -34,7 +36,9 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             var subscriptionModule = new EmbedBuilder()
             {
                 Title = $"Subscription {(BotGuild.HasSubscription() ? "Activated" : "Not Activated")}",
-                Description = "Dynast.io bot subscription",
+                Description = $"" +
+                 $"Subscribed from {subscription.StartedAt.UnixTimestampDiscordFormat()} until {subscription.EndsAt.UnixTimestampDiscordFormat()}\n" +
+                 $"Subscribed By: <@{subscription.UserId}> \n",
                 Color = BotGuild.HasSubscription() ? Color.Green : Color.Red,
                 ThumbnailUrl = BotAvatarUrl,
                 Fields = new List<EmbedFieldBuilder>()
@@ -42,10 +46,8 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                     new EmbedFieldBuilder()
                     {
                         IsInline = true,
-                        Name = "Details",
-                        Value =
-                                $"Started : {subscription.StartedAt.UnixTimestampDiscordFormat()} & Ends : {subscription.EndsAt.UnixTimestampDiscordFormat()}\n" +
-                                $"Subscribed By: <@{subscription.UserId}> \n"
+                        Name = "Partners",
+                        Value = $"Partner Role: {BotGuild.GetRole(Database.GuildRoleType.SubscriptionGuildAdmin).ToDiscordRole()}\n"
                     }
                 }
             }.Build();
@@ -88,6 +90,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 Color = rank.IsEnabled ? Color.Green : Color.Red,
             }.Build();
 
+            
             await FollowupAsync(
                 text: Context.User.Mention,
                 embeds: new Embed[] { rankingModule, subscriptionModule },

@@ -1,15 +1,26 @@
-﻿using Discord;
+﻿using Amazon.Runtime.Internal.Auth;
+using Discord;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
+using Discord.Utils;
 namespace Dynastio.Bot
 {
     public static class StringExtensions
     {
+        public static string ToDiscordRole(this ulong value,string text = "Not Available")
+        {
+            if (value == 0) return text;
+            else return Discord.MentionUtils.MentionRole(value);
+        }
+        public static string ToStringText(this ulong value,string text = "Not Available")
+        {
+            if (value == 0) return text;
+            else return value.ToString();
+        }
         public static string RemoveHtmlTags(this string value)
         {
             return Regex.Replace(value, "<.*?>", string.Empty);

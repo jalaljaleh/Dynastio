@@ -52,15 +52,15 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
                     advertisingService.GetInlineEmbedDescription();
 
             content +=
-                ($"\n# Filters" +
+                (
                 $"\n" +
-                $"-{Context.UserLocale["nickname"]}: -q {modal.PlayerNickname}" +
-                $" -{Context.UserLocale["server"]}: -q {modal.Server}" +
-                $" -{Context.UserLocale["score"]}: -q {modal.PlayerScore}" +
-                $" -{Context.UserLocale["level"]}: -q {modal.PlayerLevel}" +
-                $" -{Context.UserLocale["team"]}: -q {modal.Team}" +
+                $"-{Context.UserLocale["nickname"]}: {modal.PlayerNickname}" +
+                $" -{Context.UserLocale["server"]}: {modal.Server}" +
+                $" -{Context.UserLocale["score"]}: {modal.PlayerScore}" +
+                $" -{Context.UserLocale["level"]}: {modal.PlayerLevel}" +
+                $" -{Context.UserLocale["team"]}: {modal.Team}" +
                 $"\n" +
-                $"-c {dynastio.OnlinePlayers.Count} players, -r {players.Count} players -c {dynastio.OnlineServers.Count} servers" +
+                $"-c {dynastio.OnlinePlayers.Count} players, {players.Count} result, {dynastio.OnlineServers.Count} servers" +
                 $"").ToMarkdown();
 
             await ModifyCurrentMessageAsync(embed: content.ToEmbed(userLocale["modal.dynastio.searchplayer.title", players.Count]));

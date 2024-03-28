@@ -2,13 +2,22 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Database
 {
-
+    public enum GuildRoleType
+    {
+        SubscriptionGuildAdmin = 0,
+    }
+    public class GuildRole
+    {
+        public ulong Id { get; set; }
+        public GuildRoleType Type { get; set; }
+    }
     [BsonIgnoreExtraElements]
     public class Guild
     {
@@ -21,25 +30,36 @@ namespace Dynastio.Bot.Database
         public RankingSettings RankingSettings { get; set; } = new();
 
         //public bool IsDeleteMessageEnabled { get; set; }
-        public Dictionary<RoleType, ulong> Roles { get; set; } = new();
-        public bool TryGetRole(RoleType role, out ulong roleId)
-        {
-            return Roles.TryGetValue(role, out roleId);
-        }
-        public void AddUpdateRole(RoleType type, ulong roleId)
-        {
-            if (Roles.TryAdd(type, roleId))
-            {
+        public List<GuildRole> Roles { get; set; } = new();
 
-            }
-            else
-            {
-                Roles[type] = roleId;
-            }
-        }
-        public bool TryRemoveRole(RoleType type)
+        public ulong GetRole(GuildRoleType role)
         {
-            return Roles.Remove(type, out _); 
+          return Roles?.FirstOrDefault(a => a.Type == role)?.Id ?? 0;
+        }
+        public bool TryGetRole(GuildRoleType role, out ulong roleId)
+        {
+            var result = Roles.FirstOrDefault(a => a.Type == role);
+            roleId = result?.Id ?? 0;
+            return result != null;
+        }
+        public void AddOrUpdateRole(GuildRoleType type, ulong roleId)
+        {
+            var result = Roles.FirstOrDefault(a => a.Type == type);
+            if (result is null)
+            {
+                result = new GuildRole()
+                {
+                    Type = type,
+                    Id = roleId
+                };
+                Roles.Add(result);
+                return;
+            }
+            result.Id = roleId;
+        }
+        public bool TryRemoveRole(GuildRoleType type)
+        {
+            return Roles.Remove(Roles.FirstOrDefault(a => a.Type == type));
         }
         public bool HasSubscription()
         {
@@ -60,10 +80,7 @@ namespace Dynastio.Bot.Database
                 $"";
         }
     }
-    public enum RoleType
-    {
-        SubscriptionGuildAdmin = 0,
-    }
+
     public interface GuildModuleBase
     {
         bool IsEnabled { get; set; }

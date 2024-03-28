@@ -42,7 +42,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
         {
             await this.DeferAsync();
 
-            if (BotGuild.TryGetRole(Database.RoleType.SubscriptionGuildAdmin, out ulong roleId))
+            if (BotGuild.TryGetRole(Database.GuildRoleType.SubscriptionGuildAdmin, out ulong roleId))
             {
                 if (this.Context.Client.Guilds.Any(a => a.OwnerId == Context.User.Id))
                 {

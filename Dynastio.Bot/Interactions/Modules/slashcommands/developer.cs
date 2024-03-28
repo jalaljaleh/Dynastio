@@ -47,11 +47,11 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 public EventsHandler eventsHandler { get; set; }
 
                 [SlashCommand("roles-set", "set ")]
-                public async Task set(RoleType roletype, IRole role)
+                public async Task set(GuildRoleType roletype, IRole role)
                 {
                     await DeferAsync(true);
 
-                    this.BotGuild.AddUpdateRole(roletype, role.Id);
+                    this.BotGuild.AddOrUpdateRole(roletype, role.Id);
 
                     await UpdateBotGuildAsync();
 
