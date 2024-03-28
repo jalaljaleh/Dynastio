@@ -63,7 +63,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 {
                     await DeferAsync(true);
 
-                    await eventsHandler._ready_event.SyncSub();
+                    await eventsHandler._ready_event.SyncGuildPartnerRoles();
 
                     await FollowupAsync(embed: "Done .".ToEmbed("Successful Operator"));
                 }

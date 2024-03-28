@@ -9,7 +9,7 @@
   "btn.dynastio.leaderboard.label": "Leaderboard",
   "btn.dynastio.version.title": "Version",
   "btn.dynastio.privateservers.label": "Private Servers",
-
+  "btn.dynastio.connectaccount.label": "Connect Account",
 
   "modal.dynastio.searchplayer.title": "Search Players",
   "modal.dynastio.accounts.add.unauthorized": "The entered account does not belong to you.",
@@ -45,7 +45,7 @@
   "account_selection": "Account Selection !",
   "account_selection_description": "Select an account to continue the process. If you have not connected your account, add it through the settings menu.",
   "unauthorized": "unauthorized",
-
+  "undo_action_description": "important: No going back once you do it.",
   "server": "Server",
   "score": "Score",
   "level": "Level",

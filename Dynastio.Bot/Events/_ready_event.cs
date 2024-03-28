@@ -29,52 +29,67 @@ namespace Dynastio.Bot.Events
 
             _repeaterService.AddAction(SetBotStatus, TimeSpan.FromMinutes(10));
             await SendMessageToTeamOwners().TryAsync();
-            await SyncSub().TryAsync();
+            await SyncGuildPartnerRoles().TryAsync();
         }
-        public async Task SyncSub()
+        public async Task SyncGuildPartnerRoles()
         {
-            var owners = _discord.Guilds.Select(a => a.OwnerId);
-            var subscriptionGuilds = await _db.GetSubscriptioGuildsAsync();
-            foreach (var subscribedGuild in subscriptionGuilds.Where(a => _discord.GetGuild(a.Id) != null))
+            var subscribedGuilds = await _db.GetSubscriptioGuildsAsync();
+            subscribedGuilds = subscribedGuilds
+                                .Where(a => a.PartnersRoleId != 0)
+                                .ToList();
+
+            var partners = _discord.Guilds.Select(a => a.OwnerId).ToList();
+
+            foreach (var subscribedGuild in subscribedGuilds)
             {
                 if (subscribedGuild.PartnersRoleId == 0)
                     continue;
 
-                foreach (var newGuild in _discord.Guilds)
+                var dGuild = _discord.GetGuild(subscribedGuild.Id);
+                if (dGuild is null) continue; // if guild not available (left or bot kicked)
+
+                // get partner role
+                var guildRole = dGuild.Roles.FirstOrDefault(a => a.Id == subscribedGuild.PartnersRoleId);
+                if (guildRole is null)
                 {
-                    try
+                    subscribedGuild.PartnersRoleId = 0;
+                    continue;
+                }
+
+                try
+                {
+                    //remove extra users
+                    foreach (var member in guildRole.Members)
                     {
-                        var discordSubscribedGuild = _discord.GetGuild(subscribedGuild.Id);
 
-                        var members = discordSubscribedGuild.Roles.FirstOrDefault(a => a.Id == subscribedGuild.PartnersRoleId).Members;
-                        foreach (var member in members)
-                        {
-                            if (!owners.Contains(member.Id))
-                            {
-                                await member.RemoveRoleAsync(subscribedGuild.PartnersRoleId);
-                                await Task.Delay(1000);
-                            }
-                        }
+                        if (partners.Contains(member.Id))
+                            partners.Remove(member.Id);
 
-                        var owner = discordSubscribedGuild.GetUser(newGuild.OwnerId);
-                        if (owner != null)
+                        else await member.RemoveRoleAsync(guildRole);
+                    }
+
+                    // add role to user
+                    foreach (var partner in partners)
+                    {
+                        var member = dGuild.GetUser(partner);
+                        if (member != null)
                         {
-                            if (owner.Roles.Select(a => a.Id).Contains(subscribedGuild.PartnersRoleId))
+                            if (member.Roles.Any(a => a.Id == subscribedGuild.PartnersRoleId))
                                 continue;
 
-                            await owner.AddRoleAsync(subscribedGuild.PartnersRoleId);
+                            await member.AddRoleAsync(subscribedGuild.PartnersRoleId);
                             await Task.Delay(1000);
                         }
                     }
-                    catch
-                    {
-                        subscribedGuild.PartnersRoleId = 0;
-                        await _db.UpdateAsync(subscribedGuild);
-                    }
                 }
-
+                catch
+                {
+                    subscribedGuild.PartnersRoleId = 0;
+                    await _db.UpdateAsync(subscribedGuild);
+                }
             }
         }
+
         public async Task SendMessageToTeamOwners()
         {
             var _application = await _discord.GetApplicationInfoAsync();

@@ -75,7 +75,7 @@ namespace Dynastio.Bot.Services
                 try
                 {
                     await NotifyUserLevelUpAsync(user, guild, sProfile, dUser, dGuild, channel).TryAsync();
-                    await SynchronizeGameUser(guild, user, sProfile).TryAsync();
+                    await SynchronizeGameUser(guild, user).TryAsync();
                     await SynchronizeUserRolesAsync(guild, dUser as IGuildUser, sProfile.Level).TryAsync();
                 }
                 catch { }
@@ -132,14 +132,13 @@ namespace Dynastio.Bot.Services
             }
             return true;
         }
-        public async Task<bool> SynchronizeGameUser(Guild guild, User user, GuildProfile sProfile)
+        public async Task<bool> SynchronizeGameUser(Guild guild, User user)
         {
             if (guild.RankingSettings.IsGameRewardEnabled)
             {
-                bool isGameAccountConnected = !string.IsNullOrEmpty(user.gameAccountId);
-                if (isGameAccountConnected)
+                if (user.IsAccountConnected)
                 {
-                    await _dynastioApi.UpdateDiscordRank(user.gameAccountId, sProfile.Level);
+                    await _dynastioApi.UpdateDiscordRank(user.gameAccountId, user.GuildProfiles.FirstOrDefault(a=>a.GuildId == guild.Id).Level);
                     return true;
                 }
                 return false;

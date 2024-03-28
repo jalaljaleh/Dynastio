@@ -32,18 +32,7 @@ namespace Dynastio.Bot.Database
         }
 
 
-        public override string ToString()
-        {
-            return
-                $"Id: {Id}\n" +
-                $" **Rank Module**: {(RankingSettings.IsEnabled ? "Enabled" : "Disabled")}\n" +
-                $"Id: {Id}\n" +
-                $"Id: {Id}\n" +
-                $"Id: {Id}\n" +
-                $"Id: {Id}\n" +
-                $"Id: {Id}\n" +
-                $"";
-        }
+     
     }
 
     public interface GuildModuleBase

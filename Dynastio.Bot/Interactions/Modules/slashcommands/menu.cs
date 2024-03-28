@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using Amazon.Runtime;
+using Discord;
 using Discord.Interactions;
 using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Modules.buttons;
@@ -13,7 +14,7 @@ using System.Linq;
 
 namespace Dynastio.Bot.Interactions.Modules.slashcommands
 {
-    
+
     [RequireContext(ContextType.Guild)]
     [RequireBotPermission(ChannelPermission.EmbedLinks)]
     [RequireBotPermission(ChannelPermission.AttachFiles)]
@@ -43,17 +44,18 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             var cBuilder = new ComponentBuilder()
                 .WithButton(PlayersButton.GetButton(userLocale, dynastio.OnlinePlayers.Count), 0)
                 .WithButton(TeamsButton.GetButton(userLocale, dynastio.OnlinePlayers.GroupBy(a => a.Team).Count()), 0)
-                .WithButton(PrivateServersButton.GetButton(userLocale, dynastio.OnlineServers.Where(a=>a.IsPrivate).Count()), 0)
+                .WithButton(PrivateServersButton.GetButton(userLocale, dynastio.OnlineServers.Where(a => a.IsPrivate).Count()), 0)
                 .WithButton(PlayersSearchButton.GetButton(userLocale), 0)
 
                 .WithButton(ProfileButton.GetButton(userLocale, BotUser.Accounts.Any()), 1)
                 .WithButton(RankButton.GetButton(userLocale), 1)
 
 
-                .WithButton(LeaderboardButton.GetButton(userLocale),2)
-                .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19),2)
+                .WithButton(LeaderboardButton.GetButton(userLocale), 2)
 
-                .WithButton(VersionButton.GetButton(userLocale),3);
+                .WithButton(VersionButton.GetButton(userLocale), 3)
+                .WithButton(BotUser.IsAccountConnected ? AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19) : ConnectAccountButton.GetButton(userLocale), 3)
+                ;
 
             cBuilder.WithButton(CancelButton.GetButton(userLocale), 4);
 
@@ -68,7 +70,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                     ad.Url,
                     false,
                     4);
-            
+
 
             return cBuilder.Build();
         }

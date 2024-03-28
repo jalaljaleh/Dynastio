@@ -20,7 +20,7 @@ namespace Dynastio.Bot.Interactions
         public readonly AdvertisingService _ads;
 
         private readonly DynastioBotGlobalization _globalization;
-        private readonly IServiceProvider _services;
+        public readonly IServiceProvider _services;
         public BotSocketInteractionContext(DiscordSocketClient client, SocketInteraction interaction, IServiceProvider services, User user = null, Guild guild = null) : base(client, interaction)
         {
             _services = services;

@@ -21,18 +21,27 @@ namespace Dynastio.Bot.Events
             await AddSubscriptionGuildAdminRoleAsync(newGuild).TryAsync();
             await LeaveExtraGuildsAsync().TryAsync();
         }
-        public async Task AddSubscriptionGuildAdminRoleAsync(SocketGuild newGuild)
+        public Task AddSubscriptionGuildAdminRoleAsync(SocketGuild newGuild)
         {
             _ = Task.Run(async () =>
              {
 
                  await Task.Delay(5000);
 
+                 if (_discord.Guilds.Any(a => a.Id == newGuild.Id) is false) return;
+
                  var subscriptionGuilds = await _db.GetSubscriptioGuildsAsync();
-                 foreach (var subscribedGuild in subscriptionGuilds.Where(a => _discord.GetGuild(a.Id) != null))
+                 subscriptionGuilds = subscriptionGuilds
+                                     .Where(a => a.PartnersRoleId != 0)
+                                     .ToList();
+
+                 foreach (var subscribedGuild in subscriptionGuilds)
                  {
                      if (subscribedGuild.PartnersRoleId == 0)
                          continue;
+
+                     var dGuild = _discord.GetGuild(subscribedGuild.Id);
+                     if (dGuild is null) continue; // if guild not available (left or bot kicked)
 
                      try
                      {
@@ -54,6 +63,8 @@ namespace Dynastio.Bot.Events
                      }
                  }
              });
+
+            return Task.CompletedTask;
         }
         public async Task LeaveExtraGuildsAsync()
         {

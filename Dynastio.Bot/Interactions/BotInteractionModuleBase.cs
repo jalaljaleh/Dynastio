@@ -27,6 +27,8 @@ namespace Dynastio.Bot.Interactions
         }
         public AdvertisingService advertisingService { get => Context._ads; }
         public DynastioBotDatabase dynastioBotDatabase { get => Context._dynastioData; }
+        public IServiceProvider services { get => Context._services; }
+
         public User BotUser { get => Context.BotUser; }
         public Guild BotGuild { get => Context.BotGuild; }
         public Locale guildLocale { get => this.Context.GuildLocale; }
@@ -72,6 +74,14 @@ namespace Dynastio.Bot.Interactions
         public async Task<bool> DeleteCurrentMessageAsync()
         {
             return await CurrentMessage.DeleteAsync().TryAsync();
+        }
+        public async Task<IUserMessage> ClearCurrentMessageComponentsAsync()
+        {
+            await CurrentMessage.ModifyAsync(x =>
+            {
+                x.Components = new ComponentBuilder().Build();
+            });
+            return CurrentMessage;
         }
     }
 

@@ -24,10 +24,17 @@ namespace Dynastio.Bot.Events
         public async Task RemoveSubscriptionGuildAdminRoleAsync(SocketGuild newGuild)
         {
             var subscriptionGuilds = await _db.GetSubscriptioGuildsAsync();
-            foreach (var subscribedGuild in subscriptionGuilds.Where(a => _discord.GetGuild(a.Id) != null))
+            subscriptionGuilds = subscriptionGuilds
+                                .Where(a => a.PartnersRoleId != 0)
+                                .ToList();
+
+            foreach (var subscribedGuild in subscriptionGuilds)
             {
                 if (subscribedGuild.PartnersRoleId == 0)
                     continue;
+
+                var dGuild = _discord.GetGuild(subscribedGuild.Id);
+                if (dGuild is null) continue; // if guild not available (left or bot kicked)
 
                 try
                 {
