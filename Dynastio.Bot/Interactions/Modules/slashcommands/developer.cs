@@ -55,7 +55,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
                     await UpdateBotGuildAsync();
 
-                    await FollowupAsync(embed: "Done, user and guilds cleared.".ToEmbed("Successful Operator"));
+                    await FollowupAsync(embed: "Done.".ToEmbed("Successful Operator"));
                 }
 
                 [SlashCommand("roles-sync", "sync ")]

@@ -17,6 +17,7 @@ namespace Dynastio.Bot.Database
     public class User
     {
         public User() { }
+        [BsonId]
         public ulong Id { get; set; }
 
         public string youtube_channel { get; set; }

@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -15,8 +16,12 @@ namespace Dynastio.Bot.Database
     }
     public class GuildRole
     {
-        public ulong Id { get; set; }
+        [BsonId]
+        public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
+
         public GuildRoleType Type { get; set; }
+
+        public ulong RoleId { get; set; }
     }
     [BsonIgnoreExtraElements]
     public class Guild
@@ -25,6 +30,7 @@ namespace Dynastio.Bot.Database
         {
 
         }
+        [BsonId]
         public ulong Id { get; set; }
         public GuildSubscription Subscription { get; set; } = new();
         public RankingSettings RankingSettings { get; set; } = new();
@@ -34,12 +40,12 @@ namespace Dynastio.Bot.Database
 
         public ulong GetRole(GuildRoleType role)
         {
-          return Roles?.FirstOrDefault(a => a.Type == role)?.Id ?? 0;
+          return Roles?.FirstOrDefault(a => a.Type == role)?.RoleId ?? 0;
         }
         public bool TryGetRole(GuildRoleType role, out ulong roleId)
         {
             var result = Roles.FirstOrDefault(a => a.Type == role);
-            roleId = result?.Id ?? 0;
+            roleId = result?.RoleId ?? 0;
             return result != null;
         }
         public void AddOrUpdateRole(GuildRoleType type, ulong roleId)
@@ -50,12 +56,12 @@ namespace Dynastio.Bot.Database
                 result = new GuildRole()
                 {
                     Type = type,
-                    Id = roleId
+                    RoleId = roleId
                 };
                 Roles.Add(result);
                 return;
             }
-            result.Id = roleId;
+            result.RoleId = roleId;
         }
         public bool TryRemoveRole(GuildRoleType type)
         {

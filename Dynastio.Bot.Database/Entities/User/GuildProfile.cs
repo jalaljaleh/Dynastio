@@ -9,7 +9,9 @@ namespace Dynastio.Bot.Database
 {
     public class GuildProfile
     {
+        [BsonId]
         public ulong GuildId { get; set; }
+
         public long Xp { get; set; } = 0;
         public int Level { get; set; } = 0;
 
