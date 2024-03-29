@@ -26,24 +26,14 @@ namespace Dynastio.Bot.Interactions.Modules.@shared_buttons
         public DynastioGraphic dynastioGraphic { get; set; }
         
 
-
-
-
         [RequireComponentMessageMention]
         [ComponentInteraction(CustomId)]
         public async Task ExecuteAsync()
         {
             await DeferAsync();
 
-            await ModifyCurrentMessageAsync(
-                         embed: (userLocale["menu_closed_description"] + "\n\n" + advertisingService.GetInlineEmbedDescription())
-                                .ToEmbed(userLocale["menu_closed_title"],
-                                Context.Client.CurrentUser.TryGetAvatarUrl()
-                                ));
+            await CloseMenuAsync();
         }
-
-
-
 
         public const string CustomId = "btn.cancel";
         public static Emoji Emoji => new Emoji("✖️");

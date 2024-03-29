@@ -23,7 +23,7 @@ namespace Dynastio.Bot.Globalization
                 //Global.Main.Log("Globalization", $"{lang.PadRight(5)} loaded.");
             }
         }
-        public Locale GetOrDefault(string key)
+        public Locale GetOrDefault(string key = "en")
         {
             if (Languages.TryGetValue(key, out Locale value))
                 return value;

@@ -19,6 +19,7 @@ using Dynastio.Bot.Database;
 using Dynastio.Bot.Helpers;
 using Dynastio.Bot.Interactions.Modules.shared_buttons;
 using Dynastio.Bot.Interactions.Modules.buttons;
+using System.Threading;
 
 namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
 {
@@ -56,6 +57,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
 
                 return;
             }
+
             await DeferAsync();
 
             if (BotUser.IsAccountConnected)
@@ -64,60 +66,22 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
                 return;
             }
 
-            // Combine Defer and SelectMenu creation for efficiency
-            var selectMenu = new SelectMenuBuilder(
-                DiscordInput.GenerateCustomId("user.accounts"),
-                null,
-                Context.UserLocale["menu.profile.accounts.choose"],
-                1,
-                1,
-                false,
-                ComponentType.SelectMenu
-            );
-
-            // Use LINQ to efficiently filter and map accounts
-            var options = BotUser.Accounts
-                .Take(20)
-                .Select(acc => new SelectMenuOptionBuilder(
-                    acc.Reminder,
-                    acc.GetHashCode().ToString(),
-                    acc.GetAccountService(),
-                    null,
-                    false
-                ))
-                .ToList();
-
-            selectMenu.WithOptions(options);
-
-            var components = new ComponentBuilder()
-                .WithSelectMenu(selectMenu)
-                .WithButton(CancelButton.GetButton(userLocale), 1)
-                .Build();
-
-            var embed = new EmbedBuilder()
+            var confirm = await ConfirmActionAsync();
+            if (confirm is false)
             {
-                Title = userLocale["account_selection"],
-                Description =
-                userLocale["account_selection_description"] + "\n**"+
-                userLocale["undo_action_description"] + "**\n" +
-                userLocale["menu_closes", DateTime.UtcNow.AddSeconds(30).UnixTimestampDiscordFormat()],
-                ThumbnailUrl = Context.Client.CurrentUser.TryGetAvatarUrl(),
-                Color = EmbedsHelper.ColorWaitingResopnse,
-            };
-            var message = await ModifyCurrentMessageAsync(Context.User.Mention, components: components, embed: embed.Build());
+                await CloseMenuAsync();
+                return;
+            }
 
-            var result = await Context.WaitForSelectMenuFromMessageAsync(message, TimeSpan.FromSeconds(30));
-            if (result is null || BotUser.GetAccountByHashCode(result.Data.Values.FirstOrDefault(), out UserAccount account) is null)
+            var account = await SelectUserAccountAsync();
+            if (account is null)
             {
-                await ModifyCurrentMessageAsync(
-                    embed: (userLocale["menu_closed_description"] + "\n\n" + advertisingService.GetInlineEmbedDescription())
-                           .ToEmbed(userLocale["menu_closed_title"],
-                           Context.Client.CurrentUser.TryGetAvatarUrl()
-                           ));
+                await CloseMenuAsync();
                 return;
             }
 
             BotUser.gameAccountId = account.Id;
+
             await this.dynastioBotDatabase.UpdateAsync(BotUser);
 
             var result1 = await rankingService.SynchronizeGameUser(BotGuild, BotUser);

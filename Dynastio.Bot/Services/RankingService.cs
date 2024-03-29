@@ -3,6 +3,7 @@ using Discord.Rest;
 using Discord.Webhook;
 using Dynastio.Bot.Database;
 using Dynastio.Bot.Extenstions;
+using Dynastio.Bot.Interactions.Modules.Buttons.dynastio;
 using Dynastio.Net;
 using Google.Apis.YouTube.v3.Data;
 using Microsoft.Extensions.DependencyInjection;
@@ -179,7 +180,11 @@ namespace Dynastio.Bot.Services
                 color: (user.IsAccountConnected & bGuild.RankingSettings.IsGameRewardEnabled) ? Color.Green : Color.Red);
 
 
-            await sourceChannel.SendMessageAsync(dUser.Mention, embed: embed).TryAsync();
+            await sourceChannel.SendMessageAsync(dUser.Mention, embed: embed,
+                components: user.IsAccountConnected ? null : new ComponentBuilder()
+                             .WithButton(ConnectAccountButton.GetButton(_global.GetOrDefault()))
+                             .Build()
+                             ).TryAsync();
 
 
             var result = await loggChannel.SendMessageAsync(dUser.Mention, embed: embed).TryAsync();

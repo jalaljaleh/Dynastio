@@ -1,5 +1,6 @@
 ﻿using Discord.WebSocket;
 using Dynastio.Bot.Database;
+using Dynastio.Bot.Globalization;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,13 +15,14 @@ namespace Dynastio.Bot
         public readonly IServiceProvider _services;
         public readonly DiscordSocketClient _discord;
         public readonly DynastioBotDatabase _db;
+        public readonly DynastioBotGlobalization _global;
 
         public ServicesBase(IServiceProvider services)
         {
             _services = services;
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _db = services.GetRequiredService<DynastioBotDatabase>();
-
+            _global = services.GetRequiredService<DynastioBotGlobalization>();
         }
     }
 }

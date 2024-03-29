@@ -69,9 +69,10 @@ namespace Dynastio.Bot.Events
         public async Task LeaveExtraGuildsAsync()
         {
             // remove extra guilds for unverified bots..
-            if (_discord.Guilds.Count > 75)
+
+            foreach (var removeG in _discord.Guilds.OrderBy(a => a.MemberCount))
             {
-                foreach (var removeG in _discord.Guilds.OrderBy(a => a.MemberCount))
+                if (_discord.Guilds.Count > 95)
                 {
                     var removebGuild = await _db.GetGuildAsync(removeG.Id);
                     if (removebGuild.HasSubscription() == false)

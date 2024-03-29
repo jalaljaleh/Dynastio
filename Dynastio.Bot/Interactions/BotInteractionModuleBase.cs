@@ -10,9 +10,12 @@ namespace Dynastio.Bot.Interactions
     using Discord;
     using Discord.Interactions;
     using Discord.WebSocket;
+    using Dynastio.Bot.Addons;
     using Dynastio.Bot.Database;
     using Dynastio.Bot.Extenstions;
     using Dynastio.Bot.Globalization;
+    using Dynastio.Bot.Helpers;
+    using Dynastio.Bot.Interactions.Modules.shared_buttons;
     using Dynastio.Bot.Services;
     using Microsoft.VisualBasic;
     using System.ComponentModel;
@@ -44,7 +47,7 @@ namespace Dynastio.Bot.Interactions
              };
         public async Task<bool> UpdateBotGuildAsync()
         {
-           return await this.dynastioBotDatabase.UpdateAsync(this.BotGuild);
+            return await this.dynastioBotDatabase.UpdateAsync(this.BotGuild);
         }
         public async Task<bool> UpdateBotUserAsync()
         {
@@ -82,6 +85,89 @@ namespace Dynastio.Bot.Interactions
                 x.Components = new ComponentBuilder().Build();
             });
             return CurrentMessage;
+        }
+        public async Task CloseMenuAsync()
+        {
+            await ModifyCurrentMessageAsync(
+             embed: (userLocale["menu_closed_description"] + "\n\n" + advertisingService.GetInlineEmbedDescription())
+                    .ToEmbed(userLocale["menu_closed_title"],
+                    Context.Client.CurrentUser.TryGetAvatarUrl()
+                    ));
+        }
+        public async Task<bool> ConfirmActionAsync()
+        {
+            var embed = new EmbedBuilder()
+            {
+                Title = "Confirmation",
+                Description = "Are you sure about executing the command, The action may not be undone.",
+                Color = Color.Orange
+            }.Build();
+
+            var component = new ComponentBuilder()
+                .WithButton("Confirm", DiscordInput.GenerateCustomId("confirm"), ButtonStyle.Success)
+                .WithButton("Cancel", DiscordInput.GenerateCustomId("cancel"), ButtonStyle.Danger)
+                .Build();
+
+            var message = await ModifyCurrentMessageAsync(embed: embed, components: component);
+            var interactionResult = await Context.WaitForButtonFromMessageAsync(message, TimeSpan.FromSeconds(60), true, true, true);
+
+            if (interactionResult == null || interactionResult.Data.CustomId != DiscordInput.GetCustomId("confirm"))
+                return false;
+
+            return true;
+        }
+
+        public async Task<UserAccount> SelectUserAccountAsync()
+        {
+
+            // Combine Defer and SelectMenu creation for efficiency
+            var selectMenu = new SelectMenuBuilder(
+                DiscordInput.GenerateCustomId("user.accounts"),
+                null,
+                Context.UserLocale["menu.profile.accounts.choose"],
+                1,
+                1,
+                false,
+                ComponentType.SelectMenu
+            );
+
+            // Use LINQ to efficiently filter and map accounts
+            var options = BotUser.Accounts
+                .Take(20)
+                .Select(acc => new SelectMenuOptionBuilder(
+                    acc.Reminder,
+                    acc.GetHashCode().ToString(),
+                    acc.GetAccountService(),
+                    null,
+                    false
+                ))
+                .ToList();
+
+            selectMenu.WithOptions(options);
+
+            var components = new ComponentBuilder()
+                .WithSelectMenu(selectMenu)
+                .WithButton(CancelButton.GetButton(userLocale), 1)
+                .Build();
+
+            var embed = new EmbedBuilder()
+            {
+                Title = userLocale["account_selection"],
+                Description =
+                userLocale["account_selection_description"] + "\n**" +
+                userLocale["undo_action_description"] + "**\n" +
+                userLocale["menu_closes", DateTime.UtcNow.AddSeconds(30).UnixTimestampDiscordFormat()],
+                ThumbnailUrl = Context.Client.CurrentUser.TryGetAvatarUrl(),
+                Color = EmbedsHelper.ColorWaitingResopnse,
+            };
+            var message = await ModifyCurrentMessageAsync(Context.User.Mention, components: components, embed: embed.Build());
+
+            var result = await Context.WaitForSelectMenuFromMessageAsync(message, TimeSpan.FromSeconds(30));
+            if (result is null || BotUser.GetAccountByHashCode(result.Data.Values.FirstOrDefault(), out UserAccount account) is null)
+            {
+                return null;
+            }
+            return account;
         }
     }
 
