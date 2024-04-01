@@ -31,7 +31,6 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
         {
             await DeferAsync();
 
-
             var subscription = BotGuild.Subscription;
             var subscriptionModule = new EmbedBuilder()
             {

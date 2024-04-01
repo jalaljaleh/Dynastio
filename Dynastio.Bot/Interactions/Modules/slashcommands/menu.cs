@@ -35,7 +35,6 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             await FollowupAsync(
                 text: Context.User.Mention + " " + contentAdvertises?.GetEmbedLink(),
                 components: GetComponent());
-
         }
 
 
@@ -54,8 +53,11 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 .WithButton(LeaderboardButton.GetButton(userLocale), 2)
 
                 .WithButton(VersionButton.GetButton(userLocale), 3)
-                .WithButton(BotUser.IsAccountConnected ? AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19) : ConnectAccountButton.GetButton(userLocale), 3)
-                ;
+                .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19), 3);
+
+            if (BotUser.IsAccountConnected is false)
+                cBuilder.WithButton(ConnectAccountButton.GetButton(userLocale));
+
 
             cBuilder.WithButton(CancelButton.GetButton(userLocale), 4);
 

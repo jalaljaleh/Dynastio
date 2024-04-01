@@ -84,10 +84,17 @@ namespace Dynastio.Bot.Services
             var updated = await UpdateUserAsync(user, isLevelUpPossible);
             return updated;
         }
-        public async Task SetUnqualifiedGuildAsync(Guild guild)
+        public async Task SetUnqualifiedGuildAsync(Guild guild, IGuild dguild)
         {
             guild.RankingSettings.IsEnabled = false;
             await _db.UpdateAsync(guild);
+
+            try
+            {
+                var owner = await dguild.GetOwnerAsync();
+                await owner.SendMessageAsync("Ranking module disbaled due to an error, enable it again.");
+            }
+            catch { }
         }
 
         public IEnumerable<IRole> GetGuildRankingRoles(IGuild guild, string rolePrefix)
@@ -128,7 +135,7 @@ namespace Dynastio.Bot.Services
             // role permission required
             if (result is false)
             {
-                await SetUnqualifiedGuildAsync(guild);
+                await SetUnqualifiedGuildAsync(guild, user.Guild);
                 return false;
             }
             return true;
@@ -139,7 +146,7 @@ namespace Dynastio.Bot.Services
             {
                 if (user.IsAccountConnected)
                 {
-                    await _dynastioApi.UpdateDiscordRank(user.gameAccountId, user.GuildProfiles.FirstOrDefault(a=>a.GuildId == guild.Id).Level);
+                    await _dynastioApi.UpdateDiscordRank(user.gameAccountId, user.GuildProfiles.FirstOrDefault(a => a.GuildId == guild.Id).Level);
                     return true;
                 }
                 return false;
@@ -154,7 +161,7 @@ namespace Dynastio.Bot.Services
                 loggChannel = await dGuild.GetTextChannelAsync(bGuild.RankingSettings.LogChannelId);
                 if (loggChannel is null)
                 {
-                    await SetUnqualifiedGuildAsync(bGuild);
+                    await SetUnqualifiedGuildAsync(bGuild, dGuild);
                     return false;
                 }
             }
@@ -180,17 +187,18 @@ namespace Dynastio.Bot.Services
                 color: (user.IsAccountConnected & bGuild.RankingSettings.IsGameRewardEnabled) ? Color.Green : Color.Red);
 
 
-            await sourceChannel.SendMessageAsync(dUser.Mention, embed: embed,
-                components: user.IsAccountConnected ? null : new ComponentBuilder()
-                             .WithButton(ConnectAccountButton.GetButton(_global.GetOrDefault()))
-                             .Build()
-                             ).TryAsync();
+            var message = await sourceChannel.SendMessageAsync(dUser.Mention, embed: embed,
+                 components: user.IsAccountConnected ? null : new ComponentBuilder()
+                              .WithButton(ConnectAccountButton.GetButton(_global.GetOrDefault()))
+                              .Build()
+                              ).TryAsync();
 
+            await Task.Delay(100);
 
-            var result = await loggChannel.SendMessageAsync(dUser.Mention, embed: embed).TryAsync();
+            var result = await loggChannel.SendMessageAsync(dUser.Mention + " " + message.result.GetJumpUrl(), embed: embed).TryAsync();
 
             if (result.isSuccesful is false)
-                await SetUnqualifiedGuildAsync(bGuild);
+                await SetUnqualifiedGuildAsync(bGuild, dGuild);
 
             return result.isSuccesful;
         }

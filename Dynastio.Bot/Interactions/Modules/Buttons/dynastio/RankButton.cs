@@ -66,7 +66,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
                 await ModifyCurrentMessageAsync(embed: userLocale["embed.rank.error.guild_ranking_disabled.description"].ToInformEmbed(userLocale["embed.rank.error.guild_ranking_disabled.title"], BotAvatarUrl))
                     .TryAsync();
 
-                await rankingService.SetUnqualifiedGuildAsync(Context.BotGuild);
+                await rankingService.SetUnqualifiedGuildAsync(Context.BotGuild,Context.Guild);
                 return;
             }
 

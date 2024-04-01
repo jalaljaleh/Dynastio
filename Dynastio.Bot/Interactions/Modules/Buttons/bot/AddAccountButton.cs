@@ -28,7 +28,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
             return new ButtonBuilder()
             {
                 Label = locale["btn.dynastio.accounts.add.label"],
-                Style = ButtonStyle.Success,
+                Style = ButtonStyle.Primary,
                 Emote = Emoji,
                 IsDisabled = IsDisabled,
                 Url = null,
