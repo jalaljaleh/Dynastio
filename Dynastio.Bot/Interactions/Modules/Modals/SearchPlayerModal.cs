@@ -39,7 +39,7 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
             if (int.TryParse(modal.PlayerScore, out var score))
                 players = players.Where(a => a.Score == score).ToList();
 
-            players = players.OrderByDescending(a => a.Score).ToList();
+            players = players.OrderByDescending(a => a.Score).Take(20).ToList();
 
             var content = players.ToStringTable(new[] { "#", Context.UserLocale["server"], Context.UserLocale["score"], Context.UserLocale["level"], Context.UserLocale["team"], Context.UserLocale["nickname"] },
                                    a => players.IndexOf(a),
@@ -63,7 +63,7 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
                 $"-c {dynastio.OnlinePlayers.Count} players, {players.Count} result, {dynastio.OnlineServers.Count} servers" +
                 $"").ToMarkdown();
 
-            await ModifyCurrentMessageAsync(embed: content.ToEmbed(userLocale["modal.dynastio.searchplayer.title", players.Count]));
+            await ModifyCurrentMessageAsync(userMention + " " + userLocale["modal.dynastio.searchplayer.title", players.Count] + "\n" + content);
         }
 
     }

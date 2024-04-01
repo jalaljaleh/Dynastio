@@ -21,7 +21,7 @@ using Dynastio.Bot.Interactions.Modules.shared_buttons;
 using Dynastio.Bot.Interactions.Modules.buttons;
 using System.Threading;
 
-namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
+namespace Dynastio.Bot.Interactions.Modules.Buttons.bot
 {
     public class ConnectAccountButton : BotInteractionModuleBase
     {
@@ -53,7 +53,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
             {
                 await InteractionService.ComponentCommands
                      .FirstOrDefault(a => a.Name == AddAccountButton.CustomId)
-                     .ExecuteAsync(this.Context, services);
+                     .ExecuteAsync(Context, services);
 
                 return;
             }
@@ -82,7 +82,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
 
             BotUser.gameAccountId = account.Id;
 
-            await this.dynastioBotDatabase.UpdateAsync(BotUser);
+            await dynastioBotDatabase.UpdateAsync(BotUser);
 
             var result1 = await rankingService.SynchronizeGameUser(BotGuild, BotUser);
 

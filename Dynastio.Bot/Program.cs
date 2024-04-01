@@ -18,6 +18,8 @@ namespace Dynastio.Bot
     {
         public static void Main(string[] arg)
         {
+
+
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
                 Formatting = Newtonsoft.Json.Formatting.Indented,

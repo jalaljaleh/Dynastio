@@ -54,7 +54,7 @@ namespace Dynastio.Bot.Addons
                     cell = cell.PadRight(maxColumnsWidth[colIndex]);
 
                     sb.Append(cell);
-                    sb.Append(" ‌");
+                    sb.Append(" ");
                 }
 
                 // Print end of line

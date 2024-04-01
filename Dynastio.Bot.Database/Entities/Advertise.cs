@@ -30,6 +30,9 @@ namespace Dynastio.Bot.Database
         {
             return $" [{Label}]({Url}) ";
         }
-
+        public bool HasEmoji()
+        {
+            return !string.IsNullOrEmpty(this.Emoji);
+        }
     }
 }

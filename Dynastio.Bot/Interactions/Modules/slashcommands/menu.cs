@@ -3,6 +3,7 @@ using Discord;
 using Discord.Interactions;
 using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Modules.buttons;
+using Dynastio.Bot.Interactions.Modules.Buttons.bot;
 using Dynastio.Bot.Interactions.Modules.Buttons.dynastio;
 using Dynastio.Bot.Interactions.Modules.shared_buttons;
 using Dynastio.Bot.Interactions.Precondinations;
@@ -40,7 +41,20 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
         private MessageComponent GetComponent()
         {
-            var cBuilder = new ComponentBuilder()
+
+            var cBuilder = new ComponentBuilder();
+
+            if (BotUser.IsAccountConnected is false)
+            {
+
+            }
+            else
+                cBuilder.WithButton(ConnectAccountButton.GetButton(userLocale), 3);
+
+
+
+
+            cBuilder
                 .WithButton(PlayersButton.GetButton(userLocale, dynastio.OnlinePlayers.Count), 0)
                 .WithButton(TeamsButton.GetButton(userLocale, dynastio.OnlinePlayers.GroupBy(a => a.Team).Count()), 0)
                 .WithButton(PrivateServersButton.GetButton(userLocale, dynastio.OnlineServers.Where(a => a.IsPrivate).Count()), 0)
@@ -56,24 +70,12 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
                 .WithButton(VersionButton.GetButton(userLocale), 3)
                 .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19), 3);
-            if (BotUser.IsAccountConnected is false)
-                cBuilder.WithButton(ConnectAccountButton.GetButton(userLocale),3);
-
 
 
             cBuilder.WithButton(CancelButton.GetButton(userLocale), 4);
 
 
-            var advertises = advertisingService.ExploitationAdvertising(Database.AdsType.Buttons, 4);
-            foreach (var ad in advertises)
-                cBuilder.WithButton(
-                    ad.Label,
-                    null,
-                    ButtonStyle.Link,
-                    string.IsNullOrEmpty(ad.Emoji) ? null : new Emoji(ad.Emoji),
-                    ad.Url,
-                    false,
-                    4);
+            cBuilder = advertisingService.ExploitationAdvertisingButtons(cBuilder, 4);
 
 
             return cBuilder.Build();

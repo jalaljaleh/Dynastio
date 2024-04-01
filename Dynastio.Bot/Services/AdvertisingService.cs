@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Dynastio.Bot.Database;
+using Dynastio.Bot.Extenstions;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using System;
@@ -52,6 +53,15 @@ namespace Dynastio.Bot.Services
         {
             return _remainedAdvertising;
         }
+        public ComponentBuilder ExploitationAdvertisingButtons(ComponentBuilder cBuilder,int row = 0, int count= 4)
+        {
+            var advertises = ExploitationAdvertising(Database.AdsType.Buttons, count);
+            advertises.ForEach(
+                a => 
+                cBuilder.WithButton(a.ToButtonBuilder(), row)
+            );
+            return cBuilder;
+        }
         public List<Advertise> ExploitationAdvertising(AdsType type, int take)
         {
             var res = _remainedAdvertising.Where(a => a.Type == type).OrderBy(a => a.DisplayCount).Take(take);
@@ -84,5 +94,7 @@ namespace Dynastio.Bot.Services
             string text = string.Join(" ‌ ‌ ‌ ‌", embedBottomAdvertises?.Select(a => a.GetEmbedLink()));
             return " " + text + " ";
         }
+
+
     }
 }

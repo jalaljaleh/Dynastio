@@ -47,7 +47,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
 
             // var server = "";
             int page = 0;
-            int take = 30;
+            int take = 20;
             ToplistSortType sort = ToplistSortType.Score;
 
             var interaction = Context.Interaction as SocketMessageComponent;
@@ -86,7 +86,10 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
                 .ToMarkdown() + "\n" +
                     advertisingService.GetInlineEmbedDescription();
 
-            await ModifyCurrentMessageAsync(embed: content.ToEmbed(userLocale["btn.dynastio.players.label", players1.Count]));
+            await ModifyCurrentMessageAsync(
+                userMention + " " +
+                userLocale["btn.dynastio.players.label", players1.Count] +"\n" +
+                content);
         }
 
     }
