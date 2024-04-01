@@ -48,8 +48,7 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
                                    a => a.Level.Metric(),
                                    a => a.Team.RemoveLines().TryRemove(6),
                                    a => a.Nickname.RemoveLines().TryRemove(12))
-                   .ToMarkdown() + "\n" +
-                    advertisingService.GetInlineEmbedDescription();
+                   .ToMarkdown() + "\n";
 
             content +=
                 (
@@ -63,7 +62,9 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
                 $"-c {dynastio.OnlinePlayers.Count} players, {players.Count} result, {dynastio.OnlineServers.Count} servers" +
                 $"").ToMarkdown();
 
-            await ModifyCurrentMessageAsync(userMention + " " + userLocale["modal.dynastio.searchplayer.title", players.Count] + "\n" + content);
+            await ModifyCurrentMessageAsync(
+                text: userMention + " " + userLocale["modal.dynastio.searchplayer.title", players.Count] + "\n" + content,
+                embed: advertisingService.GetInlineEmbedDescription().ToEmbed(thumbnailUrl: BotAvatarUrl));
         }
 
     }

@@ -35,21 +35,21 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
             await FollowupAsync(
                 text: GetContent(result),
-                embed: GetEmbedBuilder(result).Build(),
+                embed: GetEmbedBuilder(result),
                 components: component.Build());
         }
-        public EmbedBuilder GetEmbedBuilder(bool componentResult)
+        public Embed GetEmbedBuilder(bool componentResult)
         {
-            if (componentResult) return null;
+            if (componentResult is false)
+                return new EmbedBuilder()
+                {
+                    Title = "Prerequisite Required",
+                    Description = "A prerequisite is required. After removing the prerequisite, you can use this command.",
+                    ThumbnailUrl = BotAvatarUrl,
+                }.Build();
 
-            return new EmbedBuilder()
-            {
-                Title = "Prerequisite Required",
-                Description = "A prerequisite is required. After removing the prerequisite, you can use this command.",
-                ThumbnailUrl = BotAvatarUrl,
-            };
+            return null;
         }
-
 
         public string GetContent(bool componentResult)
         {
