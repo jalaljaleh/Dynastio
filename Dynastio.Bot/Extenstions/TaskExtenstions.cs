@@ -17,7 +17,6 @@ namespace Dynastio.Bot.Extenstions
             }
             catch
             {
-                await task;
                 return false;
             }
         }

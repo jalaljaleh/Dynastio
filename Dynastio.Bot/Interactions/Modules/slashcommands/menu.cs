@@ -46,17 +46,19 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 .WithButton(PrivateServersButton.GetButton(userLocale, dynastio.OnlineServers.Where(a => a.IsPrivate).Count()), 0)
                 .WithButton(PlayersSearchButton.GetButton(userLocale), 0)
 
+
                 .WithButton(ProfileButton.GetButton(userLocale, BotUser.Accounts.Any()), 1)
                 .WithButton(RankButton.GetButton(userLocale), 1)
 
 
                 .WithButton(LeaderboardButton.GetButton(userLocale), 2)
 
+
                 .WithButton(VersionButton.GetButton(userLocale), 3)
                 .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19), 3);
-
             if (BotUser.IsAccountConnected is false)
-                cBuilder.WithButton(ConnectAccountButton.GetButton(userLocale));
+                cBuilder.WithButton(ConnectAccountButton.GetButton(userLocale),3);
+
 
 
             cBuilder.WithButton(CancelButton.GetButton(userLocale), 4);
