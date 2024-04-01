@@ -50,7 +50,7 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
                                    a => a.Nickname.RemoveLines().TryRemove(12))
                    .ToMarkdown() + "\n";
 
-            content +=
+            string details =
                 (
                 $"\n" +
                 $"-{Context.UserLocale["nickname"]}: {modal.PlayerNickname}" +
@@ -60,11 +60,11 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
                 $" -{Context.UserLocale["team"]}: {modal.Team}" +
                 $"\n" +
                 $"-c {dynastio.OnlinePlayers.Count} players, {players.Count} result, {dynastio.OnlineServers.Count} servers" +
-                $"").ToMarkdown();
+                $"").ToMarkdown() + "\n" + advertisingService.GetInlineEmbedDescription();
 
             await ModifyCurrentMessageAsync(
                 text: userMention + " " + userLocale["modal.dynastio.searchplayer.title", players.Count] + "\n" + content,
-                embed: advertisingService.GetInlineEmbedDescription().ToEmbed(thumbnailUrl: BotAvatarUrl));
+                embed: details.ToEmbed(thumbnailUrl: BotAvatarUrl));
         }
 
     }

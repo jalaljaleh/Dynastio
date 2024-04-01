@@ -85,12 +85,17 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
                                     a => a.Nickname.RemoveLines().TryRemove(12))
                 .ToMarkdown() + "\n";
 
+            string details =
+                $"" +
+                $"online players {dynastio.OnlinePlayers.Count} | Sort: {sort}\n" +
+                $"" + advertisingService.GetInlineEmbedDescription();
+
             await ModifyCurrentMessageAsync(
                 userMention + " " +
-                userLocale["btn.dynastio.players.label", players1.Count] +"\n" +
+                userLocale["btn.dynastio.players.label", players1.Count] + "\n" +
                 content,
-                
-                embed: advertisingService.GetInlineEmbedDescription().ToEmbed(thumbnailUrl: BotAvatarUrl));
+
+                embed: details.ToEmbed(thumbnailUrl: BotAvatarUrl));
         }
 
     }
