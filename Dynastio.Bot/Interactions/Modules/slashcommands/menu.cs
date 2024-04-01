@@ -31,28 +31,49 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
         {
             await DeferAsync();
 
-            var contentAdvertises = advertisingService.ExploitationAdvertising(Database.AdsType.EmbedMessageContent, 1).FirstOrDefault();
+            var result = TryGetComponents(out ComponentBuilder component);
 
             await FollowupAsync(
-                text: Context.User.Mention + " " + contentAdvertises?.GetEmbedLink(),
-                components: GetComponent());
+                text: GetContent(result),
+                embed: GetEmbedBuilder(result).Build(),
+                components: component.Build());
+        }
+        public EmbedBuilder GetEmbedBuilder(bool componentResult)
+        {
+            if (componentResult) return null;
+
+            return new EmbedBuilder()
+            {
+                Title = "Prerequisite Required",
+                Description = "A prerequisite is required. After removing the prerequisite, you can use this command.",
+                ThumbnailUrl = BotAvatarUrl,
+            };
         }
 
 
-        private MessageComponent GetComponent()
+        public string GetContent(bool componentResult)
         {
+            if (componentResult is false)
+            {
+                return userMention;
+            }
 
-            var cBuilder = new ComponentBuilder();
+            var contentAdvertises = advertisingService.ExploitationAdvertising(Database.AdsType.EmbedMessageContent, 1).FirstOrDefault();
+            return Context.User.Mention + " | " + contentAdvertises?.GetEmbedLink();
+        }
+        private bool TryGetComponents(out ComponentBuilder component)
+        {
+            component = new ComponentBuilder();
 
             if (BotUser.IsAccountConnected is false)
             {
-                cBuilder.WithButton(ConnectAccountButton.GetButton(userLocale), 3);
-                cBuilder.WithButton(CancelButton.GetButton(userLocale), 4);
+                component.WithButton(ConnectAccountButton.GetButton(userLocale), 0);
+                component.WithButton(CancelButton.GetButton(userLocale), 0);
 
-                return cBuilder.Build();
+                return false;
             }
 
-            cBuilder
+            component
                 .WithButton(PlayersButton.GetButton(userLocale, dynastio.OnlinePlayers.Count), 0)
                 .WithButton(TeamsButton.GetButton(userLocale, dynastio.OnlinePlayers.GroupBy(a => a.Team).Count()), 0)
                 .WithButton(PrivateServersButton.GetButton(userLocale, dynastio.OnlineServers.Where(a => a.IsPrivate).Count()), 0)
@@ -68,11 +89,11 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 .WithButton(VersionButton.GetButton(userLocale), 3)
                 .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19), 3);
 
-            cBuilder.WithButton(CancelButton.GetButton(userLocale), 4);
+            component.WithButton(CancelButton.GetButton(userLocale), 4);
 
-            cBuilder = advertisingService.ExploitationAdvertisingButtons(cBuilder, 4);
+            component = advertisingService.ExploitationAdvertisingButtons(component, 4);
 
-            return cBuilder.Build();
+            return true;
         }
 
     }
