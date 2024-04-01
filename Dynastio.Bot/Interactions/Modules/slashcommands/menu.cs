@@ -46,13 +46,11 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
             if (BotUser.IsAccountConnected is false)
             {
-
-            }
-            else
                 cBuilder.WithButton(ConnectAccountButton.GetButton(userLocale), 3);
+                cBuilder.WithButton(CancelButton.GetButton(userLocale), 4);
 
-
-
+                return cBuilder.Build();
+            }
 
             cBuilder
                 .WithButton(PlayersButton.GetButton(userLocale, dynastio.OnlinePlayers.Count), 0)
@@ -67,16 +65,12 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
                 .WithButton(LeaderboardButton.GetButton(userLocale), 2)
 
-
                 .WithButton(VersionButton.GetButton(userLocale), 3)
                 .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19), 3);
 
-
             cBuilder.WithButton(CancelButton.GetButton(userLocale), 4);
 
-
             cBuilder = advertisingService.ExploitationAdvertisingButtons(cBuilder, 4);
-
 
             return cBuilder.Build();
         }
