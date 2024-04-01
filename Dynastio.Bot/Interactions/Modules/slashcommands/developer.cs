@@ -44,30 +44,30 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
         public class GuildModule : BotInteractionModuleBase
         {
 
-                public EventsHandler eventsHandler { get; set; }
+            public EventsHandler eventsHandler { get; set; }
 
-                [SlashCommand("partner-roles-set", "set ")]
-                public async Task set(IRole role)
-                {
-                    await DeferAsync(true);
+            [SlashCommand("partner-roles-set", "set ")]
+            public async Task set(IRole role)
+            {
+                await DeferAsync(true);
 
-                    this.BotGuild.PartnersRoleId = role.Id;
+                this.BotGuild.PartnersRoleId = role.Id;
 
-                    await UpdateBotGuildAsync();
+                await UpdateBotGuildAsync();
 
-                    await FollowupAsync(embed: "Done.".ToEmbed("Successful Operator"));
-                }
+                await FollowupAsync(embed: "Done.".ToEmbed("Successful Operator"));
+            }
 
-                [SlashCommand("roles-sync", "sync ")]
-                public async Task sync()
-                {
-                    await DeferAsync(true);
+            [SlashCommand("roles-sync", "sync ")]
+            public async Task sync()
+            {
+                await DeferAsync(true);
 
-                    await eventsHandler._ready_event.SyncGuildPartnerRoles();
+                await eventsHandler._ready_event.SyncGuildPartnerRoles();
 
-                    await FollowupAsync(embed: "Done .".ToEmbed("Successful Operator"));
-                }
-            
+                await FollowupAsync(embed: "Done .".ToEmbed("Successful Operator"));
+            }
+
         }
 
 
@@ -97,13 +97,14 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 if (user is not null)
                     ads = ads.Where(a => a.User == user.Id).ToList();
 
-                var content = ads.ToStringTable(new string[] { "Id", "Count", "Type", "StartedAt", "UserId" },
+                var content = ads.ToStringTable(new string[] { "Id", "Count", "Type", "StartedAt", "UserId", "Label" },
 
                     a => a.Id.ToString(),
                     a => a.DisplayCount + "/" + a.Count,
                     a => (int)a.Type,
                     a => a.StartedAt.ToString("d"),
-                    a => a.User);
+                    a => a.User,
+                    a => a.Label);
 
                 await FollowupAsync(
                     text: Context.User.Mention + "\n" + content.ToMarkdown());

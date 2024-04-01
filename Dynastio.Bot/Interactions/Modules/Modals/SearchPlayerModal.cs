@@ -60,7 +60,8 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
                 $" -{Context.UserLocale["team"]}: {modal.Team}" +
                 $"\n" +
                 $"-c {dynastio.OnlinePlayers.Count} players, {players.Count} result, {dynastio.OnlineServers.Count} servers" +
-                $"").ToMarkdown() + "\n" + advertisingService.GetInlineEmbedDescription();
+                $"").ToMarkdown() + 
+                "\n\n" + advertisingService.GetInlineEmbedDescription();
 
             await ModifyCurrentMessageAsync(
                 text: userMention + " " + userLocale["modal.dynastio.searchplayer.title", players.Count] + "\n" + content,

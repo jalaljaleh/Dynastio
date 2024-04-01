@@ -44,7 +44,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 return new EmbedBuilder()
                 {
                     Title = "Prerequisite Required",
-                    Description = "A prerequisite is required. After removing the prerequisite, you can use this command.",
+                    Description = "A prerequisite is required. After solving the prerequisite, you can use this command.",
                     ThumbnailUrl = BotAvatarUrl,
                 }.Build();
 

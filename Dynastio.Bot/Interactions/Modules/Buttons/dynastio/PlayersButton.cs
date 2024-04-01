@@ -87,8 +87,8 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
 
             string details =
                 $"" +
-                $"online players {dynastio.OnlinePlayers.Count} | Sort: {sort}\n" +
-                $"" + advertisingService.GetInlineEmbedDescription();
+                $"Online Servers {dynastio.OnlineServers.Count} | Players: {dynastio.OnlinePlayers.Count} | Sort {sort}\n" +
+                $"\n\n" + advertisingService.GetInlineEmbedDescription();
 
             await ModifyCurrentMessageAsync(
                 userMention + " " +
