@@ -20,6 +20,8 @@ namespace Dynastio.Bot.Entities
             if (Main.IsDebug())
                 return LoadDebugConfiguration();
 
+           
+
             var value = File.ReadAllText(PathHelper.GetData());
             var clearValue = Encryption.Decrypt(value, Environment.GetEnvironmentVariable("config-key"));
             var config = JsonConvert.DeserializeObject<AppConfiguration>(clearValue);

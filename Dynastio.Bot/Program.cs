@@ -46,7 +46,6 @@ namespace Dynastio.Bot
             Global.Main.Log("Main Async", "Started");
 
             AppConfiguration configuration = AppConfiguration.LoadConfiguration();
-
             var services = new ServiceCollection();
             services
            .AddSingleton(configuration)
