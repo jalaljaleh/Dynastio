@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Dynastio.Bot.Events;
 using Dynastio.Bot.Handlers;
 using Newtonsoft.Json;
 
@@ -29,7 +30,8 @@ namespace Dynastio.Bot.Logs
             };
 
             MessagesHandler msgHandler = new MessagesHandler(client, 1120683501256188005);
-            
+            EventsHandler eventHandler = new EventsHandler(client);
+
             await client.LoginAsync(TokenType.Bot, token);
             await client.StartAsync();
 
