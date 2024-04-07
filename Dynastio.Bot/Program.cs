@@ -48,38 +48,39 @@ namespace Dynastio.Bot
             AppConfiguration configuration = AppConfiguration.LoadConfiguration();
 
             var services = new ServiceCollection();
-                services
-               .AddSingleton(configuration)
+            services
+           .AddSingleton(configuration)
 
-               .AddSingleton<DynastioApi>(x => new DynastioApi(configuration.Tokens["dynastio-api"]))
-               .AddSingleton<DynastioBotDatabase>()
-               .AddSingleton<DynastioGraphic>()
-               .AddSingleton<DynastioBotGlobalization>()
+           .AddSingleton<DynastioApi>(x => new DynastioApi(configuration.Tokens["dynastio-api"]))
+           .AddSingleton<DynastioBotDatabase>()
+           .AddSingleton<DynastioGraphic>()
+           .AddSingleton<DynastioBotGlobalization>()
 
-               .AddSingleton<UserService>()
+           .AddSingleton<UserService>()
 
-               .AddSingleton<RankingService>()
+           .AddSingleton<RankingService>()
 
-               .AddSingleton<InteractionsHandler>()
-               .AddSingleton<InteractionService>()
-               .AddSingleton<EventsHandler>()
-               .AddSingleton<MessagesHandler>()
-               
-               .AddSingleton<RepeaterService>()
-               .AddSingleton<AdvertisingService>()
+           .AddSingleton<InteractionsHandler>()
+           .AddSingleton<InteractionService>()
+           .AddSingleton<EventsHandler>()
+           .AddSingleton<MessagesHandler>()
 
-               .AddSingleton<DiscordSocketClient>(x => new DiscordSocketClient(new()
-               {
-                   GatewayIntents = GatewayIntents.All,
-                   AlwaysDownloadUsers = true,
+           .AddSingleton<RepeaterService>()
+           .AddSingleton<AdvertisingService>()
 
-                   MessageCacheSize = 1024,
-                   AlwaysDownloadDefaultStickers = false,
-                   DefaultRetryMode = RetryMode.AlwaysRetry,
+           .AddSingleton<DiscordSocketClient>(x => new DiscordSocketClient(new()
+           {
+               GatewayIntents = GatewayIntents.All,
+               AlwaysDownloadUsers = true,
 
-                   UseSystemClock = false,
-                   UseInteractionSnowflakeDate = false,
-               }));
+               MessageCacheSize = 1024,
+               AlwaysDownloadDefaultStickers = false,
+               DefaultRetryMode = RetryMode.AlwaysRetry,
+
+               UseSystemClock = false,
+               UseInteractionSnowflakeDate = false,
+           }));
+
 
             await RunAsync(services.BuildServiceProvider());
         }
@@ -116,6 +117,12 @@ namespace Dynastio.Bot
 
             await client.LoginAsync(TokenType.Bot, configuration.Tokens["discord-bot"]);
             await client.StartAsync();
+
+            if (Global.Main.IsDebug() is false)
+            {
+                Logs.LoggerBot loggerbot = new Logs.LoggerBot();
+                await loggerbot.RunAsync(configuration.Tokens["logger-bot"]);
+            }
 
             await Task.Delay(Timeout.Infinite);
         }

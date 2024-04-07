@@ -2,7 +2,8 @@
   "Tokens": {
     "discord-bot": "",
     "dynastio-api": "",
-    "connectionstring-mongodb": ""
+    "connectionstring-mongodb": "",
+    "logger-bot": ""
   },
 
   "DebugServerId": 0

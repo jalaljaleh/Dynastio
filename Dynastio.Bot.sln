@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynastio.Bot.Database", "Dy
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "@Dynastio.Test", "Dynastio.Test\@Dynastio.Test.csproj", "{F1CAABAB-E237-4E1A-A202-8320E4C402B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynastio.Extenstions", "Dynastio.Extenstions\Dynastio.Extenstions.csproj", "{F00EE665-19A6-4CFA-A66F-0596D0B13E33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynastio.Extenstions", "Dynastio.Extenstions\Dynastio.Extenstions.csproj", "{F00EE665-19A6-4CFA-A66F-0596D0B13E33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynastio.Bot.Logs", "Dynastio.Bot.Logs\Dynastio.Bot.Logs.csproj", "{C0BE3CB8-00F2-486A-9988-EE45A1C47F91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{F00EE665-19A6-4CFA-A66F-0596D0B13E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F00EE665-19A6-4CFA-A66F-0596D0B13E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F00EE665-19A6-4CFA-A66F-0596D0B13E33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0BE3CB8-00F2-486A-9988-EE45A1C47F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0BE3CB8-00F2-486A-9988-EE45A1C47F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0BE3CB8-00F2-486A-9988-EE45A1C47F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0BE3CB8-00F2-486A-9988-EE45A1C47F91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

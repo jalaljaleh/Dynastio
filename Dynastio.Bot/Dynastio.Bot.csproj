@@ -27,6 +27,7 @@
 	  <ProjectReference Include="..\Dynastio.Bot.Database\Dynastio.Bot.Database.csproj" />	  
        <ProjectReference Include="..\Dynastio.Bot.Globalization\Dynastio.Bot.Globalization.csproj" />
        <ProjectReference Include="..\Dynastio.Bot.Global\Dynastio.Bot.Global.csproj" />
+       <ProjectReference Include="..\Dynastio.Bot.Logs\Dynastio.Bot.Logs.csproj" />
        <ProjectReference Include="..\Dynastio.Extenstions\Dynastio.Extenstions.csproj" />
        <ProjectReference Include="..\Dynastio.Graphic\Dynastio.Graphic.csproj" />
  

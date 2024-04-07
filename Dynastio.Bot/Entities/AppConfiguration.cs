@@ -19,7 +19,6 @@ namespace Dynastio.Bot.Entities
         {
             if (Main.IsDebug())
                 return LoadDebugConfiguration();
-          //  Environment.SetEnvironmentVariable("config-key", "");
 
             var value = File.ReadAllText(PathHelper.GetData());
             var clearValue = Encryption.Decrypt(value, Environment.GetEnvironmentVariable("config-key"));
@@ -28,17 +27,13 @@ namespace Dynastio.Bot.Entities
             return config ?? throw new Exception("null config");
         }
 
-
-        public static AppConfiguration LoadDebugConfiguration()
+        public static AppConfiguration LoadConfiguration(string path)
         {
-            var value = File.ReadAllText(PathHelper.GetDebugFile());
+            var value = File.ReadAllText(path);
             var config = JsonConvert.DeserializeObject<AppConfiguration>(value);
-        //    WriteEncryptedConfiguration(config);
-
-
-           return config ?? throw new Exception("null config");
+            return config ?? throw new Exception("null config");
         }
-
+        public static AppConfiguration LoadDebugConfiguration() => LoadConfiguration(PathHelper.GetDebugFile());
         
 
         public static void WriteEncryptedConfiguration(AppConfiguration config)
