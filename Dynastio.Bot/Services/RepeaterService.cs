@@ -18,6 +18,22 @@ namespace Dynastio.Bot.Services
             _services = services;
             actionTimers = new();
         }
+        public static void RepeatAction(Action action, int repeatCount, TimeSpan delay)
+        {
+            for (int i = 0; i < repeatCount; i++)
+            {
+                action();
+                Task.Delay(delay).GetAwaiter().GetResult();
+            }
+        }
+        public static async Task RepeatActionAsync(Func<Task> action, int repeatCount, TimeSpan delay)
+        {
+            for (int i = 0; i < repeatCount; i++)
+            {
+                await action.Invoke();
+                await Task.Delay(delay);
+            }
+        }
         public void AddAction(Func<Task> action, TimeSpan interval, TimeSpan dueTime = default)
         {
             var timer = new Timer(_ =>

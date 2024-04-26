@@ -5,9 +5,10 @@ namespace Dynastio.Bot.Database
 {
     public enum AdsType
     {
-        EmbedMessageContent = 0,
+        MessageContent = 0,
         InlineEmbedDescription,
-        Buttons
+        Buttons,
+        UserDirectMessageContent
     }
     public class Advertise
     {

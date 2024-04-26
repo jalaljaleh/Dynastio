@@ -45,7 +45,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
 
             if (arg == "select")
             {
-                var contentAdvertises = advertisingService.ExploitationAdvertising(Database.AdsType.EmbedMessageContent, 1).FirstOrDefault();
+                var contentAdvertises = advertisingService.ExploitationAdvertising(Database.AdsType.MessageContent, 1).FirstOrDefault();
 
                 var cb = new ComponentBuilder()
                     .WithButton("Daily", CustomId.Replace("*", "0"), ButtonStyle.Success, new Emoji("👑"), null, false, 0)

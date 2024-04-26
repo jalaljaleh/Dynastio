@@ -58,7 +58,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 return userMention;
             }
 
-            var contentAdvertises = advertisingService.ExploitationAdvertising(Database.AdsType.EmbedMessageContent, 1).FirstOrDefault();
+            var contentAdvertises = advertisingService.ExploitationAdvertising(Database.AdsType.MessageContent, 1).FirstOrDefault();
             return Context.User.Mention + " | " + contentAdvertises?.GetEmbedLink();
         }
         private bool TryGetComponents(out ComponentBuilder component)

@@ -1,5 +1,8 @@
 ﻿using Discord.Interactions;
+using Discord.WebSocket;
 using Dynastio.Bot.Addons;
+using Dynastio.Bot.Database;
+using Dynastio.Bot.Entities;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Global;
 using Dynastio.Bot.Interactions;
@@ -14,12 +17,19 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Handlers
 {
-    internal class InteractionsHandler : HandlersBase
+    internal class InteractionsHandler
     {
         private readonly InteractionService _interactions;
-
-        public InteractionsHandler(IServiceProvider services) : base(services)
+        public readonly DiscordSocketClient _discord;
+        public readonly DynastioBotDatabase _db;
+        public readonly AppConfiguration _config;
+        private readonly IServiceProvider _services;
+        public InteractionsHandler(IServiceProvider services)
         {
+            _services = services;
+            _discord = services.GetRequiredService<DiscordSocketClient>();
+            _db = services.GetRequiredService<DynastioBotDatabase>();
+            _config = services.GetRequiredService<AppConfiguration>();
             _interactions = services.GetRequiredService<InteractionService>();
         }
         public async Task InitializeAsync()

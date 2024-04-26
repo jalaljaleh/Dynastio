@@ -4,15 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
+using Dynastio.Bot.Database;
+using Dynastio.Bot.Entities;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Handlers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Dynastio.Bot.Events
 {
-    public class guilds_join_guild : HandlersBase
+    public class guilds_join_guild
     {
-        public guilds_join_guild(IServiceProvider services) : base(services)
+        private readonly DynastioBotDatabase _db;
+        private readonly AppConfiguration _config;
+        private readonly DiscordSocketClient _discord;
+        private readonly IServiceProvider _services;
+        public guilds_join_guild(IServiceProvider services)
         {
+            _services = services;
+            _db = services.GetRequiredService<DynastioBotDatabase>();
+            _config = services.GetRequiredService<AppConfiguration>();
+            _discord = services.GetRequiredService<DiscordSocketClient>();
+
             _discord.JoinedGuild += _discord_JoinedGuild;
         }
 

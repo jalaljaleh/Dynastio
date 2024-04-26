@@ -5,7 +5,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Dynastio.Bot.Database;
+using Dynastio.Bot.Entities;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Handlers;
 using Dynastio.Bot.Services;
@@ -15,13 +17,23 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Dynastio.Bot.Events
 {
-    public class ready_event : HandlersBase
+    public class ready_event 
     {
         private readonly RepeaterService _repeaterService;
-        public ready_event(IServiceProvider services) : base(services)
+        private readonly DynastioBotDatabase _db;
+        private readonly AppConfiguration _config;
+        private readonly DiscordSocketClient _discord;
+        private readonly IServiceProvider _services;
+
+        public ready_event(IServiceProvider services) 
         {
-            _discord.Ready += _discord_Ready;
+            _services = services;
+            _db = services.GetRequiredService<DynastioBotDatabase>();
+            _config = services.GetRequiredService<AppConfiguration>();
+            _discord = services.GetRequiredService<DiscordSocketClient>();
             _repeaterService = services.GetRequiredService<RepeaterService>();
+            
+            _discord.Ready += _discord_Ready;
         }
 
         private async Task _discord_Ready()
@@ -99,7 +111,7 @@ namespace Dynastio.Bot.Events
         {
             await _discord.SetStatusAsync(UserStatus.Idle);
 
-            await _discord.SetGameAsync(_discord.Guilds.Count + " servers " + _discord.Guilds.Select(a => a.MemberCount).Sum().Metric() + " Members", "https://www.youtube.com/watch?v=v74AQTvjtSg", ActivityType.Streaming);
+            await _discord.SetGameAsync(_discord.Guilds.Count + " Servers " + _discord.Guilds.Select(a => a.MemberCount).Sum().Metric() + " Members", "https://www.youtube.com/watch?v=v74AQTvjtSg", ActivityType.Streaming);
         }
 
     }

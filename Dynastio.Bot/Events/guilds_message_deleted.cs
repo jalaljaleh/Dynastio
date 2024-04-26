@@ -8,9 +8,9 @@
 
 //namespace Dynastio.Bot.Events
 //{
-//	internal class guilds_message_deleted : HandlersBase
+//	internal class guilds_message_deleted 
 //	{
-//		public guilds_message_deleted(IServiceProvider services) : base(services)
+//		public guilds_message_deleted(IServiceProvider services) 
 //		{
 //            _discord.MessageDeleted += _discord_MessageDeleted;
 //        }

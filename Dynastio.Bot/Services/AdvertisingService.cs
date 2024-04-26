@@ -3,6 +3,7 @@ using Dynastio.Bot.Database;
 using Dynastio.Bot.Extenstions;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Serializers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -53,11 +54,11 @@ namespace Dynastio.Bot.Services
         {
             return _remainedAdvertising;
         }
-        public ComponentBuilder ExploitationAdvertisingButtons(ComponentBuilder cBuilder,int row = 0, int count= 4)
+        public ComponentBuilder ExploitationAdvertisingButtons(ComponentBuilder cBuilder, int row = 0, int count = 4)
         {
             var advertises = ExploitationAdvertising(Database.AdsType.Buttons, count);
             advertises.ForEach(
-                a => 
+                a =>
                 cBuilder.WithButton(a.ToButtonBuilder(), row)
             );
             return cBuilder;
@@ -84,17 +85,21 @@ namespace Dynastio.Bot.Services
             return res.ToList();
         }
         public Advertise ExploitationAdvertise(AdsType type)
-        {
-            return ExploitationAdvertising(type, 1).FirstOrDefault();
-        }
-        public string GetInlineEmbedDescription(int size = 4)
-        {
-            var embedBottomAdvertises = ExploitationAdvertising(Database.AdsType.InlineEmbedDescription, size);
+            => ExploitationAdvertising(type, 1).FirstOrDefault();
 
-            string text = string.Join(" ‌ ‌ ‌ ‌", embedBottomAdvertises?.Select(a => a.GetEmbedLink()));
+        public string GetInlineEmbedDescription(int size = 4)
+            => FormatContent(ExploitationAdvertising(Database.AdsType.InlineEmbedDescription, size));
+
+        public string GetEmbedMessageContent(int size = 4)
+            => FormatContent(ExploitationAdvertising(Database.AdsType.MessageContent, size));
+
+        public string GetDirectMessageContent(int size = 1)
+            => FormatContent(ExploitationAdvertising(Database.AdsType.UserDirectMessageContent, size));
+
+        private string FormatContent(List<Advertise> ads)
+        {
+            string text = string.Join(" ‌ ‌ ‌ ‌", ads?.Select(a => a.GetEmbedLink()));
             return " " + text + " ";
         }
-
-
     }
 }

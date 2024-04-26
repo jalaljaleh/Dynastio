@@ -22,7 +22,7 @@ namespace Dynastio.Bot.Events
         private async Task _discord_Ready()
         {
             await _discord.SetStatusAsync(UserStatus.Online);
-            await _discord.SetGameAsync(_discord.Guilds.FirstOrDefault()?.MemberCount + " Members", "https://www.youtube.com/watch?v=v74AQTvjtSg", ActivityType.Streaming);
+            await _discord.SetGameAsync(_discord.Guilds.FirstOrDefault()?.MemberCount + " Members", "https://www.youtube.com/watch?v=v74AQTvjtSg", ActivityType.Watching);
         }
 
     }
