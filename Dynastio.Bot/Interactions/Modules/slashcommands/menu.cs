@@ -82,7 +82,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
                 .WithButton(ProfileButton.GetButton(userLocale, BotUser.Accounts.Any()), 1)
                 .WithButton(RankButton.GetButton(userLocale), 1)
-                .WithButton(SyncRolesButton.GetButton(userLocale, false), 1)
+                .WithButton(SyncRolesButton.GetButton(userLocale, !BotGuild.HasSubscription()), 1)
 
 
                 .WithButton(LeaderboardButton.GetButton(userLocale), 2)
