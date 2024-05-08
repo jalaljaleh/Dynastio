@@ -8,6 +8,8 @@ using MongoDB.Bson;
 using Amazon.Auth.AccessControlPolicy;
 using System.Dynamic;
 using Dynastio.Bot.Database.Entities;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Bson.Serialization;
 
 namespace Dynastio.Bot.Database
 {
@@ -26,6 +28,8 @@ namespace Dynastio.Bot.Database
         {
             Main.Log("Mongodb", "Initialize Async..");
 
+            BsonSerializer.RegisterSerializer(new EnumSerializer<Net.BadgeType>(BsonType.String));
+
             var settings = MongoClientSettings.FromConnectionString(mongoConnection);
             // settings.ServerApi = new ServerApi(ServerApiVersion.V1);
 
@@ -43,7 +47,6 @@ namespace Dynastio.Bot.Database
             try
             {
                 Main.Log("Mongodb", "Start Session Async ..");
-
                 await _db.StartSessionAsync();
 
                 //var filter = Builders<Guild>.Filter.Where(a => true);

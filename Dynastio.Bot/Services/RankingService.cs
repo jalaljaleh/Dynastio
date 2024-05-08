@@ -110,6 +110,7 @@ namespace Dynastio.Bot.Services
         public async Task<bool> SynchronizeUserRolesAsync(Guild guild, IGuildUser user, int level)
         {
             if (guild.RankingSettings.IsEnabled is false) return false;
+            if (guild.RankingSettings.HeaderId == 0) return false;
 
             var serverRoles = GetGuildRankingRoles(user.Guild, guild.RankingSettings.RolesPrefix).ToList();
             if (serverRoles?.Any() == false)
@@ -127,10 +128,13 @@ namespace Dynastio.Bot.Services
             if (serverRoles.Count < level)
                 level = serverRoles.Count;
 
-            var toAdd = serverRoles.GetRange(userRoles.Count - 1 < 0 ? 0 : userRoles.Count - 1, (level - userRoles.Count) + 1);
+            var toAdd = serverRoles.GetRange(userRoles.Count - 1 < 0 ? 0 : userRoles.Count - 1, (level - userRoles.Count) + 1).Select(a=>a.Id).ToList();
+
+            if (!user.RoleIds.Contains(guild.RankingSettings.HeaderId))
+                toAdd.Add(guild.RankingSettings.HeaderId);
 
             var result = await user.AddRolesAsync(toAdd)
-                .TryAsync();
+            .TryAsync();
 
             // role permission required
             if (result is false)

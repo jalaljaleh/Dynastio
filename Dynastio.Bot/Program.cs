@@ -58,6 +58,7 @@ namespace Dynastio.Bot
            .AddSingleton<UserService>()
 
            .AddSingleton<RankingService>()
+           .AddSingleton<BadgesService>()
 
            .AddSingleton<InteractionsHandler>()
            .AddSingleton<InteractionService>()
@@ -99,6 +100,7 @@ namespace Dynastio.Bot
             _services.GetRequiredService<UserService>();
 
             _services.GetRequiredService<RankingService>();
+            _services.GetRequiredService<BadgesService>();
 
             _services.GetRequiredService<EventsHandler>();
             _services.GetRequiredService<MessagesHandler>();

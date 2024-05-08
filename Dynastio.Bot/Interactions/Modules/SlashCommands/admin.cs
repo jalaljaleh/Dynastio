@@ -16,7 +16,7 @@ using System.Linq;
 
 namespace Dynastio.Bot.Interactions.Modules.slashcommands
 {
-    
+
     [RequireContext(ContextType.Guild)]
     [RequireBotPermission(ChannelPermission.EmbedLinks)]
     public class AdminModule : BotInteractionModuleBase
@@ -89,10 +89,28 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 Color = rank.IsEnabled ? Color.Green : Color.Red,
             }.Build();
 
-            
+            var badgeRoles = BotGuild.BadgeRoles;
+            var badgeRolesModule = new EmbedBuilder()
+            {
+                Title = $"BadgeRole Module is {(badgeRoles.IsEnabled ? "Enabled" : "Disabled")}",
+                Description = $"",
+                Color = badgeRoles.IsEnabled ? Color.Green : Color.Red,
+                //ThumbnailUrl = "",
+                //Fields = new List<EmbedFieldBuilder>()
+                //{
+                //    new EmbedFieldBuilder()
+                //    {
+                //        IsInline = true,
+                //        Name = "",
+                //        Value = $"\n"
+                //    }
+               // }
+            }.Build();
+
+
             await FollowupAsync(
                 text: Context.User.Mention,
-                embeds: new Embed[] { rankingModule, subscriptionModule },
+                embeds: new Embed[] { rankingModule, subscriptionModule, badgeRolesModule },
                 components: GetComponent());
 
         }

@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Dynastio.Net;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Concurrent;
@@ -22,7 +23,7 @@ namespace Dynastio.Bot.Database
         public ulong Id { get; set; }
         public GuildSubscription Subscription { get; set; } = new();
         public RankingSettings RankingSettings { get; set; } = new();
-
+        public GuildBadgeRoles BadgeRoles { get; set; } = new();
         //public bool IsDeleteMessageEnabled { get; set; }
         public ulong PartnersRoleId { get; set; }
 
@@ -32,14 +33,32 @@ namespace Dynastio.Bot.Database
         }
 
 
-     
     }
 
     public interface GuildModuleBase
     {
         bool IsEnabled { get; set; }
     }
+    public class GuildBadgeRoles : GuildModuleBase
+    {
+        public GuildBadgeRoles()
+        {
+            IsEnabled = false;
+            HeaderId = 0;
+        }
+        public bool IsEnabled { get; set; }
+        public ulong HeaderId { get; set; }
+        public Dictionary<BadgeType, ulong> RolesId { get; set; } = new();
 
+        public bool TryGetRoleId(BadgeType badge, out ulong id)
+        {
+            return RolesId.TryGetValue(badge, out id);
+        }
+        public void SetRoleId(BadgeType badge, ulong id)
+        {
+            RolesId[badge] = id;
+        }
+    }
     //public class GuildDeleteMessageModule : GuildModuleBase
     //{
     //    public GuildDeleteMessageModule()
@@ -76,6 +95,8 @@ namespace Dynastio.Bot.Database
         public int XpRandom { get; set; }
         public int Delay { get; set; }
         public string RolesPrefix { get; set; }
+        public ulong HeaderId { get; set; }
+
         public ulong LogChannelId { get; set; }
         public List<ulong> ChannelIds { get; set; } = new();
 
