@@ -175,7 +175,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             {
                 await DeferAsync(true);
 
-                this.Context._dynastioData.ClearCache();
+                this.Context._db.ClearCache();
 
                 await FollowupAsync(embed: "Done, user and guilds cleared.".ToEmbed("Successful Operator"));
             }

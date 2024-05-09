@@ -56,6 +56,7 @@ namespace Dynastio.Bot.Database
                 //{
                 //    if (u.HasSubscription()) continue;
 
+                //    u.BadgeRoles = new();
                 //    u.RankingSettings = new();
                 //    u.Subscription = new();
                 //}

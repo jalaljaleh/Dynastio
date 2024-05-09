@@ -16,18 +16,18 @@ namespace Dynastio.Bot.Interactions
 
     public class BotSocketInteractionContext : SocketInteractionContext
     {
-        public readonly DynastioBotDatabase _dynastioData;
+        public readonly DynastioBotDatabase _db;
         public readonly AdvertisingService _ads;
-
+        public readonly UserService _usersService;
         private readonly DynastioBotGlobalization _globalization;
         public readonly IServiceProvider _services;
         public BotSocketInteractionContext(DiscordSocketClient client, SocketInteraction interaction, IServiceProvider services, User user = null, Guild guild = null) : base(client, interaction)
         {
             _services = services;
             _ads = _services.GetRequiredService<AdvertisingService>();
-            _dynastioData = _services.GetRequiredService<DynastioBotDatabase>();
+            _db = _services.GetRequiredService<DynastioBotDatabase>();
             _globalization = _services.GetRequiredService<DynastioBotGlobalization>();
-
+            _usersService = _services.GetRequiredService<UserService>();
 
             if (user != null) _user = user;
             if (guild != null) _guild = guild;
@@ -46,7 +46,7 @@ namespace Dynastio.Bot.Interactions
             {
                 if (_user is null)
                 {
-                    _user = _dynastioData.GetUserAsync(this.User.Id, true).Result;
+                    _user = _db.GetUserAsync(this.User.Id, true).Result;
                 }
                 return _user;
             }
@@ -57,7 +57,7 @@ namespace Dynastio.Bot.Interactions
             {
                 if (_guild is null)
                 {
-                    _guild = _dynastioData.GetGuildAsync(this.Guild.Id).Result;
+                    _guild = _db.GetGuildAsync(this.Guild.Id).Result;
                 }
                 return _guild;
             }

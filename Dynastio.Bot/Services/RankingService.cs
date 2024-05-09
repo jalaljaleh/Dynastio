@@ -19,12 +19,9 @@ namespace Dynastio.Bot.Services
 {
     public class RankingService : ServicesBase
     {
-        private readonly UserService _userService;
         private readonly DynastioApi _dynastioApi;
-
         public RankingService(IServiceProvider services) : base(services)
         {
-            _userService = services.GetRequiredService<UserService>();
             _dynastioApi = services.GetRequiredService<DynastioApi>();
         }
 
@@ -97,7 +94,7 @@ namespace Dynastio.Bot.Services
             catch { }
         }
 
-        public IEnumerable<IRole> GetGuildRankingRoles(IGuild guild, string rolePrefix)
+        public IEnumerable<IRole> GetRankingRoles(IGuild guild, string rolePrefix)
         {
             return guild.Roles
                                 .Where(x => x.Name.StartsWith(rolePrefix + " "))
@@ -109,38 +106,27 @@ namespace Dynastio.Bot.Services
         }
         public async Task<bool> SynchronizeUserRolesAsync(Guild guild, IGuildUser user, int level)
         {
-            if (guild.RankingSettings.IsEnabled is false) return false;
-            if (guild.RankingSettings.HeaderId == 0) return false;
+            if (!guild.RankingSettings.IsEnabled || guild.RankingSettings.HeaderId == 0) return false;
 
-            var serverRoles = GetGuildRankingRoles(user.Guild, guild.RankingSettings.RolesPrefix).ToList();
-            if (serverRoles?.Any() == false)
-            {
-                return false;
-            }
+            var rankingRoles = GetRankingRoles(user.Guild, guild.RankingSettings.RolesPrefix).ToList();
 
-            var userRoles = GetUserRankingRoles(user, serverRoles).ToList();
+            var userRoles = GetUserRankingRoles(user, rankingRoles).ToList();
+
+            if (!user.RoleIds.Contains(guild.RankingSettings.HeaderId) && userRoles.Count > 0)
+                await user.AddRoleAsync(guild.RankingSettings.HeaderId);
 
             // Everything is okay
-            if (serverRoles.Count == userRoles.Count)
+            if (userRoles.Count == level || userRoles.Count == rankingRoles.Count || rankingRoles.Count <= level)
                 return true;
 
-            // when roles are few
-            if (serverRoles.Count < level)
-                level = serverRoles.Count;
-
-            var toAdd = serverRoles.GetRange(userRoles.Count - 1 < 0 ? 0 : userRoles.Count - 1, (level - userRoles.Count) + 1).Select(a=>a.Id).ToList();
-
-            if (!user.RoleIds.Contains(guild.RankingSettings.HeaderId))
-                toAdd.Add(guild.RankingSettings.HeaderId);
-
-            var result = await user.AddRolesAsync(toAdd)
-            .TryAsync();
-
-            // role permission required
-            if (result is false)
+            for (int i = 0; i < level; i++)
             {
-                await SetUnqualifiedGuildAsync(guild, user.Guild);
-                return false;
+                var targetRole = rankingRoles[i];
+                if (user.RoleIds.Contains(targetRole.Id))
+                    continue;
+
+                await user.AddRoleAsync(targetRole);
+                await Task.Delay(1000);
             }
             return true;
         }
@@ -211,7 +197,7 @@ namespace Dynastio.Bot.Services
             var lastUpdate = DateTime.UtcNow - user.LastUpdateTime;
             if (force || lastUpdate.TotalSeconds > 240)
             {
-                return await _userService.UpdateUserAsync(user);
+                return await this._services.GetService<UserService>().UpdateUserAsync(user);
             }
             return false;
         }

@@ -60,7 +60,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
                 return;
             }
 
-            var guildRankRoles = rankingService.GetGuildRankingRoles(Context.Guild, guild.RankingSettings.RolesPrefix);
+            var guildRankRoles = rankingService.GetRankingRoles(Context.Guild, guild.RankingSettings.RolesPrefix);
             if (guildRankRoles is null || guildRankRoles.Count() == 0)
             {
                 await ModifyCurrentMessageAsync(embed: userLocale["embed.rank.error.guild_ranking_disabled.description"].ToInformEmbed(userLocale["embed.rank.error.guild_ranking_disabled.title"], BotAvatarUrl))

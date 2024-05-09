@@ -14,6 +14,7 @@ using Dynastio.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,9 +23,6 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
     public class SyncRolesButton : BotInteractionModuleBase
     {
         public DynastioApi dynastio { get; set; }
-        public RankingService RankingService { get; set; }
-        public BadgesService BadgesService { get; set; }
-
 
         public const string CustomId = "btn.guild.sync.roles";
         public static Emoji Emoji => new Emoji("⚖️");
@@ -40,6 +38,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
                 CustomId = CustomId
             };
         }
+        [RequireContext(ContextType.Guild)]
         [RequireComponentMessageMention]
         [RateLimit(500, 1)]
         [ComponentInteraction(CustomId)]
@@ -47,22 +46,8 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
         {
             await this.DeferAsync();
 
-            var rankingResult = await RankingService.SynchronizeUserRolesAsync(BotGuild, Context.User as IGuildUser, this.BotUser.GetRankingProfile(Context.Guild.Id).Level);
-
-            foreach (var profile in BotUser.Accounts)
-            {
-                try
-                {
-                    var p = await dynastio.GetUserProfileAsync(profile.Id);
-                    var badgeResult = await BadgesService.SynchronizeUserRolesAsync(BotGuild, Context.User as IGuildUser, p);
-                }
-                catch
-                {
-
-                }
-                await Task.Delay(1000);
-            }
-
+            await userService.SyncUserRolesAsync(BotGuild,BotUser,Context.User as IGuildUser);
+           
             await this.CloseMenuAsync();
         }
 

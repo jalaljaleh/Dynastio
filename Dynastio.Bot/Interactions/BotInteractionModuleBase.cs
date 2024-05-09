@@ -28,8 +28,9 @@ namespace Dynastio.Bot.Interactions
         {
 
         }
+        public UserService userService { get => Context._usersService; }
         public AdvertisingService advertisingService { get => Context._ads; }
-        public DynastioBotDatabase dynastioBotDatabase { get => Context._dynastioData; }
+        public DynastioBotDatabase dynastioBotDatabase { get => Context._db; }
         public IServiceProvider services { get => Context._services; }
 
         public User BotUser { get => Context.BotUser; }

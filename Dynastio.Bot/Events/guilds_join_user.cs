@@ -21,6 +21,7 @@ namespace Dynastio.Bot.Events
         private readonly AppConfiguration _config;
         private readonly DiscordSocketClient _discord;
         private readonly AdvertisingService _advertising;
+        private readonly UserService _userService;
         private readonly IServiceProvider _services;
         public guilds_join_user(IServiceProvider services)
         {
@@ -29,6 +30,7 @@ namespace Dynastio.Bot.Events
             _config = services.GetRequiredService<AppConfiguration>();
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _advertising = services.GetRequiredService<AdvertisingService>();
+            _userService = services.GetRequiredService<UserService>();
 
             _discord.UserJoined += _discord_UserJoined;
         }
@@ -41,8 +43,10 @@ namespace Dynastio.Bot.Events
                        embed: _advertising.GetInlineEmbedDescription(3).ToEmbed(),
                        components: _advertising.ExploitationAdvertisingButtons(new ComponentBuilder(), 0, 3).Build());
 
-            }, 2, TimeSpan.FromSeconds(5));
+            }, 2, TimeSpan.FromSeconds(5))
+                .TryAsync();
 
+            await _userService.SyncUserRolesAsync(user);
         }
 
 
