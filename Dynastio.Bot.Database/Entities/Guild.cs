@@ -48,15 +48,15 @@ namespace Dynastio.Bot.Database
         }
         public bool IsEnabled { get; set; }
         public ulong HeaderId { get; set; }
-        public Dictionary<BadgeType, ulong> RolesId { get; set; } = new();
+        public Dictionary<string, ulong> RolesId { get; set; } = new();
 
         public bool TryGetRoleId(BadgeType badge, out ulong id)
         {
-            return RolesId.TryGetValue(badge, out id);
+            return RolesId.TryGetValue(badge.ToString(), out id);
         }
         public void SetRoleId(BadgeType badge, ulong id)
         {
-            RolesId[badge] = id;
+            RolesId[badge.ToString()] = id;
         }
     }
     //public class GuildDeleteMessageModule : GuildModuleBase

@@ -7,13 +7,13 @@ namespace Dynastio.Test
     {
         static void Main(string[] args)
         {
-            var dynastio = new DynastioApi("");
+            var dynastio = new DynastioApi("X");
 
-            var p = dynastio.GetUserProfileCardAsync("google:109997366771820676430").GetAwaiter().GetResult();
+            var result = dynastio.GetUserProfileAsync("discord:805534924622004274").GetAwaiter().GetResult();
 
 
         }
 
     }
-   
+
 }
