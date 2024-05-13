@@ -19,15 +19,15 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
     [RequireContext(ContextType.Guild)]
     [RequireBotPermission(ChannelPermission.EmbedLinks)]
-    public class AdminModule : BotInteractionModuleBase
+    public class GuildModule : BotInteractionModuleBase
     {
         public DynastioApi dynastio { get; set; }
         public DynastioGraphic dynastioGraphic { get; set; }
 
 
-        [SlashCommand("admin", "admin menu")]
+        [SlashCommand("guild", "guild menu")]
         [RateLimit(6, 1)]
-        public async Task admin()
+        public async Task guild()
         {
             await DeferAsync();
 
@@ -90,10 +90,15 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             }.Build();
 
             var badgeRoles = BotGuild.BadgeRoles;
+          
+            var content = badgeRoles.Roles.Any() 
+                ? $"### badge roles:\n" + string.Join("\n", badgeRoles.Roles?.Select(a => string.Format("{0}: <@&{1}>", a.Badge, a.RoleId))) 
+                : "";
+          
             var badgeRolesModule = new EmbedBuilder()
             {
                 Title = $"BadgeRole Module is {(badgeRoles.IsEnabled ? "Enabled" : "Disabled")}",
-                Description = $"",
+                Description = content,
                 Color = badgeRoles.IsEnabled ? Color.Green : Color.Red,
                 //ThumbnailUrl = "",
                 //Fields = new List<EmbedFieldBuilder>()
@@ -104,7 +109,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 //        Name = "",
                 //        Value = $"\n"
                 //    }
-               // }
+                // }
             }.Build();
 
 

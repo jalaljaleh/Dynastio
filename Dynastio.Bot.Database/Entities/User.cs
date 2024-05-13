@@ -28,7 +28,7 @@ namespace Dynastio.Bot.Database
 
         public List<UserAccount> Accounts { get; set; } = new();
         public List<GuildProfile> GuildProfiles { get; set; } = new();
-        
+
 
         public GuildProfile GetRankingProfile(ulong guildId)
         {
@@ -59,6 +59,12 @@ namespace Dynastio.Bot.Database
         public UserAccount GetDefaultAccount()
         {
             return Accounts.FirstOrDefault(a => a.IsDefault) ?? Accounts.FirstOrDefault();
+        }
+        public UserAccount GetMainAccount()
+        {
+            return string.IsNullOrEmpty(gameAccountId) is false
+                ? (Accounts.FirstOrDefault(a => a.Id == gameAccountId) ?? new UserAccount() { Id = gameAccountId, Reminder = "Main" })
+                : null;
         }
         public void SwitchAccount(ref UserAccount userAccount)
         {

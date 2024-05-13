@@ -4,16 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
 
 namespace Dynastio.Bot.Database
 {
     [BsonIgnoreExtraElements]
-    public class YoutuberVideo
+    public class GuildSubscription
     {
-        public string videoId { get; set; }
-        public ulong user { get; set; }
-        public DateTime createdAt { get; set; }
-        
+        public DateTime StartedAt { get; set; }
+        public DateTime EndsAt { get; set; }
+        public ulong UserId { get; set; }
+        public List<string> History { get; set; }
     }
 }

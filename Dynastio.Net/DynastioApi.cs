@@ -1,4 +1,5 @@
 ﻿
+using Dynastio.Extenstions;
 using Dynastio.Net.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -18,6 +19,7 @@ namespace Dynastio.Net
 {
     public class DynastioApi
     {
+        private const string version = "0.1.8";
         private readonly TimeSpan _timeout;
         private HttpClient _client;
         private HttpClientHandler _clientHandler;
@@ -71,8 +73,10 @@ namespace Dynastio.Net
                 _ => ""
             };
 
-            var result = await GetAsync("https://announcement-amsterdam-0-alpaca.dynast.cloud/" + url + "&random=" + random.Next());
-            var data = JsonConvert.DeserializeObject<DataType<List<Server>>>(result);
+            var result = await GetAsync("https://announcement-amsterdam-0-alpaca.dynast.cloud/" + url + "&random=" + random.Next()).TryAsync<string>();
+            if (result.isSuccesful is false) return new();
+
+            var data = JsonConvert.DeserializeObject<DataType<List<Server>>>(result.result);
             return data.Servers;
         }
         public async Task<List<Player>> GetPlayersAsync()
@@ -208,8 +212,7 @@ namespace Dynastio.Net
                 Timeout = _timeout
             };
 
-            _client.DefaultRequestHeaders.UserAgent.ParseAdd("dynastio.net");
-
+            _client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Dynastio.Net", version));
             //_client.BaseAddress = new Uri("https://auth.dynast.io/");
 
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

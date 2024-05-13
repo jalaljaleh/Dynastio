@@ -84,10 +84,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.bot
 
             await dynastioBotDatabase.UpdateAsync(BotUser);
 
-            var result1 = await rankingService.SynchronizeGameUser(BotGuild, BotUser);
-
-
-            await ModifyCurrentMessageAsync(userMention + " done !");
+            await ModifyCurrentMessageAsync(userMention + " Done, Your Main account connected to the bot.");
         }
 
     }

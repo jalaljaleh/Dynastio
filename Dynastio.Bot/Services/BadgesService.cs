@@ -46,18 +46,18 @@ namespace Dynastio.Bot.Services
 
             var userBadges = await GetUserBadgesAsync(buser);
 
-            foreach (var role in guild.BadgeRoles.RolesId)
+            foreach (var role in guild.BadgeRoles.Roles)
             {
-                if (userBadges.Contains(Enum.Parse<BadgeType>(role.Key))) // has the badge
+                if (userBadges.Contains(role.Badge)) // has the badge
                 {
-                    if (user.RoleIds.Contains(role.Value)) // user has the role
+                    if (user.RoleIds.Contains(role.RoleId)) // user has the role
                         continue;
-                    await user.AddRoleAsync(role.Value);
+                    await user.AddRoleAsync(role.RoleId);
                 }
                 else // hasn't the badge
                 {
-                    if (user.RoleIds.Contains(role.Value)) // user has the role
-                        await user.RemoveRoleAsync(role.Value);
+                    if (user.RoleIds.Contains(role.RoleId)) // user has the role
+                        await user.RemoveRoleAsync(role.RoleId);
                 }
                 await Task.Delay(250);
             }

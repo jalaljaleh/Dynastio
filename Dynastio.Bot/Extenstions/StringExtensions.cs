@@ -7,10 +7,17 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord.Utils;
+using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
+using System.Reflection.Emit;
 namespace Dynastio.Bot
 {
     public static class StringExtensions
     {
+
+        public static string ToMarkdownLink(this string url,string label)
+        {
+            return $" [{label}]({url}) ";
+        }
         public static string ToDiscordRole(this ulong value,string text = "Not Available")
         {
             if (value == 0) return text;

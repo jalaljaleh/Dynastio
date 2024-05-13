@@ -1,8 +1,10 @@
 ﻿using Amazon.Runtime;
 using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Modules.buttons;
+using Dynastio.Bot.Interactions.Modules.Buttons;
 using Dynastio.Bot.Interactions.Modules.Buttons.bot;
 using Dynastio.Bot.Interactions.Modules.Buttons.dynastio;
 using Dynastio.Bot.Interactions.Modules.shared_buttons;
@@ -81,18 +83,14 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
 
                 .WithButton(ProfileButton.GetButton(userLocale, BotUser.Accounts.Any()), 1)
-                .WithButton(RankButton.GetButton(userLocale), 1)
-                .WithButton(SyncRolesButton.GetButton(userLocale, !BotGuild.HasSubscription()), 1)
+                .WithButton(LeaderboardButton.GetButton(userLocale), 1)
+                .WithButton(VersionButton.GetButton(userLocale), 1)
 
+                .WithButton(MenuMeButton.GetButton(userLocale), 2);
 
-                .WithButton(LeaderboardButton.GetButton(userLocale), 2)
+            component.WithButton(CancelButton.GetButton(userLocale), 3);
 
-                .WithButton(VersionButton.GetButton(userLocale), 3)
-                .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19), 3);
-
-            component.WithButton(CancelButton.GetButton(userLocale), 4);
-
-            component = advertisingService.ExploitationAdvertisingButtons(component, 4);
+            component = advertisingService.ExploitationAdvertisingButtons(component, 3,4);
 
             return true;
         }

@@ -49,6 +49,8 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
 
             await userService.SyncUserRolesAsync(BotGuild, BotUser, Context.User as IGuildUser);
             
+            await Task.Delay(2000);
+
             await this.ModifyCurrentMessageAsync(embed: "Done".ToEmbed("done, your request completed !"));
 
         }

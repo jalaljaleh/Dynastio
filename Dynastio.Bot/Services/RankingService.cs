@@ -49,7 +49,7 @@ namespace Dynastio.Bot.Services
                 await AddXpAsync(guild, user, discordUser, txtChannel.Guild, uProfile, messageXp, txtChannel);
             }
         }
-        bool IsXpIncreaseable(RankingSettings settings, GuildProfile uProfile, string messageContent)
+        bool IsXpIncreaseable(ModuleRankingRole settings, GuildProfile uProfile, string messageContent)
         {
             if (string.IsNullOrEmpty(messageContent)) return false;
             if (messageContent.Length < 10) return false;
