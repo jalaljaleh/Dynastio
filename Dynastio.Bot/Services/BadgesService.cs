@@ -42,7 +42,7 @@ namespace Dynastio.Bot.Services
         public async Task<bool> SynchronizeUserRolesAsync(Guild guild, IGuildUser user, User buser)
         {
             if (guild.BadgesRole.IsEnabled is false) return false;
-            if (guild.BadgesRole.HeaderId != 0) return false;
+            if (guild.BadgesRole.HeaderId == 0) return false;
 
             var playerBadge = await GetUserBadgesAsync(buser);
 
