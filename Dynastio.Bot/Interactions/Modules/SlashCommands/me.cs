@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Interactions.Modules.buttons;
+using Dynastio.Bot.Interactions.Modules.Buttons;
 using Dynastio.Bot.Interactions.Modules.Buttons.bot;
 using Dynastio.Bot.Interactions.Modules.Buttons.dynastio;
 using Dynastio.Bot.Interactions.Modules.shared_buttons;
@@ -26,13 +27,12 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
         [RateLimit(6, 1)]
         public async Task me()
         {
-            
-            await InteractionService.SlashCommands
-              .FirstOrDefault(a => a.Name == "me")
+            await InteractionService.ComponentCommands
+              .FirstOrDefault(a => a.Name == MenuMeButton.CustomId)
               .ExecuteAsync(Context, services);
-           
+
         }
 
-    
+
     }
 }
