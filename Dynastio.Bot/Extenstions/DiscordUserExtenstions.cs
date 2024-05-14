@@ -17,7 +17,7 @@ namespace Dynastio.Bot
         }
         public static Color TryGetRoleColor(this IGuildUser user)
         {
-            return (user as SocketGuildUser)?.Roles?.Where(a => a.IsHoisted)?.OrderBy(a => a.Position)?.FirstOrDefault()?.Color ?? Color.Default;
+            return (user as SocketGuildUser)?.Roles?.Where(a => a.IsHoisted)?.OrderByDescending(a => a.Position)?.FirstOrDefault()?.Color ?? Color.Default;
         }
     }
 }

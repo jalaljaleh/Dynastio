@@ -10,6 +10,7 @@ using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Graphic;
 using Dynastio.Net;
+using MongoDB.Bson.IO;
 using System.ComponentModel;
 using System.Linq;
 
@@ -24,32 +25,23 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
         const long max = 24191999999992;
 
         [SlashCommand("mute", "mute users")]
-        public async Task mute(IGuildUser user, int days = 0, int hours = 0, int minutes = 0, int seconds = 0)
+        public async Task mute(IGuildUser user, TimeSpan time, string reason = "no reason provided !")
         {
-            await DeferAsync();
 
-            var timeout = DateTime.UtcNow
-                            .AddDays(days)
-                            .AddHours(hours)
-                            .AddMinutes(minutes)
-                            .AddSeconds(seconds) - DateTime.UtcNow;
-
-            if (timeout.Ticks > max)
+            if (time.Ticks > max)
             {
-                await FollowupAsync(userMention, embed: $"Time `{timeout.Days} days, {timeout.Hours} hours, {timeout.Minutes} minutes, {timeout.Seconds} seconds, ` can not be more than {TimeSpan.FromTicks(max).ToString("dd\\:hh\\:mm\\:ss")} days.".ToEmbed("Discord Limits"));
+                await FollowupAsync(ephemeral: true, text: userMention, embed: $"Time {(DateTime.UtcNow + time).UnixTimestampDiscordFormat()} can not be more than {TimeSpan.FromTicks(max).ToString("dd\\:hh\\:mm\\:ss")} days.".ToEmbed("Discord Limits"));
                 return;
             }
             try
             {
-                await user.SetTimeOutAsync(timeout);
+                await user.SetTimeOutAsync(time);
 
-                await FollowupAsync(userMention, embed:
-                    $"{user.Mention} muted for `{timeout.Days} days, {timeout.Hours} hours, {timeout.Minutes} minutes and {timeout.Seconds} seconds ` and will be unmuted {DateTime.UtcNow.AddTicks(timeout.Ticks).UnixTimestampDiscordFormat()}"
-                    .ToEmbed("User Muted", user.TryGetAvatarUrl(), color: Color.Orange));
+                await FollowupAsync(text: userMention, embed:$"".ToEmbed("User Muted", user.TryGetAvatarUrl(), color: Color.Orange));
             }
             catch
             {
-                await FollowupAsync(userMention, embed: $"unkown error...".ToEmbed("error"));
+                await FollowupAsync(ephemeral: true, text: userMention, embed: $"unkown error...".ToEmbed("error"));
             }
 
         }

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Discord;
 using Dynastio.Bot.Global;
 using Dynastio.Bot.Extenstions;
-using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Database;
 using MongoDB.Bson;
@@ -18,10 +17,10 @@ using Dynastio.Bot.Interactions.AutoCompeletes;
 using Newtonsoft.Json;
 using Dynastio.Bot.Handlers;
 
-namespace Dynastio.Bot.Interactions.Modules.slashcommands
+namespace Dynastio.Bot.Interactions.Modules.SlashCommands.@private
 {
     [Group("developer", "developer")]
-    [RequireTeamMemberAttribute]
+    [RequireTeamMember]
     [DefaultMemberPermissions(GuildPermission.Administrator)]
     [IntegrationType(ApplicationIntegrationType.UserInstall)]
     public class DeveloperModule : BotInteractionModuleBase
@@ -51,7 +50,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             {
                 await DeferAsync(true);
 
-                this.BotGuild.PartnersRoleId = role.Id;
+                BotGuild.PartnersRoleId = role.Id;
 
                 await UpdateBotGuildAsync();
 
@@ -175,7 +174,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             {
                 await DeferAsync(true);
 
-                this.Context._db.ClearCache();
+                Context._db.ClearCache();
 
                 await FollowupAsync(embed: "Done, user and guilds cleared.".ToEmbed("Successful Operator"));
             }

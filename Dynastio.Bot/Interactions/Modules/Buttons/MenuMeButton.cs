@@ -58,27 +58,27 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons
             {
                     new EmbedFieldBuilder()
                 .WithName("Level")
-                .WithValue(profile.Level)
+                .WithValue($"level: ` {profile.Level} `")
                 .WithIsInline(true),
 
                     new EmbedFieldBuilder()
                 .WithName("XP")
-                .WithValue(profile.Xp)
+                .WithValue($"xp: ` {profile.Xp} `")
                 .WithIsInline(true),
 
                   new EmbedFieldBuilder()
                 .WithName("Ranking Profiles")
-                .WithValue( $"Profiles: ` {Context.BotUser.GuildProfiles.Count} `")
+                .WithValue( $"Server Profiles: ` {Context.BotUser.GuildProfiles.Count} `")
                 .WithIsInline(true),
 
                  new EmbedFieldBuilder()
                 .WithName($"{BotUser.Accounts.Count} Accounts")
-                .WithValue(BotUser.Accounts.Any() ? string.Join(", ", BotUser.Accounts.Select(a=> BotUser.Accounts.IndexOf(a) +". "+ a.Reminder)) : "` No Account `")
+                .WithValue(BotUser.Accounts.Any() ? string.Join("\n", BotUser.Accounts.Select(a=> "- "+ a.Reminder)) : "` No Account `")
                 .WithIsInline(true),
 
                    new EmbedFieldBuilder()
                 .WithName("Main Account")
-                .WithValue(BotUser.IsAccountConnected ? $"Connected ` {Context.BotUser.GetMainAccount().Reminder} `" : "` Not Connected `")
+                .WithValue(BotUser.IsAccountConnected ? $"` {Context.BotUser.GetMainAccount().Reminder} `" : "` Not Connected `")
                 .WithIsInline(true),
 
                 new EmbedFieldBuilder()
@@ -93,7 +93,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons
 
                 new EmbedFieldBuilder()
                 .WithName("Youtube")
-                .WithValue(string.IsNullOrEmpty(BotUser.youtube_channel) ? "` Not Linked `" : BotUser.youtube_channel.ToYoutubeChannel().ToMarkdownLink("Youtube"))
+                .WithValue(string.IsNullOrEmpty(BotUser.youtube_channel) ? "` Not Linked `" : "### "+BotUser.youtube_channel.ToYoutubeChannel().ToMarkdownLink("Youtube Channel"))
                 .WithIsInline(true),
             };
             return new EmbedBuilder()
@@ -101,7 +101,9 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons
                 Title = Context.User.GlobalName,
                 ThumbnailUrl = Context.User.TryGetAvatarUrl(),
                 Color = (Context.User as IGuildUser).TryGetRoleColor(),
-                Description = "Welcome to your personal menu !",
+                Description =
+                "Welcome to your personal menu !\n" +
+                "Here you can manage and view your account details & settings !",
                 Fields = fileds
             }.Build();
         }

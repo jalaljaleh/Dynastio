@@ -19,15 +19,15 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
     [RequireContext(ContextType.Guild)]
     [RequireBotPermission(ChannelPermission.EmbedLinks)]
-    public class GuildModule : BotInteractionModuleBase
+    public class AdminModule : BotInteractionModuleBase
     {
         public DynastioApi dynastio { get; set; }
         public DynastioGraphic dynastioGraphic { get; set; }
 
 
-        [SlashCommand("guild", "guild menu")]
+        [SlashCommand("admin", "server menu")]
         [RateLimit(6, 1)]
-        public async Task guild()
+        public async Task admin()
         {
             await DeferAsync();
 
@@ -90,11 +90,11 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             }.Build();
 
             var badgeRoles = BotGuild.BadgesRole;
-          
-            var content = badgeRoles.Roles.Any() 
-                ? $"### badge roles:\n" + string.Join("\n", badgeRoles.Roles?.Select(a => string.Format("{0}: <@&{1}>", a.Badge, a.RoleId))) 
+
+            var content = badgeRoles.Roles.Any()
+                ? $"### badge roles:\n" + string.Join("\n", badgeRoles.Roles?.Select(a => string.Format("{0}: <@&{1}>", a.Badge, a.RoleId)))
                 : "";
-          
+
             var badgeRolesModule = new EmbedBuilder()
             {
                 Title = $"BadgeRole Module is {(badgeRoles.IsEnabled ? "Enabled" : "Disabled")}",
@@ -115,7 +115,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
             await FollowupAsync(
                 text: Context.User.Mention,
-                embeds: new Embed[] { rankingModule, subscriptionModule, badgeRolesModule },
+                embeds: new Embed[] { subscriptionModule, rankingModule, badgeRolesModule },
                 components: GetComponent());
 
         }
