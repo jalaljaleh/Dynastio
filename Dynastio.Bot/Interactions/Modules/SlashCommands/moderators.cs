@@ -21,23 +21,35 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
     [RequireUserPermission(GuildPermission.ModerateMembers)]
     public class ModeratorModule : BotInteractionModuleBase
     {
-        const long max = 24191999999992;
-
+        const long max = 2419200;
+        public enum TimeType
+        {
+            None = 0,
+            Secound = 1,
+            Minute = 60,
+            Hour = 3600,
+            Day = 86400,
+            Week = 604800,
+            Month = 2419200,
+            Year = 29030400
+        }
         [SlashCommand("mute", "mute users")]
-        public async Task mute(IGuildUser user, TimeSpan time, string reason = "no reason provided !")
+        public async Task mute(IGuildUser user, TimeType time, int value, string reason = "no reason provided !")
         {
             await DeferAsync(true);
 
-            if (time.Ticks > max)
+            var time_ = value * (int)time;
+            if (time_ > 2419200) // api limit
             {
-                await FollowupAsync(
-                    text: userMention,
-                    embed: $"Time {(DateTime.UtcNow + time).UnixTimestampDiscordFormat()} can not be more than {TimeSpan.FromTicks(max).ToString("dd\\:hh\\:mm\\:ss")} days.".ToEmbed("Discord Limits"));
+                await FollowupAsync(embed: "Can not set more than 29 days.".ToEmbed("Api limit", Color.Orange));
                 return;
             }
+
+            var timeSpan = TimeSpan.FromSeconds(time_);
+
             try
             {
-                await user.SetTimeOutAsync(time);
+                await user.SetTimeOutAsync(timeSpan);
                 await FollowupAsync(text: userMention, embed: new EmbedBuilder()
                 {
                     Title = "Successful Command",
@@ -46,7 +58,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                     {
                         new EmbedFieldBuilder()
                         .WithName("Duration").WithIsInline(true)
-                        .WithValue((DateTime.UtcNow + time).UnixTimestampDiscordFormat()),
+                        .WithValue((DateTime.UtcNow + timeSpan).UnixTimestampDiscordFormat()),
 
                           new EmbedFieldBuilder()
                         .WithName("Reason").WithIsInline(true)
@@ -60,12 +72,12 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 await Context.Channel.SendMessageAsync(text: user.Mention, embed: new EmbedBuilder()
                 {
                     Title = "You Are Muted",
-                    Description = $"You have been muted for {(DateTime.UtcNow + time).ToRelative()} !",
+                    Description = $"You have been muted for {(DateTime.UtcNow + timeSpan).ToRelative()} !",
                     Fields = new List<EmbedFieldBuilder>()
                     {
                         new EmbedFieldBuilder()
                         .WithName("Duration").WithIsInline(true)
-                        .WithValue((DateTime.UtcNow + time).UnixTimestampDiscordFormat()),
+                        .WithValue((DateTime.UtcNow + timeSpan).UnixTimestampDiscordFormat()),
 
                           new EmbedFieldBuilder()
                         .WithName("Reason").WithIsInline(true)
