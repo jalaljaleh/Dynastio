@@ -28,11 +28,11 @@ namespace Dynastio.Bot.Services
         }
         public async Task<bool> SyncUserRolesAsync(Guild BotGuild, User BotUser, IGuildUser user)
         {
-            var rankingResult = await rankingService.SynchronizeUserRolesAsync(BotGuild, user, BotUser.GetServerProfile(BotGuild.Id).Level)
-                               .TryAsync();
-            var badgesResult = await badgesService.SynchronizeUserRolesAsync(BotGuild, user, BotUser)
-                               .TryAsync();
-            return rankingResult.isSuccesful && badgesResult.isSuccesful;
+            var rankingResult = await rankingService.SynchronizeUserRolesAsync(BotGuild, user, BotUser.GetServerProfile(BotGuild.Id).Level);
+
+            var badgesResult = await badgesService.SynchronizeUserRolesAsync(BotGuild, user, BotUser);
+
+            return true;
         }
        
         public async Task<bool> UpdateUserAsync(User user)

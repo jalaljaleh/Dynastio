@@ -61,8 +61,7 @@ namespace Dynastio.Bot.Events
                 }
                 catch
                 {
-                    subscribedGuild.PartnersRoleId = 0;
-                    await _db.UpdateAsync(subscribedGuild);
+              
                 }
             }
         }

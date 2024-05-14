@@ -48,6 +48,7 @@ namespace Dynastio.Bot.Services
 
             foreach (var roleBadge in guild.BadgesRole.Roles.Where(a => user.RoleIds.Contains(a.RoleId) || playerBadge.Contains(a.Badge)))
             {
+
                 bool HasRole = user.RoleIds.Contains(roleBadge.RoleId);
                 bool HasBadge = playerBadge.Contains(roleBadge.Badge);
 
