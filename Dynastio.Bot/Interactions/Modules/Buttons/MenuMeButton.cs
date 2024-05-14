@@ -73,12 +73,12 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons
 
                  new EmbedFieldBuilder()
                 .WithName($"{BotUser.Accounts.Count} Accounts")
-                .WithValue(string.Join(", ", BotUser.Accounts.Select(a=> BotUser.Accounts.IndexOf(a) +". "+ a.Reminder)))
+                .WithValue(BotUser.Accounts.Any() ? string.Join(", ", BotUser.Accounts.Select(a=> BotUser.Accounts.IndexOf(a) +". "+ a.Reminder)) : "` No Account `")
                 .WithIsInline(true),
 
                    new EmbedFieldBuilder()
                 .WithName("Main Account")
-                .WithValue(BotUser.IsAccountConnected ? $"Connected ` {Context.BotUser.GetMainAccount().Reminder} `" : "Not Connected")
+                .WithValue(BotUser.IsAccountConnected ? $"Connected ` {Context.BotUser.GetMainAccount().Reminder} `" : "` Not Connected `")
                 .WithIsInline(true),
 
                 new EmbedFieldBuilder()
@@ -88,12 +88,12 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons
 
                 new EmbedFieldBuilder()
                 .WithName("Joined In")
-                .WithValue((Context.User as IGuildUser).JoinedAt.Value.UtcDateTime.UnixTimestampDiscordFormat())
+                .WithValue((Context.User as IGuildUser).JoinedAt.HasValue ? (Context.User as IGuildUser).JoinedAt.Value.UtcDateTime.UnixTimestampDiscordFormat() : "` no data `")
                 .WithIsInline(true),
 
                 new EmbedFieldBuilder()
                 .WithName("Youtube")
-                .WithValue(string.IsNullOrEmpty(BotUser.youtube_channel) ? "Not Linked" : BotUser.youtube_channel.ToYoutubeChannel().ToMarkdownLink("Youtube"))
+                .WithValue(string.IsNullOrEmpty(BotUser.youtube_channel) ? "` Not Linked `" : BotUser.youtube_channel.ToYoutubeChannel().ToMarkdownLink("Youtube"))
                 .WithIsInline(true),
             };
             return new EmbedBuilder()

@@ -28,8 +28,6 @@ namespace Dynastio.Bot.Database
         {
             Main.Log("Mongodb", "Initialize Async..");
 
-            BsonSerializer.RegisterSerializer(new EnumSerializer<Net.BadgeType>(BsonType.String));
-
             var settings = MongoClientSettings.FromConnectionString(mongoConnection);
             // settings.ServerApi = new ServerApi(ServerApiVersion.V1);
 
@@ -49,19 +47,7 @@ namespace Dynastio.Bot.Database
                 Main.Log("Mongodb", "Start Session Async ..");
                 await _db.StartSessionAsync();
 
-                //var filter = Builders<Guild>.Filter.Where(a => true);
-                //var result = _guilds.Find(_ => true);
-                //var users = await result.ToListAsync();
-                //foreach (var u in users)
-                //{
-                //    if (u.HasSubscription()) continue;
-
-                //    u.BadgeRoles = new();
-                //    u.RankingSettings = new();
-                //    u.Subscription = new();
-                //}
-                //Main.Log("Mongodb", users.Count + " Task done");
-                //await UpdateManyAsync(users);
+               // await update();
 
                 Main.Log("Mongodb", "Session Started.");
             }
@@ -70,7 +56,20 @@ namespace Dynastio.Bot.Database
                 Main.Log("Mongodb", "db is not connected.", ConsoleColor.Red);
             }
         }
+        async Task update()
+        {
+            //var filter = Builders<Guild>.Filter.Where(a => true);
+            //var result = _guilds.Find(_ => true);
+            //var users = await result.ToListAsync();
+            //foreach (var u in users)
+            //{
 
+            //    u.BadgesRole = new();
+
+            //}
+            //Main.Log("Mongodb", users.Count + " Task done");
+            //await UpdateManyAsync(users);
+        }
 
         public async Task<Advertise> GetAdvertisingAsync(ObjectId Id)
         {

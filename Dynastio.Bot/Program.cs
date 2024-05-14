@@ -45,7 +45,7 @@ namespace Dynastio.Bot
         {
             Global.Main.Log("Main Async", "Started");
 
-            //Environment.SetEnvironmentVariable("config-key", "");
+           // Environment.SetEnvironmentVariable("config-key", "");
             AppConfiguration configuration = AppConfiguration.LoadConfiguration();
             var services = new ServiceCollection();
             services

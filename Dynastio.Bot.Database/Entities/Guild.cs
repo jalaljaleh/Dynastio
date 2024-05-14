@@ -25,7 +25,7 @@ namespace Dynastio.Bot.Database
         public ulong Id { get; set; }
         public GuildSubscription Subscription { get; set; } = new();
         public ModuleRankingRole RankingSettings { get; set; } = new();
-        public ModuleDynastioBadgesRole BadgeRoles { get; set; } = new();
+        public ModuleDynastioBadgesRole BadgesRole { get; set; } = new();
         public ulong PartnersRoleId { get; set; }
 
         public bool HasSubscription()

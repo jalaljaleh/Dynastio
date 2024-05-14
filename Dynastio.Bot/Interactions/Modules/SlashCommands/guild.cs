@@ -89,7 +89,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 Color = rank.IsEnabled ? Color.Green : Color.Red,
             }.Build();
 
-            var badgeRoles = BotGuild.BadgeRoles;
+            var badgeRoles = BotGuild.BadgesRole;
           
             var content = badgeRoles.Roles.Any() 
                 ? $"### badge roles:\n" + string.Join("\n", badgeRoles.Roles?.Select(a => string.Format("{0}: <@&{1}>", a.Badge, a.RoleId))) 
