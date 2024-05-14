@@ -1,36 +1,80 @@
-﻿using Discord;
-using Discord.Interactions;
-using Dynastio.Bot.Addons;
-using Dynastio.Bot.Extenstions;
-using Dynastio.Bot.Interactions;
-using Dynastio.Bot.Interactions.Modules.buttons;
-using Dynastio.Bot.Interactions.Modules.shared_buttons;
+﻿using Discord.Interactions;
+using Discord;
+using Dynastio.Bot.Globalization;
+using Dynastio.Bot.Interactions.Modules.Modals;
 using Dynastio.Bot.Interactions.Precondinations;
-using Dynastio.Bot.Services;
-using Dynastio.Graphic;
 using Dynastio.Net;
-using Newtonsoft.Json;
 using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Dynastio.Bot.Interactions.Modules.buttons;
+using Discord.WebSocket;
+using Dynastio.Bot.Extenstions;
+using Dynastio.Bot.Interactions.Modules.Buttons.dynastio;
+using Dynastio.Bot.Interactions.Modules.shared_buttons;
+using Dynastio.Bot.Services;
+using Amazon.Runtime.Internal.Util;
 
-namespace Dynastio.Bot.Interactions.Modules.slashcommands
+namespace Dynastio.Bot.Interactions.Modules.Menu
 {
-
     [RequireContext(ContextType.Guild)]
     [RequireBotPermission(ChannelPermission.EmbedLinks)]
-    public class AdminModule : BotInteractionModuleBase
+    public class SetupModule : BotInteractionModuleBase, IMenuModule
     {
-        public DynastioApi dynastio { get; set; }
-        public DynastioGraphic dynastioGraphic { get; set; }
+        public const string CustomId = "btn.menu.setup";
+        public static Emoji Emoji => new Emoji("⚙️");
+        public static ButtonBuilder GetButton(Locale locale, bool IsDisabled = false)
+        {
+            return new ButtonBuilder()
+            {
+                Label = locale["btn.menu.setup.label"],
+                Style = ButtonStyle.Success,
+                Emote = Emoji,
+                IsDisabled = IsDisabled,
+                Url = null,
+                CustomId = CustomId
+            };
+        }
 
+        [SlashCommand("setup", "setup menu")]
+        public async Task SlashCommandAsync()
+        {
+            await ExecuteAsync();
+        }
 
-        [SlashCommand("admin", "server menu")]
-        [RateLimit(6, 1)]
-        public async Task admin()
+        [RequireComponentMessageMention]
+        [ComponentInteraction(CustomId)]
+        public async Task ButtonAsync()
+        {
+            await ExecuteAsync();
+        }
+
+        public async Task ExecuteAsync()
         {
             await DeferAsync();
 
+            var componentResult = TryCreateComponents(out ComponentBuilder component);
+            var embedsResult = TryCreateEmbeds(out Embed[] embeds);
+
+            if (Context.Interaction is SocketMessageComponent)
+                await ModifyCurrentMessageAsync(userMention, embeds: embeds, components: component.Build());
+            else
+                await FollowupAsync(
+                    text: TryCreateTextContent(),
+                    embeds: embeds,
+                    components: component.Build());
+        }
+
+        public string TryCreateTextContent()
+        {
+            //var contentAdvertises = advertisingService.ExploitationAdvertising(Database.AdsType.MessageContent, 1).FirstOrDefault();
+            //return Context.User.Mention + " | " + contentAdvertises?.GetEmbedLink();
+            return userMention;
+        }
+        public bool TryCreateEmbeds(out Embed[] embeds)
+        {
             var subscription = BotGuild.Subscription;
             var subscriptionModule = new EmbedBuilder()
             {
@@ -52,7 +96,6 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             }.Build();
 
             var rank = BotGuild.RankingSettings;
-
             var rankingModule = new EmbedBuilder()
             {
                 Title = $"Ranking Module Is {(rank.IsEnabled ? "Enabled" : "Disabled")}",
@@ -90,15 +133,13 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             }.Build();
 
             var badgeRoles = BotGuild.BadgesRole;
-
-            var content = badgeRoles.Roles.Any()
+            var badgeRolesContent = badgeRoles.Roles.Any()
                 ? $"### badge roles:\n" + string.Join("\n", badgeRoles.Roles?.Select(a => string.Format("{0}: <@&{1}>", a.Badge, a.RoleId)))
                 : "";
-
-            var badgeRolesModule = new EmbedBuilder()
+           var badgeRolesModule = new EmbedBuilder()
             {
                 Title = $"BadgeRole Module is {(badgeRoles.IsEnabled ? "Enabled" : "Disabled")}",
-                Description = content,
+                Description = badgeRolesContent,
                 Color = badgeRoles.IsEnabled ? Color.Green : Color.Red,
                 //ThumbnailUrl = "",
                 //Fields = new List<EmbedFieldBuilder>()
@@ -112,25 +153,17 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 // }
             }.Build();
 
-
-            await FollowupAsync(
-                text: Context.User.Mention,
-                embeds: new Embed[] { subscriptionModule, rankingModule, badgeRolesModule },
-                components: GetComponent());
-
+            embeds = new Embed[] { subscriptionModule, rankingModule, badgeRolesModule};
+            return true;
         }
-
-
-        private MessageComponent GetComponent()
+        public bool TryCreateComponents(out ComponentBuilder component)
         {
-            var cBuilder = new ComponentBuilder()
-                // .WithButton(PlayersButton.GetButton(userLocale, dynastio.OnlinePlayers.Count), 0)
-                ;
-
-            cBuilder.WithButton(CancelButton.GetButton(userLocale), 3);
-
-            return cBuilder.Build();
+            component = new ComponentBuilder();
+            component.WithButton(CancelButton.GetButton(userLocale), 0);
+            component = advertisingService.ExploitationAdvertisingButtons(component, 0, 4);
+            return true;
         }
+
 
     }
 }

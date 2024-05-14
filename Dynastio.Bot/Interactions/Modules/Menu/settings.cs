@@ -14,19 +14,21 @@ using Discord.WebSocket;
 using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Interactions.Modules.Buttons.dynastio;
 using Dynastio.Bot.Interactions.Modules.shared_buttons;
+using Dynastio.Bot.Interactions.Modules.Buttons.bot;
 
-namespace Dynastio.Bot.Interactions.Modules.Buttons
+namespace Dynastio.Bot.Interactions.Modules.Menu
 {
-    public class MenuMeButton : BotInteractionModuleBase
+    [RateLimit(5, 2)]
+    [RequireContext(ContextType.Guild)]
+    public class SettingsModule : BotInteractionModuleBase, IMenuModule
     {
-
-        public const string CustomId = "btn.menu.me";
+        public const string CustomId = "btn.menu.settings";
         public static Emoji Emoji => new Emoji("🛠️");
         public static ButtonBuilder GetButton(Locale locale, bool IsDisabled = false)
         {
             return new ButtonBuilder()
             {
-                Label = locale["btn.menu.me.label"],
+                Label = locale["btn.menu.settings.label"],
                 Style = ButtonStyle.Success,
                 Emote = Emoji,
                 IsDisabled = IsDisabled,
@@ -34,24 +36,61 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons
                 CustomId = CustomId
             };
         }
+
+        [SlashCommand("settings", "settings menu")]
+        public async Task SlashCommandAsync()
+        {
+            await ExecuteAsync();
+        }
+
         [RequireComponentMessageMention]
         [ComponentInteraction(CustomId)]
+        public async Task ButtonAsync()
+        {
+            await ExecuteAsync();
+        }
+
         public async Task ExecuteAsync()
         {
             await DeferAsync();
 
-            var result = TryGetComponents(out ComponentBuilder component);
+            var componentResult = TryCreateComponents(out ComponentBuilder component);
+            var embedsResult = TryCreateEmbeds(out Embed[] embeds);
 
             if (Context.Interaction is SocketMessageComponent)
-                await ModifyCurrentMessageAsync(userMention, embed: GetEmbedBuilder(result), components: component.Build());
+                await ModifyCurrentMessageAsync(userMention, embeds: embeds, components: component.Build());
             else
                 await FollowupAsync(
-                    text: userMention,
-                    embed: GetEmbedBuilder(result),
+                    text: TryCreateTextContent(),
+                    embeds: embeds,
                     components: component.Build());
         }
 
-        public Embed GetEmbedBuilder(bool componentResult)
+        public string TryCreateTextContent()
+        {
+            var contentAdvertises = advertisingService.ExploitationAdvertising(Database.AdsType.MessageContent, 1).FirstOrDefault();
+            return Context.User.Mention + " | " + contentAdvertises?.GetEmbedLink();
+        }
+        public bool TryCreateComponents(out ComponentBuilder component)
+        {
+            component = new ComponentBuilder();
+
+            component
+                .WithButton(RankButton.GetButton(userLocale), 0)
+                .WithButton(SyncRolesButton.GetButton(userLocale, !BotGuild.HasSubscription()), 0)
+
+                .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19), 1);
+
+            if (BotUser.GetMainAccount() == null)
+                component.WithButton(ConnectAccountButton.GetButton(userLocale), 1);
+
+            component.WithButton(CancelButton.GetButton(userLocale), 2);
+
+            component = advertisingService.ExploitationAdvertisingButtons(component, 2);
+
+            return true;
+        }
+        public bool TryCreateEmbeds(out Embed[] embeds)
         {
             var profile = Context.BotUser.GetRankingProfile(Context.Guild.Id);
             var fileds = new List<EmbedFieldBuilder>()
@@ -96,7 +135,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons
                 .WithValue(string.IsNullOrEmpty(BotUser.youtube_channel) ? "` Not Linked `" : "### "+BotUser.youtube_channel.ToYoutubeChannel().ToMarkdownLink("Youtube Channel"))
                 .WithIsInline(true),
             };
-            return new EmbedBuilder()
+            var embed = new EmbedBuilder()
             {
                 Title = Context.User.GlobalName,
                 ThumbnailUrl = Context.User.TryGetAvatarUrl(),
@@ -106,23 +145,9 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons
                 "Here you can manage and view your account details & settings !",
                 Fields = fileds
             }.Build();
-        }
-        private bool TryGetComponents(out ComponentBuilder component)
-        {
-            component = new ComponentBuilder();
 
-            component
-                .WithButton(RankButton.GetButton(userLocale), 0)
-                .WithButton(SyncRolesButton.GetButton(userLocale, !BotGuild.HasSubscription()), 0)
-
-                .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19), 1);
-
-            component.WithButton(CancelButton.GetButton(userLocale), 2);
-
-            component = advertisingService.ExploitationAdvertisingButtons(component, 2);
-
+            embeds = new Embed[] { embed };
             return true;
         }
-
     }
 }

@@ -10,8 +10,11 @@
   "btn.dynastio.version.title": "Version",
   "btn.dynastio.privateservers.label": "Private Servers",
   "btn.dynastio.connectaccount.label": "Connect Account",
-  "btn.guild.sync.roles.label": "ReSync Roles",
-  "btn.menu.me.label": "Settings",
+  "btn.guild.sync.roles.label": "Sync Roles",
+  "btn.menu.settings.label": "Settings",
+  "btn.menu.dashboard.label": "Dashboard",
+  "btn.menu.dynastio.label": "Dynast.io",
+  "btn.menu.setup.label": "Setup",
 
   "modal.dynastio.searchplayer.title": "Search Players",
   "modal.dynastio.accounts.add.unauthorized": "The entered account does not belong to you.",
