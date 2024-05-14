@@ -30,7 +30,7 @@ namespace Dynastio.Bot.Database
         public List<GuildProfile> GuildProfiles { get; set; } = new();
 
 
-        public GuildProfile GetRankingProfile(ulong guildId)
+        public GuildProfile GetServerProfile(ulong guildId)
         {
             var rankingProfile = GuildProfiles.FirstOrDefault(a => a.GuildId == guildId);
             if (rankingProfile is null)
@@ -41,7 +41,8 @@ namespace Dynastio.Bot.Database
                     LastCheckupTimestamp = DateTime.MinValue,
                     LastMessageTimestamp = DateTime.MinValue,
                     Level = 0,
-                    Xp = 0
+                    Xp = 0,
+                    Warns = 0
                 };
                 GuildProfiles.Add(rankingProfile);
             }

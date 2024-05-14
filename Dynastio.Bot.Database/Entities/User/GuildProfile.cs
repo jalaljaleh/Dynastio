@@ -13,7 +13,7 @@ namespace Dynastio.Bot.Database
 
         public long Xp { get; set; } = 0;
         public int Level { get; set; } = 0;
-
+        public int Warns { get; set; }
         public DateTime LastMessageTimestamp { get; set; } = DateTime.MinValue;
 
         public DateTime LastCheckupTimestamp { get; set; }

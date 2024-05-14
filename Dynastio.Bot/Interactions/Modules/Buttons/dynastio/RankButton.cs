@@ -53,7 +53,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
                 return;
             }
 
-            var rank = BotUser.GetRankingProfile(guild.Id);
+            var rank = BotUser.GetServerProfile(guild.Id);
             if (rank.Level == 0)
             {
                 await ModifyCurrentMessageAsync(embed: userLocale["embed.rank.not_ranked.description"].ToInformEmbed(userLocale["embed.rank.not_ranked.title"], BotAvatarUrl));
@@ -73,7 +73,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
             var userRankRoles = rankingService.GetUserRankingRoles(Context.User as IGuildUser, guildRankRoles);
             if (userRankRoles is null || userRankRoles.Count() == 0)
             {
-                await rankingService.SynchronizeUserRolesAsync(Context.BotGuild, Context.User as IGuildUser, Context.BotUser.GetRankingProfile(Context.Guild.Id).Level);
+                await rankingService.SynchronizeUserRolesAsync(Context.BotGuild, Context.User as IGuildUser, Context.BotUser.GetServerProfile(Context.Guild.Id).Level);
                 userRankRoles = rankingService.GetUserRankingRoles(Context.User as IGuildUser, guildRankRoles);
             }
 

@@ -92,7 +92,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
         }
         public bool TryCreateEmbeds(out Embed[] embeds)
         {
-            var profile = Context.BotUser.GetRankingProfile(Context.Guild.Id);
+            var profile = Context.BotUser.GetServerProfile(Context.Guild.Id);
             var fileds = new List<EmbedFieldBuilder>()
             {
                     new EmbedFieldBuilder()

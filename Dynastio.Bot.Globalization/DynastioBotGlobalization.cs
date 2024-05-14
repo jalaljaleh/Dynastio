@@ -5,6 +5,9 @@ namespace Dynastio.Bot.Globalization
 {
     public class DynastioBotGlobalization
     {
+        public DynastioBotGlobalization()
+        {
+        }
         internal Dictionary<string, Locale> Languages { get; set; } = new();
         public void Initialize()
         {

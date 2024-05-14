@@ -34,7 +34,7 @@ namespace Dynastio.Bot.Services
             if (guild.RankingSettings.IsLevelUpChannel(txtChannel.Id) is false) return;
 
             var discordUser = message.Author as IGuildUser;
-            var uProfile = user.GetRankingProfile(guild.Id);
+            var uProfile = user.GetServerProfile(guild.Id);
 
 
             if (IsXpIncreaseable(guild.RankingSettings, uProfile, message.CleanContent))
