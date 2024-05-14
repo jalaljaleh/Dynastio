@@ -21,7 +21,6 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
     [RequireUserPermission(GuildPermission.ModerateMembers)]
     public class ModeratorModule : BotInteractionModuleBase
     {
-        const long max = 2419200;
         public enum TimeType
         {
             None = 0,
@@ -41,14 +40,15 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
             int time_ = value * (int)time;
             if (time_ > 2419200) // api limit
             {
-                await FollowupAsync(embed: "Can not set more than 29 days.".ToEmbed("Api limit", Color.Orange));
+                await FollowupAsync(ephemeral: true, embed: "Can not set more than 29 days.".ToEmbed("Api limit", Color.Orange));
                 return;
             }
+
             var timeSpan = TimeSpan.FromSeconds(time_);
 
             await user.SetTimeOutAsync(timeSpan);
 
-            await FollowupAsync(text: userMention, embed: new EmbedBuilder()
+            await FollowupAsync(ephemeral: true, text: userMention, embed: new EmbedBuilder()
             {
                 Title = "Successful Command",
                 Description = $"Sir, this bad user have been muted successfuly 😄 !",

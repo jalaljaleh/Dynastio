@@ -44,23 +44,31 @@ namespace Dynastio.Bot.Services
             if (guild.BadgesRole.IsEnabled is false) return false;
             if (guild.BadgesRole.HeaderId != 0) return false;
 
-            var userBadges = await GetUserBadgesAsync(buser);
+            var playerBadge = await GetUserBadgesAsync(buser);
 
-            foreach (var role in guild.BadgesRole.Roles)
+            foreach (var roleBadge in guild.BadgesRole.Roles.Where(a => user.RoleIds.Contains(a.RoleId) || playerBadge.Contains(a.Badge)))
             {
-                if (userBadges.Contains(role.Badge)) // has the badge
-                {
-                    if (user.RoleIds.Contains(role.RoleId)) // user has the role
-                        continue;
-                    await user.AddRoleAsync(role.RoleId);
-                }
-                else // hasn't the badge
-                {
-                    if (user.RoleIds.Contains(role.RoleId)) // user has the role
-                        await user.RemoveRoleAsync(role.RoleId);
-                }
-                await Task.Delay(250);
+                bool HasRole = user.RoleIds.Contains(roleBadge.RoleId);
+                bool HasBadge = playerBadge.Contains(roleBadge.Badge);
+
+                if (HasRole && !HasBadge)
+                    await user.RemoveRoleAsync(roleBadge.RoleId);
+
+                if (!HasRole && HasBadge)
+                    await user.AddRoleAsync(roleBadge.RoleId);
+
+                await Task.Delay(180);
             }
+
+            var roleIds = guild.BadgesRole.Roles.Select(a => a.RoleId);
+            bool HasHeaderRole = user.RoleIds.Contains(guild.BadgesRole.HeaderId);
+            bool HasAnyBadgeRole = user.RoleIds.Any(a => roleIds.Contains(a));
+
+            if (HasAnyBadgeRole && !HasHeaderRole)
+                await user.AddRoleAsync(guild.BadgesRole.HeaderId);
+            else if (!HasAnyBadgeRole && HasHeaderRole)
+                await user.RemoveRoleAsync(guild.BadgesRole.HeaderId);
+
             return true;
         }
 
