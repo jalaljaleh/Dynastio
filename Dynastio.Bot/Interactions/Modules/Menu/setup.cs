@@ -134,8 +134,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
 
             var badgeRoles = BotGuild.BadgesRole;
             var badgeRolesContent = badgeRoles.Roles.Any()
-                ? $"### badge roles:\n" + string.Join("\n", badgeRoles.Roles?.Select(a => string.Format("{0}: <@&{1}>", a.Badge, a.RoleId)))
-                : "";
+                ? string.Join("\n", badgeRoles.Roles?.Select(a => string.Format("{0}: <@&{1}>", a.Badge, a.RoleId)))
+                : "the module is not enabled;";
            var badgeRolesModule = new EmbedBuilder()
             {
                 Title = $"BadgeRole Module is {(badgeRoles.IsEnabled ? "Enabled" : "Disabled")}",

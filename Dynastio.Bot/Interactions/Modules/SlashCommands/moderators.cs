@@ -41,7 +41,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 await FollowupAsync(text: userMention, embed: new EmbedBuilder()
                 {
                     Title = "Successful Command",
-                    Description = $"The operation was successful sir and this bad user muted successfuly 😄 !",
+                    Description = $"Sir, this bad user have been muted successfuly 😄 !",
                     Fields = new List<EmbedFieldBuilder>()
                     {
                         new EmbedFieldBuilder()
@@ -60,7 +60,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                 await Context.Channel.SendMessageAsync(text: user.Mention, embed: new EmbedBuilder()
                 {
                     Title = "You Are Muted",
-                    Description = $"You have been muted !",
+                    Description = $"You have been muted for {(DateTime.UtcNow + time).ToRelative()} !",
                     Fields = new List<EmbedFieldBuilder>()
                     {
                         new EmbedFieldBuilder()
@@ -69,9 +69,9 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
 
                           new EmbedFieldBuilder()
                         .WithName("Reason").WithIsInline(true)
-                        .WithValue(reason),
+                        .WithValue($"**{reason}**"),
                     },
-                    ThumbnailUrl = BotAvatarUrl,
+                    ThumbnailUrl = Global.Resource.ModeratorUrl,
                     Color = Color.Red,
                     Author = new EmbedAuthorBuilder() { Name = "Dynast.io Moderators", IconUrl = BotAvatarUrl }
                 }.Build());
@@ -85,18 +85,32 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
         [SlashCommand("warn", "warn users")]
         public async Task warn(IGuildUser user, string reason = "no reason provided !")
         {
-            await RespondAsync("done", ephemeral: true);
-            await Context.Channel.SendMessageAsync(text: user.Mention, embed: new EmbedBuilder()
+            await RespondAsync(ephemeral: true, text: userMention, embed: new EmbedBuilder()
             {
-                Title = "Warning ..",
-                Description = $"You have been warned !",
+                Title = "Successful Warn",
+                Description = $"Sir, this bad user have been warned successfuly 😄 !",
                 Fields = new List<EmbedFieldBuilder>()
                     {
                           new EmbedFieldBuilder()
                         .WithName("Reason").WithIsInline(true)
                         .WithValue(reason),
                     },
-                ThumbnailUrl = BotAvatarUrl,
+                ThumbnailUrl = user.TryGetAvatarUrl(),
+                Color = Color.Green,
+                Author = new EmbedAuthorBuilder() { Name = user.GlobalName, IconUrl = user.TryGetAvatarUrl() }
+            }.Build());
+
+            await Context.Channel.SendMessageAsync(text: user.Mention, embed: new EmbedBuilder()
+            {
+                Title = $"{user.DisplayName} You got a warn !",
+                Description = $"{user.GlobalName} Hey, Be carefull, you have been warned !",
+                Fields = new List<EmbedFieldBuilder>()
+                    {
+                          new EmbedFieldBuilder()
+                        .WithName("Reason").WithIsInline(true)
+                        .WithValue($"**{reason}**"),
+                    },
+                ThumbnailUrl = Global.Resource.ModeratorUrl,
                 Color = Color.Orange,
                 Author = new EmbedAuthorBuilder() { Name = "Dynast.io Moderators", IconUrl = BotAvatarUrl }
             }.Build());

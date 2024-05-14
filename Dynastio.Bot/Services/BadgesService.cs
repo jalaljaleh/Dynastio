@@ -27,7 +27,7 @@ namespace Dynastio.Bot.Services
             foreach (var profile in user.Accounts)
             {
                 var r = await this._dynast.GetUserProfileAsync(profile.Id).TryAsync<Profile>();
-                if (r.isSuccesful)
+                if (r.isSuccesful && r.result != null)
                     profiles.Add(r.result);
 
                 await Task.Delay(500);
@@ -37,7 +37,7 @@ namespace Dynastio.Bot.Services
         public async Task<List<BadgeType>> GetUserBadgesAsync(User user)
         {
             var badges = await GetUserProfilesAsync(user);
-            return badges.SelectMany(a => a.Badges).ToList();
+            return badges.Where(a => a.Badges != null && a.Badges.Count > 0).SelectMany(a => a.Badges).ToList();
         }
         public async Task<bool> SynchronizeUserRolesAsync(Guild guild, IGuildUser user, User buser)
         {
