@@ -47,7 +47,7 @@ namespace Dynastio.Bot.Interactions.Modules.buttons
             await this.DeferAsync();
             await this.ModifyCurrentMessageAsync(embed:"We are checking your request !".ToEmbed("waiting ..."));
 
-            await userService.SyncUserRolesAsync(BotGuild, BotUser, Context.User as IGuildUser);
+            var result = await userService.SyncUserRolesAsync(BotGuild, BotUser, Context.User as IGuildUser);
             
 
             await this.ModifyCurrentMessageAsync(embed: "Done".ToEmbed("done, your request completed !"));

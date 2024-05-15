@@ -70,10 +70,20 @@ namespace Dynastio.Bot.Interactions
         }
         public async Task ModifyCurrentMessageToInputModeAsync()
         {
-            await ModifyCurrentMessageAsync(
-               Context.User.Mention,
-               embed: userLocale["input_mode.description"].ToEmbed(userLocale["input_mode.title"], thumbnailUrl: Context.Client.CurrentUser.TryGetAvatarUrl())
-               );
+            var embed = new EmbedBuilder()
+            {
+                Title = userLocale["input_mode.title"],
+                Description = userLocale["input_mode.description"],
+                ThumbnailUrl = BotAvatarUrl,
+                Color = Color.Orange,
+                Fields = new List<EmbedFieldBuilder>()
+                {
+                    new EmbedFieldBuilder().WithIsInline(true)
+                    .WithName("Waiting time")
+                    .WithValue("Since " +DateTime.UtcNow.UnixTimestampDiscordFormat())
+                },
+            }.Build();
+            await ModifyCurrentMessageAsync(userMention, embed: embed,components: new ComponentBuilder().Build());
         }
         public async Task<bool> DeleteCurrentMessageAsync()
         {
@@ -89,11 +99,21 @@ namespace Dynastio.Bot.Interactions
         }
         public async Task CloseMenuAsync()
         {
-            await ModifyCurrentMessageAsync(
-             embed: (userLocale["menu_closed_description"] + "\n\n" + advertisingService.GetInlineEmbedDescription())
-                    .ToEmbed(userLocale["menu_closed_title"],
-                    Context.Client.CurrentUser.TryGetAvatarUrl()
-                    ));
+            var embed = new EmbedBuilder()
+            {
+                Title = userLocale["menu_closed_title"],
+                Description = userLocale["menu_closed_description"] + "\n\n" +advertisingService.GetInlineEmbedDescription(),
+                ThumbnailUrl = BotAvatarUrl,
+                Color = Color.Orange,
+                Fields = new List<EmbedFieldBuilder>()
+                {
+                    new EmbedFieldBuilder().WithIsInline(true)
+                    .WithName("Waiting time")
+                    .WithValue("Since " +DateTime.UtcNow.UnixTimestampDiscordFormat())
+                },
+            }.Build();
+
+            await ModifyCurrentMessageAsync(userMention, embed: embed, components: new ComponentBuilder().Build());
         }
         public async Task<bool> ConfirmActionAsync()
         {

@@ -76,7 +76,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
             component = new ComponentBuilder();
 
             component
-                .WithButton(RankButton.GetButton(userLocale), 0)
+                .WithButton(RankModules.GetButton(userLocale), 0)
                 .WithButton(SyncRolesButton.GetButton(userLocale, !BotGuild.HasSubscription()), 0)
 
                 .WithButton(AddAccountButton.GetButton(userLocale, BotUser.Accounts.Count > 19), 1);

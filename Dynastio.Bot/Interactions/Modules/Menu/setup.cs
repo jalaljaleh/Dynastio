@@ -16,6 +16,7 @@ using Dynastio.Bot.Interactions.Modules.Buttons.dynastio;
 using Dynastio.Bot.Interactions.Modules.shared_buttons;
 using Dynastio.Bot.Services;
 using Amazon.Runtime.Internal.Util;
+using Dynastio.Bot.Interactions.Modules.Buttons.dynastio.subscription;
 
 namespace Dynastio.Bot.Interactions.Modules.Menu
 {
@@ -159,8 +160,11 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
         public bool TryCreateComponents(out ComponentBuilder component)
         {
             component = new ComponentBuilder();
-            component.WithButton(CancelButton.GetButton(userLocale), 0);
-            component = advertisingService.ExploitationAdvertisingButtons(component, 0, 4);
+            component.WithButton(SubscriptionButton.GetButton(), 0);
+            component.WithButton(RankModuleSettingsButton.GetButton(), 1);
+            component.WithButton(BadgesRoleSettingsButton.GetButton(), 1);
+            component.WithButton(CancelButton.GetButton(userLocale), 2);
+            component = advertisingService.ExploitationAdvertisingButtons(component, 2, 4);
             return true;
         }
 

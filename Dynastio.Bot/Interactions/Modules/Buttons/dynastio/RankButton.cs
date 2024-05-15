@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
 {
-    public class RankButton : BotInteractionModuleBase
+    public class RankModules : BotInteractionModuleBase
     {
         public DynastioApi dynastio { get; set; }
         public DynastioGraphic dynastioGraphic { get; set; }
