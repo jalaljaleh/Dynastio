@@ -57,10 +57,14 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
             }
 
             var targetUser = await this.dynastioBotDatabase.GetUserByAccountIdAsync(id);
-            if (targetUser != null)
+            var targetMainAccount = await this.dynastioBotDatabase.GetUserByConnectedAccountIdAsync(id);
+            if (targetUser != null && targetMainAccount != null)
             {
-                await FollowupAsync(userMention, embed: this["modal.dynastio.accounts.add.unauthorized.used.description", $"<@{targetUser.Id}>"].ToEmbed(this["unauthorized", Color.Red]));
-                return;
+                if (targetMainAccount.Id != Context.User.Id)
+                {
+                    await FollowupAsync(userMention, embed: this["modal.dynastio.accounts.add.unauthorized.used.description", $"<@{targetUser.Id}>"].ToEmbed(this["unauthorized", Color.Red]));
+                    return;
+                }
             }
 
             var account = new UserAccount()

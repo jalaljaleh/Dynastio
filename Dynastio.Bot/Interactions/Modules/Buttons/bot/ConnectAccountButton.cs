@@ -80,11 +80,22 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.bot
                 return;
             }
 
-            BotUser.gameAccountId = account.Id;
+            var check = await dynastioBotDatabase.GetUserByConnectedAccountIdAsync(account.Id);
+            if (check != null)
+            {
+                BotUser.Accounts.Remove(account);
+                await ModifyCurrentMessageAsync(userMention + "@developer, @admin, this is a not a normal action !");
+
+            }
+            else
+            {
+                BotUser.gameAccountId = account.Id;
+                await ModifyCurrentMessageAsync(userMention + " Done, Your Main account connected to the bot.");
+
+            }
 
             await dynastioBotDatabase.UpdateAsync(BotUser);
 
-            await ModifyCurrentMessageAsync(userMention + " Done, Your Main account connected to the bot.");
         }
 
     }

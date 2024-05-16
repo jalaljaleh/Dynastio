@@ -19,7 +19,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio.subscription
     public class BadgesRoleSettingsButton : BotInteractionModuleBase
     {
 
-        public const string CustomId = "btn.subscription.rank";
+        public const string CustomId = "btn.subscription.badgesrole";
         public static Emoji Emoji => new Emoji("➕");
         public static ButtonBuilder GetButton()
         {
