@@ -138,7 +138,7 @@ namespace Dynastio.Bot.Interactions
             return true;
         }
 
-        public async Task<UserAccount> SelectUserAccountAsync()
+        public async Task<UserGameAccount> SelectUserAccountAsync()
         {
 
             // Combine Defer and SelectMenu creation for efficiency
@@ -184,7 +184,7 @@ namespace Dynastio.Bot.Interactions
             var message = await ModifyCurrentMessageAsync(Context.User.Mention, components: components, embed: embed.Build());
 
             var result = await Context.WaitForSelectMenuFromMessageAsync(message, TimeSpan.FromSeconds(30));
-            if (result is null || BotUser.GetAccountByHashCode(result.Data.Values.FirstOrDefault(), out UserAccount account) is null)
+            if (result is null || BotUser.GetAccountByHashCode(result.Data.Values.FirstOrDefault(), out UserGameAccount account) is null)
             {
                 return null;
             }

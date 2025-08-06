@@ -96,7 +96,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
                 }
             }.Build();
 
-            var rank = BotGuild.RankingSettings;
+            var rank = BotGuild.XpSystemSettings;
             var rankingModule = new EmbedBuilder()
             {
                 Title = $"Ranking Module Is {(rank.IsEnabled ? "Enabled" : "Disabled")}",
@@ -111,7 +111,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
                                 $"Message Xp: ` {rank.XpPerMessage} `\n" +
                                 $"Boosters Xp: ` {rank.XpBoosters} `\n" +
                                 $"Random Xp: ` {rank.XpRandom} `\n" +
-                                $"Delay: ` {rank.Delay} `\n",
+                                $"Delay: ` {rank.MessageScoreCooldown} `\n",
                     },
                     new EmbedFieldBuilder()
                     {
@@ -126,14 +126,14 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
                         IsInline = false,
                         Name = "Xp Channels",
                         Value =
-                                 $"Level Up Channel: <#{rank.LogChannelId}>\n" +
-                                 $"Xp channels: {string.Join(", ", rank.ChannelIds?.Select(a => $"<#{a}>") ?? null)}\n"
+                                 $"Level Up Channel: <#{rank.RankingLoggerChannelId}>\n" +
+                                 $"Xp channels: {string.Join(", ", rank.AllowedXpChannels?.Select(a => $"<#{a}>") ?? null)}\n"
                     }
                 },
                 Color = rank.IsEnabled ? Color.Green : Color.Red,
             }.Build();
 
-            var badgeRoles = BotGuild.BadgesRole;
+            var badgeRoles = BotGuild.BadgeBridgeSettings;
             var badgeRolesContent = badgeRoles.Roles.Any()
                 ? string.Join("\n", badgeRoles.Roles?.Select(a => string.Format("{0}: <@&{1}>", a.Badge, a.RoleId)))
                 : "the module is not enabled;";

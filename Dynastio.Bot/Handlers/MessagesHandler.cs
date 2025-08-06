@@ -14,7 +14,7 @@ namespace Dynastio.Bot.Handlers
 {
     internal class MessagesHandler
     {
-        private readonly RankingService _rankingService;
+        private readonly XpRankingSystemService _xpRankingSystem;
         public readonly DiscordSocketClient _discord;
         public readonly DynastioBotDatabase _db;
         public readonly AppConfiguration _config;
@@ -23,7 +23,7 @@ namespace Dynastio.Bot.Handlers
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _db = services.GetRequiredService<DynastioBotDatabase>();
             _config = services.GetRequiredService<AppConfiguration>();
-            _rankingService = services.GetRequiredService<RankingService>();
+            _xpRankingSystem = services.GetRequiredService<XpRankingSystemService>();
 
             _discord.MessageReceived += _discord_MessageReceived;
         }
@@ -40,10 +40,10 @@ namespace Dynastio.Bot.Handlers
 
             if (message.Channel is ITextChannel txtChannel)
             {
-                var guild = await _db.GetGuildAsync(txtChannel.GuildId);
-                var user = await _db.GetUserAsync(message.Author.Id);
+                var guild = await _db.GetGuildAsync(txtChannel.GuildId, true, () => GuildFactory.CreateDefault(txtChannel.GuildId), null);
+                var user = await _db.GetUserAsync(message.Author.Id, true, () => UserFactory.CreateDefault(message.Author.Id), null);
 
-                await _rankingService.TryAddMessageXpAsync(guild, user, message);
+                await _xpRankingSystem.TryAddMessageXpAsync(guild, user, message);
             }
 
         }

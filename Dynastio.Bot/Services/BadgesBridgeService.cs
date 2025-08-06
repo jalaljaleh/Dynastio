@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Services
 {
-    public class BadgesService : ServicesBase
+    public class BadgesBridgeService : ServicesBase
     {
-        public BadgesService(IServiceProvider services) : base(services)
+        public BadgesBridgeService(IServiceProvider services) : base(services)
         {
         }
         public void Initialize()
@@ -26,9 +26,9 @@ namespace Dynastio.Bot.Services
             List<Profile> profiles = new List<Profile>();
             foreach (var profile in user.Accounts)
             {
-                var r = await this._dynast.GetUserProfileAsync(profile.Id).TryAsync<Profile>();
-                if (r.isSuccesful && r.result != null)
-                    profiles.Add(r.result);
+                var result = await this._dynast.GetUserProfileAsync(profile.Id).TryAsync<Profile>();
+                if (result.isSuccesful && result.result != null)
+                    profiles.Add(result.result);
 
                 await Task.Delay(500);
             }
@@ -41,12 +41,12 @@ namespace Dynastio.Bot.Services
         }
         public async Task<bool> SynchronizeUserRolesAsync(Guild guild, IGuildUser user, User buser)
         {
-            if (guild.BadgesRole.IsEnabled is false) return false;
-            if (guild.BadgesRole.HeaderId == 0) return false;
+            if (guild.BadgeBridgeSettings.IsEnabled is false) return false;
+            if (guild.BadgeBridgeSettings.BadgesRoleAssignmentHeaderId == 0) return false;
 
             var playerBadge = await GetUserBadgesAsync(buser);
 
-            foreach (var roleBadge in guild.BadgesRole.Roles.Where(a => user.RoleIds.Contains(a.RoleId) || playerBadge.Contains(a.Badge)))
+            foreach (var roleBadge in guild.BadgeBridgeSettings.Roles.Where(a => user.RoleIds.Contains(a.RoleId) || playerBadge.Contains(a.Badge)))
             {
 
                 bool HasRole = user.RoleIds.Contains(roleBadge.RoleId);
@@ -61,14 +61,14 @@ namespace Dynastio.Bot.Services
                 await Task.Delay(180);
             }
 
-            var roleIds = guild.BadgesRole.Roles.Select(a => a.RoleId);
-            bool HasHeaderRole = user.RoleIds.Contains(guild.BadgesRole.HeaderId);
+            var roleIds = guild.BadgeBridgeSettings.Roles.Select(a => a.RoleId);
+            bool HasHeaderRole = user.RoleIds.Contains(guild.BadgeBridgeSettings.BadgesRoleAssignmentHeaderId);
             bool HasAnyBadgeRole = user.RoleIds.Any(a => roleIds.Contains(a));
 
             if (HasAnyBadgeRole && !HasHeaderRole)
-                await user.AddRoleAsync(guild.BadgesRole.HeaderId);
+                await user.AddRoleAsync(guild.BadgeBridgeSettings.BadgesRoleAssignmentHeaderId);
             else if (!HasAnyBadgeRole && HasHeaderRole)
-                await user.RemoveRoleAsync(guild.BadgesRole.HeaderId);
+                await user.RemoveRoleAsync(guild.BadgeBridgeSettings.BadgesRoleAssignmentHeaderId);
 
             return true;
         }

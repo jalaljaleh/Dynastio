@@ -67,7 +67,7 @@ namespace Dynastio.Bot.Interactions.Modules.Modals
                 }
             }
 
-            var account = new UserAccount()
+            var account = new UserGameAccount()
             {
                 Id = id,
                 AddedAt = DateTime.UtcNow,

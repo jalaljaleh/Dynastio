@@ -4,11 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using MongoDB.Bson;
 using System.Collections.Concurrent;
-using Dynastio.Net;
-using Dynastio.Bot.Global;
 
 namespace Dynastio.Bot.Database
 {
@@ -19,18 +16,18 @@ namespace Dynastio.Bot.Database
         public User() { }
         [BsonId]
         public ulong Id { get; set; }
-
         public string youtube_channel { get; set; }
-
         public DateTime LastUpdateTime { get; set; } = DateTime.MinValue;
-
         public string gameAccountId { get; set; } = string.Empty;
+        public List<UserGameAccount> Accounts { get; set; } = new();
+        public List<UserGuildProfile> GuildProfiles { get; set; } = new();
 
-        public List<UserAccount> Accounts { get; set; } = new();
-        public List<GuildProfile> GuildProfiles { get; set; } = new();
+
+        [BsonIgnore]
+        public bool IsAccountConnected { get => !string.IsNullOrEmpty(gameAccountId); }
 
 
-        public GuildProfile GetServerProfile(ulong guildId)
+        public UserGuildProfile GetServerProfile(ulong guildId)
         {
             var rankingProfile = GuildProfiles.FirstOrDefault(a => a.GuildId == guildId);
             if (rankingProfile is null)
@@ -42,41 +39,39 @@ namespace Dynastio.Bot.Database
                     LastMessageTimestamp = DateTime.MinValue,
                     Level = 0,
                     Xp = 0,
-                    Warns = 0
                 };
                 GuildProfiles.Add(rankingProfile);
             }
             return rankingProfile;
         }
-        public UserAccount GetAccount(string Id)
+
+        public UserGameAccount GetAccount(string Id)
         {
             return Accounts.FirstOrDefault(a => a.Id.Equals(Id));
         }
-        public UserAccount GetAccountByHashCode(string Id, out UserAccount userAccount)
+        public UserGameAccount GetAccountByHashCode(string Id, out UserGameAccount userAccount)
         {
             userAccount = Accounts.FirstOrDefault(a => a.GetHashCode().ToString().Equals(Id));
             return userAccount;
         }
-        public UserAccount GetDefaultAccount()
+        public UserGameAccount GetDefaultAccount()
         {
             return Accounts.FirstOrDefault(a => a.IsDefault) ?? Accounts.FirstOrDefault();
         }
-        public UserAccount GetMainAccount()
+        public UserGameAccount GetMainAccount()
         {
             return string.IsNullOrEmpty(gameAccountId) is false
-                ? (Accounts.FirstOrDefault(a => a.Id == gameAccountId) ?? new UserAccount() { Id = gameAccountId, Reminder = "Main" })
+                ? (Accounts.FirstOrDefault(a => a.Id == gameAccountId) ?? new UserGameAccount() { Id = gameAccountId, Reminder = "Main" })
                 : null;
         }
-        public void SwitchAccount(ref UserAccount userAccount)
+        public void SwitchAccount(ref UserGameAccount userAccount)
         {
             Accounts.ForEach(a => a.IsDefault = false);
             userAccount.IsDefault = true;
         }
         public string GetAccountService() => gameAccountId.Split(":")[0];
 
-
-        [BsonIgnore]
-        public bool IsAccountConnected { get => !string.IsNullOrEmpty(gameAccountId); }
+      
     }
 
 

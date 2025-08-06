@@ -89,7 +89,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.dynastio
             var message = await ModifyCurrentMessageAsync(Context.User.Mention, components: components, embed: embed.Build());
 
             var result = await Context.WaitForSelectMenuFromMessageAsync(message, TimeSpan.FromSeconds(30));
-            if (result is null || BotUser.GetAccountByHashCode(result.Data.Values.FirstOrDefault(), out UserAccount account) is null)
+            if (result is null || BotUser.GetAccountByHashCode(result.Data.Values.FirstOrDefault(), out UserGameAccount account) is null)
             {
                 await ModifyCurrentMessageAsync(
                     embed: (userLocale["menu_closed_description"] + "\n\n" + advertisingService.GetInlineEmbedDescription())

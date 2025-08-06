@@ -44,13 +44,13 @@ namespace Dynastio.Bot.Handlers
 
         private async Task _discord_Ready()
         {
-            if (Main.IsDebug())
+            if (GlobalMain.IsDebug())
                 await _interactions.RegisterCommandsToGuildAsync(_config.DebugServerId, true);
             else
                 await _interactions.RegisterCommandsGloballyAsync(true);
         }
 
-        private List<ulong> users = new List<ulong>();
+        private List<ulong> ratelimiList = new List<ulong>();
         private async Task _discord_InteractionCreated(Discord.WebSocket.SocketInteraction interaction)
         {
             if (interaction.Type is Discord.InteractionType.MessageComponent or Discord.InteractionType.ModalSubmit)
@@ -60,20 +60,30 @@ namespace Dynastio.Bot.Handlers
 
             if (interaction.Type is not Discord.InteractionType.ApplicationCommandAutocomplete)
             {
-                if (users.Contains(interaction.User.Id))
+                if (ratelimiList.Contains(interaction.User.Id))
                 {
                     await interaction.RespondAsync(embed: "Another interaction is running.".ToEmbed("Wait .."));
                     return;
                 }
-                users.Add(interaction.User.Id);
             }
 
-            var ctx = new BotSocketInteractionContext(_discord, interaction, _services);
-            await _interactions.ExecuteCommandAsync(ctx, _services);
+            ratelimiList.Add(interaction.User.Id);
+
+            try
+            {
+                var ctx = new BotSocketInteractionContext(_discord, interaction, _services);
+                await _interactions.ExecuteCommandAsync(ctx, _services);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                ratelimiList.Remove(interaction.User.Id);
+            }
         }
         private async Task _interactions_InteractionExecuted(ICommandInfo info, Discord.IInteractionContext context, IResult result)
         {
-            users.Remove(context.User.Id);
 
             if (result.IsSuccess)
                 return;

@@ -43,9 +43,9 @@ namespace Dynastio.Bot
 
         public async Task MainAsync()
         {
-            Global.Main.Log("Main Async", "Started");
+            Global.GlobalMain.Log("Main Async", "Started");
 
-           // Environment.SetEnvironmentVariable("config-key", "");
+            // Environment.SetEnvironmentVariable("config-key", "");
             AppConfiguration configuration = AppConfiguration.LoadConfiguration();
             var services = new ServiceCollection();
             services
@@ -58,8 +58,8 @@ namespace Dynastio.Bot
 
            .AddSingleton<UserService>()
 
-           .AddSingleton<RankingService>()
-           .AddSingleton<BadgesService>()
+           .AddSingleton<XpRankingSystemService>()
+           .AddSingleton<BadgesBridgeService>()
 
            .AddSingleton<InteractionsHandler>()
            .AddSingleton<InteractionService>()
@@ -92,23 +92,25 @@ namespace Dynastio.Bot
             _services.GetRequiredService<DynastioApi>();
 
             await _services.GetService<DynastioBotDatabase>()
-                 .InitializeAsync(configuration.Tokens["connectionstring-mongodb"], DynastioBotDatabase.DatabasesInstances.Mongodb);
+                 .InitializeAsync(configuration.Tokens["connectionstring-mongodb"], DynastioBotDatabase.DatabasesInstances.Mongodb, GlobalMain.IsDebug());
 
-            _services.GetRequiredService<DynastioGraphic>().Initialize();
+            _services.GetRequiredService<DynastioGraphic>()
+                .Initialize();
 
-            _services.GetRequiredService<DynastioBotGlobalization>().Initialize();
+            _services.GetRequiredService<DynastioBotGlobalization>()
+                .Initialize();
 
             _services.GetRequiredService<UserService>();
 
-            _services.GetRequiredService<RankingService>();
-            _services.GetRequiredService<BadgesService>();
+            _services.GetRequiredService<XpRankingSystemService>();
+            _services.GetRequiredService<BadgesBridgeService>();
 
             _services.GetRequiredService<EventsHandler>();
             _services.GetRequiredService<MessagesHandler>();
 
             await _services.GetRequiredService<InteractionsHandler>().InitializeAsync();
 
-            await _services.GetRequiredService<AdvertisingService>().InitializeAsync();
+            //  await _services.GetRequiredService<AdvertisingService>().InitializeAsync();
 
             var client = _services.GetRequiredService<DiscordSocketClient>();
             client.Log += (LogMessage arg) =>
@@ -119,12 +121,6 @@ namespace Dynastio.Bot
 
             await client.LoginAsync(TokenType.Bot, configuration.Tokens["discord-bot"]);
             await client.StartAsync();
-
-            if (Global.Main.IsDebug() is false)
-            {
-                Logs.LoggerBot loggerbot = new Logs.LoggerBot();
-                await loggerbot.RunAsync(configuration.Tokens["logger-bot"]);
-            }
 
             await Task.Delay(Timeout.Infinite);
         }

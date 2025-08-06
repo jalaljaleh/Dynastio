@@ -1,4 +1,4 @@
-﻿using Dynastio.Bot.Database.Entities;
+﻿
 using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using static Dynastio.Bot.Database.RedeemCode;
+
 
 namespace Dynastio.Bot.Database
 {
@@ -15,17 +15,6 @@ namespace Dynastio.Bot.Database
         Task InitializeAsync();
 
 
-        Task<Advertise> GetAdvertisingAsync(ObjectId Id);
-        Task<bool> InsertAsync(Advertise _advertise);
-        Task<bool> UpdateAsync(Advertise _advertise);
-        Task<bool> DeleteAsync(Advertise _advertise);
-        Task<bool> UpdateManyAsync(List<Advertise> _advertise);
-        Task<List<Advertise>> GetAdsAsync(Func<Advertise, bool> predicate);
-
-
-        Task<T> GetEntityAsync<T>(EntityType entity) where T : EntityBase;
-        Task<bool> InsertAsync<T>(T entity) where T : EntityBase;
-        Task<bool> UpdateAsync<T>(T entity) where T : EntityBase;
 
 
         Task<Guild> GetGuildAsync(ulong Id);
@@ -46,12 +35,7 @@ namespace Dynastio.Bot.Database
         Task<bool> UpdateManyAsync(List<User> users);
         Task<bool> DeleteAsync(User user);
 
-        Task<RedeemCode> GetRedeemCodeAsync(RedeemType type);
-        Task<List<RedeemCode>> GetRedeemCodesAsync();
-        Task<bool> InsertAsync(RedeemCode redeemCodes);
-        Task<bool> InsertManyAsync(List<RedeemCode> redeemCodes);
-        Task<bool> DeleteAsync(RedeemCode redeemCodes);
-
+  
 
     }
 }

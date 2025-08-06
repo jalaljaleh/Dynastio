@@ -81,7 +81,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                         .WithName("Reason").WithIsInline(true)
                         .WithValue($"**{reason}**"),
                     },
-                ThumbnailUrl = Global.Resource.ModeratorUrl,
+                ThumbnailUrl = Global.GlobalResource.ModeratorUrl,
                 Color = Color.Red,
                 Author = new EmbedAuthorBuilder() { Name = "Dynast.io Moderators", IconUrl = BotAvatarUrl }
             }.Build());
@@ -119,7 +119,7 @@ namespace Dynastio.Bot.Interactions.Modules.slashcommands
                         .WithName("Warns").WithIsInline(true)
                         .WithValue($"` {profile.Warns} ` Warns"),
                     },
-                ThumbnailUrl = Global.Resource.ModeratorUrl,
+                ThumbnailUrl = Global.GlobalResource.ModeratorUrl,
                 Color = Color.Orange,
                 Author = new EmbedAuthorBuilder() { Name = "Dynast.io Moderators", IconUrl = BotAvatarUrl }
             }.Build());

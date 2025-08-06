@@ -33,7 +33,7 @@ namespace Dynastio.Bot.Interactions.Modules.SlashCommands.@private
             await FollowupAsync(
                 embed: ($"Successful Operator" +
                        $"ping: {Context.Client.Latency}\n" +
-                       $"start up: {Main.StartUp.UnixTimestampDiscordFormat()}\n" +
+                       $"start up: {GlobalMain.StartUp.UnixTimestampDiscordFormat()}\n" +
                        $"version: {Assembly.GetCallingAssembly().GetHashCode().ToString()}\n" +
                        $"").ToEmbed("Pong !"));
         }
@@ -243,7 +243,7 @@ namespace Dynastio.Bot.Interactions.Modules.SlashCommands.@private
                     return;
                 }
 
-                buser.GetAccountByHashCode(account, out UserAccount selectedAccount);
+                buser.GetAccountByHashCode(account, out UserGameAccount selectedAccount);
 
                 if (selectedAccount is null) await FollowupAsync("account not found.");
                 else await FollowupAsync(Context.User.Mention,

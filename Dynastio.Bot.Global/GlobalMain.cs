@@ -1,9 +1,9 @@
 ﻿using System.Net.NetworkInformation;
 using System.Reflection;
 
-namespace Dynastio.Bot.Global
+namespace Dynastio.Bot
 {
-    public class Main
+    public class GlobalMain
     {
 
         public static DateTime StartUp { get; private set; } = DateTime.UtcNow;

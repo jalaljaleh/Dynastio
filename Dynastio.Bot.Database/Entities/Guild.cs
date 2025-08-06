@@ -1,4 +1,4 @@
-﻿using Dynastio.Net;
+﻿
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver.Core.Operations;
@@ -17,21 +17,13 @@ namespace Dynastio.Bot.Database
     [BsonIgnoreExtraElements]
     public class Guild
     {
-        public Guild()
-        {
-
-        }
         [BsonId]
         public ulong Id { get; set; }
-        public GuildSubscription Subscription { get; set; } = new();
-        public ModuleRankingRole RankingSettings { get; set; } = new();
-        public ModuleDynastioBadgesRole BadgesRole { get; set; } = new();
-        public ulong PartnersRoleId { get; set; }
 
-        public bool HasSubscription()
-        {
-            return Subscription.EndsAt > DateTime.UtcNow;
-        }
+        public XpSystemSettings XpSystemSettings { get; set; } = new();
+        public BadgeBridgeSettings BadgeBridgeSettings { get; set; } = new();
+
+
 
 
     }

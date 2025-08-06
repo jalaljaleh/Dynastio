@@ -1,5 +1,4 @@
-﻿using Dynastio.Bot.Global;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using System;
 using System.Linq.Expressions;
 using System.Net;
@@ -7,130 +6,52 @@ using MongoDB;
 using MongoDB.Bson;
 using Amazon.Auth.AccessControlPolicy;
 using System.Dynamic;
-using Dynastio.Bot.Database.Entities;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
+
 
 namespace Dynastio.Bot.Database
 {
     internal class MongoDbContext : IDynastioDatabase
     {
+        private MongoClient _db { get; set; }
         private IMongoDatabase _dynastio;
         private IMongoCollection<User> _users => _dynastio.GetCollection<User>("Users");
         private IMongoCollection<Guild> _guilds => _dynastio.GetCollection<Guild>("Guilds");
-        private IMongoCollection<RedeemCode> _redeemCodes => _dynastio.GetCollection<RedeemCode>("RedeemCodes");
-        private IMongoCollection<EntityBase> _docs => _dynastio.GetCollection<EntityBase>("_objs");
-        private IMongoCollection<Advertise> _advertising => _dynastio.GetCollection<Advertise>("Advertising");
 
-
-        private MongoClient _db { get; set; }
-        public MongoDbContext(string mongoConnection)
+        public event OnDatabaseMessageLogs OnMessagesLog;
+        public delegate void OnDatabaseMessageLogs(string serviceName, string message, ConsoleColor color = default);
+        public MongoDbContext(string mongoConnection, bool isDebugMode = false)
         {
-            Main.Log("Mongodb", "Initialize Async..");
+            OnMessagesLog.Invoke("Mongodb", "Initialize Async..");
 
             var settings = MongoClientSettings.FromConnectionString(mongoConnection);
             // settings.ServerApi = new ServerApi(ServerApiVersion.V1);
 
             _db = new MongoClient(settings);
 
-            if (Main.IsDebug())
+            if (isDebugMode)
                 _dynastio = _db.GetDatabase("Dynastio_Debug");
             else
                 _dynastio = _db.GetDatabase("Dynastio");
 
-            Main.Log("Mongodb", "Initialized");
+            OnMessagesLog.Invoke("Mongodb", "Initialized");
         }
         public async Task InitializeAsync()
         {
             try
             {
-                Main.Log("Mongodb", "Start Session Async ..");
+                OnMessagesLog.Invoke("Mongodb", "Start Session Async ..");
                 await _db.StartSessionAsync();
 
-               // await update();
+                // await update();
 
-                Main.Log("Mongodb", "Session Started.");
+                OnMessagesLog.Invoke("Mongodb", "Session Started.");
             }
             catch
             {
-                Main.Log("Mongodb", "db is not connected.", ConsoleColor.Red);
+                OnMessagesLog.Invoke("Mongodb", "db is not connected.", ConsoleColor.Red);
             }
-        }
-        async Task update()
-        {
-            //var filter = Builders<Guild>.Filter.Where(a => true);
-            //var result = _guilds.Find(_ => true);
-            //var users = await result.ToListAsync();
-            //foreach (var u in users)
-            //{
-
-            //    u.BadgesRole = new();
-
-            //}
-            //Main.Log("Mongodb", users.Count + " Task done");
-            //await UpdateManyAsync(users);
-        }
-
-        public async Task<Advertise> GetAdvertisingAsync(ObjectId Id)
-        {
-            var result = _advertising.AsQueryable()
-                  .Where(a => a.Id == Id)
-                  .FirstOrDefault();
-            return await Task.FromResult(result);
-        }
-        public async Task<bool> InsertAsync(Advertise advertise)
-        {
-            _advertising.InsertOne(advertise);
-            return await Task.FromResult(true);
-        }
-        public async Task<bool> UpdateAsync(Advertise Advertise)
-        {
-            _advertising.ReplaceOne(a => a.Id == Advertise.Id, Advertise);
-            return await Task.FromResult(true);
-        }
-        public async Task<bool> DeleteAsync(Advertise Advertise)
-        {
-            var filter = Builders<Advertise>.Filter.Where(u => u.Id == Advertise.Id);
-            _advertising.DeleteOne(filter);
-            return await Task.FromResult(true);
-        }
-        public async Task<bool> UpdateManyAsync(List<Advertise> Advertise)
-        {
-            var updates = new List<WriteModel<Advertise>>();
-            foreach (var _advertise in Advertise)
-            {
-                var filter = Builders<Advertise>.Filter.Where(u => u.Id == _advertise.Id);
-                updates.Add(new ReplaceOneModel<Advertise>(filter, _advertise));
-            }
-            await _advertising.BulkWriteAsync(updates, new BulkWriteOptions() { IsOrdered = false });
-            return await Task.FromResult(true);
-        }
-        public async Task<List<Advertise>> GetAdsAsync(Func<Advertise, bool> predicate)
-        {
-            var result = _advertising.AsQueryable()
-                  .Where(predicate)
-                  .ToList();
-            return await Task.FromResult(result);
-        }
-
-
-        public async Task<T> GetEntityAsync<T>(EntityType entity) where T : EntityBase
-        {
-            var result = _docs.AsQueryable()
-                  .Where(a => a.Type == entity)
-                  .FirstOrDefault();
-
-            return await Task.FromResult(result as T);
-        }
-        public async Task<bool> InsertAsync<T>(T entity) where T : EntityBase
-        {
-            _docs.InsertOne(entity);
-            return await Task.FromResult(true);
-        }
-        public async Task<bool> UpdateAsync<T>(T entity) where T : EntityBase
-        {
-            _docs.ReplaceOne(a => a.Type == entity.Type, entity);
-            return await Task.FromResult(true);
         }
 
 
@@ -193,7 +114,7 @@ namespace Dynastio.Bot.Database
         public async Task<User> GetUserByAccountIdAsync(string Id)
         {
             var filter = Builders<User>.Filter
-                .ElemMatch(o => o.Accounts, Builders<UserAccount>.Filter.Where(a => a.Id == Id));
+                .ElemMatch(o => o.Accounts, Builders<UserGameAccount>.Filter.Where(a => a.Id == Id));
 
             var result = _users.Find(filter).FirstOrDefault();
             return await Task.FromResult(result);
@@ -245,33 +166,5 @@ namespace Dynastio.Bot.Database
             return await Task.FromResult(true);
         }
 
-        public async Task<RedeemCode> GetRedeemCodeAsync(RedeemCode.RedeemType type)
-        {
-            var result = this._redeemCodes.AsQueryable()
-                       .Where(a => a.Type == type)
-                       .FirstOrDefault();
-            return await Task.FromResult(result);
-        }
-        public async Task<List<RedeemCode>> GetRedeemCodesAsync()
-        {
-            var result = this._redeemCodes.AsQueryable()
-                        .ToList();
-            return await Task.FromResult(result);
-        }
-        public async Task<bool> InsertAsync(RedeemCode redeemCode)
-        {
-            _redeemCodes.InsertOne(redeemCode);
-            return await Task.FromResult(true);
-        }
-        public async Task<bool> DeleteAsync(RedeemCode redeemCodes)
-        {
-            _redeemCodes.DeleteOne(a => a.Id == redeemCodes.Id);
-            return await Task.FromResult(true);
-        }
-        public async Task<bool> InsertManyAsync(List<RedeemCode> redeemCodes)
-        {
-            _redeemCodes.InsertMany(redeemCodes);
-            return await Task.FromResult(true);
-        }
     }
 }

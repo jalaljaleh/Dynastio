@@ -41,7 +41,7 @@ namespace Dynastio.Bot.Interactions.Modules.Buttons.bot
         }
 
         public InteractionService InteractionService { get; set; }
-        public RankingService rankingService { get; set; }
+        public XpRankingSystemService rankingService { get; set; }
         public IServiceProvider Service { get; set; }
 
 

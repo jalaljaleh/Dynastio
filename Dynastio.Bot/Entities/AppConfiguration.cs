@@ -17,7 +17,7 @@ namespace Dynastio.Bot.Entities
 
         public static AppConfiguration LoadConfiguration()
         {
-            if (Main.IsDebug())
+            if (GlobalMain.IsDebug())
                 return LoadDebugConfiguration();
 
            
@@ -50,11 +50,11 @@ namespace Dynastio.Bot.Entities
 
                 Console.WriteLine(encryptedConfig);
 
-                Global.Main.Log("Config Service", "Configuration file updated succesfully.");
+               GlobalMain.Log("Config Service", "Configuration file updated succesfully.");
             }
             catch
             {
-                Global.Main.Log("Config Service", "Can't update the configuration.");
+               GlobalMain.Log("Config Service", "Can't update the configuration.");
             }
         }
     }

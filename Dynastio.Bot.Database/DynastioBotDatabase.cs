@@ -1,14 +1,10 @@
-﻿using Dynastio.Bot.Database.Entities;
-using Dynastio.Bot.Global;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Dynastio.Bot.Database.RedeemCode;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Dynastio.Bot.Database
 {
@@ -24,11 +20,11 @@ namespace Dynastio.Bot.Database
             this._guilds = new();
         }
         public enum DatabasesInstances { Mongodb }
-        public async Task InitializeAsync(string connection, DatabasesInstances instances = DatabasesInstances.Mongodb)
+        public async Task InitializeAsync(string connection, DatabasesInstances instances = DatabasesInstances.Mongodb, bool isDebugMode = false)
         {
             if (instances is DatabasesInstances.Mongodb)
             {
-                dbContext = new MongoDbContext(connection);
+                dbContext = new MongoDbContext(connection, isDebugMode);
                 await dbContext.InitializeAsync();
                 return;
             }
@@ -39,76 +35,60 @@ namespace Dynastio.Bot.Database
             this._users.Clear();
             this._guilds.Clear();
         }
-        public async Task<Advertise> GetAdAsync(ObjectId Id)
-        {
-            return await dbContext.GetAdvertisingAsync(Id);
-        }
-        public async Task<bool> InsertAsync(Advertise _advertise)
-        {
-            return await dbContext.InsertAsync(_advertise);
-        }
-        public async Task<bool> UpdateAsync(Advertise _advertise)
-        {
-            return await dbContext.UpdateAsync(_advertise);
-        }
-        public async Task<bool> UpdateManyAsync(List<Advertise> _advertise)
-        {
-            return await dbContext.UpdateManyAsync(_advertise);
-        }
-        public async Task<List<Advertise>> GetAvailableAdsAsync()
-        {
-            return await dbContext.GetAdsAsync(x => x.DisplayCount < x.Count);
-        }
-        public async Task<bool> DeleteAsync(Advertise _advertise)
-        {
-            return await dbContext.DeleteAsync(_advertise);
-        }
 
-        public async Task<T> GetEntityAsync<T>(EntityType entity) where T : EntityBase
+       
+        public async Task<Guild> GetGuildAsync(ulong id, bool allowCreate = true, Func<Guild>? createInstance = null, Action<Guild>? onCreate = null)
         {
-            return await dbContext.GetEntityAsync<T>(entity);
-        }
-        public async Task<bool> InsertAsync<T>(T entity) where T : EntityBase
-        {
-            return await dbContext.InsertAsync<T>(entity);
-        }
-        public async Task<bool> UpdateAsync<T>(T entity) where T : EntityBase
-        {
-            return await dbContext.UpdateAsync<T>(entity);
-        }
+            var guild = _guilds.FirstOrDefault(g => g.Id == id);
+            if (guild is not null)
+                return guild;
 
-        public async Task<List<Guild>> GetGuildsWithoutSubscriptionAsync()
-        {
-            return await dbContext.GetGuildsAsync(a => a.Subscription.EndsAt < DateTime.UtcNow);
-        }
-        public async Task<List<Guild>> GetSubscriptioGuildsAsync()
-        {                                                         
-            return await dbContext.GetGuildsAsync(a => a.Subscription.EndsAt > DateTime.UtcNow);
-        }
-        public async Task<Guild> GetGuildAsync(ulong Id, bool New = true, Action<Guild> action = null)
-        {
-            Guild guild = _guilds.FirstOrDefault(a => a.Id == Id);
-            if (guild == null || guild == default)
+            guild = await dbContext.GetGuildAsync(id).ConfigureAwait(false);
+            if (guild is not null)
             {
-                guild = await dbContext.GetGuildAsync(Id);
-                if (guild == null || guild == default && New)
-                {
-                    guild = new Guild()
-                    {
-                        Id = Id,
-
-                    };
-
-                    if (action != null)
-                        action.Invoke(guild);
-
-                    await dbContext.InsertAsync(guild);
-                }
-                if (guild is not null)
-                    _guilds.Add(guild);
+                _guilds.Add(guild);
+                return guild;
             }
+
+            if (!allowCreate)
+                return null;
+
+            guild = createInstance?.Invoke() ?? new Guild { Id = id };
+
+            onCreate?.Invoke(guild);
+
+            await dbContext.InsertAsync(guild).ConfigureAwait(false);
+            _guilds.Add(guild);
+
             return guild;
         }
+        //public async Task<Guild> GetGuildAsync(ulong Id, bool New = true, Func<Guild> createInstanseFunc = null, Action<Guild> onCreate = null)
+        //{
+        //    Guild guild = _guilds.FirstOrDefault(a => a.Id == Id);
+        //    if (guild == null || guild == default)
+        //    {
+        //        guild = await dbContext.GetGuildAsync(Id);
+        //        if (guild == null || guild == default && New)
+        //        {
+        //            if (createInstanseFunc is not null)
+        //                guild = createInstanseFunc.Invoke();
+        //            else
+        //                guild = new Guild()
+        //                {
+        //                    Id = Id,
+
+        //                };
+
+        //            if (onCreate != null)
+        //                onCreate.Invoke(guild);
+
+        //            await dbContext.InsertAsync(guild);
+        //        }
+        //        if (guild is not null)
+        //            _guilds.Add(guild);
+        //    }
+        //    return guild;
+        //}
         public async Task<bool> UpdateAsync(Guild guild)
         {
             return await dbContext.UpdateAsync(guild);
@@ -118,63 +98,62 @@ namespace Dynastio.Bot.Database
             return await dbContext.InsertAsync(guild);
         }
 
-        private List<RedeemCode> _redeemcodes;
-        private bool isRedeemcodesCached = false;
-        public async Task<RedeemCode> GetRedeemCodeAsync(RedeemType type)
+        public async Task<User?> GetUserAsync(ulong id, bool allowCreate = true, Func<User>? createInstance = null, Action<User>? onCreate = null)
         {
-            var list = await GetRedeemCodesAsync();
-            return list.FirstOrDefault(x => x.Type == type);
-        }
-        public async Task<List<RedeemCode>> GetRedeemCodesAsync()
-        {
-            if (isRedeemcodesCached is false)
-            {
-                _redeemcodes = await dbContext.GetRedeemCodesAsync();
-                isRedeemcodesCached = true;
-            }
-            return _redeemcodes;
-        }
-        public async Task<bool> InsertAsync(RedeemCode redeemCodes)
-        {
-            var list = await GetRedeemCodesAsync();
-            list.Add(redeemCodes);
-            return await dbContext.InsertAsync(redeemCodes);
-        }
-        public async Task<bool> InsertManyAsync(List<RedeemCode> redeemCodes)
-        {
-            var list = await GetRedeemCodesAsync();
-            list.AddRange(redeemCodes);
-            return await dbContext.InsertManyAsync(redeemCodes);
-        }
-        public async Task<bool> DeleteAsync(RedeemCode redeemCodes)
-        {
-            var list = await GetRedeemCodesAsync();
-            list.Remove(redeemCodes);
-            return await dbContext.DeleteAsync(redeemCodes);
-        }
+            var user = _users.FirstOrDefault(u => u.Id == id);
+            if (user is not null)
+                return user;
 
-        public async Task<User> GetUserAsync(ulong Id, bool New = true)
-        {
-            User user = _users.FirstOrDefault(x => x.Id == Id);
-            if (user is null)
+            user = await dbContext.GetUserAsync(id).ConfigureAwait(false);
+            if (user is not null)
             {
-                user = await dbContext.GetUserAsync(Id);
-
-                if (user is null && New is true)
-                {
-                    user = new()
-                    {
-                        Id = Id,
-                    };
-                    await dbContext.InsertAsync(user);
-                }
-                if (user != null)
-                {
-                    Cache(user);
-                }
+                Cache(user);
+                return user;
             }
+
+            if (!allowCreate)
+                return null;
+
+            user = createInstance?.Invoke() ?? new User { Id = id };
+
+            onCreate?.Invoke(user);
+
+            await dbContext.InsertAsync(user).ConfigureAwait(false);
+            Cache(user);
+
             return user;
         }
+
+        //public async Task<User> GetUserAsync(ulong Id, bool New = true, Func<User>? createInstance = null, Action<User> actionOnNew = null)
+        //{
+        //    User user = _users.FirstOrDefault(x => x.Id == Id);
+        //    if (user is null)
+        //    {
+        //        user = await dbContext.GetUserAsync(Id);
+
+        //        if (user is null && New is true)
+        //        {
+
+        //            if (createInstance is not null)
+        //                user = createInstance.Invoke();
+        //            else
+        //                user = new()
+        //            {
+        //                Id = Id,
+        //            };
+
+        //            if (actionOnNew != null)
+        //                actionOnNew.Invoke(user);
+
+        //            await dbContext.InsertAsync(user);
+        //        }
+        //        if (user != null)
+        //        {
+        //            Cache(user);
+        //        }
+        //    }
+        //    return user;
+        //}
         public async Task<User> GetUserByYoutubeChannelIdAsync(string channelurl)
         {
             User user = _users.FirstOrDefault(x => x.youtube_channel == channelurl);

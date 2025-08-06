@@ -1,18 +1,15 @@
-<div id="top"></div>
-
+&#x20;
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="#">
-    <img src="Dynastio.Bot/Resources/dynastio.jpg" alt="Logo" width="150" height="150">
+    <img src="logo.jpg" alt="Logo" width="150" height="150">
   </a>
 
   <h3 align="center">Dynast.io Bot</h3>
 
   <p align="center">
     A .net core discord bot project for dynast.io game.
-    <br />
-    <a href="https://discord.gg/GVUXMNv7vV"><strong>Join discord server »</strong></a>
     <br />
     <br />
     <a href="https://discord.gg/GVUXMNv7vV">View Bot</a>
@@ -31,99 +28,92 @@
   
 </div>
 
+## 🧠 About the Project
 
+**Dynastio Bot** is an open-source Discord bot created for **Dynast.io**, a popular multiplayer survival browser game. This project is independently developed but **approved and officially used** on the Dynast.io Discord server.
 
-<!-- TABLE OF CONTENTS -->
-# Dynast.io bot
-  <ol>
-    <li>
-      <a href="#roadmap">Bot Features</a>
-        </li>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-      </ul>
-    </li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
+The goal is to deliver an immersive community tool that:
 
+- Syncs with Dynast.io gameplay and user data
+- Supports multilingual player bases
+- Is lightweight, efficient, and scalable
+- Enables further customization via open API wrappers (`Dynastio.Net`)
 
+> Built with ❤️ using **.NET Core**, **C#**, and **MongoDB**
 
-<!-- Road Map -->
-## Roadmap
-- [X] Discord Server Moderation
-- [X] Image only channels
+## 🚀 Features
 
-- [X] Multi-language Support
- 	- [X] Support 1+ [Languages](https://discord.com/developers/docs/reference#locales)		
-    - [ ] Thai	
-    - [ ] English, UK
+- ✅ Full integration with Dynast.io APIs
+- 🔒 Discord server moderation tools
+- 🌍 Multi-language support (English, Thai, Ukrainian)
+- 📊 MongoDB-based persistent storage
+- 📂 Modular architecture for scalability
+- 🖼 Image-only channel enforcement
+- 📘 Localized messages with fallback system
+- 🧪 Unit testing and structured test project
+- 🧠 Lightweight logic layers (Validation, Global state, API wrappers)
+- 🧰 Compatible with Docker, Heroku & cloud deployment
 
+## 🛠 Getting Started
 
-See the [Discord Locales](https://discord.com/developers/docs/reference#locales) for a full list of available locales.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-
-<!-- ABOUT THE PROJECT -->
-## About The Project
-
-There are many bots on discord for io games, Dynast.io bot made for dynast.io too, This bot was not created by the official game developers, it a user-made bot but approved by the game developers, it is also used in the official game discord server.
-I have tried to implement all the available Apis in the bot, The bot uses a free cluster of Mongodb.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-<!-- GETTING STARTED -->
-## Getting Started
-- Meet the prerequisites.
-
-
-
-
-
-  
+These instructions will get you a copy of the project up and running on your local machine.
 
 ### Prerequisites
-This is an example of how to list things you need to use the software and how to install them.
 
-- You need a discord server [See Here](https://support.discord.com/hc/en-us/articles/204849977-How-do-I-create-a-server-)
-- You need a discord bot [See Here](https://discordjs.guide/preparations/setting-up-a-bot-application.html#token-leak-scenario)
-- You need a Mongodb account (Optional) [See Here](https://www.mongodb.com/) 
-- You need Dynast.io api [See Here](https://github.com/jalaljaleh/Dynastio.Net)
+- .NET SDK 6 or later
+- A [Discord bot token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
+- A [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (or local MongoDB instance)
+- Your own Dynast.io API key ([Docs](https://github.com/jalaljaleh/Dynastio.Net))
 
+### Installation
 
+```bash
+git clone https://github.com/jalaljaleh/Dynastio.git
+cd Dynastio/Dynastio.Bot
+dotnet restore
+dotnet run
+```
 
-<!-- CONTRIBUTING -->
-## Contributing
+Set your secrets or environment variables:
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+```json
+{
+  "DiscordToken": "YOUR_TOKEN",
+  "MongoDbConnectionString": "YOUR_MONGO_URI",
+  "CommandPrefix": "=",
+  "OwnerId": "YOUR_DISCORD_ID"
+}
+```
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+## 🗺 Roadmap
 
-1. Fork the Project
-2. Create your Feature Branch
-3. Commit your Changes 
-4. Push to the Branch 
+-
+
+> Suggestions welcome! Open an issue or PR anytime.
+
+## 🤝 Contributing
+
+Contributions are what make the open source community amazing. Fork the repo, add features, fix bugs — and submit pull requests!
+
+### Contribution Steps:
+
+1. Fork the repo
+2. Create a feature branch
+3. Commit your changes
+4. Push the branch
 5. Open a Pull Request
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+Or open an [Issue](https://github.com/jalaljaleh/Dynastio/issues) with the `enhancement` label.
 
+## 📄 License
 
+Distributed under the **Apache-2.0 License**. See `LICENSE.txt` for full details.
 
-<!-- LICENSE -->
-## License
+## 📬 Contact
 
-Distributed under the Apache License. See `LICENSE.txt` for more information.
+- Author: [Jalal Jaleh](https://github.com/jalaljaleh)
+- Discord: [Halun](https://discord.gg/x5j4cZtnWR)
+- Dynastio API: [Dynastio.Net](https://github.com/jalaljaleh/Dynastio.Net)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+Project Link: [https://github.com/jalaljaleh/Dynastio](https://github.com/jalaljaleh/Dynastio)
 

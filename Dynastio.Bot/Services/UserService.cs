@@ -13,12 +13,12 @@ namespace Dynastio.Bot.Services
 {
     public class UserService : ServicesBase
     {
-        private readonly BadgesService badgesService;
-        private readonly RankingService rankingService;
+        private readonly BadgesBridgeService badgesService;
+        private readonly XpRankingSystemService rankingService;
         public UserService(IServiceProvider services) : base(services)
         {
-            badgesService = services.GetRequiredService<BadgesService>();
-            rankingService = services.GetRequiredService<RankingService>();
+            badgesService = services.GetRequiredService<BadgesBridgeService>();
+            rankingService = services.GetRequiredService<XpRankingSystemService>();
         }
         public async Task<bool> SyncUserRolesAsync(IGuildUser user)
         {
@@ -30,7 +30,7 @@ namespace Dynastio.Bot.Services
         {
             var badgesResult = await badgesService.SynchronizeUserRolesAsync(BotGuild, user, BotUser).TryAsync();
             
-            var rankingResult = await rankingService.SynchronizeUserRolesAsync(BotGuild, user, BotUser.GetServerProfile(BotGuild.Id).Level).TryAsync();
+            var rankingResult = await XpRankingSystem.RoleSyncService.SynchronizeUserRolesAsync(BotGuild, user, BotUser.GetServerProfile(BotGuild.Id).Level).TryAsync();
 
             return true;
         }
