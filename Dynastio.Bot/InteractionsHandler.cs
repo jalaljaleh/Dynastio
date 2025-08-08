@@ -62,16 +62,16 @@ namespace Dynastio.Bot
         {
             try
             {
-                if (Common.IsDebug())
+                if (!Common.IsDebug())
                 {
-                    Common.Log("Insteraction Handler", $"Registering commands to debug guild {_config.DebugServerId.ToString()}");
+                    Common.Log("Insteraction Handler", $" Registering commands to debug guild {_config.DebugServerId.ToString()}");
                     
                     await _interactionService.RegisterCommandsToGuildAsync(_config.DebugServerId, true)
                         .ConfigureAwait(false);
                 }
                 else
                 {
-                    Common.Log("Insteraction Handler", "Registering commands globally");
+                    Common.Log("Insteraction Handler", " Registering commands globally");
                     await _interactionService
                         .RegisterCommandsGloballyAsync(true)
                         .ConfigureAwait(false);
@@ -79,7 +79,7 @@ namespace Dynastio.Bot
             }
             catch (Exception ex)
             {
-                Common.Log("Insteraction Handler", "Failed to register commands on Ready");
+                Common.Log("Insteraction Handler", " Failed to register commands on Ready");
             }
         }
 
@@ -150,7 +150,7 @@ namespace Dynastio.Bot
             if (result.IsSuccess)
                 return;
 
-            Common.Log("Insteraction Handler", $"Command {command.Name} failed for {context.User.Id}: {result.ErrorReason}");
+           // Common.Log("Insteraction Handler", $"Command {command.Name} failed for {context.User.Id}: {result.ErrorReason}");
 
             if (context.Interaction.HasResponded)
             {

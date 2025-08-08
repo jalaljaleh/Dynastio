@@ -11,7 +11,7 @@ namespace Dynastio.Bot.Services.XpRankingSystem
         public const int MaxLevel = 40;
 
         public static int GetCurrentLevelXpRequirement(int level) =>
-            (level + 1) * 510 * (int)Math.Pow(level + 1, 1.2);
+            (level + 1) * 510 * (int)Math.Pow(level + 1, 1.3);
 
         public static int GetLevelUpRequirementXp(int level, int currentXp) =>
             GetCurrentLevelXpRequirement(level) - currentXp;
@@ -24,3 +24,4 @@ namespace Dynastio.Bot.Services.XpRankingSystem
         }
     }
 }
+

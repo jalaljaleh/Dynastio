@@ -11,6 +11,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.IO;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Security.Cryptography.X509Certificates;
 
 
 namespace Dynastio.Bot.Database
@@ -47,6 +48,10 @@ namespace Dynastio.Bot.Database
                 //       OnMessagesLog.Invoke("Mongodb", "Start Session Async ..");
                 await _db.StartSessionAsync();
 
+                //var se = JsonSerializer.Serialize(allGuilds);
+                //var guilds = JsonSerializer.Deserialize<List<Guild>>(se);
+                //await UpdateManyAsync(guilds);
+                await DoWorkAsync();
                 // await update();
                 //var allUsers = await _users.Find(Builders<User>.Filter.Empty).ToListAsync();
                 //var se = JsonSerializer.Serialize(allUsers);
@@ -59,7 +64,22 @@ namespace Dynastio.Bot.Database
                 //  OnMessagesLog.Invoke("Mongodb", "db is not connected.", ConsoleColor.Red);
             }
         }
+        class User1:User
+        {
+            public int MyProperty { get; set; }
+        }
+        public async Task DoWorkAsync()
+        {
+            
 
+
+
+
+
+
+
+
+        }
 
         public async Task<Guild> GetGuildAsync(ulong Id)
         {

@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Services
 {
-    public class XpRankingSystemService 
+    public class XpRankingSystemService
     {
         private readonly DynastioApi _dynastioApi;
         private readonly IServiceProvider _services;
-        public XpRankingSystemService(IServiceProvider services) 
+        public XpRankingSystemService(IServiceProvider services)
         {
             _services = services;
             _dynastioApi = services.GetRequiredService<DynastioApi>();
@@ -44,8 +44,11 @@ namespace Dynastio.Bot.Services
             bool leveledUp = LevelUp(profile);
             if (leveledUp)
             {
+                var rolesResult = await XpRankingSystemServiceHelper.AssignmentUserRolesAsync(guild, discordUser, profile.Level).TryAsync();
+
+                await XpNotificationController.NotifyUserLevelUpAsync(user, guild, profile, discordUser, channel.Guild, channel, rolesResult.result);
+
                 await UpdateUserGameRewards(profile, user, guild).TryAsync();
-                await XpRankingSystemServiceHelper.AssignmentUserRolesAsync(guild, discordUser, profile.Level).TryAsync();
             }
 
             await UpdateUserAsync(user, leveledUp);
@@ -59,6 +62,8 @@ namespace Dynastio.Bot.Services
 
         private bool LevelUp(UserGuildProfile profile)
         {
+            //  if (XpCalculator.MaxLevel <= profile.Level) return false;
+
             int requiredXp = XpCalculator.GetCurrentLevelXpRequirement(profile.Level);
             if (profile.Xp > requiredXp)
             {

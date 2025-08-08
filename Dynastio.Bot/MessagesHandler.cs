@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -6,6 +7,7 @@ using Dynastio.Bot.Database;
 using Dynastio.Bot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Dynastio.Bot
 {
@@ -50,10 +52,11 @@ namespace Dynastio.Bot
             try
             {
                 var guild = await _database.GetGuildAsync(textChannel.GuildId, true, () => GuildFactory.CreateDefault(textChannel.GuildId), default);
-
                 var user = await _users.GetUserAsync(userMessage.Author.Id, true);
 
                 await _xpRanking.TryAddMessageXpAsync(guild, user, userMessage);
+
+                //  await userMessage.ReplyAsync(JsonConvert.SerializeObject(user));
             }
             catch (Exception ex)
             {

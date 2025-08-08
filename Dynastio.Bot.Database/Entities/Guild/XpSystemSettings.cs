@@ -18,7 +18,7 @@ namespace Dynastio.Bot.Database
         public bool IsGameRewardEnabled { get; set; }
         public bool IsRankingRoleAssignmentEnabled { get; set; }
 
-        public ulong RankingRoleAssignmentHeaderId { get; set; }
+      //  public ulong RankingRoleAssignmentHeaderId { get; set; }
         public string RankingRoleAssignmentPerfix { get; set; }
 
         public int XpPerMessage { get; set; }

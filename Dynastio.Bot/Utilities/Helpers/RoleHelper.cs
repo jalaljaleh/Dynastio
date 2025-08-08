@@ -56,7 +56,7 @@ namespace Dynastio.Bot
             return guild.Roles
                         .Where(role => role.Position > highestMatching.Position)
                         .OrderBy(role => role.Position)
-                        .FirstOrDefault();
+                        .FirstOrDefault(a => a.Name.ToLower().Contains("rank"));
         }
     }
 }

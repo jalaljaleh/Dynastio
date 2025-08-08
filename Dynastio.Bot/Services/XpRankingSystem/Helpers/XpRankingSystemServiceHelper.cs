@@ -10,31 +10,54 @@ namespace Dynastio.Bot.Services.XpRankingSystem
 {
     public static class XpRankingSystemServiceHelper
     {
-        public static async Task<bool> AssignmentUserRolesAsync(Guild guild, IGuildUser user, int level)
+        public static async Task<List<IRole>> AssignmentUserRolesAsync(Guild guild, IGuildUser user, int level)
         {
-            if (!guild.XpSystemSettings.IsRankingRoleAssignmentEnabled) return false;
+            // Early exit if disabled
+            if (!guild.XpSystemSettings.IsRankingRoleAssignmentEnabled)
+                return null;
 
-            var allRoles = RoleHelper.GetRolesStartingWith(user.Guild, guild.XpSystemSettings.RankingRoleAssignmentPerfix);
-            var userRoles = allRoles.Where(role => user.RoleIds.Contains(role.Id)).ToList();
+            // Grab all roles that match the prefix
+            var allRoles = RoleHelper
+                .GetRolesStartingWith(user.Guild, guild.XpSystemSettings.RankingRoleAssignmentPerfix)
+                .OrderBy(r => r.Position)       // lowest level first
+                .ToList();
 
-            var headerRole = RoleHelper.GetPrefixHeaderRole(user.Guild, guild.XpSystemSettings.RankingRoleAssignmentPerfix);
-            if (headerRole != null && !user.RoleIds.Contains(headerRole.Id) && userRoles.Count > 0)
-                await user.AddRoleAsync(headerRole.Id);
+            // Cap level at the total number of available roles
+            int assignCount = Math.Min(level, allRoles.Count);
 
-            // Limit level to available roles
-            int maxAssignable = Math.Min(level, allRoles.Count);
+            // The roles that *should* be on the user
+            var desiredRoles = allRoles.Take(assignCount).ToList();
 
-            for (int i = 0; i < maxAssignable; i++)
+            // The roles the user currently has among these ranking roles
+            var currentRoles = desiredRoles.Where(r => user.RoleIds.Contains(r.Id)).ToList();
+
+            // Roles missing from the user
+            var toAdd = desiredRoles.Except(currentRoles).ToList();
+
+            // (Optional) Roles the user has but no longer needs
+            var toRemove = allRoles
+                .Where(r => user.RoleIds.Contains(r.Id) && !desiredRoles.Contains(r))
+                .ToList();
+
+            // Add new ranking roles
+            foreach (var role in toAdd)
             {
-                var targetRole = allRoles[i];
-                if (!user.RoleIds.Contains(targetRole.Id))
-                {
-                    await user.AddRoleAsync(targetRole);
-                    await Task.Delay(1000);
-                }
+                await user.AddRoleAsync(role.Id);
+                await Task.Delay(1000);
             }
 
-            return true;
+            // Remove outdated ranking roles (optional)
+            foreach (var role in toRemove)
+                await user.RemoveRoleAsync(role.Id);
+
+            // Ensure header role is present
+            var headerRole = RoleHelper
+                .GetPrefixHeaderRole(user.Guild, guild.XpSystemSettings.RankingRoleAssignmentPerfix);
+
+            if (headerRole != null && !user.RoleIds.Contains(headerRole.Id))
+                await user.AddRoleAsync(headerRole.Id);
+
+            return toAdd;
         }
     }
 }
