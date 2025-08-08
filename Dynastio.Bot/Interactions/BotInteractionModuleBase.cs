@@ -1,195 +1,222 @@
-﻿/*!
- * Discord Template By (https://jalaljaleh.github.io/)
- * Copyright 2021-2022 Jalal Jaleh
- * Licensed under MIT (https://github.com/jalaljaleh/Template.Discord.Bot/blob/master/LICENSE.txt)
- * Project Url (https://github.com/jalaljaleh/Template.Discord.Bot/)
- */
+﻿using Discord;
+using Discord.Interactions;
+using Discord.WebSocket;
+using Dynastio.Bot.Database;
+using Dynastio.Bot.Globalization;
+using Dynastio.Bot.Services;
+
 namespace Dynastio.Bot.Interactions
 {
-    using Amazon.SecurityToken.Model;
-    using Discord;
-    using Discord.Interactions;
-    using Discord.WebSocket;
-    using Dynastio.Bot.Addons;
-    using Dynastio.Bot.Database;
-    using Dynastio.Bot.Extenstions;
-    using Dynastio.Bot.Globalization;
-    using Dynastio.Bot.Helpers;
-    using Dynastio.Bot.Interactions.Modules.shared_buttons;
-    using Dynastio.Bot.Services;
-    using Microsoft.VisualBasic;
-    using System.ComponentModel;
-
+    /// <summary>
+    /// Base class for Discord interaction modules with access to bot-specific context, localization, and services.
+    /// </summary>
     public class BotInteractionModuleBase : InteractionModuleBase<BotSocketInteractionContext>
     {
-        public string this[string key] { get => Context.UserLocale[key]; }
-        public string this[string key, params object[] @params] { get => Context.UserLocale[key, @params]; }
-        public BotInteractionModuleBase() : base()
-        {
+        /// <summary>
+        /// Access localized strings using a key.
+        /// </summary>
+        public string this[string key] => Context.UserLocale[key];
 
-        }
-        public UserService userService { get => Context._usersService; }
-        public AdvertisingService advertisingService { get => Context._ads; }
-        public DynastioBotDatabase dynastioBotDatabase { get => Context._db; }
-        public IServiceProvider services { get => Context._services; }
+        /// <summary>
+        /// Access localized strings with formatting parameters.
+        /// </summary>
+        public string this[string key, params object[] parameters] => Context.UserLocale[key, parameters];
 
-        public User BotUser { get => Context.BotUser; }
-        public Guild BotGuild { get => Context.BotGuild; }
-        public Locale guildLocale { get => this.Context.GuildLocale; }
-        public Locale userLocale { get => this.Context.UserLocale; }
-        public string userMention => Context.User.Mention;
-        public string BotAvatarUrl { get => this.Context.Client.CurrentUser.TryGetAvatarUrl(); }
+        public BotInteractionModuleBase() : base() { }
+
+        /// <summary>
+        /// Gets the bot's internal user model.
+        /// </summary>
+        public User BotUser => Context.BotUser;
+
+        /// <summary>
+        /// Gets the bot's internal guild model.
+        /// </summary>
+        public Guild BotGuild => Context.BotGuild;
+
+        /// <summary>
+        /// Gets the locale for the current guild.
+        /// </summary>
+        public Locale GuildLocale => Context.GuildLocale;
+
+        /// <summary>
+        /// Gets the locale for the current user.
+        /// </summary>
+        public Locale UserLocale => Context.UserLocale;
+
+        /// <summary>
+        /// Gets the Discord mention string for the current user.
+        /// </summary>
+        public string UserMention => Context.User.Mention;
+
+        /// <summary>
+        /// Gets the bot's avatar URL.
+        /// </summary>
+        public string BotAvatarUrl => Context.Client.CurrentUser.TryGetAvatarUrl();
+
+        /// <summary>
+        /// Gets the message associated with the current interaction, if applicable.
+        /// </summary>
         public IUserMessage CurrentMessage =>
-             Context.Interaction.Type switch
-             {
-                 InteractionType.ModalSubmit => (Context.Interaction as SocketModal).Message,
-                 InteractionType.MessageComponent => (Context.Interaction as SocketMessageComponent).Message,
-                 _ => null
-             };
-        public async Task<bool> UpdateBotGuildAsync()
-        {
-            return await this.dynastioBotDatabase.UpdateAsync(this.BotGuild);
-        }
+            Context.Interaction.Type switch
+            {
+                InteractionType.ModalSubmit => (Context.Interaction as SocketModal)?.Message,
+                InteractionType.MessageComponent => (Context.Interaction as SocketMessageComponent)?.Message,
+                _ => null
+            };
+
+        /// <summary>
+        /// Updates the bot's user profile in the database.
+        /// </summary>
         public async Task<bool> UpdateBotUserAsync()
         {
-            return await this.dynastioBotDatabase.UpdateAsync(this.BotUser);
+            return await Context.UsersService.UpdateUserAsync(BotUser);
         }
-        public async Task<IUserMessage> ModifyCurrentMessageAsync(string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null, RequestOptions options = null, MessageComponent components = null, Embed embed = null)
-        {
-            await CurrentMessage.ModifyAsync(x =>
-             {
-                 x.Content = text;
-                 x.AllowedMentions = allowedMentions;
-                 x.Attachments = null;
-                 x.Components = components;
-                 x.Embed = embed;
-                 x.Embeds = embeds;
-                 x.Flags = null;
-             });
-            return CurrentMessage;
-        }
-        public async Task ModifyCurrentMessageToInputModeAsync()
-        {
-            var embed = new EmbedBuilder()
-            {
-                Title = userLocale["input_mode.title"],
-                Description = userLocale["input_mode.description"],
-                ThumbnailUrl = BotAvatarUrl,
-                Color = Color.Orange,
-                Fields = new List<EmbedFieldBuilder>()
-                {
-                    new EmbedFieldBuilder().WithIsInline(true)
-                    .WithName("Waiting time")
-                    .WithValue("Since " +DateTime.UtcNow.UnixTimestampDiscordFormat())
-                },
-            }.Build();
-            await ModifyCurrentMessageAsync(userMention, embed: embed,components: new ComponentBuilder().Build());
-        }
-        public async Task<bool> DeleteCurrentMessageAsync()
-        {
-            return await CurrentMessage.DeleteAsync().TryAsync();
-        }
-        public async Task<IUserMessage> ClearCurrentMessageComponentsAsync()
-        {
-            await CurrentMessage.ModifyAsync(x =>
-            {
-                x.Components = new ComponentBuilder().Build();
-            });
-            return CurrentMessage;
-        }
-        public async Task CloseMenuAsync()
-        {
-            var embed = new EmbedBuilder()
-            {
-                Title = userLocale["menu_closed_title"],
-                Description = userLocale["menu_closed_description"] + "\n\n" +advertisingService.GetInlineEmbedDescription(),
-                ThumbnailUrl = BotAvatarUrl,
-                Color = Color.Orange,
-                Fields = new List<EmbedFieldBuilder>()
-                {
-                    new EmbedFieldBuilder().WithIsInline(true)
-                    .WithName("Waiting time")
-                    .WithValue("Since " +DateTime.UtcNow.UnixTimestampDiscordFormat())
-                },
-            }.Build();
 
-            await ModifyCurrentMessageAsync(userMention, embed: embed, components: new ComponentBuilder().Build());
-        }
-        public async Task<bool> ConfirmActionAsync()
+        /// <summary>
+        /// Placeholder for updating the bot's guild profile.
+        /// </summary>
+        public async Task<bool> UpdateBotGuildAsync()
         {
-            var embed = new EmbedBuilder()
-            {
-                Title = "Confirmation",
-                Description = "Are you sure about executing the command, The action may not be undone.",
-                Color = Color.Orange
-            }.Build();
-
-            var component = new ComponentBuilder()
-                .WithButton("Confirm", DiscordInput.GenerateCustomId("confirm"), ButtonStyle.Success)
-                .WithButton("Cancel", DiscordInput.GenerateCustomId("cancel"), ButtonStyle.Danger)
-                .Build();
-
-            var message = await ModifyCurrentMessageAsync(embed: embed, components: component);
-            var interactionResult = await Context.WaitForButtonFromMessageAsync(message, TimeSpan.FromSeconds(60), true, true, true);
-
-            if (interactionResult == null || interactionResult.Data.CustomId != DiscordInput.GetCustomId("confirm"))
-                return false;
-
+            // Implement guild update logic if needed
             return true;
         }
 
-        public async Task<UserGameAccount> SelectUserAccountAsync()
-        {
+        // 🔒 All other methods are commented for now.
+        //public async Task<IUserMessage> ModifyCurrentMessageAsync(string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null, RequestOptions options = null, MessageComponent components = null, Embed embed = null)
+        //{
+        //    await CurrentMessage.ModifyAsync(x =>
+        //     {
+        //         x.Content = text;
+        //         x.AllowedMentions = allowedMentions;
+        //         x.Attachments = null;
+        //         x.Components = components;
+        //         x.Embed = embed;
+        //         x.Embeds = embeds;
+        //         x.Flags = null;
+        //     });
+        //    return CurrentMessage;
+        //}
+        //public async Task ModifyCurrentMessageToInputModeAsync()
+        //{
+        //    var embed = new EmbedBuilder()
+        //    {
+        //        Title = userLocale["input_mode.title"],
+        //        Description = userLocale["input_mode.description"],
+        //        ThumbnailUrl = BotAvatarUrl,
+        //        Color = Color.Orange,
+        //        Fields = new List<EmbedFieldBuilder>()
+        //        {
+        //            new EmbedFieldBuilder().WithIsInline(true)
+        //            .WithName("Waiting time")
+        //            .WithValue("Since " +DateTime.UtcNow.UnixTimestampDiscordFormat())
+        //        },
+        //    }.Build();
+        //    await ModifyCurrentMessageAsync(userMention, embed: embed,components: new ComponentBuilder().Build());
+        //}
+        //public async Task<bool> DeleteCurrentMessageAsync()
+        //{
+        //    return await CurrentMessage.DeleteAsync().TryAsync();
+        //}
+        //public async Task<IUserMessage> ClearCurrentMessageComponentsAsync()
+        //{
+        //    await CurrentMessage.ModifyAsync(x =>
+        //    {
+        //        x.Components = new ComponentBuilder().Build();
+        //    });
+        //    return CurrentMessage;
+        //}
+        //public async Task CloseMenuAsync()
+        //{
+        //    var embed = new EmbedBuilder()
+        //    {
+        //        Title = userLocale["menu_closed_title"],
+        //        Description = userLocale["menu_closed_description"] + "\n\n",
+        //        ThumbnailUrl = BotAvatarUrl,
+        //        Color = Color.Orange,
+        //        Fields = new List<EmbedFieldBuilder>()
+        //        {
+        //            new EmbedFieldBuilder().WithIsInline(true)
+        //            .WithName("Waiting time")
+        //            .WithValue("Since " +DateTime.UtcNow.UnixTimestampDiscordFormat())
+        //        },
+        //    }.Build();
 
-            // Combine Defer and SelectMenu creation for efficiency
-            var selectMenu = new SelectMenuBuilder(
-                DiscordInput.GenerateCustomId("user.accounts"),
-                null,
-                Context.UserLocale["menu.profile.accounts.choose"],
-                1,
-                1,
-                false,
-                ComponentType.SelectMenu
-            );
+        //    await ModifyCurrentMessageAsync(userMention, embed: embed, components: new ComponentBuilder().Build());
+        //}
+        //public async Task<bool> ConfirmActionAsync()
+        //{
+        //    var embed = new EmbedBuilder()
+        //    {
+        //        Title = "Confirmation",
+        //        Description = "Are you sure about executing the command, The action may not be undone.",
+        //        Color = Color.Orange
+        //    }.Build();
 
-            // Use LINQ to efficiently filter and map accounts
-            var options = BotUser.Accounts
-                .Take(20)
-                .Select(acc => new SelectMenuOptionBuilder(
-                    acc.Reminder,
-                    acc.GetHashCode().ToString(),
-                    acc.GetAccountService(),
-                    null,
-                    false
-                ))
-                .ToList();
+        //    var component = new ComponentBuilder()
+        //        .WithButton("Confirm", DiscordInput.GenerateCustomId("confirm"), ButtonStyle.Success)
+        //        .WithButton("Cancel", DiscordInput.GenerateCustomId("cancel"), ButtonStyle.Danger)
+        //        .Build();
 
-            selectMenu.WithOptions(options);
+        //    var message = await ModifyCurrentMessageAsync(embed: embed, components: component);
+        //    var interactionResult = await Context.WaitForButtonFromMessageAsync(message, TimeSpan.FromSeconds(60), true, true, true);
 
-            var components = new ComponentBuilder()
-                .WithSelectMenu(selectMenu)
-                .WithButton(CancelButton.GetButton(userLocale), 1)
-                .Build();
+        //    if (interactionResult == null || interactionResult.Data.CustomId != DiscordInput.GetCustomId("confirm"))
+        //        return false;
 
-            var embed = new EmbedBuilder()
-            {
-                Title = userLocale["account_selection"],
-                Description =
-                userLocale["account_selection_description"] + "\n**" +
-                userLocale["undo_action_description"] + "**\n" +
-                userLocale["menu_closes", DateTime.UtcNow.AddSeconds(30).UnixTimestampDiscordFormat()],
-                ThumbnailUrl = Context.Client.CurrentUser.TryGetAvatarUrl(),
-                Color = EmbedsHelper.ColorWaitingResopnse,
-            };
-            var message = await ModifyCurrentMessageAsync(Context.User.Mention, components: components, embed: embed.Build());
+        //    return true;
+        //}
 
-            var result = await Context.WaitForSelectMenuFromMessageAsync(message, TimeSpan.FromSeconds(30));
-            if (result is null || BotUser.GetAccountByHashCode(result.Data.Values.FirstOrDefault(), out UserGameAccount account) is null)
-            {
-                return null;
-            }
-            return account;
-        }
+        //public async Task<UserGameAccount> SelectUserAccountAsync()
+        //{
+
+        //    // Combine Defer and SelectMenu creation for efficiency
+        //    var selectMenu = new SelectMenuBuilder(
+        //        DiscordInput.GenerateCustomId("user.accounts"),
+        //        null,
+        //        Context.UserLocale["menu.profile.accounts.choose"],
+        //        1,
+        //        1,
+        //        false,
+        //        ComponentType.SelectMenu
+        //    );
+
+        //    // Use LINQ to efficiently filter and map accounts
+        //    var options = BotUser.Accounts
+        //        .Take(20)
+        //        .Select(acc => new SelectMenuOptionBuilder(
+        //            acc.Reminder,
+        //            acc.GetHashCode().ToString(),
+        //            acc.GetAccountService(),
+        //            null,
+        //            false
+        //        ))
+        //        .ToList();
+
+        //    selectMenu.WithOptions(options);
+
+        //    var components = new ComponentBuilder()
+        //        .WithSelectMenu(selectMenu)
+        //       // .WithButton(CancelButton.GetButton(userLocale), 1)
+        //        .Build();
+
+        //    var embed = new EmbedBuilder()
+        //    {
+        //        Title = userLocale["account_selection"],
+        //        Description =
+        //        userLocale["account_selection_description"] + "\n**" +
+        //        userLocale["undo_action_description"] + "**\n" +
+        //        userLocale["menu_closes", DateTime.UtcNow.AddSeconds(30).UnixTimestampDiscordFormat()],
+        //        ThumbnailUrl = Context.Client.CurrentUser.TryGetAvatarUrl(),
+        //    };
+        //    var message = await ModifyCurrentMessageAsync(Context.User.Mention, components: components, embed: embed.Build());
+
+        //    var result = await Context.WaitForSelectMenuFromMessageAsync(message, TimeSpan.FromSeconds(30));
+        //    if (result is null || BotUser.GetAccountByHashCode(result.Data.Values.FirstOrDefault(), out UserGameAccount account) is null)
+        //    {
+        //        return null;
+        //    }
+        //    return account;
+        //}
     }
-
 }

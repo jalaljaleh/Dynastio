@@ -1,37 +1,23 @@
-﻿/*!
- * Discord Template By (https://jalaljaleh.github.io/)
- * Copyright 2021-2022 Jalal Jaleh
- * Licensed under MIT (https://github.com/jalaljaleh/Template.Discord.Bot/blob/master/LICENSE.txt)
- * Project Url (https://github.com/jalaljaleh/Template.Discord.Bot/)
- */
+﻿using Discord;
+using Discord.Interactions;
+using Discord.WebSocket;
+using Dynastio.Bot.Database;
+using Dynastio.Bot.Globalization;
+using Dynastio.Bot.Services;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Dynastio.Bot.Interactions
 {
-    using Discord;
-    using Discord.Interactions;
-    using Discord.WebSocket;
-    using Dynastio.Bot.Database;
-    using Dynastio.Bot.Globalization;
-    using Dynastio.Bot.Services;
-    using Microsoft.Extensions.DependencyInjection;
-
+    /// <summary>
+    /// Extended interaction context that provides access to bot-specific services and data.
+    /// </summary>
     public class BotSocketInteractionContext : SocketInteractionContext
     {
-        public readonly DynastioBotDatabase _db;
-        public readonly AdvertisingService _ads;
-        public readonly UserService _usersService;
+        private readonly DynastioBotDatabase _db;
         private readonly DynastioBotGlobalization _globalization;
-        public readonly IServiceProvider _services;
-        public BotSocketInteractionContext(DiscordSocketClient client, SocketInteraction interaction, IServiceProvider services, User user = null, Guild guild = null) : base(client, interaction)
-        {
-            _services = services;
-            _ads = _services.GetRequiredService<AdvertisingService>();
-            _db = _services.GetRequiredService<DynastioBotDatabase>();
-            _globalization = _services.GetRequiredService<DynastioBotGlobalization>();
-            _usersService = _services.GetRequiredService<UserService>();
+        private readonly IServiceProvider _services;
 
-            if (user != null) _user = user;
-            if (guild != null) _guild = guild;
-        }
+        public UsersService UsersService { get; }
         public SocketInteraction OverridedInteraction { get; set; }
         public object CustomData { get; set; }
 
@@ -40,51 +26,41 @@ namespace Dynastio.Bot.Interactions
         private Locale _userLocale;
         private Locale _guildLocale;
 
-        public User BotUser
+        public BotSocketInteractionContext(
+            DiscordSocketClient client,
+            SocketInteraction interaction,
+            IServiceProvider services,
+            User user = null,
+            Guild guild = null)
+            : base(client, interaction)
         {
-            get
-            {
-                if (_user is null)
-                {
-                    _user = _db.GetUserAsync(this.User.Id, true).Result;
-                }
-                return _user;
-            }
-        }
-        public Guild BotGuild
-        {
-            get
-            {
-                if (_guild is null)
-                {
-                    _guild = _db.GetGuildAsync(this.Guild.Id).Result;
-                }
-                return _guild;
-            }
-        }
-        public Locale GuildLocale
-        {
-            get
-            {
-                if (_guildLocale is null)
-                {
-                    _guildLocale = _globalization.GetOrDefault(this.Guild.PreferredLocale);
-                }
-                return _guildLocale;
-            }
-        }
-        public Locale UserLocale
-        {
-            get
-            {
-                if (_userLocale is null)
-                {
-                    _userLocale = _globalization.GetOrDefault(this.Interaction.UserLocale);
-                }
-                return _userLocale;
-            }
+            _services = services;
+            _db = _services.GetRequiredService<DynastioBotDatabase>();
+            _globalization = _services.GetRequiredService<DynastioBotGlobalization>();
+            UsersService = _services.GetRequiredService<UsersService>();
+
+            _user = user;
+            _guild = guild;
         }
 
+        /// <summary>
+        /// Gets the bot's internal user model for the current interaction user.
+        /// </summary>
+        public User BotUser => _user ??= _db.GetUserAsync(User.Id, true).Result;
 
+        /// <summary>
+        /// Gets the bot's internal guild model for the current interaction guild.
+        /// </summary>
+        public Guild BotGuild => _guild ??= _db.GetGuildAsync(Guild.Id).Result;
+
+        /// <summary>
+        /// Gets the locale for the current guild, falling back to default if not found.
+        /// </summary>
+        public Locale GuildLocale => _guildLocale ??= _globalization.GetOrDefault(Guild.PreferredLocale);
+
+        /// <summary>
+        /// Gets the locale for the current user, falling back to default if not found.
+        /// </summary>
+        public Locale UserLocale => _userLocale ??= _globalization.GetOrDefault(Interaction.UserLocale);
     }
 }

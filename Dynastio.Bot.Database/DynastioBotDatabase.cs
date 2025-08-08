@@ -37,7 +37,7 @@ namespace Dynastio.Bot.Database
         }
 
        
-        public async Task<Guild> GetGuildAsync(ulong id, bool allowCreate = true, Func<Guild>? createInstance = null, Action<Guild>? onCreate = null)
+        public async Task<Guild> GetGuildAsync(ulong id, bool allowCreate = true, Func<Guild> createInstance = null, Action<Guild> onCreate = null)
         {
             var guild = _guilds.FirstOrDefault(g => g.Id == id);
             if (guild is not null)

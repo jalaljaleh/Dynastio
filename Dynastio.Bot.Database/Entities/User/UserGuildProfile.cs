@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Database
 {
+    [BsonIgnoreExtraElements]
     public class UserGuildProfile
     {
         public ulong GuildId { get; set; }

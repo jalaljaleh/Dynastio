@@ -8,6 +8,9 @@ using Amazon.Auth.AccessControlPolicy;
 using System.Dynamic;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.IO;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 
 namespace Dynastio.Bot.Database
@@ -23,34 +26,37 @@ namespace Dynastio.Bot.Database
         public delegate void OnDatabaseMessageLogs(string serviceName, string message, ConsoleColor color = default);
         public MongoDbContext(string mongoConnection, bool isDebugMode = false)
         {
-            OnMessagesLog.Invoke("Mongodb", "Initialize Async..");
+            //  OnMessagesLog.Invoke("Mongodb", "Initialize Async..");
 
             var settings = MongoClientSettings.FromConnectionString(mongoConnection);
             // settings.ServerApi = new ServerApi(ServerApiVersion.V1);
 
             _db = new MongoClient(settings);
 
-            if (isDebugMode)
+            if (!isDebugMode)
                 _dynastio = _db.GetDatabase("Dynastio_Debug");
             else
                 _dynastio = _db.GetDatabase("Dynastio");
 
-            OnMessagesLog.Invoke("Mongodb", "Initialized");
+            //    OnMessagesLog.Invoke("Mongodb", "Initialized");
         }
         public async Task InitializeAsync()
         {
             try
             {
-                OnMessagesLog.Invoke("Mongodb", "Start Session Async ..");
+                //       OnMessagesLog.Invoke("Mongodb", "Start Session Async ..");
                 await _db.StartSessionAsync();
 
                 // await update();
-
-                OnMessagesLog.Invoke("Mongodb", "Session Started.");
+                //var allUsers = await _users.Find(Builders<User>.Filter.Empty).ToListAsync();
+                //var se = JsonSerializer.Serialize(allUsers);
+                //var users = JsonSerializer.Deserialize<List<User>>(se);
+                //await UpdateManyAsync(users);
+                //  OnMessagesLog.Invoke("Mongodb", "Session Started.");
             }
             catch
             {
-                OnMessagesLog.Invoke("Mongodb", "db is not connected.", ConsoleColor.Red);
+                //  OnMessagesLog.Invoke("Mongodb", "db is not connected.", ConsoleColor.Red);
             }
         }
 

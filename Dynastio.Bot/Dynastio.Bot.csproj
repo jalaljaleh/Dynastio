@@ -9,6 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Interactions\AutoCompeletes\**" />
+    <Compile Remove="Interactions\Enums\**" />
+    <Compile Remove="Interactions\Precondinations\**" />
+    <EmbeddedResource Remove="Interactions\AutoCompeletes\**" />
+    <EmbeddedResource Remove="Interactions\Enums\**" />
+    <EmbeddedResource Remove="Interactions\Precondinations\**" />
+    <None Remove="Interactions\AutoCompeletes\**" />
+    <None Remove="Interactions\Enums\**" />
+    <None Remove="Interactions\Precondinations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

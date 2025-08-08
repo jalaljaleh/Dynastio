@@ -3,7 +3,6 @@ using Discord.Rest;
 using Discord.Webhook;
 using Dynastio.Bot.Database;
 using Dynastio.Bot.Extenstions;
-using Dynastio.Bot.Interactions.Modules.Buttons.bot;
 using Dynastio.Bot.Services.XpRankingSystem;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,11 +13,13 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Services
 {
-    public class XpRankingSystemService : ServicesBase
+    public class XpRankingSystemService 
     {
         private readonly DynastioApi _dynastioApi;
-        public XpRankingSystemService(IServiceProvider services) : base(services)
+        private readonly IServiceProvider _services;
+        public XpRankingSystemService(IServiceProvider services) 
         {
+            _services = services;
             _dynastioApi = services.GetRequiredService<DynastioApi>();
         }
 
@@ -44,7 +45,7 @@ namespace Dynastio.Bot.Services
             if (leveledUp)
             {
                 await UpdateUserGameRewards(profile, user, guild).TryAsync();
-                await RoleSyncService.SynchronizeUserRolesAsync(guild, discordUser, profile.Level).TryAsync();
+                await XpRankingSystemServiceHelper.AssignmentUserRolesAsync(guild, discordUser, profile.Level).TryAsync();
             }
 
             await UpdateUserAsync(user, leveledUp);
@@ -81,7 +82,7 @@ namespace Dynastio.Bot.Services
         {
             if (force || (DateTime.UtcNow - user.LastUpdateTime).TotalSeconds > 300)
             {
-                return await _services.GetService<UserService>().UpdateUserAsync(user);
+                return await _services.GetService<UsersService>().UpdateUserAsync(user);
             }
             return false;
         }

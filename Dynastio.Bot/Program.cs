@@ -1,129 +1,129 @@
-﻿using Discord;
-using Discord.Commands;
+﻿using System;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Dynastio.Bot.Database;
+using Dynastio.Bot.EventHandlers;
 using Dynastio.Bot.Globalization;
+using Dynastio.Bot.Services;
+using Dynastio.Graphic;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Dynastio.Bot.Entities;
-using Dynastio.Bot.Database;
-using Dynastio.Graphic;
-using Dynastio.Bot.Handlers;
-using Dynastio.Bot.Services;
 
 namespace Dynastio.Bot
 {
     internal class Program
     {
-        public static void Main(string[] arg)
+        public static async Task Main(string[] args)
         {
-
-
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
-            {
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
-            };
+            ConfigureJsonSerializer();
 
             try
             {
-                new Program()
-                    .MainAsync()
-                    .GetAwaiter()
-                    .GetResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+                var config = ConfigurationService.Load();
+                using var serviceProvider = BuildServiceProvider(config);
 
-            //Task.Delay(TimeSpan.FromMinutes(20));
+                await InitializeInfrastructureAsync(serviceProvider, config);
+                await StartDiscordClientAsync(serviceProvider, config);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Fatal error during startup:");
+                Console.WriteLine(ex);
+            }
         }
 
-        public async Task MainAsync()
+        private static void ConfigureJsonSerializer()
         {
-            Global.GlobalMain.Log("Main Async", "Started");
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+        }
 
-            // Environment.SetEnvironmentVariable("config-key", "");
-            AppConfiguration configuration = AppConfiguration.LoadConfiguration();
+        private static ServiceProvider BuildServiceProvider(ConfigurationService config)
+        {
             var services = new ServiceCollection();
-            services
-           .AddSingleton(configuration)
 
-           .AddSingleton<DynastioApi>(x => new DynastioApi(configuration.Tokens["dynastio-api"]))
-           .AddSingleton<DynastioBotDatabase>()
-           .AddSingleton<DynastioGraphic>()
-           .AddSingleton<DynastioBotGlobalization>()
+            // Core configuration & APIs
+            services.AddSingleton(config);
+            services.AddSingleton(_ => new DynastioApi(config.Tokens["dynastio-api"]));
+            services.AddSingleton<DynastioBotDatabase>();
+            services.AddSingleton<DynastioGraphic>();
+            services.AddSingleton<DynastioBotGlobalization>();
 
-           .AddSingleton<UserService>()
+            // services
+            services.AddSingleton<UsersService>();
+            services.AddSingleton<XpRankingSystemService>();
+            services.AddSingleton<BadgesRoleSyncService>();
+            services.AddSingleton<RepeaterService>();
 
-           .AddSingleton<XpRankingSystemService>()
-           .AddSingleton<BadgesBridgeService>()
-
-           .AddSingleton<InteractionsHandler>()
-           .AddSingleton<InteractionService>()
-           .AddSingleton<EventsHandler>()
-           .AddSingleton<MessagesHandler>()
-
-           .AddSingleton<RepeaterService>()
-           .AddSingleton<AdvertisingService>()
-
-           .AddSingleton<DiscordSocketClient>(x => new DiscordSocketClient(new()
-           {
-               GatewayIntents = GatewayIntents.All,
-               AlwaysDownloadUsers = true,
-
-               MessageCacheSize = 1024,
-               AlwaysDownloadDefaultStickers = false,
-               DefaultRetryMode = RetryMode.AlwaysRetry,
-
-               UseSystemClock = false,
-               UseInteractionSnowflakeDate = false,
-           }));
-
-
-            await RunAsync(services.BuildServiceProvider());
-        }
-        public async Task RunAsync(IServiceProvider _services)
-        {
-            var configuration = _services.GetService<AppConfiguration>();
-
-            _services.GetRequiredService<DynastioApi>();
-
-            await _services.GetService<DynastioBotDatabase>()
-                 .InitializeAsync(configuration.Tokens["connectionstring-mongodb"], DynastioBotDatabase.DatabasesInstances.Mongodb, GlobalMain.IsDebug());
-
-            _services.GetRequiredService<DynastioGraphic>()
-                .Initialize();
-
-            _services.GetRequiredService<DynastioBotGlobalization>()
-                .Initialize();
-
-            _services.GetRequiredService<UserService>();
-
-            _services.GetRequiredService<XpRankingSystemService>();
-            _services.GetRequiredService<BadgesBridgeService>();
-
-            _services.GetRequiredService<EventsHandler>();
-            _services.GetRequiredService<MessagesHandler>();
-
-            await _services.GetRequiredService<InteractionsHandler>().InitializeAsync();
-
-            //  await _services.GetRequiredService<AdvertisingService>().InitializeAsync();
-
-            var client = _services.GetRequiredService<DiscordSocketClient>();
-            client.Log += (LogMessage arg) =>
+            // Discord
+            services.AddSingleton<DiscordSocketClient>(_ => new DiscordSocketClient(new DiscordSocketConfig
             {
-                Console.WriteLine(arg.ToString());
+                GatewayIntents = GatewayIntents.All,
+                AlwaysDownloadUsers = true,
+                MessageCacheSize = 1024,
+                DefaultRetryMode = RetryMode.AlwaysRetry,
+                UseSystemClock = false,
+                UseInteractionSnowflakeDate = false
+            }));
+
+            services.AddSingleton<InteractionService>(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()));
+            services.AddSingleton<InteractionsHandler>();
+            services.AddSingleton<MessagesHandler>();
+
+
+            // Event handlers
+            services.AddSingleton<IDiscordEvent, UserJoinedEvent>();
+            services.AddSingleton<IDiscordEvent, GuildJoinedEvent>();
+            services.AddSingleton<IDiscordEvent, BotReadyEvent>();
+            services.AddSingleton<EventsHandler>();
+
+            return services.BuildServiceProvider();
+        }
+
+        private static async Task InitializeInfrastructureAsync(ServiceProvider sp, ConfigurationService config)
+        {
+            // Database
+            var db = sp.GetRequiredService<DynastioBotDatabase>();
+            await db.InitializeAsync(config.Tokens["connectionstring-mongodb"], DynastioBotDatabase.DatabasesInstances.Mongodb, Common.IsDebug());
+
+            // Graphics & Localization
+            sp.GetRequiredService<DynastioGraphic>().Initialize();
+            sp.GetRequiredService<DynastioBotGlobalization>().Initialize();
+
+            // Warm up services
+            sp.GetRequiredService<UsersService>();
+            sp.GetRequiredService<XpRankingSystemService>();
+            sp.GetRequiredService<BadgesRoleSyncService>();
+
+            // Handlers
+            var eventsHandler = sp.GetRequiredService<EventsHandler>();
+            await eventsHandler.InitializeAsync();
+
+            sp.GetRequiredService<MessagesHandler>();
+            await sp.GetRequiredService<InteractionsHandler>().InitializeAsync();
+        }
+
+        private static async Task StartDiscordClientAsync(ServiceProvider sp, ConfigurationService config)
+        {
+            var client = sp.GetRequiredService<DiscordSocketClient>();
+
+            client.Log += log =>
+            {
+                Console.WriteLine(log);
                 return Task.CompletedTask;
             };
 
-            await client.LoginAsync(TokenType.Bot, configuration.Tokens["discord-bot"]);
+            await client.LoginAsync(TokenType.Bot, config.Tokens["discord-bot"]);
             await client.StartAsync();
 
+            // Prevent the application from exiting
             await Task.Delay(Timeout.Infinite);
         }
-
     }
 }

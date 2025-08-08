@@ -1,0 +1,177 @@
+﻿using Discord;
+using Discord.Interactions;
+using Discord.WebSocket;
+using Dynastio.Bot.Database;
+using Dynastio.Bot.Global;
+using Dynastio.Bot.Interactions;
+using Dynastio.Bot.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
+using System;
+using System.Collections.Concurrent;
+using System.Reflection;
+using System.Threading.Tasks;
+
+namespace Dynastio.Bot
+{
+    /// <summary>
+    /// Hooks DiscordSocketClient & InteractionService events,
+    /// applies per-user rate‐limits, logs errors, and registers slash commands.
+    /// </summary>
+    internal sealed class InteractionsHandler : IDisposable
+    {
+        private readonly DiscordSocketClient _discord;
+        private readonly InteractionService _interactionService;
+        private readonly DynastioBotDatabase _database;
+        private readonly ConfigurationService _config;
+        private readonly IServiceProvider _services;
+
+        // Tracks users with an active interaction in flight
+        private readonly ConcurrentDictionary<ulong, byte> _activeUsers = new();
+
+        public InteractionsHandler( IServiceProvider services)
+        {
+            _services = services;
+            _discord = services.GetRequiredService<DiscordSocketClient>();
+            _interactionService = services.GetRequiredService<InteractionService>();
+            _database = services.GetRequiredService<DynastioBotDatabase>();
+            _config = services.GetRequiredService<ConfigurationService>();
+        }
+
+        /// <summary>
+        /// Wire up events and load all modules from this assembly.
+        /// </summary>
+        public async Task InitializeAsync()
+        {
+            _discord.Ready += OnReadyAsync;
+            _discord.InteractionCreated += OnInteractionCreatedAsync;
+            _interactionService.InteractionExecuted += OnInteractionExecutedAsync;
+
+            await _interactionService
+                .AddModulesAsync(Assembly.GetExecutingAssembly(), _services)
+                .ConfigureAwait(false);
+
+            Common.Log("Insteraction Handler", $"Loaded interaction modules from {Assembly.GetExecutingAssembly().GetName().Name}" );
+        }
+
+        /// <summary>
+        /// Register slash commands to a guild in debug or globally in prod.
+        /// </summary>
+        private async Task OnReadyAsync()
+        {
+            try
+            {
+                if (Common.IsDebug())
+                {
+                    Common.Log("Insteraction Handler", $"Registering commands to debug guild {_config.DebugServerId.ToString()}");
+                    
+                    await _interactionService.RegisterCommandsToGuildAsync(_config.DebugServerId, true)
+                        .ConfigureAwait(false);
+                }
+                else
+                {
+                    Common.Log("Insteraction Handler", "Registering commands globally");
+                    await _interactionService
+                        .RegisterCommandsGloballyAsync(true)
+                        .ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.Log("Insteraction Handler", "Failed to register commands on Ready");
+            }
+        }
+
+        /// <summary>
+        /// Rate-limit per user, skip internal DiscordInput, then execute.
+        /// </summary>
+        private async Task OnInteractionCreatedAsync(SocketInteraction interaction)
+        {
+            if (ShouldSkipInteraction(interaction))
+                return;
+
+            if (!_activeUsers.TryAdd(interaction.User.Id, 0))
+            {
+                Common.Log("Insteraction Handler", $"User {interaction.User.Id} attempted overlapping interaction");
+
+                await interaction.RespondAsync(
+                        embed: new EmbedBuilder()
+                            .WithTitle("Please wait…")
+                            .WithDescription("Another interaction is still processing.")
+                            .WithColor(Color.Orange)
+                            .Build(),
+                        ephemeral: true)
+                    .ConfigureAwait(false);
+                return;
+            }
+
+            try
+            {
+                var ctx = new BotSocketInteractionContext(_discord, interaction, _services);
+
+                Common.Log("Insteraction Handler", $"Executing {interaction.Type} for {interaction.User.Id}" );
+
+                await _interactionService.ExecuteCommandAsync(ctx, _services)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Common.Log("Insteraction Handler", $"Error during ExecuteCommandAsync for user {interaction.User.Id}" );
+            }
+            finally
+            {
+                _activeUsers.TryRemove(interaction.User.Id, out _);
+            }
+        }
+
+        /// <summary>
+        /// Ignore components/modals generated by our own DiscordInput helpers.
+        /// </summary>
+        private bool ShouldSkipInteraction(SocketInteraction interaction)
+        {
+            if ((interaction.Type == InteractionType.MessageComponent || interaction.Type == InteractionType.ModalSubmit) && DiscordInput.IsFromDiscordInput(interaction))
+            {
+                Common.Log("Insteraction Handler", $"Skipping DiscordInput internal interaction {interaction.Id}" );
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// If execution failed, respond or follow-up with the error message.
+        /// </summary>
+        private async Task OnInteractionExecutedAsync(
+            ICommandInfo command,
+            IInteractionContext context,
+            IResult result)
+        {
+            if (result.IsSuccess)
+                return;
+
+            Common.Log("Insteraction Handler", $"Command {command.Name} failed for {context.User.Id}: {result.ErrorReason}");
+
+            if (context.Interaction.HasResponded)
+            {
+                await context.Interaction.FollowupAsync(result.ErrorReason, ephemeral: true)
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                await context.Interaction.RespondAsync(result.ErrorReason, ephemeral: true)
+                    .ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Unsubscribe from events when disposing.
+        /// </summary>
+        public void Dispose()
+        {
+            _discord.Ready -= OnReadyAsync;
+            _discord.InteractionCreated -= OnInteractionCreatedAsync;
+            _interactionService.InteractionExecuted -= OnInteractionExecutedAsync;
+        }
+    }
+}
