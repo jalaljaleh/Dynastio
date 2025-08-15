@@ -9,14 +9,7 @@ namespace Dynastio.Bot.Services.XpRankingSystem
         /// Notifies a user that they have leveled up by sending an embed
         /// to the source channel and an optional log channel.
         /// </summary>
-        public static async Task<bool> NotifyUserLevelUpAsync(
-            User user,
-            Guild guild,
-            UserGuildProfile profile,
-            IUser discordUser,
-            IGuild discordGuild,
-            ITextChannel sourceChannel,
-            IReadOnlyList<IRole> unlockedRoles)
+        public static async Task<bool> NotifyUserLevelUpAsync(User user, Guild guild, UserGuildProfile profile, IUser discordUser, IGuild discordGuild, ITextChannel sourceChannel, IReadOnlyList<IRole> unlockedRoles)
         {
             // 1. Build the embed
             var embed = BuildLevelUpEmbed(user, guild, profile, unlockedRoles);

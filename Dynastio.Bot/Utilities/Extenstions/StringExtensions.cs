@@ -19,6 +19,8 @@ namespace Dynastio.Bot
     {
         #region Markdown & Text Formatting
 
+
+
         /// <summary>
         /// Converts a URL and label into a Markdown link: [label](url).
         /// </summary>

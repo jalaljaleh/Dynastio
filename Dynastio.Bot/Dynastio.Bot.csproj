@@ -8,17 +8,6 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Interactions\AutoCompeletes\**" />
-    <Compile Remove="Interactions\Enums\**" />
-    <Compile Remove="Interactions\Precondinations\**" />
-    <EmbeddedResource Remove="Interactions\AutoCompeletes\**" />
-    <EmbeddedResource Remove="Interactions\Enums\**" />
-    <EmbeddedResource Remove="Interactions\Precondinations\**" />
-    <None Remove="Interactions\AutoCompeletes\**" />
-    <None Remove="Interactions\Enums\**" />
-    <None Remove="Interactions\Precondinations\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="config.json">
@@ -37,12 +26,53 @@
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 	  <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
 	 
-	  <ProjectReference Include="..\Dynastio.Bot.Database\Dynastio.Bot.Database.csproj" />	  
-       <ProjectReference Include="..\Dynastio.Bot.Globalization\Dynastio.Bot.Globalization.csproj" />
+	  <ProjectReference Include="..\Dynastio.Bot.Database\Dynastio.Bot.Database.csproj" />
        <ProjectReference Include="..\Dynastio.Bot.Global\Dynastio.Bot.Global.csproj" />
        <ProjectReference Include="..\Dynastio.Extenstions\Dynastio.Extenstions.csproj" />
        <ProjectReference Include="..\Dynastio.Graphic\Dynastio.Graphic.csproj" />
  
+  </ItemGroup>
+
+	
+  <ItemGroup>
+    <Folder Include="Interactions\Modules.Developer\" />
+    <Folder Include="Interactions\Modules.Moderation\" />
+    <Folder Include="Interactions\Modules.Dynastio\" />
+  </ItemGroup>
+
+	
+  <ItemGroup>
+    <Compile Update="Services\GlobalizationService\Globally\GloballyLocale.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GloballyLocale.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Services\GlobalizationService\InteractionCommands\InetactionCommandsLocale.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InetactionCommandsLocale.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+	
+  <ItemGroup>
+    <EmbeddedResource Update="Services\GlobalizationService\Globally\GloballyLocale.ru.resx">
+      <LastGenOutput>GloballyLocale.ru.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\GlobalizationService\Globally\GloballyLocale.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>GloballyLocale.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+	  
+    <EmbeddedResource Update="Services\GlobalizationService\InteractionCommands\InetactionCommandsLocale.ru.resx">
+      <LastGenOutput>CommandLocales.ru.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\GlobalizationService\InteractionCommands\InetactionCommandsLocale.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>InetactionCommandsLocale.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 

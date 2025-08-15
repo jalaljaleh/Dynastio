@@ -20,6 +20,7 @@ namespace Dynastio.Graphic.Helpers
                 return _currentDirectory;
             }
         }
+
         public static string GetFile(string path)
         {
             return Path.Combine(CurrentDirectory, $@"assets/{path}");
@@ -34,9 +35,25 @@ namespace Dynastio.Graphic.Helpers
         }
         public static string GetItem(ItemType item)
         {
-            return Path.Combine(CurrentDirectory, $@"assets/game/items/{item.ToString().ToLower()}.png");
+            return Path.Combine(CurrentDirectory, $@"{GetItemsDirectory()}{item.ToString().ToLower()}.png");
         }
-        public static string GetEntities(EntityType entity)
+        public static string GetEntitiesDirectory()
+        {
+            return Path.Combine(CurrentDirectory, $@"{GetGameDirectory()}/entities/");
+        }
+        public static string GetItemsDirectory()
+        {
+            return Path.Combine(CurrentDirectory, $@"{GetGameDirectory()}/items/");
+        }
+        public static string GetBadgesDirectory()
+        {
+            return Path.Combine(CurrentDirectory, $@"{GetGameDirectory()}/badges/");
+        }
+        public static string GetGameDirectory()
+        {
+            return Path.Combine(CurrentDirectory, @"assets/game/");
+        }
+        public static string GetEntity(EntityType entity)
         {
             return Path.Combine(CurrentDirectory, $@"assets/game/entities/{entity.ToString().ToLower()}.png");
         }

@@ -37,7 +37,30 @@ namespace Dynastio.Bot
                         .OrderByDescending(role => role.Position)
                         .ToList();
         }
-
+        /// <summary>
+        /// Retrieves all roles from the user that start with the specified prefix.
+        /// </summary>
+        /// <param name="user">The user to search.</param>
+        /// <param name="rolePrefix">The prefix to match.</param>
+        /// <returns>A list of matching roles, ordered by descending position.</returns>
+        public static List<IRole> GetRolesStartingWith(IGuildUser user, string rolePrefix)
+        {
+            return user.Guild.Roles.Where(
+                                        role => user.RoleIds.Contains(role.Id) &&
+                                        role.Name.StartsWith(rolePrefix, StringComparison.OrdinalIgnoreCase))
+                        .OrderByDescending(role => role.Position)
+                        .ToList();
+        }
+        /// <summary>
+        /// Retrieves the last role from the user that start with the specified prefix.
+        /// </summary>
+        /// <param name="user">The user to search.</param>
+        /// <param name="rolePrefix">The prefix to match.</param>
+        /// <returns>Last role of matching roles, ordered by descending position.</returns>
+        public static IRole GetLatestRoleStartWith(IGuildUser user, string rolePrefix)
+        {
+            return GetRolesStartingWith(user, rolePrefix).LastOrDefault();
+        }
         /// <summary>
         /// Finds the next higher role above the highest role that matches the given prefix.
         /// </summary>

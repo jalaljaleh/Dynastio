@@ -215,5 +215,4 @@ Admins should balance celebratory visibility with spam/notification fatigue.
 
 ---
 
-## 📁 File Structure
 

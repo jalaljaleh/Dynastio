@@ -27,14 +27,14 @@ namespace Dynastio.Bot.Database
         public delegate void OnDatabaseMessageLogs(string serviceName, string message, ConsoleColor color = default);
         public MongoDbContext(string mongoConnection, bool isDebugMode = false)
         {
-            //  OnMessagesLog.Invoke("Mongodb", "Initialize Async..");
+            Console.WriteLine("Mongodb" + " Initialize Async..");
 
             var settings = MongoClientSettings.FromConnectionString(mongoConnection);
             // settings.ServerApi = new ServerApi(ServerApiVersion.V1);
 
             _db = new MongoClient(settings);
 
-            if (!isDebugMode)
+            if (isDebugMode)
                 _dynastio = _db.GetDatabase("Dynastio_Debug");
             else
                 _dynastio = _db.GetDatabase("Dynastio");
@@ -48,35 +48,31 @@ namespace Dynastio.Bot.Database
                 //       OnMessagesLog.Invoke("Mongodb", "Start Session Async ..");
                 await _db.StartSessionAsync();
 
-                //var se = JsonSerializer.Serialize(allGuilds);
-                //var guilds = JsonSerializer.Deserialize<List<Guild>>(se);
-                //await UpdateManyAsync(guilds);
+                
                 await DoWorkAsync();
-                // await update();
-                //var allUsers = await _users.Find(Builders<User>.Filter.Empty).ToListAsync();
-                //var se = JsonSerializer.Serialize(allUsers);
-                //var users = JsonSerializer.Deserialize<List<User>>(se);
-                //await UpdateManyAsync(users);
-                //  OnMessagesLog.Invoke("Mongodb", "Session Started.");
+               
             }
             catch
             {
                 //  OnMessagesLog.Invoke("Mongodb", "db is not connected.", ConsoleColor.Red);
             }
         }
-        class User1:User
-        {
-            public int MyProperty { get; set; }
-        }
         public async Task DoWorkAsync()
         {
-            
+
+
+            //var se = JsonSerializer.Serialize(allGuilds);
+            //var guilds = JsonSerializer.Deserialize<List<Guild>>(se);
+            //await UpdateManyAsync(guilds);
 
 
 
-
-
-
+            // await update();
+            //var allUsers = await _users.Find(Builders<User>.Filter.Empty).ToListAsync();
+            //var se = JsonSerializer.Serialize(allUsers);
+            //var users = JsonSerializer.Deserialize<List<User>>(se);
+            //await UpdateManyAsync(users);
+            //  OnMessagesLog.Invoke("Mongodb", "Session Started.");
 
 
         }

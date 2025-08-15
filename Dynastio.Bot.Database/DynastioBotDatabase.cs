@@ -19,7 +19,7 @@ namespace Dynastio.Bot.Database
             this._users = new();
             this._guilds = new();
         }
-        public enum DatabasesInstances { Mongodb }
+        public enum DatabasesInstances { Mongodb,FileDb }
         public async Task InitializeAsync(string connection, DatabasesInstances instances = DatabasesInstances.Mongodb, bool isDebugMode = false)
         {
             if (instances is DatabasesInstances.Mongodb)
@@ -28,6 +28,13 @@ namespace Dynastio.Bot.Database
                 await dbContext.InitializeAsync();
                 return;
             }
+            if (instances is DatabasesInstances.FileDb)
+            {
+                dbContext = new FileDbContext(connection);
+                await dbContext.InitializeAsync();
+                return;
+            }
+
             dbContext = await Task.FromResult<IDynastioDatabase>(null);
         }
         public void ClearCache()

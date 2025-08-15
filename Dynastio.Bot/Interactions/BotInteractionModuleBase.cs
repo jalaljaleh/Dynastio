@@ -2,8 +2,8 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 using Dynastio.Bot.Database;
-using Dynastio.Bot.Globalization;
 using Dynastio.Bot.Services;
+using Dynastio.Bot.Services.GlobalizationService.Globally.Extensions;
 
 namespace Dynastio.Bot.Interactions
 {
@@ -15,15 +15,16 @@ namespace Dynastio.Bot.Interactions
         /// <summary>
         /// Access localized strings using a key.
         /// </summary>
-        public string this[string key] => Context.UserLocale[key];
+        public string this[string key] => I18nExtensions.Tfin(key, this.Context.Interaction.UserLocale, null);
 
         /// <summary>
         /// Access localized strings with formatting parameters.
         /// </summary>
-        public string this[string key, params object[] parameters] => Context.UserLocale[key, parameters];
+        public string this[string key, object model] => I18nExtensions.Tfin(key, Context.Interaction.UserLocale, model);
 
         public BotInteractionModuleBase() : base() { }
-
+        public SocketUser User => Context.User;
+        public SocketGuild Guild => Context.Guild;
         /// <summary>
         /// Gets the bot's internal user model.
         /// </summary>
@@ -34,15 +35,6 @@ namespace Dynastio.Bot.Interactions
         /// </summary>
         public Guild BotGuild => Context.BotGuild;
 
-        /// <summary>
-        /// Gets the locale for the current guild.
-        /// </summary>
-        public Locale GuildLocale => Context.GuildLocale;
-
-        /// <summary>
-        /// Gets the locale for the current user.
-        /// </summary>
-        public Locale UserLocale => Context.UserLocale;
 
         /// <summary>
         /// Gets the Discord mention string for the current user.

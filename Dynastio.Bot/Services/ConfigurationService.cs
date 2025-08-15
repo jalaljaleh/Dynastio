@@ -14,6 +14,7 @@ namespace Dynastio.Bot.Services
     public class ConfigurationService
     {
         public Dictionary<string, string> Tokens { get; set; } = new();
+        public string DebugDiscordBotToken{ get; set; }
         public ulong DebugServerId { get; set; }
         public int GuildLimit { get; set; } = 97;
 
