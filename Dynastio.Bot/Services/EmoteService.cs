@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Dynastio.Bot.Global;
 using Dynastio.Graphic;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +27,7 @@ namespace Dynastio.Bot.Services
         // Defaults and unknown fallback
         private static readonly TimeSpan DefaultDelay = TimeSpan.FromMilliseconds(900);
         private string _unknownEmoteName = "unknown";
-        private string _unknownEmoteFilePath = null; // optional: set if you want auto-create
+        private string _unknownEmoteFilePath = DynastioGraphicHelper.GetUnkownPng(); // optional: set if you want auto-create
 
         public EmoteService(IServiceProvider services)
         {
@@ -48,6 +49,8 @@ namespace Dynastio.Bot.Services
             // Optional: ensure the unknown emote exists
             if (!string.IsNullOrWhiteSpace(_unknownEmoteFilePath))
                 await EnsureUnknownEmotePresentAsync().ConfigureAwait(false);
+
+            await SyncAllAsync();
         }
 
         // Optional manual warm-up (e.g., in your startup after login)
@@ -107,7 +110,7 @@ namespace Dynastio.Bot.Services
         }
 
         // Name normalization: tweak if you need other rules
-        private static string NormalizeName(string name) => name;
+        private static string NormalizeName(string name) => name.ToLower().Trim();
 
         // Fallback resolver
         private Emote GetUnknownOrDefault()
@@ -164,22 +167,15 @@ namespace Dynastio.Bot.Services
                 _cacheLock.Release();
             }
         }
-        // Sync for only badges
-        public Task<int> SyncBadgesAsync(
-            bool dryRun = false,
-            int? maxUploads = null,
-            TimeSpan? delayBetweenUploads = null,
-            Func<string, bool> fileNameFilter = null,
-            Action<string> logger = null,
-            CancellationToken ct = default)
-            => SyncFromPathsAsync("Badges", DynastioGraphicHelper.GetBadgesPng(), dryRun, maxUploads,
-                                  delayBetweenUploads ?? DefaultDelay, fileNameFilter, logger, ct);
+
 
         // Public one-call sync for items and/or entities
         public async Task<(int itemsUploaded, int entitiesUploaded)> SyncAllAsync(
+            bool includeUi = true,
             bool includeItems = true,
             bool includeEntities = true,
             bool includeBadges = true,
+            bool includeSkins = true,
             bool dryRun = false,
             int? maxUploadsPerCategory = null,
             TimeSpan? delayBetweenUploads = null,
@@ -196,8 +192,20 @@ namespace Dynastio.Bot.Services
             if (!string.IsNullOrWhiteSpace(_unknownEmoteFilePath))
                 await EnsureUnknownEmotePresentAsync(ct).ConfigureAwait(false);
 
-            int items = 0, entities = 0;
-
+            int items = 0, entities = 0, ui = 0, skins = 0, badges = 0;
+            if (includeUi)
+            {
+                var itemPaths = DynastioGraphicHelper.GetUisPng();
+                ui = await SyncFromPathsAsync(
+                    kind: "Ui",
+                    filePaths: itemPaths,
+                    dryRun: dryRun,
+                    maxUploads: maxUploadsPerCategory,
+                    delayBetweenUploads: delay,
+                    fileNameFilter: fileNameFilter,
+                    logger: logger,
+                    ct: ct);
+            }
             if (includeItems)
             {
                 var itemPaths = DynastioGraphicHelper.GetItemsPng();
@@ -228,7 +236,7 @@ namespace Dynastio.Bot.Services
             if (includeBadges)
             {
                 var entityPaths = DynastioGraphicHelper.GetBadgesPng();
-                entities = await SyncFromPathsAsync(
+                badges = await SyncFromPathsAsync(
                     kind: "Badges",
                     filePaths: entityPaths,
                     dryRun: dryRun,
@@ -238,10 +246,54 @@ namespace Dynastio.Bot.Services
                     logger: logger,
                     ct: ct);
             }
+            if (includeSkins)
+            {
+                var entityPaths = DynastioGraphicHelper.GetSkinPng();
+                skins = await SyncFromPathsAsync(
+                    kind: "Skins",
+                    filePaths: entityPaths,
+                    dryRun: dryRun,
+                    maxUploads: maxUploadsPerCategory,
+                    delayBetweenUploads: delay,
+                    fileNameFilter: fileNameFilter,
+                    logger: logger,
+                    ct: ct);
+            }
+
+            if ((items + badges + entities + skins + ui) > 0)
+                await RefreshCacheAsync();
 
             return (items, entities);
         }
 
+        public Task<int> SyncSkinAsync(
+         bool dryRun = false,
+         int? maxUploads = null,
+         TimeSpan? delayBetweenUploads = null,
+         Func<string, bool> fileNameFilter = null,
+         Action<string> logger = null,
+         CancellationToken ct = default)
+         => SyncFromPathsAsync("Skins", DynastioGraphicHelper.GetUisPng(), dryRun, maxUploads,
+                               delayBetweenUploads ?? DefaultDelay, fileNameFilter, logger, ct);
+        public Task<int> SyncUiAsync(
+           bool dryRun = false,
+           int? maxUploads = null,
+           TimeSpan? delayBetweenUploads = null,
+           Func<string, bool> fileNameFilter = null,
+           Action<string> logger = null,
+           CancellationToken ct = default)
+           => SyncFromPathsAsync("Ui", DynastioGraphicHelper.GetUisPng(), dryRun, maxUploads,
+                                 delayBetweenUploads ?? DefaultDelay, fileNameFilter, logger, ct);
+        // Sync for only badges
+        public Task<int> SyncBadgesAsync(
+            bool dryRun = false,
+            int? maxUploads = null,
+            TimeSpan? delayBetweenUploads = null,
+            Func<string, bool> fileNameFilter = null,
+            Action<string> logger = null,
+            CancellationToken ct = default)
+            => SyncFromPathsAsync("Badges", DynastioGraphicHelper.GetBadgesPng(), dryRun, maxUploads,
+                                  delayBetweenUploads ?? DefaultDelay, fileNameFilter, logger, ct);
         public Task<int> SyncItemsAsync(
             bool dryRun = false,
             int? maxUploads = null,

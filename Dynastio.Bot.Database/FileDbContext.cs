@@ -315,5 +315,10 @@ namespace Dynastio.Bot.Database
                 File.Delete(path);
             File.Move(temp, path);
         }
+
+        public Task<List<User>> GetAllUsersAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace Dynastio.Bot.Database
         public bool IsAccountConnected { get => !string.IsNullOrEmpty(gameAccountId); }
 
 
-        public UserGuildProfile GetServerProfile(ulong guildId)
+        public UserGuildProfile GetGuildProfile(ulong guildId)
         {
             var rankingProfile = GuildProfiles.FirstOrDefault(a => a.GuildId == guildId);
             if (rankingProfile is null)

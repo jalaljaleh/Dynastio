@@ -142,7 +142,7 @@ namespace Dynastio.Bot
                 return Task.CompletedTask;
             };
 
-            await client.LoginAsync(TokenType.Bot, config.Tokens["discord-bot"]);
+            await client.LoginAsync(TokenType.Bot, Common.IsDebug() ? config.DebugDiscordBotToken : config.Tokens["discord-bot"]);
             await client.StartAsync();
 
             // Prevent the application from exiting

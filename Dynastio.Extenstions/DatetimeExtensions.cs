@@ -1,47 +1,59 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Extenstions
+namespace Dynastio.Bot.Extensions
 {
-    public static class DatetimeExtensions
+    /// <summary>
+    /// Provides extension methods for working with <see cref="DateTime"/> in Discord bots.
+    /// </summary>
+    public static class DateTimeExtensions
     {
-        public static int ToUnixTimestamp(this DateTime datetime)
-        {
-            return (int)datetime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-        }
-        public static string UnixTimestampDiscordFormat(this DateTime datetime)
-        {
-            return $"<t:{datetime.ToUnixTimestamp()}:R>";
-        }
-        public static string ToRelative(this DateTime input)
-        {
-            TimeSpan oSpan = DateTime.UtcNow.Subtract(input);
-            double TotalMinutes = oSpan.TotalMinutes;
-            string Suffix = " ago";
+        private static readonly DateTime UnixEpoch = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-            if (TotalMinutes < 0.0)
+        /// <summary>
+        /// Converts a <see cref="DateTime"/> to a Unix timestamp in seconds.
+        /// </summary>
+        public static int ToUnixTimestamp(this DateTime dateTime)
+        {
+            var utc = dateTime.Kind == DateTimeKind.Utc ? dateTime : dateTime.ToUniversalTime();
+            return (int)(utc - UnixEpoch).TotalSeconds;
+        }
+
+        /// <summary>
+        /// Formats a <see cref="DateTime"/> into Discord's timestamp format.
+        /// Default is relative time (:R), but you can pass any Discord time style.
+        /// Docs: https://discord.com/developers/docs/reference#message-formatting-timestamp-styles
+        /// </summary>
+        public static string ToDiscordTimestamp(this DateTime dateTime, string style = "R")
+        {
+            return $"<t:{dateTime.ToUnixTimestamp()}:{style}>";
+        }
+
+        /// <summary>
+        /// Returns a human-friendly relative time string (e.g. "5 minutes ago", "in 2 hours").
+        /// </summary>
+        public static string ToRelativeString(this DateTime input)
+        {
+            var utcNow = DateTime.UtcNow;
+            var span = utcNow - (input.Kind == DateTimeKind.Utc ? input : input.ToUniversalTime());
+
+            bool isFuture = span.TotalSeconds < 0;
+            var delta = Math.Abs(span.TotalMinutes);
+
+            string suffix = isFuture ? " from now" : " ago";
+
+            return delta switch
             {
-                TotalMinutes = Math.Abs(TotalMinutes);
-                Suffix = " from now";
-            }
-
-            var aValue = new SortedList<double, Func<string>>();
-            aValue.Add(0.75, () => "a minute");
-            aValue.Add(1.5, () => "a minute");
-            aValue.Add(45, () => string.Format("{0} minutes", Math.Round(TotalMinutes)));
-            aValue.Add(90, () => "1 hour");
-            aValue.Add(1440, () => string.Format("{0} hours", Math.Round(Math.Abs(oSpan.TotalHours)))); // 60 * 24
-            aValue.Add(2880, () => "a day"); // 60 * 48
-            aValue.Add(43200, () => string.Format("{0} days", Math.Floor(Math.Abs(oSpan.TotalDays)))); // 60 * 24 * 30
-            aValue.Add(86400, () => "a month"); // 60 * 24 * 60
-            aValue.Add(525600, () => string.Format("{0} months", Math.Floor(Math.Abs(oSpan.TotalDays / 30)))); // 60 * 24 * 365 
-            aValue.Add(1051200, () => "a year"); // 60 * 24 * 365 * 2
-            aValue.Add(double.MaxValue, () => string.Format("{0} years", Math.Floor(Math.Abs(oSpan.TotalDays / 365))));
-
-            return aValue.First(n => TotalMinutes < n.Key).Value.Invoke() + Suffix;
+                < 1 => "a minute" + suffix,
+                < 45 => $"{Math.Round(delta)} minutes{suffix}",
+                < 90 => "1 hour" + suffix,
+                < 1440 => $"{Math.Round(Math.Abs(span.TotalHours))} hours{suffix}",  // < 1 day
+                < 2880 => "a day" + suffix,                                          // < 2 days
+                < 43200 => $"{Math.Floor(Math.Abs(span.TotalDays))} days{suffix}",    // < 30 days
+                < 86400 => "a month" + suffix,                                        // < 60 days
+                < 525600 => $"{Math.Floor(Math.Abs(span.TotalDays / 30))} months{suffix}", // < 1 year
+                < 1051200 => "a year" + suffix,                                         // < 2 years
+                _ => $"{Math.Floor(Math.Abs(span.TotalDays / 365))} years{suffix}"
+            };
         }
     }
 }

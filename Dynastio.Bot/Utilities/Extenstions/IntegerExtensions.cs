@@ -12,6 +12,7 @@ namespace Dynastio.Bot
         /// </summary>
         public static string ToRegularCounter(this int number)
         {
+            if (number == 0) number = 1;
             return number < 10 ? $"0{number}" : number.ToString();
         }
 

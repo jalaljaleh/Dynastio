@@ -123,6 +123,11 @@ namespace Dynastio.Bot.Database
 
             return await Task.FromResult(result);
         }
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            var allUsers = await _users.Find(Builders<User>.Filter.Empty).ToListAsync();
+            return allUsers;
+        }
         public async Task<bool> InsertAsync(User Buser)
         {
             _users.InsertOne(Buser);

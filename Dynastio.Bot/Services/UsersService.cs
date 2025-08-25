@@ -30,6 +30,11 @@ namespace Dynastio.Bot.Services
             var user = await _db.GetUserAsync(Id, true, () => UserFactory.CreateDefault(Id), null);
             return user;
         }
+        public async Task<User> GetUserByAccountIdAsync(string accountId)
+        {
+            var user = await _db.GetUserByAccountIdAsync(accountId);
+            return user;
+        }
         /// <summary>
         /// Synchronizes roles for a Discord user based on their badges and XP level.
         /// </summary>
@@ -48,15 +53,20 @@ namespace Dynastio.Bot.Services
         /// </summary>
         public async Task<bool> SyncUserRolesAsync(Guild botGuild, User botUser, IGuildUser user)
         {
+
             var badgeSync = await _badgesService.SynchronizeUserRolesAsync(botGuild, user, botUser)
                 .TryAsync();
 
-            var level = botUser.GetServerProfile(botGuild.Id)?.Level ?? 0;
+            var level = botUser.GetGuildProfile(botGuild.Id)?.Level ?? 0;
 
-            var xpSync = await XpRankingSystemServiceHelper.AssignmentUserRolesAsync(botGuild, user, level)
-                .TryAsync();
+            bool xpResult = false;
+            if (botGuild.XpSystemSettings.IsRankingRoleAssignmentEnabled)
+            {
+                var res = await XpRankingSystemServiceHelper.AssignmentUserRolesAsync(botGuild, user, level).TryAsync();
+                xpResult = res.isSuccessful;
+            }
 
-            return badgeSync.isSuccessful && xpSync.isSuccessful;
+            return badgeSync.isSuccessful && xpResult;
         }
 
         /// <summary>

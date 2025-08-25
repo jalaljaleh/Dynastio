@@ -5,6 +5,7 @@ using Dynastio.Bot.Database;
 using Dynastio.Bot.Global;
 using Dynastio.Bot.Interactions;
 using Dynastio.Bot.Services;
+using Dynastio.Bot.Services.GlobalizationService.Globally.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
@@ -25,18 +26,20 @@ namespace Dynastio.Bot
         private readonly InteractionService _interactionService;
         private readonly DynastioBotDatabase _database;
         private readonly ConfigurationService _config;
+
         private readonly IServiceProvider _services;
 
         // Tracks users with an active interaction in flight
         private readonly ConcurrentDictionary<ulong, byte> _activeUsers = new();
 
-        public InteractionsHandler( IServiceProvider services)
+        public InteractionsHandler(IServiceProvider services)
         {
             _services = services;
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _interactionService = services.GetRequiredService<InteractionService>();
             _database = services.GetRequiredService<DynastioBotDatabase>();
             _config = services.GetRequiredService<ConfigurationService>();
+
         }
 
         /// <summary>
@@ -52,7 +55,7 @@ namespace Dynastio.Bot
                 .AddModulesAsync(Assembly.GetExecutingAssembly(), _services)
                 .ConfigureAwait(false);
 
-            Common.Log("Insteraction Handler", $"Loaded interaction modules from {Assembly.GetExecutingAssembly().GetName().Name}" );
+            Common.Log("Insteraction Handler", $"Loaded interaction modules from {Assembly.GetExecutingAssembly().GetName().Name}");
         }
 
         /// <summary>
@@ -62,10 +65,10 @@ namespace Dynastio.Bot
         {
             try
             {
-                if (!Common.IsDebug())
+                if (Common.IsDebug())
                 {
                     Common.Log("Insteraction Handler", $" Registering commands to debug guild {_config.DebugServerId.ToString()}");
-                    
+
                     await _interactionService.RegisterCommandsToGuildAsync(_config.DebugServerId, true)
                         .ConfigureAwait(false);
                 }
@@ -110,14 +113,14 @@ namespace Dynastio.Bot
             {
                 var ctx = new BotSocketInteractionContext(_discord, interaction, _services);
 
-                Common.Log("Insteraction Handler", $"Executing {interaction.Type} for {interaction.User.Id}" );
+                Common.Log("Insteraction Handler", $"Executing {interaction.Type} for {interaction.User.Id}");
 
                 await _interactionService.ExecuteCommandAsync(ctx, _services)
                     .ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                Common.Log("Insteraction Handler", $"Error during ExecuteCommandAsync for user {interaction.User.Id}" );
+                Common.Log("Insteraction Handler", $"Error during ExecuteCommandAsync for user {interaction.User.Id}");
             }
             finally
             {
@@ -132,7 +135,7 @@ namespace Dynastio.Bot
         {
             if ((interaction.Type == InteractionType.MessageComponent || interaction.Type == InteractionType.ModalSubmit) && DiscordInput.IsFromDiscordInput(interaction))
             {
-                Common.Log("Insteraction Handler", $"Skipping DiscordInput internal interaction {interaction.Id}" );
+                Common.Log("Insteraction Handler", $"Skipping DiscordInput internal interaction {interaction.Id}");
                 return true;
             }
 
@@ -142,24 +145,25 @@ namespace Dynastio.Bot
         /// <summary>
         /// If execution failed, respond or follow-up with the error message.
         /// </summary>
-        private async Task OnInteractionExecutedAsync(
-            ICommandInfo command,
-            IInteractionContext context,
-            IResult result)
+        private async Task OnInteractionExecutedAsync(ICommandInfo command, IInteractionContext context, IResult result)
         {
             if (result.IsSuccess)
                 return;
 
-           // Common.Log("Insteraction Handler", $"Command {command.Name} failed for {context.User.Id}: {result.ErrorReason}");
-
+            // Common.Log("Insteraction Handler", $"Command {command.Name} failed for {context.User.Id}: {result.ErrorReason}");
+            var errorDescription = result.ErrorReason;
+            if (result.Error.Value == InteractionCommandError.UnknownCommand)
+            {
+                errorDescription = "error.interactions.hanlder.unknown".Tin(context.Interaction.UserLocale, null);
+            }
             if (context.Interaction.HasResponded)
             {
-                await context.Interaction.FollowupAsync(result.ErrorReason, ephemeral: true)
+                await context.Interaction.FollowupAsync(errorDescription, ephemeral: true)
                     .ConfigureAwait(false);
             }
             else
             {
-                await context.Interaction.RespondAsync(result.ErrorReason, ephemeral: true)
+                await context.Interaction.RespondAsync(errorDescription, ephemeral: true)
                     .ConfigureAwait(false);
             }
         }

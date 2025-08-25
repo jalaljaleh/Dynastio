@@ -1,4 +1,5 @@
 ﻿
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Database
 {
+    [BsonIgnoreExtraElements]
     public class BadgeBridgeSettings
     {
         public BadgeBridgeSettings()
         {
         }
         public bool IsEnabled { get; set; }
-        public ulong BadgesRoleAssignmentHeaderId { get; set; }
         public string BadgesRoleAssignmentPerfix { get; set; }
 
         //public List<BadgeRoleItem> Roles { get; set; } = new();

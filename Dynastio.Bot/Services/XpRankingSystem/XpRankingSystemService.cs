@@ -2,7 +2,6 @@
 using Discord.Rest;
 using Discord.Webhook;
 using Dynastio.Bot.Database;
-using Dynastio.Bot.Extenstions;
 using Dynastio.Bot.Services.XpRankingSystem;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +28,7 @@ namespace Dynastio.Bot.Services
                 return;
 
             var discordUser = message.Author as IGuildUser;
-            var profile = user.GetServerProfile(guild.Id);
+            var profile = user.GetGuildProfile(guild.Id);
 
             if (!IsXpIncreaseable(guild.XpSystemSettings, profile, message.CleanContent)) return;
 
@@ -44,9 +43,14 @@ namespace Dynastio.Bot.Services
             bool leveledUp = LevelUp(profile);
             if (leveledUp)
             {
-                var rolesResult = await XpRankingSystemServiceHelper.AssignmentUserRolesAsync(guild, discordUser, profile.Level).TryAsync();
+                List<IRole> rolesResult = default;
+                if (guild.XpSystemSettings.IsRankingRoleAssignmentEnabled)
+                {
+                    var result_ = await XpRankingSystemServiceHelper.AssignmentUserRolesAsync(guild, discordUser, profile.Level).TryAsync();
+                    rolesResult = result_.result;
+                }
 
-                await XpNotificationController.NotifyUserLevelUpAsync(user, guild, profile, discordUser, channel.Guild, channel, rolesResult.result);
+                await XpNotificationController.NotifyUserLevelUpAsync(user, guild, profile, discordUser, channel.Guild, channel, rolesResult);
 
                 await UpdateUserGameRewards(profile, user, guild).TryAsync();
             }

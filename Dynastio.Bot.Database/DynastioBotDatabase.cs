@@ -104,7 +104,10 @@ namespace Dynastio.Bot.Database
         {
             return await dbContext.InsertAsync(guild);
         }
-
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            return await dbContext.GetAllUsersAsync();
+        }
         public async Task<User?> GetUserAsync(ulong id, bool allowCreate = true, Func<User>? createInstance = null, Action<User>? onCreate = null)
         {
             var user = _users.FirstOrDefault(u => u.Id == id);

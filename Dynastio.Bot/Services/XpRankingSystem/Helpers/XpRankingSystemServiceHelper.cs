@@ -12,15 +12,16 @@ namespace Dynastio.Bot.Services.XpRankingSystem
     {
         public static async Task<List<IRole>> AssignmentUserRolesAsync(Guild guild, IGuildUser user, int level)
         {
-            // Early exit if disabled
-            if (!guild.XpSystemSettings.IsRankingRoleAssignmentEnabled)
-                return null;
+            //// Early exit if disabled
+            //if (!guild.XpSystemSettings.IsRankingRoleAssignmentEnabled)
+            //    return null;
 
             // Grab all roles that match the prefix
             var allRoles = RoleHelper
                 .GetRolesStartingWith(user.Guild, guild.XpSystemSettings.RankingRoleAssignmentPerfix)
-                .OrderBy(r => r.Position)       // lowest level first
                 .ToList();
+
+            allRoles.Reverse();
 
             // Cap level at the total number of available roles
             int assignCount = Math.Min(level, allRoles.Count);
@@ -52,7 +53,7 @@ namespace Dynastio.Bot.Services.XpRankingSystem
 
             // Ensure header role is present
             var headerRole = RoleHelper
-                .GetPrefixHeaderRole(user.Guild, guild.XpSystemSettings.RankingRoleAssignmentPerfix);
+                .GetNextHigherHeaderRole(user.Guild, guild.XpSystemSettings.RankingRoleAssignmentPerfix);
 
             if (headerRole != null && !user.RoleIds.Contains(headerRole.Id))
                 await user.AddRoleAsync(headerRole.Id);

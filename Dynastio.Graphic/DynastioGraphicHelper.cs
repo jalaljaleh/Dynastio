@@ -29,5 +29,13 @@ namespace Dynastio.Graphic
         {
            return Directory.GetFiles(PathHelper.GetItemsDirectory());
         }
+        public static string[] GetUisPng()
+        {
+            return Directory.GetFiles(PathHelper.GetUiDirectory());
+        }
+        public static string[] GetSkinPng()
+        {
+            return Directory.GetFiles(PathHelper.GetSkinDirectory());
+        }
     }
 }

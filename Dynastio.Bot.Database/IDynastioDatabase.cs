@@ -25,6 +25,7 @@ namespace Dynastio.Bot.Database
 
 
        internal Task<User> GetUserAsync(ulong Id);
+        Task<List<User>> GetAllUsersAsync();
         Task<bool> InsertAsync(User Buser);
         Task<bool> UpdateAsync(User Buser);
 

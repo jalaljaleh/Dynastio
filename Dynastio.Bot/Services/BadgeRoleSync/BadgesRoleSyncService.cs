@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Dynastio.Bot.Database;
-using Dynastio.Bot.Extenstions;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver.Core.Misc;
@@ -74,16 +73,17 @@ namespace Dynastio.Bot.Services
 
                 await Task.Delay(180);
             }
-
             var badgeRoleIds = badgeRoles.Select(r => r.Id);
             bool hasAnyBadgeRole = user.RoleIds.Any(id => badgeRoleIds.Contains(id));
-            bool hasHeaderRole = user.RoleIds.Contains(guild.BadgeBridgeSettings.BadgesRoleAssignmentHeaderId);
+
+            var headerRoleId = RoleHelper.GetNextHigherHeaderRole(user.Guild, guild.BadgeBridgeSettings.BadgesRoleAssignmentPerfix);
+            bool hasHeaderRole = user.RoleIds.Contains(headerRoleId.Id);
 
             if (hasAnyBadgeRole && !hasHeaderRole)
-                await user.AddRoleAsync(guild.BadgeBridgeSettings.BadgesRoleAssignmentHeaderId);
+                await user.AddRoleAsync(headerRoleId.Id);
 
             else if (!hasAnyBadgeRole && hasHeaderRole)
-                await user.RemoveRoleAsync(guild.BadgeBridgeSettings.BadgesRoleAssignmentHeaderId);
+                await user.RemoveRoleAsync(headerRoleId.Id);
 
             return true;
         }

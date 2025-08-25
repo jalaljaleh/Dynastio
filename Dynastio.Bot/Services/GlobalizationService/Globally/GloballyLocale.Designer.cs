@@ -61,6 +61,33 @@ namespace Dynastio.Bot.Services.GlobalizationService.Globally {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Command not found in my command modules sir !.
+        /// </summary>
+        public static string error_interactions_hanlder_unknown {
+            get {
+                return ResourceManager.GetString("error.interactions.hanlder.unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string menu_closed_description {
+            get {
+                return ResourceManager.GetString("menu.closed.description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string menu_closed_title {
+            get {
+                return ResourceManager.GetString("menu.closed.title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 
         ///### Your ranking **Level** is {level} and your **Xp** is {xp}.
         /// .

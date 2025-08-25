@@ -4,14 +4,24 @@ using Discord.WebSocket;
 using Dynastio.Bot.Database;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally.Extensions;
+using Dynastio.Net;
 
 namespace Dynastio.Bot.Interactions
 {
-    /// <summary>
-    /// Base class for Discord interaction modules with access to bot-specific context, localization, and services.
-    /// </summary>
-    public class BotInteractionModuleBase : InteractionModuleBase<BotSocketInteractionContext>
+    //
+    // Summary:
+    //     Provides a base class for a command module to inherit from.
+    //
+    // Type parameters:
+    //   T:
+    //     Type of interaction context to be injected into the module.
+    public class BotInteractionModuleBase : BotInteractionModuleBase<BotSocketInteractionContext>;
+    public class BotInteractionModuleBase<T> : InteractionModuleBase<T> where T : BotSocketInteractionContext
     {
+
+        public DynastioApi Dynastio { get; set; }
+        public EmoteService EmoteService { get; set; }
+        public DynastioBotDatabase _db { get; set; }
         /// <summary>
         /// Access localized strings using a key.
         /// </summary>
@@ -22,7 +32,6 @@ namespace Dynastio.Bot.Interactions
         /// </summary>
         public string this[string key, object model] => I18nExtensions.Tfin(key, Context.Interaction.UserLocale, model);
 
-        public BotInteractionModuleBase() : base() { }
         public SocketUser User => Context.User;
         public SocketGuild Guild => Context.Guild;
         /// <summary>
@@ -54,6 +63,7 @@ namespace Dynastio.Bot.Interactions
             {
                 InteractionType.ModalSubmit => (Context.Interaction as SocketModal)?.Message,
                 InteractionType.MessageComponent => (Context.Interaction as SocketMessageComponent)?.Message,
+                //     InteractionType.ApplicationCommand => (Context.Interaction as Component)
                 _ => null
             };
 
@@ -71,24 +81,12 @@ namespace Dynastio.Bot.Interactions
         public async Task<bool> UpdateBotGuildAsync()
         {
             // Implement guild update logic if needed
-            return true;
+            //return await Context. _;
+            return false;
         }
 
         // 🔒 All other methods are commented for now.
-        //public async Task<IUserMessage> ModifyCurrentMessageAsync(string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null, RequestOptions options = null, MessageComponent components = null, Embed embed = null)
-        //{
-        //    await CurrentMessage.ModifyAsync(x =>
-        //     {
-        //         x.Content = text;
-        //         x.AllowedMentions = allowedMentions;
-        //         x.Attachments = null;
-        //         x.Components = components;
-        //         x.Embed = embed;
-        //         x.Embeds = embeds;
-        //         x.Flags = null;
-        //     });
-        //    return CurrentMessage;
-        //}
+
         //public async Task ModifyCurrentMessageToInputModeAsync()
         //{
         //    var embed = new EmbedBuilder()
