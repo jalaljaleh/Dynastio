@@ -33,16 +33,17 @@ namespace Dynastio.Bot.Interactions
 
             await ModifyMenuMessageAsync(UserMention, embed: embed, components: new ComponentBuilder().Build());
         }
-        public async Task NotFound()
+        public async Task ModifyCurrentMessageToNotFound()
         {
-            var sb1 = new SectionBuilder()
-                .WithTextDisplay($"## {EmoteService.GetEmoteByName("unknown")}  Not Found !")
-                .WithTextDisplay($"{EmoteService.GetEmote(Net.EntityType.Lamp)} Hey {UserMention} The land is quiet, no matching survivors are found. !")
-                .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmote(Net.BadgeType.MapMaker).Url, "Dynast.io Bot", false));
+            //     var sb1 = new SectionBuilder()
+            // .WithMediaGallery(AssetUrlService[AssetType.banner_not_found])
 
             var containerb = new ContainerBuilder()
-                .WithAccentColor(Color.Orange)
-                .WithSection(sb1);
+                .WithMediaGallery(AssetUrlService[AssetType.banner_not_found])
+                .WithAccentColor(Color.DarkerGrey)
+                .WithTextDisplay($"# {EmoteService.GetEmoteByName("shadow1")}  The Nightmare’s Empty Feast !")
+                .WithTextDisplay($"{EmoteService.GetEmote(Net.EntityType.Lamp)} {UserMention} By the light of a waning moon, the hungry Nightmare crept through these halls and swallowed every last record. What you see now is its aftermath: a silent void where data once danced.\nAdjust your filters, widen your search, and breathe fresh life into this page—before the Nightmare returns for another midnight banquet.")
+                 ;
 
             ComponentBuilderV2 cb = new ComponentBuilderV2()
                 .WithContainer(containerb);

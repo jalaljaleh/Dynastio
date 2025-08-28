@@ -21,6 +21,7 @@ namespace Dynastio.Bot.Interactions
 
         public DynastioApi Dynastio { get; set; }
         public EmoteService EmoteService { get; set; }
+        public AssetUrlService AssetUrlService { get; set; }
         public DynastioBotDatabase _db { get; set; }
         /// <summary>
         /// Access localized strings using a key.

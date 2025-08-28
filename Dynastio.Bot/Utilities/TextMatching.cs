@@ -8,6 +8,24 @@ namespace Dynastio.Bot
 {
     public static class TextMatching
     {
+        /// <summary>
+        /// Performs a SQL-style LIKE match using % and _ wildcards.
+        /// % matches any sequence of characters.
+        /// _ matches any single character.
+        /// </summary>
+        public static bool Like(this string input, string pattern)
+        {
+            if (input == null || pattern == null) return false;
+
+            // Escape regex special characters except for % and _
+            string regexPattern = "^" + Regex.Escape(pattern)
+                .Replace("\\%", ".*")   // % → any characters
+                .Replace("\\_", ".")    // _ → any single character
+                + "$";
+
+            return Regex.IsMatch(input, regexPattern, RegexOptions.IgnoreCase);
+        }
+
         // ────────────── NORMALIZATION ──────────────
 
         /// <summary>Lowercases, trims and strips diacritics.</summary>

@@ -68,9 +68,10 @@ namespace Dynastio.Bot
 
             // Core configuration & APIs
             services.AddSingleton(config);
-            services.AddSingleton(_ => new DynastioApi(config.Tokens["dynastio-api"]));
+            services.AddSingleton(_ => new DynastioApi(config.Tokens["dynastio-api"]) { });
             services.AddSingleton<DynastioBotDatabase>();
             services.AddSingleton<DynastioGraphic>();
+            services.AddSingleton<AssetUrlService>();
 
             // services
             services.AddSingleton<UsersService>();
@@ -130,6 +131,7 @@ namespace Dynastio.Bot
 
             sp.GetRequiredService<MessagesHandler>();
             await sp.GetRequiredService<InteractionsHandler>().InitializeAsync();
+
         }
 
         private static async Task StartDiscordClientAsync(ServiceProvider sp, ConfigurationService config)

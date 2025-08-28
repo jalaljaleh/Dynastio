@@ -61,7 +61,7 @@ namespace Dynastio.Graphic
             Image image = Image.Load(PathHelper.GetThemes("default"));
 
             if (card is null || card.Chest is null)
-                card.Chest = new Personalchest(new List<PersonalChestItem>()) { };
+                card.Chest = new PersonalChest(new List<PersonalChestItem>()) { };
             
 
             // Items part

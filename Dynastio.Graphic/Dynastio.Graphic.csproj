@@ -8,7 +8,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
-		<PackageReference Include="Dynastio.Net" Version="2.1.1" />
+		<PackageReference Include="Dynastio.Net" Version="2.1.2" />
 		<Content Include="assets\**" CopyToOutputDirectory="PreserveNewest" />
 
 	</ItemGroup>

@@ -17,6 +17,20 @@ namespace Dynastio.Bot
     /// </summary>
     public static class StringExtensions
     {
+
+
+        public static string StarIfNullFormat(this string format, params object[] value)
+        {
+            if (string.IsNullOrEmpty(format)) return "";
+            return string.Format(format, value.Select(p => string.IsNullOrEmpty(p?.ToString()) ? "*" : p.ToString() ?? "*")
+                .ToArray());
+        }
+
+
+
+
+
+
         #region Markdown & Text Formatting
 
 

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using System.Collections.Concurrent;
+using System.Text.Json.Serialization;
 
 namespace Dynastio.Bot.Database
 {
@@ -18,13 +19,14 @@ namespace Dynastio.Bot.Database
         public ulong Id { get; set; }
         public string youtube_channel { get; set; }
         public DateTime LastUpdateTime { get; set; } = DateTime.MinValue;
+        [JsonIgnore]
         public string gameAccountId { get; set; } = string.Empty;
         public List<UserGameAccount> Accounts { get; set; } = new();
         public List<UserGuildProfile> GuildProfiles { get; set; } = new();
 
 
         [BsonIgnore]
-        public bool IsAccountConnected { get => !string.IsNullOrEmpty(gameAccountId); }
+        public bool IsAccountConnected { get => Accounts.Any(); }
 
 
         public UserGuildProfile GetGuildProfile(ulong guildId)
@@ -58,12 +60,7 @@ namespace Dynastio.Bot.Database
         {
             return Accounts.FirstOrDefault(a => a.IsDefault) ?? Accounts.FirstOrDefault();
         }
-        public UserGameAccount GetMainAccount()
-        {
-            return string.IsNullOrEmpty(gameAccountId) is false
-                ? (Accounts.FirstOrDefault(a => a.Id == gameAccountId) ?? new UserGameAccount() { Id = gameAccountId, Reminder = "Main" })
-                : null;
-        }
+
         public void SwitchAccount(ref UserGameAccount userAccount)
         {
             Accounts.ForEach(a => a.IsDefault = false);

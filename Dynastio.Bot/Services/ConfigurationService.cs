@@ -19,7 +19,8 @@ namespace Dynastio.Bot.Services
         public int GuildLimit { get; set; } = 97;
 
         private const string ConfigKeyEnv = "config-key";
-
+        public string GitHubRawBase { get; set; } = "https://raw.githubusercontent.com/jalaljaleh/Dynastio.Bot/master/";
+        public string JsDelivrCdnBase { get; set; } = "https://cdn.jsdelivr.net/gh/jalaljaleh/Dynastio.Bot@master/";
         /// <summary>
         /// Loads the configuration based on the current environment (debug or production).
         /// </summary>

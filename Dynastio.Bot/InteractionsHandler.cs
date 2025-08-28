@@ -56,6 +56,7 @@ namespace Dynastio.Bot
                 .ConfigureAwait(false);
 
             Common.Log("Insteraction Handler", $"Loaded interaction modules from {Assembly.GetExecutingAssembly().GetName().Name}");
+
         }
 
         /// <summary>

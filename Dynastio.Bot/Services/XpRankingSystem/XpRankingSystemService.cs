@@ -83,7 +83,7 @@ namespace Dynastio.Bot.Services
             if (!guild.XpSystemSettings.IsGameRewardEnabled || !user.IsAccountConnected)
                 return false;
 
-            await _dynastioApi.UpdateDiscordRank(user.gameAccountId, profile.Level);
+            await _dynastioApi.UpdateDiscordRankAsync(user.gameAccountId, profile.Level);
             return true;
         }
 
