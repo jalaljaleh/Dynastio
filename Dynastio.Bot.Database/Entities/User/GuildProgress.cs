@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -23,24 +24,28 @@ namespace Dynastio.Bot.Database
         /// <summary>
         /// Total experience points accumulated.
         /// </summary>
+        [JsonInclude, JsonPropertyName("xp")]
         [BsonElement("xp")]
         public long Xp { get; set; }
 
         /// <summary>
         /// Current computed level.
         /// </summary>
+        [JsonInclude, JsonPropertyName("level")]
         [BsonElement("level")]
         public int Level { get; set; }
 
         /// <summary>
         /// UTC timestamp of the last message recorded in this guild.
         /// </summary>
+        [JsonInclude, JsonPropertyName("lastMessageAt")]
         [BsonElement("lastMessageAt"), BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime LastMessageAtUtc { get; private set; }
 
         /// <summary>
         /// UTC timestamp of the last time XP was awarded or checked.
         /// </summary>
+        [JsonInclude, JsonPropertyName("lastXpAt")]
         [BsonElement("lastXpAt"), BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime LastXpUpdateAtUtc { get; private set; }
 

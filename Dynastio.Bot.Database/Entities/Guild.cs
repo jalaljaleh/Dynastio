@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -26,6 +27,7 @@ namespace Dynastio.Bot.Database
         /// </summary>
         [BsonId]
         [BsonRepresentation(BsonType.String)]
+        [JsonInclude, JsonPropertyName("_id")]
         [BsonElement("_id")]
         public ulong Id { get; init; }
 
@@ -33,6 +35,7 @@ namespace Dynastio.Bot.Database
         /// Document creation timestamp (UTC).
         /// </summary>
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        [JsonInclude, JsonPropertyName("createdAtUtc")]
         [BsonElement("createdAtUtc")]
         public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
 
@@ -40,15 +43,11 @@ namespace Dynastio.Bot.Database
         /// Last update timestamp (UTC). Updated on any mutating operation.
         /// </summary>
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        [JsonInclude, JsonPropertyName("updatedAtUtc")]
         [BsonElement("updatedAtUtc")]
         public DateTime UpdatedAtUtc { get; private set; } = DateTime.UtcNow;
 
-        /// <summary>
-        /// Optimistic concurrency token. Increment on every change you persist.
-        /// Use in update filters to prevent lost updates.
-        /// </summary>
-        [BsonElement("version")]
-        public long Version { get; private set; } = 0;
+
 
 
         // --------------------------------------------------------------------
@@ -59,11 +58,13 @@ namespace Dynastio.Bot.Database
         /// XP system settings. Always kept non-null.
         /// </summary>
         [BsonElement("xp")]
+        [JsonInclude, JsonPropertyName("xp")]
         public XpSystemSettings XpSystemSettings { get; private set; } = new();
 
         /// <summary>
         /// Badge bridge settings. Always kept non-null.
         /// </summary>
+        [JsonInclude, JsonPropertyName("badges")]
         [BsonElement("badges")]
         public BadgeBridgeSettings BadgeBridgeSettings { get; private set; } = new();
 
@@ -73,12 +74,6 @@ namespace Dynastio.Bot.Database
         // --------------------------------------------------------------------
 
 
-        /// <summary>
-        /// Captures any extra fields not explicitly modeled.
-        /// Helps preserve data across schema versions.
-        /// </summary>
-        [BsonExtraElements]
-        public BsonDocument? Extra { get; set; }
 
 
         // --------------------------------------------------------------------
@@ -219,13 +214,12 @@ namespace Dynastio.Bot.Database
         private void Touch()
         {
             UpdatedAtUtc = DateTime.UtcNow;
-            Version++;
         }
 
         /// <summary>
         /// Compact string for diagnostics and logs.
         /// </summary>
         public override string ToString()
-            => $"Guild(Id={Id}, Ver={Version}, Updated={UpdatedAtUtc:O})";
+            => $"Guild(Id={Id}, Updated={UpdatedAtUtc:O})";
     }
 }

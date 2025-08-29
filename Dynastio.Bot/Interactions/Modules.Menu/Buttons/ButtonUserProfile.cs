@@ -3,6 +3,8 @@ using Discord.Interactions;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
+using Dynastio.Bot.Services.XpRankingSystem;
+using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
@@ -13,7 +15,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
     /// Acts as the “default” fallback for any unregistered or unknown button IDs.
     /// Inherit from MenuModulesBase and implement IButtonsServiceModule.
     /// </summary>
-    public class ButtonDefaultModule : MenuModulesBase, IMenuComponentRule
+    public class ButtonProfileModule : MenuModulesBase, IMenuComponentRule
     {
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
@@ -23,7 +25,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.menu.buttons.default";
+        public const string InteractionIdBase = "interactions.menu.buttons.userprofile";
 
         /// <summary>
         /// Suffix format appended after the base ID.
@@ -53,13 +55,13 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             return new ButtonBuilder()
 
-                .WithLabel("button_not_found")
+                .WithLabel("Profile")
 
-                .WithEmote(module.EmoteService.GetEmoteByName("unknown"))
+                .WithEmote(module.EmoteService.GetEmoteByName("left_team_icon"))
 
-                .WithStyle(ButtonStyle.Danger)
-                .WithDisabled(true)
-                .WithCustomId(BuildCustomId(trigger: Guid.NewGuid().ToString()));
+                .WithStyle(ButtonStyle.Success)
+                .WithDisabled(false)
+                .WithCustomId(BuildCustomId(trigger: "header"));
         }
 
         // -----------------------------------------------------------------------------------
@@ -93,26 +95,71 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*")]
-        public async Task ExecuteAsync(string trigger = "")
+        public async Task ExecuteAsync(string trigger = null)
         {
-            // Acknowledge the interaction to avoid the “This interaction failed” message
             await DeferAsync();
 
-            // Here you can parse out args from Context.Interaction.Data.CustomId
-            // or simply show a fallback message in case no module matched.
+            var discordUser = Context.User;
+            var botUser = Context.BotUser;
+            var account = Context.BotUser.GetDefaultAccount();
+            var guildProfile = BotUser.GetOrCreateGuildProfile(Guild.Id);
+
+            var sectionProfile = new SectionBuilder()
+                .WithAccessory(new ThumbnailBuilder(Context.User.TryGetAvatarUrl()))
+                .WithTextDisplay($"# {discordUser.Username}")
+                .WithTextDisplay("Peek into your Dynast.io legacy — see your linked account, level, score, badges, and more. Every survivor has a story… this is yours.");
+
+
+            var sectionRank = new SectionBuilder()
+                 .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmoteByName("tab_leaders_icon_active").Url))
+              .WithTextDisplay(
+                $"## {new Emoji(":first_place:")} Xp Ranking \n" +
+                $"### {EmoteService.GetEmoteByName("mainmenu_level_shield_premium")} Current Level \t ` Level {guildProfile.Level} `\t\t ` Xp {guildProfile.Xp} `   \n" +
+                $"### {EmoteService.GetEmoteByName("zoom_in")} Next Level  \t\t ` Xp Requirement {XpCalculator.GetLevelUpRequirementXp(guildProfile.Level, guildProfile.Xp)} `\n" +
+                $"### {EmoteService.GetEmoteByName("shop_coins_icon_3")} Next Reward  \t ` {XpCalculator.GetLevelCoinsReward(guildProfile.Level + 1)} Coins` | `Role: @{RoleHelper.GetNextRankingHigherRole(User as IGuildUser, BotGuild.XpSystemSettings.RankingRolePrefix)?.Name ?? "Not Found"} `\n"
+                );
+
+            var profile = await Dynastio.GetUserProfileAsync(account.Id);
+
+            profile.UnlockedSkins.AddRange([SkinType.Ninja, SkinType.Snowman, SkinType.Anime, SkinType.Girl]);
+            profile.Badges.AddRange([BadgeType.Administrator, BadgeType.CupBronze, BadgeType.Monthly]);
+
+
+            string badges = string.Join("", profile.Badges.Select(a => EmoteService.GetEmote(a)));
+            string unlockedSkins = string.Join("", profile.UnlockedSkins.Select(a => EmoteService.GetEmoteByName("skin_" + a)));
+
+
+            var sectionAccount = new SectionBuilder()
+                 .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmoteByName("privatechest").Url))
+              .WithTextDisplay(
+                $"# :crossed_swords: {account.DisplayName} \n" +
+                $"You logined as {account.DisplayName} profile details are here." +
+                $"# {EmoteService.GetEmoteByName("mainmenu_level_shield_premium")}  `Level {profile.Level} `\t{EmoteService.GetEmoteByName("coin")} `Coins {profile.Coins.ToMetric()}` \n" +
+                $"# {EmoteService.GetEmoteByName("left_build_icon1")}  `Experience {profile.Experience} `   \n" +
+                $"**Badges**: \n# **{badges}**\n" +
+                $"**Unlocked Skins**: \n# **{unlockedSkins}**\n" +
+                $"Connected At: ` {account.LinkedAtUtc} `\n" +
+                $"Service: ` {account.ServiceName} `\n" +
+                $"Youtube: ` {BotUser.YouTubeChannel} `\n" +
+                $"``` {account.Notes} ```\n");
 
             var containerb = new ContainerBuilder()
-              .WithMediaGallery(AssetUrlService[AssetType.banner_not_found])
-              .WithAccentColor(Color.Green)
-              .WithTextDisplay($"# {EmoteService.GetEmote(Net.BadgeType.Friend)} Default !")
-              .WithTextDisplay($" You’re good to go !")
-              .WithTextDisplay($"");
+              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
+              .WithAccentColor(3618621)
+
+              .WithSection(sectionProfile)
+              .WithSeparator(SeparatorSpacingSize.Small, true)
+              .WithSection(sectionAccount)
+             // .WithSeparator(SeparatorSpacingSize.Large, true)
+             // .WithSection(sectionRank)
+              ;
+
 
             ComponentBuilderV2 cb = new ComponentBuilderV2()
-                .WithContainer(containerb);
+                .WithContainer(containerb)
+                .WithActionRow([ButtonProfileModule.BuildButton(this)]);
 
             await ModifyMenuMessageAsync(components: cb.Build());
-
         }
     }
 }

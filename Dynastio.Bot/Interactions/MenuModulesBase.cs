@@ -15,31 +15,53 @@ namespace Dynastio.Bot.Interactions
     //
     public class MenuModulesBase : BotInteractionModuleBase<BotSocketInteractionContext>
     {
-        public async Task CloseMenuAsync()
+        public async Task ReplyWithSuccessAsync(string message)
         {
-            var embed = new EmbedBuilder()
-            {
-                Title = this["menu.closed.title"],
-                Description = this["menu.closed.description"] + "\n\n",
-                ThumbnailUrl = BotAvatarUrl,
-                Color = Color.Orange,
-                Fields = new List<EmbedFieldBuilder>()
-                {
-                    new EmbedFieldBuilder().WithIsInline(true)
-                    .WithName("Waiting time")
-                    .WithValue("Since " +DateTime.UtcNow.ToDiscordTimestamp())
-                },
-            }.Build();
 
-            await ModifyMenuMessageAsync(UserMention, embed: embed, components: new ComponentBuilder().Build());
+            var header = new SectionBuilder()
+                .WithTextDisplay($"# {EmoteService.GetEmote(Net.BadgeType.Friend)} All Set !")
+                .WithTextDisplay($"{UserMention} Everything went through without a hitch. You’re good to go !")
+                .WithAccessory(new ThumbnailBuilder(Context.User.TryGetAvatarUrl()));
+
+            var containerb = new ContainerBuilder()
+                .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
+                .WithAccentColor(Color.Green)
+                .WithSection(header)
+                
+                .WithSeparator(SeparatorSpacingSize.Small,true)
+                
+                .WithTextDisplay($"Your account **{BotUser.GetDefaultAccount().DisplayName}** added successfuly")
+                .WithTextDisplay($"{message}");
+
+            ComponentBuilderV2 cb = new ComponentBuilderV2()
+                .WithContainer(containerb);
+
+            await ModifyMenuMessageAsync(components: cb.Build());
         }
-        public async Task ModifyCurrentMessageToNotFound()
+        public async Task ReplyWithErrorAsync(string message)
+        {
+            var containerb = new ContainerBuilder()
+                .WithMediaGallery(AssetUrlService[AssetType.banner_error])
+                .WithTextDisplay($"# {EmoteService.GetEmote(Net.BadgeType.Developer)}  Boar Gate Crash! !")
+               .WithTextDisplay($"{EmoteService.GetEmote(Net.EntityType.Scooter)} {UserMention} Your command was ambushed by boar raiders at the data gate. Our pixelated knights are regrouping—try again in a moment.");
+            var containerc = new ContainerBuilder()
+                .WithAccentColor(Color.Red)
+                .WithTextDisplay($"### Error Message:```{message}```");
+
+            ComponentBuilderV2 cb = new ComponentBuilderV2()
+                .WithContainer(containerb)
+                .WithContainer(containerc);
+
+            await ModifyMenuMessageAsync(components: cb.Build());
+        }
+
+        public async Task ReplyWithNotFoundAsync()
         {
             //     var sb1 = new SectionBuilder()
             // .WithMediaGallery(AssetUrlService[AssetType.banner_not_found])
 
             var containerb = new ContainerBuilder()
-                .WithMediaGallery(AssetUrlService[AssetType.banner_not_found])
+                .WithMediaGallery(Common.Random.Next(1, 2) == 1 ? AssetUrlService[AssetType.banner_not_found] : AssetUrlService[AssetType.banner_not_found_gif])
                 .WithAccentColor(Color.DarkerGrey)
                 .WithTextDisplay($"# {EmoteService.GetEmoteByName("shadow1")}  The Nightmare’s Empty Feast !")
                 .WithTextDisplay($"{EmoteService.GetEmote(Net.EntityType.Lamp)} {UserMention} By the light of a waning moon, the hungry Nightmare crept through these halls and swallowed every last record. What you see now is its aftermath: a silent void where data once danced.\nAdjust your filters, widen your search, and breathe fresh life into this page—before the Nightmare returns for another midnight banquet.")
@@ -50,8 +72,23 @@ namespace Dynastio.Bot.Interactions
 
             await ModifyMenuMessageAsync(components: cb.Build());
         }
-        public async Task<IUserMessage> ModifyMenuMessageAsync(string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null, RequestOptions options = null, MessageComponent components = null, Embed embed = null)
+        public async Task<IUserMessage> ModifyMenuMessageAsync(string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null, RequestOptions options = null, MessageComponent components = null, Embed embed = null,
+            MessageFlags messageFlags = MessageFlags.None)
         {
+            if (CurrentMessage == null)
+            {
+                if (this.Context.Interaction.HasResponded)
+                {
+                    var res = await FollowupAsync(text, embeds, isTTS, ephemeral, allowedMentions, options, components, embed, flags: messageFlags);
+                    return res;
+                }
+                else
+                {
+                    await RespondAsync(text, embeds, isTTS, ephemeral, allowedMentions, options, components, embed, flags: messageFlags);
+                    return default;
+                }
+            }
+
             await CurrentMessage.ModifyAsync(x =>
              {
                  x.Content = text;

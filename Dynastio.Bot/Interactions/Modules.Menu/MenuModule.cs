@@ -49,14 +49,15 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
             var profileButtonSection = new SectionBuilder();
             if (BotUser.HasLinkedAccount)
             {
-                profileButtonSection
-                  .WithTextDisplay("Login to your game account !")
-                     .WithAccessory(ButtonDefaultModule.BuildButton(this));
+                profileButtonSection.WithTextDisplay("Open your bot profile settings !")
+               .WithAccessory(ButtonProfileModule.BuildButton(this));
             }
             else
             {
-                profileButtonSection.WithTextDisplay("Open your bot profile settings !")
-               .WithAccessory(ButtonLoginModule.BuildButton(this));
+                profileButtonSection
+                  .WithTextDisplay("Login to your game account !")
+                     .WithAccessory(ButtonLoginModule.BuildButton(this));
+              
             }
             //var rankButtonSection = new SectionBuilder()
             //   .WithTextDisplay("Open your ranking menu !")
@@ -83,9 +84,6 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
 
 
             container
-                //       .WithSection(publicSection)
-
-
                 .WithActionRow(
                 [ButtonPlayersModule.BuildButton(this),
                  ButtonServersModule.BuildButton(this),
@@ -93,10 +91,24 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
                  ButtonSearchPlayersModule.BuildButton(this)])
                 .WithSeparator(SeparatorSpacingSize.Small, true);
 
-            // 4️⃣ Personal commands section
-            container
-                .WithTextDisplay("Your own private commands, Custom‑fit components, tuned to your level and playstyle.")
-                .WithActionRow([ButtonDefaultModule.BuildButton(this)]);
+            if (BotUser.HasLinkedAccount)
+            {
+                container
+                   .WithTextDisplay("Your own private commands, Custom‑fit components, tuned to your level and playstyle.")
+                  // .WithActionRow([ButtonUserProfileModule.BuildButton(this)])
+                  //.WithActionRow([Personalchest.BuildButton(this)])
+                  //.WithActionRow([stat.BuildButton(this)])
+                  //.WithActionRow([rank.BuildButton(this)])
+                  // .WithTextDisplay("");
+                  ;
+            }
+            else
+            {
+                container
+                  .WithTextDisplay("Login to unlock your own private commands, Custom‑fit components, tuned to your level and playstyle.")
+                  .WithActionRow([ButtonLoginModule.BuildButton(this)]);
+            }
+               
 
             // 5️⃣ Build and send final menu
             var components = new ComponentBuilderV2()

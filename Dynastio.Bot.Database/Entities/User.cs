@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -23,10 +24,12 @@ namespace Dynastio.Bot.Database
         /// </summary>
         [BsonId, BsonRepresentation(BsonType.String)]
         [BsonElement("_id")]
+        [JsonInclude, JsonPropertyName("_id")]
         public ulong Id { get; init; }
 
         /// <summary>
         /// YouTube channel URL or handle associated with this user.
+        [JsonInclude, JsonPropertyName("youtubeChannel")]
         /// </summary>
         [BsonElement("youtubeChannel")]
         public string YouTubeChannel { get; private set; } = string.Empty;
@@ -41,12 +44,14 @@ namespace Dynastio.Bot.Database
         /// <summary>
         /// All game accounts linked to this user.
         /// </summary>
+        [JsonInclude, JsonPropertyName("accounts")]
         [BsonElement("accounts")]
         public List<GameAccount> Accounts { get; private set; } = new();
 
         /// <summary>
         /// Progress profiles for each guild the user participates in.
         /// </summary>
+        [JsonInclude, JsonPropertyName("guildProfiles")]
         [BsonElement("guildProfiles")]
         public List<GuildProgress> GuildProfiles { get; private set; } = new();
 
@@ -58,6 +63,7 @@ namespace Dynastio.Bot.Database
         /// Returns true if the user has at least one linked game account.
         /// </summary>
         [BsonIgnore]
+        [JsonIgnore]
         public bool HasLinkedAccount => Accounts.Count > 0;
 
         // --------------------------------------------------------------------

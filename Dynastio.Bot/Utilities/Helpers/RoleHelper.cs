@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Dynastio.Bot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,11 +77,26 @@ namespace Dynastio.Bot
         public static IRole? GetNextHigherHeaderRole(IGuild guild, string rolePrefix)
         {
             var highestMatching = GetFirstRoleStartWith(guild, rolePrefix);
+            return GetNextHigherRole(highestMatching);
 
-            return guild.Roles
-                        .OrderBy(role => role.Position)
-                        .Where(role => role.Position > highestMatching.Position)
-                        .FirstOrDefault();
+
+        }
+        public static IRole GetNextHigherRole(IRole role)
+        {
+            return role.Guild.Roles
+                      .OrderBy(role => role.Position)
+                      .Where(role => role.Position > role.Position)
+                      .FirstOrDefault();
+        }
+        public static IRole GetNextRankingHigherRole(IGuildUser user, string rolePrefix = "")
+        {
+            var latestPerfixRole = user.Guild.Roles
+                .Where(role => user.RoleIds.Contains(role.Id) && role.Name.StartsWith(rolePrefix, StringComparison.OrdinalIgnoreCase))
+                        .OrderByDescending(role => role.Position).FirstOrDefault();
+
+            if (latestPerfixRole is null) return null;
+
+            return GetNextHigherRole(latestPerfixRole);
         }
     }
 }

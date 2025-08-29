@@ -153,7 +153,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             var players = Dynastio.OnlinePlayers;
             if (players is null)
             {
-                await ModifyCurrentMessageToNotFound();
+                await ReplyWithNotFoundAsync();
                 return;
             }
 

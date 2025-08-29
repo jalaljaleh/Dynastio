@@ -13,8 +13,15 @@ namespace Dynastio.Bot.Services.XpRankingSystem
         public static int GetCurrentLevelXpRequirement(int level) =>
             (level + 1) * 510 * (int)Math.Pow(level + 1, 1.3);
 
-        public static int GetLevelUpRequirementXp(int level, int currentXp) =>
-            GetCurrentLevelXpRequirement(level) - currentXp;
+        public static long GetLevelUpRequirementXp(int level, long currentXp)
+        {
+            var requiredXp = GetCurrentLevelXpRequirement(level);
+
+            var remainingXp = requiredXp - currentXp;
+
+            return remainingXp > 0 ? remainingXp : 0;
+        }
+
 
         public static double GetLevelCoinsReward(int level)
         {

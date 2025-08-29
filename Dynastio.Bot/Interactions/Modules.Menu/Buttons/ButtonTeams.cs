@@ -91,7 +91,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             var allTeams = await Dynastio.GetTeamsAsync();
             if (allTeams == null || allTeams.Count == 0)
             {
-                await ModifyCurrentMessageToNotFound();
+                await ReplyWithNotFoundAsync();
                 return;
             }
 

@@ -32,9 +32,9 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
         [ModalTextInput(
             customId: "account_pin",
             style: TextInputStyle.Short,
-            placeholder: "••••",
-            minLength: 9,
-            maxLength: 9)]
+            placeholder: "123-123-123",
+            minLength: 11,
+            maxLength: 11)]
         public string Pin { get; set; }
 
         /// <summary>

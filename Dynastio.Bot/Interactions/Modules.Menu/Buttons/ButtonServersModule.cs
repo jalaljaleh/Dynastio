@@ -123,7 +123,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             var allServers = Dynastio.OnlineServers;
             if (allServers == null || allServers.Count == 0)
             {
-                await ModifyCurrentMessageToNotFound();
+                await ReplyWithNotFoundAsync();
                 return;
             }
 

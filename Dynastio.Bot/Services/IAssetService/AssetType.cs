@@ -11,7 +11,10 @@ namespace Dynastio.Bot
     public enum AssetType
     {
         banner_dynastio,
-        banner_not_found
+        banner_not_found,
+        banner_not_found_gif,
+        banner_error,
+
     }
 
 }

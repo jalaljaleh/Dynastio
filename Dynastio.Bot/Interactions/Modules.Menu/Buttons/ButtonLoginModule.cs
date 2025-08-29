@@ -7,6 +7,7 @@ using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
 using Dynastio.Extenstions;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
@@ -104,7 +105,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             if (Context.BotUser.HasLinkedAccount is false)
                 await RespondWithModalAsync<AccountLoginModal>(InteractionModalId);
             else
-                await this.ReplyWithErrorAsync("logined already");
+                await this.ReplyWithErrorAsync("You've already linked your account. No need to craft another identity!");
         }
 
 
@@ -116,7 +117,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         public async Task HandleAddAccountModalAsync(AccountLoginModal modal)
         {
             await DeferAsync();
-            await ModifyCurrentMessageToNotFound();
+
             // 1. Normalize account ID by stripping any “id:” prefix (case-insensitive)
             var accountId = modal.AccountId
                 .Replace("id:", "", StringComparison.OrdinalIgnoreCase)
@@ -131,32 +132,36 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             if (accountId.Contains("discord", StringComparison.OrdinalIgnoreCase)
                 && !accountId.Contains(discordUserId, StringComparison.Ordinal))
             {
-                await ReplyWithErrorAsync("This is not your Discord account.");
+                await ReplyWithErrorAsync("That’s not your Discord scroll. Only the true owner may wield its magic.");
                 return;
             }
 
             // 3. Guard: only one account allowed per user
             if (accounts.Count >= 1)
             {
-                await ReplyWithErrorAsync("You can’t add more than one account.");
+                await this.ReplyWithErrorAsync("You've already linked your account. No need to craft another identity!");
                 return;
             }
 
             // 4. Guard: account not already linked
             if (botUser.GetAccount(accountId) is not null)
             {
-                await ReplyWithErrorAsync("This account has already been added.");
+                await ReplyWithErrorAsync("This account is already bound to another adventurer. The bond cannot be duplicated.");
+
                 return;
             }
 
-            // 5. Validate PIN
             var pin = modal.Pin?.Trim() ?? "";
-            if (!await Dynastio.GetUserPincodeStatusAsync(accountId, pin))
+            goto Label;
+            // 5. Validate PIN
+            var pinResult = await Dynastio.GetUserPincodeStatusAsync(accountId, pin).TryAsync();
+            if (!pinResult.isSuccessful || !pinResult.result)
             {
-                await ReplyWithErrorAsync("Wrong pin code!");
+                await ReplyWithErrorAsync("The gate won’t open. That pin code doesn’t match the ancient runes.");
+
                 return;
             }
-
+        Label:
             // 6. Parallelize DB lookups for performance
             var byAccountTask = _db.GetUserByAccountIdAsync(accountId);
             var byConnectedTask = _db.GetUserByConnectedAccountIdAsync(accountId);
@@ -169,14 +174,14 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 && existingMainUser is not null
                 && existingMainUser.Id != Context.User.Id)
             {
-                await ReplyWithErrorAsync("This account is already connected by another user.");
+                await ReplyWithErrorAsync("This account is already pledged to another Dynasty. You must forge your own path.");
                 return;
             }
 
 
             if (accounts.Count >= 1)
             {
-                await ReplyWithErrorAsync("You can’t add more than one account.");
+                await ReplyWithErrorAsync("You’ve reached your account limit. One warrior, one destiny.");
                 return;
             }
             // 7. Build new GameAccount
@@ -195,15 +200,11 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             await this.BadgesRoleSyncService.SynchronizeUserRolesAsync(Context.BotGuild, (IGuildUser)Context.User, botUser);
 
             // 9. Finalize UI
-            await ModifyMenuMessageAsync("Done!");
+            await ReplyWithSuccessAsync("🛠️ Account linked successfully ! Your Dynasty journey begins now.");
 
         }
 
-        private Task ReplyWithErrorAsync(string message)
-        {
-            // you might funnel all errors through a single helper
-            return ModifyMenuMessageAsync(message);
-        }
+
 
     }
 }

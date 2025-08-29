@@ -38,10 +38,7 @@ namespace Dynastio.Bot.Database
         /// If true and using MongoDB, connects to the debug database.
         /// Ignored for the file-based backend.
         /// </param>
-        public async Task InitializeAsync(
-            string connectionString,
-            DatabaseBackend backend = DatabaseBackend.MongoDb,
-            bool isDebug = false)
+        public async Task InitializeAsync( string connectionString, DatabaseBackend backend = DatabaseBackend.MongoDb,   bool isDebug = false)
         {
             switch (backend)
             {

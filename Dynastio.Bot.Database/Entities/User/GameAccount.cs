@@ -1,6 +1,7 @@
-﻿using System;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
+using System.Text.Json.Serialization;
 
 namespace Dynastio.Bot.Database
 {
@@ -10,9 +11,11 @@ namespace Dynastio.Bot.Database
     /// Fluent setters allow updating individual fields while preserving invariants.
     /// </summary>
     [BsonIgnoreExtraElements]
-    public sealed class GameAccount : IEquatable<GameAccount>
+    public sealed class GameAccount 
     {
+        [JsonIgnore]
         private const char Delimiter = ':';
+        [JsonIgnore]
         private const int MaxDisplayNameLength = 16;
 
         //======================================================================
@@ -23,53 +26,63 @@ namespace Dynastio.Bot.Database
         /// Composite key: "{ServiceName}:{ServiceAccountId}".
         /// </summary>
         [BsonId, BsonRepresentation(BsonType.String)]
+        [JsonInclude, JsonPropertyName("_id")]
+
         public string Id { get; private set; }
 
         /// <summary>
         /// The service name (Steam, PSN, etc.).
         /// </summary>
+        [JsonInclude, JsonPropertyName("service")]
         [BsonElement("service")]
         public string ServiceName { get; private set; }
 
         /// <summary>
         /// The opaque account identifier assigned by the service.
         /// </summary>
+        [JsonInclude, JsonPropertyName("accountId")]
         [BsonElement("accountId")]
         public string ServiceAccountId { get; private set; }
 
         /// <summary>
         /// One-time PIN code used for account verification (if any).
         /// </summary>
+        [JsonInclude, JsonPropertyName("pinCode")]
         [BsonElement("pinCode")]
         public string PinCode { get; private set; }
 
         /// <summary>
         /// Contact email for notifications related to this account.
         /// </summary>
+        [JsonInclude, JsonPropertyName("email")]
         [BsonElement("email")]
         public string Email { get; private set; }
 
         /// <summary>
         /// When this account was first linked (UTC).
         /// </summary>
+        [JsonInclude, JsonPropertyName("linkedAtUtc")]
         [BsonElement("linkedAtUtc"), BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime LinkedAtUtc { get; private set; }
 
         /// <summary>
         /// If true, this is the default account for lookups.
         /// </summary>
+        [JsonInclude, JsonPropertyName("isDefault")]
         [BsonElement("isDefault")]
         public bool IsDefault { get; private set; }
 
         /// <summary>
         /// A short label or reminder (<see cref="MaxDisplayNameLength"/> chars max).
         /// </summary>
+        [JsonInclude, JsonPropertyName("displayName")]
         [BsonElement("displayName")]
         public string DisplayName { get; private set; }
 
         /// <summary>
         /// A short label or reminder 200 chars max).
         /// </summary>
+        [JsonInclude, JsonPropertyName("notes")]
         [BsonElement("notes")]
         public string Notes { get; private set; }
         //======================================================================
@@ -80,6 +93,7 @@ namespace Dynastio.Bot.Database
         /// The composite ID split by the delimiter.
         /// </summary>
         [BsonIgnore]
+        [JsonIgnore]
         public (string service, string accountId) ParsedId
             => (ServiceName, ServiceAccountId);
 
@@ -88,7 +102,7 @@ namespace Dynastio.Bot.Database
         // Construction & Parsing
         //======================================================================
 
-        private GameAccount() { /* for deserialization */ }
+      //  private GameAccount() { /* for deserialization */ }
 
         /// <summary>
         /// Creates a new <see cref="GameAccount"/> from service + accountId.

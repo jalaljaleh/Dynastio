@@ -36,8 +36,10 @@ namespace Dynastio.Bot
         private static readonly IReadOnlyDictionary<AssetType, string> _paths =
             new Dictionary<AssetType, string>
             {
-                [AssetType.banner_dynastio] = "dynastio_banner.jpg",
+                [AssetType.banner_dynastio] = "banner_dynastio.jpg",
                 [AssetType.banner_not_found] = "banner_not_found.jpg",
+                [AssetType.banner_not_found_gif] = "banner_not_found.gif",
+                [AssetType.banner_error] = "banner_error.jpg",
                 // add other entries here as you expand
             };
 
