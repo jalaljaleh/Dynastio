@@ -51,8 +51,8 @@ namespace Dynastio.Bot
 
             try
             {
-                var guild = await _database.GetGuildAsync(textChannel.GuildId, true, () => GuildFactory.CreateDefault(textChannel.GuildId), default);
-                var user = await _users.GetUserAsync(userMessage.Author.Id, true);
+                var guild = await _database.GetGuildAsync(textChannel.GuildId, true);
+                var user = await _users.GetOrCreateUserAsync(userMessage.Author.Id);
 
                 await _xpRanking.TryAddMessageXpAsync(guild, user, userMessage);
 

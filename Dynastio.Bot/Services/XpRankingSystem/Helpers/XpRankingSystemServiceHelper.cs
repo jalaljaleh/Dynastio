@@ -18,7 +18,7 @@ namespace Dynastio.Bot.Services.XpRankingSystem
 
             // Grab all roles that match the prefix
             var allRoles = RoleHelper
-                .GetRolesStartingWith(user.Guild, guild.XpSystemSettings.RankingRoleAssignmentPerfix)
+                .GetRolesStartingWith(user.Guild, guild.XpSystemSettings.RankingRolePrefix)
                 .ToList();
 
             allRoles.Reverse();
@@ -53,7 +53,7 @@ namespace Dynastio.Bot.Services.XpRankingSystem
 
             // Ensure header role is present
             var headerRole = RoleHelper
-                .GetNextHigherHeaderRole(user.Guild, guild.XpSystemSettings.RankingRoleAssignmentPerfix);
+                .GetNextHigherHeaderRole(user.Guild, guild.XpSystemSettings.RankingRolePrefix);
 
             if (headerRole != null && !user.RoleIds.Contains(headerRole.Id))
                 await user.AddRoleAsync(headerRole.Id);

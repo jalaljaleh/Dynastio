@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Dynastio.Bot.Database;
+using Dynastio.Net;
 
 namespace Dynastio.Bot.Services.XpRankingSystem
 {
@@ -9,7 +10,7 @@ namespace Dynastio.Bot.Services.XpRankingSystem
         /// Notifies a user that they have leveled up by sending an embed
         /// to the source channel and an optional log channel.
         /// </summary>
-        public static async Task<bool> NotifyUserLevelUpAsync(User user, Guild guild, UserGuildProfile profile, IUser discordUser, IGuild discordGuild, ITextChannel sourceChannel, IReadOnlyList<IRole> unlockedRoles)
+        public static async Task<bool> NotifyUserLevelUpAsync(User user, Guild guild, GuildProgress profile, IUser discordUser, IGuild discordGuild, ITextChannel sourceChannel, IReadOnlyList<IRole> unlockedRoles)
         {
             // 1. Build the embed
             var embed = BuildLevelUpEmbed(user, guild, profile, unlockedRoles);
@@ -48,13 +49,13 @@ namespace Dynastio.Bot.Services.XpRankingSystem
             IGuild discordGuild,
             Guild guild)
         {
-            var channelId = guild.XpSystemSettings.RankingLoggerChannelId;
+            var channelId = guild.XpSystemSettings.RankingLogChannelId;
             if (channelId == 0)
                 return null;
 
             var channel = await discordGuild.GetTextChannelAsync(channelId);
             if (channel == null)
-                guild.XpSystemSettings.RankingLoggerChannelId = 0;
+                guild.XpSystemSettings.RankingLogChannelId = 0;
 
             return channel;
         }
@@ -66,7 +67,7 @@ namespace Dynastio.Bot.Services.XpRankingSystem
         private static Embed BuildLevelUpEmbed(
             User user,
             Guild guild,
-            UserGuildProfile profile,
+            GuildProgress profile,
             IReadOnlyList<IRole> unlockedRoles)
         {
             var latestRole = unlockedRoles.LastOrDefault();
@@ -94,7 +95,7 @@ namespace Dynastio.Bot.Services.XpRankingSystem
         /// Chooses a fallback embed color when no role icon is available.
         /// </summary>
         private static Color DetermineFallbackColor(User user, Guild guild) =>
-            guild.XpSystemSettings.IsGameRewardEnabled && user.IsAccountConnected
+            guild.XpSystemSettings.IsGameRewardEnabled && user.HasLinkedAccount
                 ? Color.Green
                 : Color.Red;
 
@@ -104,7 +105,7 @@ namespace Dynastio.Bot.Services.XpRankingSystem
         private static string BuildDescription(
             User user,
             Guild guild,
-            UserGuildProfile profile)
+            GuildProgress profile)
         {
             var xpInfo = $"Reached level **{profile.Level}** with **{profile.Xp.ToMetric()} XP**!";
             var rewardSeg = guild.XpSystemSettings.IsGameRewardEnabled
@@ -119,11 +120,11 @@ namespace Dynastio.Bot.Services.XpRankingSystem
         /// </summary>
         private static string BuildRewardInfo(User user, int level)
         {
-            if (!user.IsAccountConnected)
+            if (!user.HasLinkedAccount)
                 return "⚠️ Connect your game account to claim your coins.";
 
             var coins = XpCalculator.GetLevelCoinsReward(level);
-            var accountName = user.GetAccountService();
+            var accountName = user.GetDefaultAccount().ServiceName;
             return $"In-game reward: **{coins} coins** added to **{accountName}**.";
         }
     }

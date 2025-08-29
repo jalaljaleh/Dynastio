@@ -1,197 +1,173 @@
 ﻿using MongoDB.Driver;
-using System;
-using System.Linq.Expressions;
-using System.Net;
-using MongoDB;
 using MongoDB.Bson;
-using Amazon.Auth.AccessControlPolicy;
-using System.Dynamic;
-using MongoDB.Bson.Serialization.Serializers;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.IO;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using System.Security.Cryptography.X509Certificates;
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Database
 {
+    /// <summary>
+    /// Provides MongoDB context for interacting with Dynastio database collections.
+    /// </summary>
     internal class MongoDbContext : IDynastioDatabase
     {
-        private MongoClient _db { get; set; }
-        private IMongoDatabase _dynastio;
-        private IMongoCollection<User> _users => _dynastio.GetCollection<User>("Users");
-        private IMongoCollection<Guild> _guilds => _dynastio.GetCollection<Guild>("Guilds");
+        private MongoClient _mongoClient { get; set; }
+        private IMongoDatabase _database;
 
+        // MongoDB collections
+        private IMongoCollection<User> _users => _database.GetCollection<User>("Users");
+        private IMongoCollection<Guild> _guilds => _database.GetCollection<Guild>("Guilds");
+
+        // Event for logging DB messages
         public event OnDatabaseMessageLogs OnMessagesLog;
         public delegate void OnDatabaseMessageLogs(string serviceName, string message, ConsoleColor color = default);
+
+        /// <summary>
+        /// Initializes a new MongoDB context.
+        /// </summary>
+        /// <param name="mongoConnection">MongoDB connection string.</param>
+        /// <param name="isDebugMode">If true, connects to debug database.</param>
         public MongoDbContext(string mongoConnection, bool isDebugMode = false)
         {
-            Console.WriteLine("Mongodb" + " Initialize Async..");
+            Console.WriteLine("MongoDB - Initializing Async...");
 
             var settings = MongoClientSettings.FromConnectionString(mongoConnection);
-            // settings.ServerApi = new ServerApi(ServerApiVersion.V1);
+            _mongoClient = new MongoClient(settings);
 
-            _db = new MongoClient(settings);
-
-            if (isDebugMode)
-                _dynastio = _db.GetDatabase("Dynastio_Debug");
-            else
-                _dynastio = _db.GetDatabase("Dynastio");
-
-            //    OnMessagesLog.Invoke("Mongodb", "Initialized");
+            _database = isDebugMode
+                ? _mongoClient.GetDatabase("Dynastio_Debug")
+                : _mongoClient.GetDatabase("Dynastio");
         }
+
+        /// <summary>
+        /// Initializes MongoDB session asynchronously.
+        /// </summary>
         public async Task InitializeAsync()
         {
             try
             {
-                //       OnMessagesLog.Invoke("Mongodb", "Start Session Async ..");
-                await _db.StartSessionAsync();
-
-                
+                await _mongoClient.StartSessionAsync();
                 await DoWorkAsync();
-               
             }
             catch
             {
-                //  OnMessagesLog.Invoke("Mongodb", "db is not connected.", ConsoleColor.Red);
+                // Log: database is not connected
             }
         }
-        public async Task DoWorkAsync()
+
+        /// <summary>
+        /// Placeholder for initial database tasks after connection.
+        /// </summary>
+        private async Task DoWorkAsync()
         {
-
-
-            //var se = JsonSerializer.Serialize(allGuilds);
-            //var guilds = JsonSerializer.Deserialize<List<Guild>>(se);
-            //await UpdateManyAsync(guilds);
-
-
-
-            // await update();
-            //var allUsers = await _users.Find(Builders<User>.Filter.Empty).ToListAsync();
-            //var se = JsonSerializer.Serialize(allUsers);
-            //var users = JsonSerializer.Deserialize<List<User>>(se);
-            //await UpdateManyAsync(users);
-            //  OnMessagesLog.Invoke("Mongodb", "Session Started.");
-
-
+            // Reserved for data migration or background operations
+            await Task.CompletedTask;
         }
 
-        public async Task<Guild> GetGuildAsync(ulong Id)
+        #region Guild Operations
+
+        public async Task<Guild> GetGuildAsync(ulong id)
         {
-            var result = _guilds.AsQueryable()
-                  .Where(a => a.Id == Id)
-                  .FirstOrDefault();
+            var result = _guilds.AsQueryable().FirstOrDefault(g => g.Id == id);
             return await Task.FromResult(result);
         }
-        public async Task<bool> InsertAsync(Guild guild)
+
+        public async Task<bool> InsertGuildAsync(Guild guild)
         {
             _guilds.InsertOne(guild);
             return await Task.FromResult(true);
         }
-        public async Task<bool> UpdateAsync(Guild guild)
+
+        public async Task<bool> UpdateGuildAsync(Guild guild)
         {
-            _guilds.ReplaceOne(a => a.Id == guild.Id, guild);
+            _guilds.ReplaceOne(g => g.Id == guild.Id, guild);
             return await Task.FromResult(true);
         }
+
         public async Task<List<Guild>> GetGuildsAsync(Func<Guild, bool> predicate)
         {
-            var result = _guilds.AsQueryable()
-                  .Where(predicate)
-                  .ToList();
+            var result = _guilds.AsQueryable().Where(predicate).ToList();
             return await Task.FromResult(result);
         }
-        public async Task<bool> UpdateManyAsync(List<Guild> guild)
+
+        public async Task<bool> UpdateManyGuildsAsync(List<Guild> guildList)
         {
-            var updates = new List<WriteModel<Guild>>();
-            foreach (var _advertise in guild)
+            var updates = guildList.Select(guildItem =>
             {
-                var filter = Builders<Guild>.Filter.Where(u => u.Id == _advertise.Id);
-                updates.Add(new ReplaceOneModel<Guild>(filter, _advertise));
-            }
-            await _guilds.BulkWriteAsync(updates, new BulkWriteOptions() { IsOrdered = false });
+                var filter = Builders<Guild>.Filter.Where(g => g.Id == guildItem.Id);
+                return new ReplaceOneModel<Guild>(filter, guildItem);
+            }).ToList();
+
+            await _guilds.BulkWriteAsync(updates, new BulkWriteOptions { IsOrdered = false });
             return await Task.FromResult(true);
         }
 
+        #endregion
 
+        #region User Operations
 
-        public async Task<User> GetUserAsync(ulong Id)
+        public async Task<User> GetUserAsync(ulong id)
         {
-            var result = _users.AsQueryable()
-                .Where(a => a.Id == Id)
-                .FirstOrDefault();
-
+            var result = _users.AsQueryable().FirstOrDefault(u => u.Id == id);
             return await Task.FromResult(result);
         }
+
         public async Task<List<User>> GetAllUsersAsync()
         {
-            var allUsers = await _users.Find(Builders<User>.Filter.Empty).ToListAsync();
-            return allUsers;
+            return await _users.Find(Builders<User>.Filter.Empty).ToListAsync();
         }
-        public async Task<bool> InsertAsync(User Buser)
+
+        public async Task<bool> InsertUserAsync(User userEntity)
         {
-            _users.InsertOne(Buser);
+            _users.InsertOne(userEntity);
             return await Task.FromResult(true);
         }
-        public async Task<bool> UpdateAsync(User Buser)
+
+        public async Task<bool> UpdateUserAsync(User userEntity)
         {
-            _users.ReplaceOne(a => a.Id == Buser.Id, Buser);
+            _users.ReplaceOne(u => u.Id == userEntity.Id, userEntity);
             return await Task.FromResult(true);
         }
-        public async Task<User> GetUserByAccountIdAsync(string Id)
+
+        public async Task<User> GetUserByAccountIdAsync(string accountId)
         {
             var filter = Builders<User>.Filter
-                .ElemMatch(o => o.Accounts, Builders<UserGameAccount>.Filter.Where(a => a.Id == Id));
+                .ElemMatch(u => u.Accounts, Builders<GameAccount>.Filter.Where(a => a.Id == accountId));
 
-            var result = _users.Find(filter).FirstOrDefault();
-            return await Task.FromResult(result);
-        }
-        public async Task<User> GetUserByConnectedAccountIdAsync(string Id)
-        {
-            var filter = Builders<User>.Filter.Where(a => a.gameAccountId == Id);
-            var result = _users.Find(filter).FirstOrDefault();
-            return await Task.FromResult(result);
+            return await Task.FromResult(_users.Find(filter).FirstOrDefault());
         }
 
-        public async Task<User> GetUserByYoutubeChannelIdAsync(string Id)
+        public async Task<User> GetUserByConnectedAccountIdAsync(string gameAccountId)
         {
-            var filter = Builders<User>.Filter.Where(a => a.youtube_channel == Id);
-            var result = _users.Find(filter).FirstOrDefault();
-            return await Task.FromResult(result);
+            var filter = Builders<User>.Filter.Where(u => u.HasAccount( gameAccountId));
+            return await Task.FromResult(_users.Find(filter).FirstOrDefault());
         }
 
-        //public async Task<List<User>> GetActivityScoreLeaderboardAsync(int count = 15)
-        //{
-        //    var filter = Builders<User>.Filter.Empty;
-
-        //    var sort = Builders<User>.Sort
-        //        .Descending(a => a.activiy_level)
-        //        .Descending(a => a.activiy_score);
-
-        //    var result = await _users.FindAsync(filter, new FindOptions<User, User>()
-        //    {
-        //        Sort = sort,
-        //        Limit = count,
-        //    });
-
-        //    return result.ToList();
-        //}
-        public async Task<bool> UpdateManyAsync(List<User> users)
+        public async Task<User> GetUserByYoutubeChannelIdAsync(string channelId)
         {
-            var updates = new List<WriteModel<User>>();
-            foreach (var user in users)
+            var filter = Builders<User>.Filter.Where(u => u.YouTubeChannel == channelId);
+            return await Task.FromResult(_users.Find(filter).FirstOrDefault());
+        }
+
+        public async Task<bool> UpdateManyUsersAsync(List<User> userList)
+        {
+            var updates = userList.Select(userItem =>
             {
-                var filter = Builders<User>.Filter.Where(u => u.Id == user.Id);
-                updates.Add(new ReplaceOneModel<User>(filter, user));
-            }
-            await _users.BulkWriteAsync(updates, new BulkWriteOptions() { IsOrdered = false });
-            return await Task.FromResult(true);
-        }
-        public async Task<bool> DeleteAsync(User user)
-        {
-            _users.DeleteOne(a => a.Id == user.Id);
+                var filter = Builders<User>.Filter.Where(u => u.Id == userItem.Id);
+                return new ReplaceOneModel<User>(filter, userItem);
+            }).ToList();
+
+            await _users.BulkWriteAsync(updates, new BulkWriteOptions { IsOrdered = false });
             return await Task.FromResult(true);
         }
 
+        public async Task<bool> DeleteUserAsync(User userEntity)
+        {
+            _users.DeleteOne(u => u.Id == userEntity.Id);
+            return await Task.FromResult(true);
+        }
+
+        #endregion
     }
 }

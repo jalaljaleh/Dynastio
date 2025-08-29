@@ -8,7 +8,23 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Database
 {
-    // File-based implementation of IDynastioDatabase
+    /// <summary>
+    /// File-based implementation of IDynastioDatabase for local persistence.
+    ///
+    /// Interface alignment notes:
+    /// - InsertAsync(Guild)      -> InsertGuildAsync(Guild)
+    /// - UpdateAsync(Guild)      -> UpdateGuildAsync(Guild)
+    /// - InsertAsync(User)       -> InsertUserAsync(User)
+    /// - UpdateAsync(User)       -> UpdateUserAsync(User)
+    /// - UpdateManyAsync(Users)  -> UpdateManyUsersAsync(List<User>)
+    /// - DeleteAsync(User)       -> DeleteUserAsync(User)
+    /// - Added: GetAllUsersAsync(), UpdateManyGuildsAsync(List<Guild>)
+    ///
+    /// Implementation notes:
+    /// - Replaced explicit interface implementations using old names with public methods that exactly match IDynastioDatabase.
+    /// - Kept SemaphoreSlim for thread-safety and persisted to JSON atomically.
+    /// - Avoided expression-bodied members inside try/finally; used explicit return statements to prevent compile errors.
+    /// </summary>
     internal sealed class FileDbContext : IDynastioDatabase
     {
         private readonly string _basePath;
@@ -36,7 +52,9 @@ namespace Dynastio.Bot.Database
             _guildsFile = Path.Combine(_basePath, "guilds.json");
         }
 
-        async Task IDynastioDatabase.InitializeAsync()
+        // -------------------- Initialization --------------------
+
+        public async Task InitializeAsync()
         {
             Directory.CreateDirectory(_basePath);
             await _lock.WaitAsync().ConfigureAwait(false);
@@ -51,9 +69,9 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        // ---------- Guilds ----------
+        // -------------------- Guild Methods (match interface) --------------------
 
-        async Task<Guild> IDynastioDatabase.GetGuildAsync(ulong id)
+        public async Task<Guild> GetGuildAsync(ulong id)
         {
             await _lock.WaitAsync().ConfigureAwait(false);
             try
@@ -66,7 +84,7 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        async Task<List<Guild>> IDynastioDatabase.GetGuildsAsync(Func<Guild, bool> predicate)
+        public async Task<List<Guild>> GetGuildsAsync(Func<Guild, bool> predicate)
         {
             await _lock.WaitAsync().ConfigureAwait(false);
             try
@@ -79,7 +97,8 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        async Task<bool> IDynastioDatabase.InsertAsync(Guild guild)
+        // Renamed from InsertAsync(Guild)
+        public async Task<bool> InsertGuildAsync(Guild guild)
         {
             if (guild is null) return false;
 
@@ -99,7 +118,8 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        async Task<bool> IDynastioDatabase.UpdateAsync(Guild guild)
+        // Renamed from UpdateAsync(Guild)
+        public async Task<bool> UpdateGuildAsync(Guild guild)
         {
             if (guild is null) return false;
 
@@ -119,10 +139,42 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        // ---------- Users ----------
+        // New per interface
+        public async Task<bool> UpdateManyGuildsAsync(List<Guild> guildList)
+        {
+            if (guildList is null || guildList.Count == 0) return false;
 
-        // Note: The interface oddly marks this as 'internal'. Implement explicitly to avoid visibility issues.
-        async Task<User> IDynastioDatabase.GetUserAsync(ulong id)
+            await _lock.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                var map = guildList.ToDictionary(g => g.Id, g => g);
+
+                // Update existing
+                for (int i = 0; i < _guilds.Count; i++)
+                {
+                    if (map.TryGetValue(_guilds[i].Id, out var updated))
+                        _guilds[i] = updated;
+                }
+
+                // Insert missing
+                foreach (var g in guildList)
+                {
+                    if (_guilds.All(x => x.Id != g.Id))
+                        _guilds.Add(g);
+                }
+
+                await PersistGuildsAsync().ConfigureAwait(false);
+                return true;
+            }
+            finally
+            {
+                _lock.Release();
+            }
+        }
+
+        // -------------------- User Methods (match interface) --------------------
+
+        public async Task<User> GetUserAsync(ulong id)
         {
             await _lock.WaitAsync().ConfigureAwait(false);
             try
@@ -135,17 +187,24 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        async Task<bool> IDynastioDatabase.InsertAsync(User user)
+        // Implemented: returns a shallow copy to prevent external mutation
+        public Task<List<User>> GetAllUsersAsync()
         {
-            if (user is null) return false;
+            return Task.FromResult(_users.ToList());
+        }
+
+        // Renamed from InsertAsync(User)
+        public async Task<bool> InsertUserAsync(User userEntity)
+        {
+            if (userEntity is null) return false;
 
             await _lock.WaitAsync().ConfigureAwait(false);
             try
             {
-                if (_users.Any(u => u.Id == user.Id))
+                if (_users.Any(u => u.Id == userEntity.Id))
                     return false;
 
-                _users.Add(user);
+                _users.Add(userEntity);
                 await PersistUsersAsync().ConfigureAwait(false);
                 return true;
             }
@@ -155,17 +214,18 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        async Task<bool> IDynastioDatabase.UpdateAsync(User user)
+        // Renamed from UpdateAsync(User)
+        public async Task<bool> UpdateUserAsync(User userEntity)
         {
-            if (user is null) return false;
+            if (userEntity is null) return false;
 
             await _lock.WaitAsync().ConfigureAwait(false);
             try
             {
-                var idx = _users.FindIndex(u => u.Id == user.Id);
+                var idx = _users.FindIndex(u => u.Id == userEntity.Id);
                 if (idx < 0) return false;
 
-                _users[idx] = user;
+                _users[idx] = userEntity;
                 await PersistUsersAsync().ConfigureAwait(false);
                 return true;
             }
@@ -175,15 +235,14 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        async Task<User> IDynastioDatabase.GetUserByAccountIdAsync(string accountId)
+        public async Task<User> GetUserByAccountIdAsync(string accountId)
         {
             if (string.IsNullOrWhiteSpace(accountId))
-                return await Task.FromResult<User>(null);
+                return await Task.FromResult<User>(null).ConfigureAwait(false);
 
             await _lock.WaitAsync().ConfigureAwait(false);
             try
             {
-                // Assuming a method User.GetAccount(string) exists per your usage elsewhere
                 return _users.FirstOrDefault(u =>
                 {
                     try
@@ -202,16 +261,15 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        async Task<User> IDynastioDatabase.GetUserByConnectedAccountIdAsync(string accountId)
+        public async Task<User> GetUserByConnectedAccountIdAsync(string connectedAccountId)
         {
-            if (string.IsNullOrWhiteSpace(accountId))
-                return await Task.FromResult<User>(null);
+            if (string.IsNullOrWhiteSpace(connectedAccountId))
+                return await Task.FromResult<User>(null).ConfigureAwait(false);
 
             await _lock.WaitAsync().ConfigureAwait(false);
             try
             {
-                // Matches your calling code: x => x.gameAccountId == accountId
-                return _users.FirstOrDefault(u => string.Equals(u.gameAccountId, accountId, StringComparison.OrdinalIgnoreCase));
+                return _users.FirstOrDefault(u => u.HasAccount(connectedAccountId));
             }
             finally
             {
@@ -219,16 +277,16 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        async Task<User> IDynastioDatabase.GetUserByYoutubeChannelIdAsync(string channelId)
+        public async Task<User> GetUserByYoutubeChannelIdAsync(string youtubeChannelId)
         {
-            if (string.IsNullOrWhiteSpace(channelId))
-                return await Task.FromResult<User>(null);
+            if (string.IsNullOrWhiteSpace(youtubeChannelId))
+                return await Task.FromResult<User>(null).ConfigureAwait(false);
 
             await _lock.WaitAsync().ConfigureAwait(false);
             try
             {
-                // Matches your calling code: x => x.youtube_channel == channelurl
-                return _users.FirstOrDefault(u => string.Equals(u.youtube_channel, channelId, StringComparison.OrdinalIgnoreCase));
+                return _users.FirstOrDefault(u =>
+                    string.Equals(u.YouTubeChannel, youtubeChannelId, StringComparison.OrdinalIgnoreCase));
             }
             finally
             {
@@ -236,14 +294,17 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        async Task<bool> IDynastioDatabase.UpdateManyAsync(List<User> users)
+        // Renamed from UpdateManyAsync(List<User>)
+        public async Task<bool> UpdateManyUsersAsync(List<User> userList)
         {
-            if (users is null || users.Count == 0) return false;
+            if (userList is null || userList.Count == 0) return false;
 
             await _lock.WaitAsync().ConfigureAwait(false);
             try
             {
-                var map = users.ToDictionary(u => u.Id, u => u);
+                var map = userList.ToDictionary(u => u.Id, u => u);
+
+                // Update existing
                 for (int i = 0; i < _users.Count; i++)
                 {
                     if (map.TryGetValue(_users[i].Id, out var updated))
@@ -251,7 +312,7 @@ namespace Dynastio.Bot.Database
                 }
 
                 // Insert missing
-                foreach (var u in users)
+                foreach (var u in userList)
                 {
                     if (_users.All(x => x.Id != u.Id))
                         _users.Add(u);
@@ -266,14 +327,15 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        async Task<bool> IDynastioDatabase.DeleteAsync(User user)
+        // Renamed from DeleteAsync(User)
+        public async Task<bool> DeleteUserAsync(User userEntity)
         {
-            if (user is null) return false;
+            if (userEntity is null) return false;
 
             await _lock.WaitAsync().ConfigureAwait(false);
             try
             {
-                var removed = _users.RemoveAll(u => u.Id == user.Id) > 0;
+                var removed = _users.RemoveAll(u => u.Id == userEntity.Id) > 0;
                 if (removed)
                     await PersistUsersAsync().ConfigureAwait(false);
 
@@ -285,7 +347,7 @@ namespace Dynastio.Bot.Database
             }
         }
 
-        // ---------- Persistence Helpers ----------
+        // -------------------- Persistence Helpers --------------------
 
         private async Task PersistUsersAsync()
         {
@@ -314,11 +376,6 @@ namespace Dynastio.Bot.Database
             if (File.Exists(path))
                 File.Delete(path);
             File.Move(temp, path);
-        }
-
-        public Task<List<User>> GetAllUsersAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }

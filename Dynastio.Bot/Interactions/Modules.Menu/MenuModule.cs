@@ -47,16 +47,16 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
              .WithAccessory(new ThumbnailBuilder(this.User.TryGetAvatarUrl(), "Dynast.io Bot", false));
 
             var profileButtonSection = new SectionBuilder();
-            if (BotUser.IsAccountConnected)
+            if (BotUser.HasLinkedAccount)
             {
-                profileButtonSection.WithTextDisplay("Open your bot profile settings !")
-                   .WithAccessory(ButtonDefaultModule.BuildButton(this));
+                profileButtonSection
+                  .WithTextDisplay("Login to your game account !")
+                     .WithAccessory(ButtonDefaultModule.BuildButton(this));
             }
             else
             {
-                profileButtonSection
-               .WithTextDisplay("Login to your game account !")
-                  .WithAccessory(ButtonDefaultModule.BuildButton(this));
+                profileButtonSection.WithTextDisplay("Open your bot profile settings !")
+               .WithAccessory(ButtonLoginModule.BuildButton(this));
             }
             //var rankButtonSection = new SectionBuilder()
             //   .WithTextDisplay("Open your ranking menu !")

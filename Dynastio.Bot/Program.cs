@@ -111,9 +111,9 @@ namespace Dynastio.Bot
             var db = sp.GetRequiredService<DynastioBotDatabase>();
 
             if (Common.IsDebug())
-                await db.InitializeAsync(null, DynastioBotDatabase.DatabasesInstances.FileDb, default);
+                await db.InitializeAsync(null, DynastioBotDatabase.DatabaseBackend.FileDb, default);
             else
-                await db.InitializeAsync(config.Tokens["connectionstring-mongodb"], DynastioBotDatabase.DatabasesInstances.Mongodb, Common.IsDebug());
+                await db.InitializeAsync(config.Tokens["connectionstring-mongodb"], DynastioBotDatabase.DatabaseBackend.MongoDb, Common.IsDebug());
 
 
             // Graphics & Localization

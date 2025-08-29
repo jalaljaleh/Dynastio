@@ -33,8 +33,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
             customId: "account_pin",
             style: TextInputStyle.Short,
             placeholder: "••••",
-            minLength: 4,
-            maxLength: 6)]
+            minLength: 9,
+            maxLength: 9)]
         public string Pin { get; set; }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
         /// Contact email address for notifications and recovery.
         /// </summary>
         [InputLabel("Email Address")]
-        [RequiredInput(true)]
+        [RequiredInput(false)]
         [ModalTextInput(
             customId: "email_address",
             style: TextInputStyle.Short,

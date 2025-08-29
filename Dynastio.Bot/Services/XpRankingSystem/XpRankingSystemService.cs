@@ -24,21 +24,22 @@ namespace Dynastio.Bot.Services
 
         public async Task TryAddMessageXpAsync(Guild guild, User user, IUserMessage message)
         {
-            if (!guild.XpSystemSettings.IsEnabled || message.Channel is not ITextChannel channel || !guild.XpSystemSettings.IsXpChannel(channel.Id))
+            if (!guild.XpSystemSettings.IsEnabled || message.Channel is not ITextChannel channel || !guild.XpSystemSettings.IsAllowedChannel(channel.Id))
                 return;
 
             var discordUser = message.Author as IGuildUser;
-            var profile = user.GetGuildProfile(guild.Id);
+            var profile = user.GetOrCreateGuildProfile(guild.Id);
 
             if (!IsXpIncreaseable(guild.XpSystemSettings, profile, message.CleanContent)) return;
 
-            int baseXp = guild.XpSystemSettings.XpPerMessage;
+            int baseXp = guild.XpSystemSettings.BaseXpPerMessage;
             if (discordUser?.PremiumSince != null)
-                baseXp += guild.XpSystemSettings.XpBoosters;
+                baseXp += guild.XpSystemSettings.BoosterXp;
 
-            int randomizedXp = Random.Shared.Next(baseXp - guild.XpSystemSettings.XpRandom, baseXp + guild.XpSystemSettings.XpRandom);
-            profile.LastMessageTimestamp = DateTime.UtcNow;
-            profile.Xp += randomizedXp;
+            int randomizedXp = Random.Shared.Next(baseXp - guild.XpSystemSettings.RandomXpBonus, baseXp + guild.XpSystemSettings.RandomXpBonus);
+            profile.RecordMessage(DateTime.UtcNow);
+            
+            profile.Xp +=randomizedXp;
 
             bool leveledUp = LevelUp(profile);
             if (leveledUp)
@@ -58,13 +59,13 @@ namespace Dynastio.Bot.Services
             await UpdateUserAsync(user, leveledUp);
         }
 
-        private bool IsXpIncreaseable(XpSystemSettings settings, UserGuildProfile profile, string content)
+        private bool IsXpIncreaseable(XpSystemSettings settings, GuildProgress profile, string content)
         {
             if (string.IsNullOrWhiteSpace(content) || content.Length < 10) return false;
-            return (DateTime.UtcNow - profile.LastMessageTimestamp).TotalSeconds > settings.MessageScoreCooldown;
+            return (DateTime.UtcNow - profile.LastMessageAtUtc).TotalSeconds > settings.MessageScoreCooldownSeconds;
         }
 
-        private bool LevelUp(UserGuildProfile profile)
+        private bool LevelUp(GuildProgress profile)
         {
             //  if (XpCalculator.MaxLevel <= profile.Level) return false;
 
@@ -78,18 +79,18 @@ namespace Dynastio.Bot.Services
             return false;
         }
 
-        public async Task<bool> UpdateUserGameRewards(UserGuildProfile profile, User user, Guild guild)
+        public async Task<bool> UpdateUserGameRewards(GuildProgress profile, User user, Guild guild)
         {
-            if (!guild.XpSystemSettings.IsGameRewardEnabled || !user.IsAccountConnected)
+            if (!guild.XpSystemSettings.IsGameRewardEnabled || !user.HasLinkedAccount)
                 return false;
 
-            await _dynastioApi.UpdateDiscordRankAsync(user.gameAccountId, profile.Level);
+            await _dynastioApi.UpdateDiscordRankAsync(user.GetDefaultAccount().Id, profile.Level);
             return true;
         }
 
         public async Task<bool> UpdateUserAsync(User user, bool force = false)
         {
-            if (force || (DateTime.UtcNow - user.LastUpdateTime).TotalSeconds > 300)
+            if (force || (DateTime.UtcNow - user.LastUpdatedUtc).TotalSeconds > 300)
             {
                 return await _services.GetService<UsersService>().UpdateUserAsync(user);
             }

@@ -21,7 +21,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
         // -----------------------------------------------------------------------------------
-
+        public BadgesRoleSyncService BadgesRoleSyncService { get; set; }
         /// <summary>
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
@@ -98,10 +98,13 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Copy-and-paste into your new module and adjust the attribute:
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
-        [ComponentInteraction(InteractionIdBase + "")]
-        public async Task ExecuteAsync()
+        [ComponentInteraction(InteractionIdBase + ":*")]
+        public async Task ExecuteAsync(string trigger="")
         {
-            await RespondWithModalAsync<AccountLoginModal>(InteractionModalId);
+            if (Context.BotUser.HasLinkedAccount is false)
+                await RespondWithModalAsync<AccountLoginModal>(InteractionModalId);
+            else
+                await this.ReplyWithErrorAsync("logined already");
         }
 
 
@@ -110,69 +113,97 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Forwards values to main ExecuteAsync.
         /// </summary>
         [ModalInteraction(InteractionModalId)]
-        public async Task HandleModalAsync(AccountLoginModal modal)
+        public async Task HandleAddAccountModalAsync(AccountLoginModal modal)
         {
             await DeferAsync();
-            string id = modal.AccountId.Remove("id:", "Id:", "ID:", "iD:").Trim(); // don't use tolower
+            await ModifyCurrentMessageToNotFound();
+            // 1. Normalize account ID by stripping any “id:” prefix (case-insensitive)
+            var accountId = modal.AccountId
+                .Replace("id:", "", StringComparison.OrdinalIgnoreCase)
+                .Trim();
 
-            string errorText = "";
-            // check if its his own discord user account
-            if (id.Contains("discord") && !id.Contains(Context.User.Id.ToString()))
+            // Cache user and botUser locally for fewer property lookups
+            var discordUserId = Context.User.Id.ToString();
+            var botUser = Context.BotUser;
+            var accounts = botUser.Accounts;
+
+            // 2. Guard: Discord-style IDs must include your own user ID
+            if (accountId.Contains("discord", StringComparison.OrdinalIgnoreCase)
+                && !accountId.Contains(discordUserId, StringComparison.Ordinal))
             {
-                errorText = "its not your account";
+                await ReplyWithErrorAsync("This is not your Discord account.");
                 return;
             }
 
-            if (Context.BotUser.Accounts.Count >= 1)
+            // 3. Guard: only one account allowed per user
+            if (accounts.Count >= 1)
             {
-                errorText = "can't add more than 1 account .";
+                await ReplyWithErrorAsync("You can’t add more than one account.");
                 return;
             }
 
-            if (Context.BotUser.GetAccount(id) != null)
+            // 4. Guard: account not already linked
+            if (botUser.GetAccount(accountId) is not null)
             {
-                errorText = "this account added already !";
+                await ReplyWithErrorAsync("This account has already been added.");
+                return;
+            }
+
+            // 5. Validate PIN
+            var pin = modal.Pin?.Trim() ?? "";
+            if (!await Dynastio.GetUserPincodeStatusAsync(accountId, pin))
+            {
+                await ReplyWithErrorAsync("Wrong pin code!");
+                return;
+            }
+
+            // 6. Parallelize DB lookups for performance
+            var byAccountTask = _db.GetUserByAccountIdAsync(accountId);
+            var byConnectedTask = _db.GetUserByConnectedAccountIdAsync(accountId);
+            await Task.WhenAll(byAccountTask, byConnectedTask);
+
+            var existingUser = byAccountTask.Result;
+            var existingMainUser = byConnectedTask.Result;
+
+            if (existingUser is not null
+                && existingMainUser is not null
+                && existingMainUser.Id != Context.User.Id)
+            {
+                await ReplyWithErrorAsync("This account is already connected by another user.");
                 return;
             }
 
 
-            bool authorized = await Dynastio.GetUserPincodeStatusAsync(id, modal.Pin.Trim());
-            if (authorized is false)
+            if (accounts.Count >= 1)
             {
-                errorText = "wrong pin code !";
+                await ReplyWithErrorAsync("You can’t add more than one account.");
                 return;
             }
+            // 7. Build new GameAccount
+            var newAccount = GameAccount
+            .Create(accountId)
+            .WithPin(pin)
+            .WithEmail(modal.EmailAddress?.Trim())
+            .WithNote(modal.Notes?.Trim())
+            .WithDisplayName(modal.DisplayName?.Trim());
 
-            var targetUser = await this._db.GetUserByAccountIdAsync(id);
-            var targetMainAccount = await this._db.GetUserByConnectedAccountIdAsync(id);
-            if (targetUser != null && targetMainAccount != null)
-            {
-                if (targetMainAccount.Id != Context.User.Id)
-                {
-                    errorText = "this account is connected by another user !";
-                    return;
-                }
-            }
+            // 8. Link, set default, persist
+            botUser.AddAccount(newAccount);
+            botUser.SetDefaultAccount(accountId);
 
-            var account = new UserGameAccount()
-            {
-                Id = id,
-                AddedAt = DateTime.UtcNow,
-                IsDefault = true,
-                PinCode = modal.Pin.Trim(),
-                Email = modal.EmailAddress,
-                Reminder = modal.Notes
-            }.SetReminder(form.Reminder);
+            await this.Context.UsersService.UpdateUserAsync(botUser);
+            await this.BadgesRoleSyncService.SynchronizeUserRolesAsync(Context.BotGuild, (IGuildUser)Context.User, botUser);
 
-            Context.BotUser.Accounts.Add(account);
-            Context.BotUser.SwitchAccount(ref account);
-
-            await dynastioBotDatabase.UpdateAsync(Context.BotUser);
-
-            await ModifyCurrentMessageAsync(userMention, embed: this["modal.dynastio.accounts.add.succeeful.description"].ToEmbed(this["modal.dynastio.accounts.add.succeeful.title"], Color.Green));
-
-            // await _guildService.SyncUserBadges(Context.BotUser);
+            // 9. Finalize UI
+            await ModifyMenuMessageAsync("Done!");
 
         }
+
+        private Task ReplyWithErrorAsync(string message)
+        {
+            // you might funnel all errors through a single helper
+            return ModifyMenuMessageAsync(message);
+        }
+
     }
 }

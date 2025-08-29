@@ -56,11 +56,11 @@ namespace Dynastio.Bot.Services
 
             var playerBadges = await GetUserBadgesAsync(buser); // string list
 
-            var badgeRoles = RoleHelper.GetRolesStartingWith(user.Guild, guild.BadgeBridgeSettings.BadgesRoleAssignmentPerfix);
+            var badgeRoles = RoleHelper.GetRolesStartingWith(user.Guild, guild.BadgeBridgeSettings.BadgeRoleAssignmentPrefix);
 
             foreach (var role in badgeRoles)
             {
-                string badgeName = role.Name.ToBadgeEnumAble(guild.BadgeBridgeSettings.BadgesRoleAssignmentPerfix);
+                string badgeName = role.Name.ToBadgeEnumAble(guild.BadgeBridgeSettings.BadgeRoleAssignmentPrefix);
 
                 bool hasBadge = playerBadges.Contains(badgeName, StringComparer.OrdinalIgnoreCase);
                 bool hasRole = user.RoleIds.Contains(role.Id);
@@ -76,7 +76,7 @@ namespace Dynastio.Bot.Services
             var badgeRoleIds = badgeRoles.Select(r => r.Id);
             bool hasAnyBadgeRole = user.RoleIds.Any(id => badgeRoleIds.Contains(id));
 
-            var headerRoleId = RoleHelper.GetNextHigherHeaderRole(user.Guild, guild.BadgeBridgeSettings.BadgesRoleAssignmentPerfix);
+            var headerRoleId = RoleHelper.GetNextHigherHeaderRole(user.Guild, guild.BadgeBridgeSettings.BadgeRoleAssignmentPrefix);
             bool hasHeaderRole = user.RoleIds.Contains(headerRoleId.Id);
 
             if (hasAnyBadgeRole && !hasHeaderRole)
