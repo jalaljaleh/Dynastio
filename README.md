@@ -30,31 +30,128 @@
   
 </div>
 
-## 🧠 About the Project
 
-**Dynastio Bot** is an open-source Discord bot created for **Dynast.io**, a popular multiplayer survival browser game. This project is independently developed but **approved and officially used** on the Dynast.io Discord server.
+# 🏰 Dynast.io Bot
 
-The goal is to deliver an immersive community tool that:
+> A powerful, open-source Discord bot tailored for [Dynast.io](https://dynast.io) — the fast-paced multiplayer survival game.  
+> Built with ❤️ using **.NET Core**, **C#**, and **MongoDB**.
 
-- Syncs with Dynast.io gameplay and user data
-- Supports multilingual player bases
-- Is lightweight, efficient, and scalable
-- Enables further customization via open API wrappers (`Dynastio.Net`)
+![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
+![.NET](https://img.shields.io/badge/.NET-8.0+-purple)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
+![Discord](https://img.shields.io/badge/Discord-Bot-5865F2)
 
-> Built with ❤️ using **.NET Core**, **C#**, and **MongoDB**
+---
 
-## 🚀 Features
+## 🎮 What is Dynast.io?
 
-- ✅ Full integration with Dynast.io APIs
-- 🔒 Discord server moderation tools
-- 🌍 Multi-language support (English, Thai, Ukrainian)
-- 📊 MongoDB-based persistent storage
-- 📂 Modular architecture for scalability
-- 🖼 Image-only channel enforcement
-- 📘 Localized messages with fallback system
-- 🧪 Unit testing and structured test project
-- 🧠 Lightweight logic layers (Validation, Global state, API wrappers)
-- 🧰 Compatible with Docker, Heroku & cloud deployment
+**Dynast.io** is a browser-based, 2D multiplayer survival game where players battle the elements — and each other — to build, survive, and thrive.  
+With up to 100 players per session, the game combines crafting, combat, exploration, and RPG mechanics in a dynamic world that evolves with every match.
+
+Whether you're building a fortress, hunting wild beasts, or teaming up with friends, Dynast.io offers a rich survival experience with real-time action and strategy.
+
+---
+
+## 🤖 Introducing Dynast.io Bot
+
+**Dynastio Bot** is a community-driven Discord bot designed to bridge the gap between **Dynast.io gameplay** and **Discord interaction**.  
+It’s independently developed but officially approved and actively used on the **Dynast.io Discord server**.
+
+The bot provides real-time game data, moderation tools, and multilingual support — all wrapped in a modular, scalable architecture that’s easy to deploy and extend.
+
+---
+
+## 🚀 Key Features
+
+- ✅ **Dynast.io API Integration**  
+  Access live player stats, leaderboards, and game events directly from Discord.
+
+- 🔒 **Moderation Tools**  
+  Manage your server with built-in commands for moderation and automation.
+
+- 🌍 **Multi-language Support**  
+  Supports English, Thai, and Ukrainian with a fallback system for localization.
+
+- 📊 **MongoDB Persistence**  
+  Stores user data, settings, and game sync info using MongoDB Atlas or local instances.
+
+- 📂 **Modular Architecture**  
+  Clean separation of concerns for scalability and maintainability.
+
+- 🖼 **Image-Only Channel Enforcement**  
+  Enforce media-only channels with smart message filtering.
+
+- 📘 **Localized Messaging**  
+  Dynamic message translation with fallback logic for unsupported languages.
+
+- 🧪 **Unit Testing Framework**  
+  Structured test project for validating bot logic and API interactions.
+
+- 🧠 **Lightweight Logic Layers**  
+  Includes validation, global state management, and API wrappers via Dynastio.Net.
+
+- 🧰 **Cloud-Ready Deployment**  
+  Compatible with Docker, Heroku, and other cloud platforms.
+
+
+
+
+## 🗺 Dynast.io Bot Roadmap
+
+This roadmap outlines planned features, improvements, and long‑term goals for the project.  
+Items are grouped by priority and stage of development.
+
+---
+
+### ✅ Completed
+- Full integration with **Dynast.io APIs** for live stats and leaderboards
+- Discord **moderation tools** (kick, ban, mute, etc.)
+- Multi‑language support (**English**, **Russian**) with fallback system
+- Persistent storage using **MongoDB**
+- Modular, scalable architecture
+- Unit tests and structured testing project
+- Docker, Heroku, and cloud deployment compatibility
+
+---
+
+### 🚧 In Progress
+- Slash command migration for modern Discord API support
+- Real‑time in‑game event notifications
+- Enhanced player profile linking with verification
+- Extended API wrappers in **Dynastio.Net**
+- Additional admin moderation tools (temp bans, automated warnings)
+
+---
+
+### 📅 Planned
+- Web dashboard for bot configuration and analytics
+- Seasonal leaderboard auto‑reset and rewards
+- Rich embed templates for game events
+- More localized language packs (Spanish, Russian, French)
+- Automated role assignment based on in‑game achievements
+- Integration with Dynast.io friend and party systems
+
+---
+
+### 💡 Ideas Under Consideration
+- **Mini‑games** within Discord themed around Dynast.io
+- Player economy tracking and trade statistics
+- Achievement showcase commands
+- Custom badge creation tool
+- Twitch/YouTube streaming notifications for Dynast.io content creators
+
+---
+
+**📌 Note:**  
+This roadmap is flexible — priorities may shift based on community feedback, game updates, and contributor availability.  
+If you have suggestions, please [open an issue](https://github.com/jalaljaleh/Dynastio.Bot/issues) or start a discussion.
+
+
+
+
+
+
+
 
 ## 🛠 Getting Started
 
@@ -87,11 +184,6 @@ Set your secrets or environment variables:
 }
 ```
 
-## 🗺 Roadmap
-
--
-
-> Suggestions welcome! Open an issue or PR anytime.
 
 ## 🤝 Contributing
 
