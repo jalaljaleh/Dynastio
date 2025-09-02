@@ -111,6 +111,20 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger="")
         {
+            if (Context.BotUser.HasLinkedAccount)
+            {
+                BotUser.GetDefaultAccount().AsDefault(false);
+                await ReplyWithSuccessAsync($"🛠️ **{BotUser.GetDefaultAccount().DisplayName} ** You logout was successfull ! Your Dynasty journey ends now.");
+
+                return;
+            }
+            else if (BotUser.Accounts.Count > 0)
+            {
+                BotUser.Accounts.FirstOrDefault().AsDefault();
+                await ReplyWithSuccessAsync($"🛠️ **{BotUser.GetDefaultAccount().DisplayName} ** Account linked successfully ! Your Dynasty journey begins now.");
+                return;
+            }
+
             if (Context.BotUser.HasLinkedAccount is false)
                 await RespondWithModalAsync<AccountLoginModal>(InteractionModalId);
             else
@@ -127,19 +141,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             await DeferAsync();
 
-            if (Context.BotUser.HasLinkedAccount)
-            {
-                BotUser.GetDefaultAccount().AsDefault(false);
-                await ReplyWithSuccessAsync($"🛠️ **{BotUser.GetDefaultAccount().DisplayName} ** You logout was successfull ! Your Dynasty journey ends now.");
 
-                return;
-            }
-            else if(BotUser.Accounts.Count > 0)
-            {
-                BotUser.Accounts.FirstOrDefault().AsDefault();
-                await ReplyWithSuccessAsync($"🛠️ **{BotUser.GetDefaultAccount().DisplayName} ** Account linked successfully ! Your Dynasty journey begins now.");
-                return;
-            }
 
             // 1. Normalize account ID by stripping any “id:” prefix (case-insensitive)
             var accountId = modal.AccountId
