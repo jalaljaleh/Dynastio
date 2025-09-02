@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Services.XpRankingSystem
+namespace Dynastio.Bot
 {
-    public static class XpRankingSystemServiceHelper
+    public static class RankingServiceHelper
     {
         public static async Task<List<IRole>> AssignmentUserRolesAsync(Guild guild, IGuildUser user, int level)
         {
@@ -18,10 +18,9 @@ namespace Dynastio.Bot.Services.XpRankingSystem
 
             // Grab all roles that match the prefix
             var allRoles = RoleHelper
-                .GetRolesStartingWith(user.Guild, guild.XpSystemSettings.RankingRolePrefix)
+                .GetRolesWithPrefix(user.Guild, guild.RankingSettings.Prefix)
                 .ToList();
 
-            allRoles.Reverse();
 
             // Cap level at the total number of available roles
             int assignCount = Math.Min(level, allRoles.Count);
@@ -53,7 +52,7 @@ namespace Dynastio.Bot.Services.XpRankingSystem
 
             // Ensure header role is present
             var headerRole = RoleHelper
-                .GetNextHigherHeaderRole(user.Guild, guild.XpSystemSettings.RankingRolePrefix);
+                .GetRoleAbovePrefix(user.Guild, guild.RankingSettings.Prefix);
 
             if (headerRole != null && !user.RoleIds.Contains(headerRole.Id))
                 await user.AddRoleAsync(headerRole.Id);

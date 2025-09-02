@@ -1,19 +1,22 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualBasic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
+namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
 {
     /// <summary>
     /// TEMPLATE: Copy this class when you need to add a new button module.
     /// Acts as the “default” fallback for any unregistered or unknown button IDs.
     /// Inherit from MenuModulesBase and implement IButtonsServiceModule.
     /// </summary>
-    public class ButtonDefaultModule : MenuModulesBase, IMenuComponentRule
+    public class ButtonRankingPrefixModule : MenuModulesBase, IMenuComponentRule
     {
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
@@ -23,7 +26,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.menu.buttons.default";
+        public const string InteractionIdBase = "interactions.guild.buttons.guildsetuprankingmodule.prefix";
 
         /// <summary>
         /// Suffix format appended after the base ID.
@@ -52,10 +55,10 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("button_not_found")
-                .WithEmote(module.EmoteService.GetEmoteByName("unknown"))
-                .WithStyle(ButtonStyle.Danger)
-                .WithDisabled(true)
+                .WithLabel("Change Roles Perfix")
+                .WithEmote(module.EmoteService.GetEmoteByName("developer"))
+                .WithStyle(ButtonStyle.Secondary)
+                .WithDisabled(false)
                 .WithCustomId(BuildCustomId(trigger: CustomIdHelper.Generate()));
             return btn;
         }
@@ -92,27 +95,53 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*")]
         [RequireMessageComponentOwner]
+        [RequireUserPermission(GuildPermission.Administrator)]
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger = "")
         {
-            // Acknowledge the interaction to avoid the “This interaction failed” message
-            await DeferAsync();
 
-            // Here you can parse out args from Context.Interaction.Data.CustomId
-            // or simply show a fallback message in case no module matched.
+            TextInputBuilder? textInput = new TextInputBuilder()
+               .WithCustomId("a")
+               .WithLabel("Ranking Roles Prefix")
+               .WithValue(BotGuild?.RankingSettings?.Prefix ?? "rank: ")
+               .WithMinLength(3)
+               .WithMaxLength(8)
+               .WithStyle(TextInputStyle.Short);
 
-            var containerb = new ContainerBuilder()
-              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
-              .WithAccentColor(Color.Green)
-              .WithTextDisplay($"# {EmoteService.GetEmote(Net.BadgeType.Friend)} Default !")
-              .WithTextDisplay($" You’re good to go !")
-              .WithTextDisplay($"");
+            var modal = new ModalBuilder()
+                .WithTitle("Change Ranking Roles Prefix")
+                .WithCustomId(DiscordInput.GetCustomId(InteractionIdBase + "_inline"))
+                .AddTextInput(textInput);
 
-            ComponentBuilderV2 cb = new ComponentBuilderV2()
-                .WithContainer(containerb);
+            await RespondWithModalAsync(modal.Build());
 
-            await ModifyMenuMessageAsync(components: cb.Build());
+            ///     -----------------------------------------------------------------
+            ///     
+            var menu = await this.Context.WaitForContextModalAsync(TimeSpan.FromMinutes(2));
+            if (menu is null)
+                return;
 
+
+            var data = (menu.Data as SocketModalData).Components.First()?.Value ?? "NOT_FOUND";
+            if (data is null || data == "NOT_FOUND")
+                return;
+
+            data = data.Trim() + " ";
+            if (!data.Contains(": ") && !data.EndsWith(": "))
+            {
+                await menu.RespondAsync("Prefix most ends with <: > examples:  <rank: > <score: > <level: >", ephemeral: true);
+                return;
+            }
+            else
+            {
+                await menu.RespondAsync("Prefix updated and role list refreshed !", ephemeral: true);
+            }
+
+            BotGuild.UpdateXpSettings(a => a.Prefix = data);
+            await GuildService.UpdateGuildAsync(Context.BotGuild);
+
+            Context.IsDeferred = true;
+            await GuildSetupRankingServiceModule.ExternalExecuteAsync(this);
         }
     }
 }

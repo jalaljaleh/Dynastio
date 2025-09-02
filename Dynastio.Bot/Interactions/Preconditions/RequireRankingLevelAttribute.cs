@@ -14,7 +14,7 @@ namespace Dynastio.Bot.Interactions.Precondinations
         public int Level { get; set; }
         protected override Task<PreconditionResult> CheckRequirementsAsync(BotSocketInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
         {
-            if (context.BotGuild.XpSystemSettings.IsEnabled is false)
+            if (context.BotGuild.RankingSettings.IsEnabled is false)
                 return Task.FromResult(PreconditionResult.FromError("ranking module is disabled by admin"));
 
             var userLevel = context.BotUser.TryGetGuildProfile(context.Guild.Id);

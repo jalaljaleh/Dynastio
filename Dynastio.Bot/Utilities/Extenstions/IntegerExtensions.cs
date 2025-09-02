@@ -50,5 +50,9 @@ namespace Dynastio.Bot
         {
             return ((ulong)Math.Max(value, 1)).ToMetric();
         }
+        public static string ToMetric(this double value)
+        {
+            return ((ulong)Math.Max(value, 1)).ToMetric();
+        }
     }
 }

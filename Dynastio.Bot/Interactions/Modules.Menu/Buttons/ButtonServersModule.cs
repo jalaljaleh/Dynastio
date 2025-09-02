@@ -20,9 +20,10 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
     [RequireContext(ContextType.Guild)]
     public class ButtonServersModule : MenuModulesBase, IMenuComponentRule
     {
-        // -----------------------------------------------------------------------------------
-        // SECTION: Constants and ID Formats
-        // -----------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
+        // SECTION: Dependency Injection
+        //--------------------------------------------------------------------------------
+        public DynastioApi Dynastio { get; set; }
 
         /// <summary>
         /// Base prefix for all server-menu button custom IDs.
@@ -110,6 +111,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// <param name="pageSize">Items per page (default = 20).</param>
         /// <param name="trigger">Context label (default = "main").</param>
         [ComponentInteraction(InteractionIdBase + ":*:*:*:*")]
+        [RequireMessageComponentOwner]
+        [RequireContext(ContextType.Guild)]
         public async Task ShowServersAsync(
             ServersSortType sort = ServersSortType.Region,
             int page = 1,

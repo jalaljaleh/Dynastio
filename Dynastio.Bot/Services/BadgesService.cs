@@ -9,12 +9,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Services
+namespace Dynastio.Bot
 {
-    public class BadgesRoleSyncService 
+    public class BadgesService 
     {
         private readonly DynastioApi _dynast;
-        public BadgesRoleSyncService(IServiceProvider services)
+        public BadgesService(IServiceProvider services)
         {
             _dynast = services.GetService<DynastioApi>();
         }
@@ -52,15 +52,15 @@ namespace Dynastio.Bot.Services
 
         public async Task<bool> SynchronizeUserRolesAsync(Guild guild, IGuildUser user, User buser)
         {
-            if (!guild.BadgeBridgeSettings.IsEnabled) return false;
+            if (!guild.BadgeSettings.IsEnabled) return false;
 
             var playerBadges = await GetUserBadgesAsync(buser); // string list
 
-            var badgeRoles = RoleHelper.GetRolesStartingWith(user.Guild, guild.BadgeBridgeSettings.BadgeRoleAssignmentPrefix);
+            var badgeRoles = RoleHelper.GetRolesWithPrefix(user.Guild, guild.BadgeSettings.Prefix);
 
             foreach (var role in badgeRoles)
             {
-                string badgeName = role.Name.ToBadgeEnumAble(guild.BadgeBridgeSettings.BadgeRoleAssignmentPrefix);
+                string badgeName = role.Name.ToBadgeEnumAble(guild.BadgeSettings.Prefix);
 
                 bool hasBadge = playerBadges.Contains(badgeName, StringComparer.OrdinalIgnoreCase);
                 bool hasRole = user.RoleIds.Contains(role.Id);
@@ -76,7 +76,7 @@ namespace Dynastio.Bot.Services
             var badgeRoleIds = badgeRoles.Select(r => r.Id);
             bool hasAnyBadgeRole = user.RoleIds.Any(id => badgeRoleIds.Contains(id));
 
-            var headerRoleId = RoleHelper.GetNextHigherHeaderRole(user.Guild, guild.BadgeBridgeSettings.BadgeRoleAssignmentPrefix);
+            var headerRoleId = RoleHelper.GetRoleAbovePrefix(user.Guild, guild.BadgeSettings.Prefix);
             bool hasHeaderRole = user.RoleIds.Contains(headerRoleId.Id);
 
             if (hasAnyBadgeRole && !hasHeaderRole)

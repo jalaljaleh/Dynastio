@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Services.XpRankingSystem
+namespace Dynastio.Bot
 {
     public static class XpCalculator
     {

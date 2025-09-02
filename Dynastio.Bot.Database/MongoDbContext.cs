@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Dynastio.Bot.Database
 {
@@ -61,6 +63,29 @@ namespace Dynastio.Bot.Database
         /// </summary>
         private async Task DoWorkAsync()
         {
+            //var users = JsonSerializer.Deserialize<List<User>>(File.ReadAllText("W:\\Halun\\Dynastio.Bot\\database\\newUsersDb.json"));
+
+            //foreach (var user in users)
+            //{
+            //    if (user.HasLinkedAccount)
+            //    {
+            //        var account = user.GetDefaultAccount().Clone();
+            //        account.AsDefault(true);
+
+            //        user.ClearAccounts();
+
+            //        user.AddAccount(account);
+            //    }
+            //    else
+            //    {
+            //        user.ClearAccounts();
+            //    }
+            //}
+            //   await _users.InsertManyAsync(users);
+
+
+            //File.WriteAllText("newUsersDb.json", JsonSerializer.Serialize(newUsers));
+
             // Reserved for data migration or background operations
             await Task.CompletedTask;
         }
@@ -130,18 +155,23 @@ namespace Dynastio.Bot.Database
             return await Task.FromResult(true);
         }
 
-        public async Task<User> GetUserByAccountIdAsync(string accountId)
+        public async Task<User?> GetUserByAccountIdAsync(string accountId)
         {
-            var filter = Builders<User>.Filter
-                .ElemMatch(u => u.Accounts, Builders<GameAccount>.Filter.Where(a => a.Id == accountId));
 
-            return await Task.FromResult(_users.Find(filter).FirstOrDefault());
+            var filter = Builders<User>.Filter.ElemMatch(
+                u => u.Accounts,
+                account => account.Id == accountId
+            );
+
+            return await _users
+                .Find(filter)
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
         }
 
         public async Task<User> GetUserByConnectedAccountIdAsync(string gameAccountId)
         {
-            var filter = Builders<User>.Filter.Where(u => u.HasAccount( gameAccountId));
-            return await Task.FromResult(_users.Find(filter).FirstOrDefault());
+            return await GetUserByAccountIdAsync(gameAccountId);
         }
 
         public async Task<User> GetUserByYoutubeChannelIdAsync(string channelId)

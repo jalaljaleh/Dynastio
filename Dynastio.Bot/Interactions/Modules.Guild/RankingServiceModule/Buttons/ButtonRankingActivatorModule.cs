@@ -1,29 +1,32 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Dynastio.Bot.Database;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
+namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
 {
     /// <summary>
     /// TEMPLATE: Copy this class when you need to add a new button module.
     /// Acts as the “default” fallback for any unregistered or unknown button IDs.
     /// Inherit from MenuModulesBase and implement IButtonsServiceModule.
     /// </summary>
-    public class ButtonDefaultModule : MenuModulesBase, IMenuComponentRule
+    public class ButtonRankingActivatorModule : MenuModulesBase, IMenuComponentRule
     {
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
         // -----------------------------------------------------------------------------------
-
+        public InteractionService interactionService { get; set; }
+        public IServiceProvider ServiceProvider { get; set; }
         /// <summary>
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.menu.buttons.default";
+        public const string InteractionIdBase = "interactions.guild.buttons.guildsetuprankingmodule.activator";
 
         /// <summary>
         /// Suffix format appended after the base ID.
@@ -52,11 +55,20 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("button_not_found")
-                .WithEmote(module.EmoteService.GetEmoteByName("unknown"))
-                .WithStyle(ButtonStyle.Danger)
-                .WithDisabled(true)
+                .WithLabel("Enable Module")
+                .WithEmote(module.EmoteService.GetEmoteByName("developer"))
+                .WithStyle(ButtonStyle.Secondary)
+                .WithDisabled(false)
                 .WithCustomId(BuildCustomId(trigger: CustomIdHelper.Generate()));
+
+
+
+            if (module.BotGuild.RankingSettings.IsEnabled)
+            {
+                btn
+                    .WithLabel("All Set (disable)")
+                    .WithStyle(ButtonStyle.Success);
+            }
             return btn;
         }
 
@@ -92,27 +104,76 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*")]
         [RequireMessageComponentOwner]
+        [RequireUserPermission(GuildPermission.Administrator)]
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger = "")
         {
-            // Acknowledge the interaction to avoid the “This interaction failed” message
             await DeferAsync();
+            Context.IsDeferred = true;
 
-            // Here you can parse out args from Context.Interaction.Data.CustomId
-            // or simply show a fallback message in case no module matched.
+            var module = BotGuild.RankingSettings;
 
-            var containerb = new ContainerBuilder()
-              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
-              .WithAccentColor(Color.Green)
-              .WithTextDisplay($"# {EmoteService.GetEmote(Net.BadgeType.Friend)} Default !")
-              .WithTextDisplay($" You’re good to go !")
-              .WithTextDisplay($"");
+            // 1) If it’s already on, turn it off and exit
+            if (module.IsEnabled)
+            {
+                module.IsEnabled = false;
+                await ReplyWithSuccessAsync("✅ Ranking module has been disabled.");
+                return;
+            }
 
-            ComponentBuilderV2 cb = new ComponentBuilderV2()
-                .WithContainer(containerb);
+            // 2) Run all validations in one pass
+            var error = ValidateRankingModule(module, Context);
+            if (error != null)
+            {
+                await ReplyWithErrorAsync(error);
+                return;
+            }
+            module.IsEnabled = true;
 
-            await ModifyMenuMessageAsync(components: cb.Build());
+           await GuildService.UpdateGuildAsync(Context.BotGuild);
 
+            // 3) All good – move on to the next setup step
+            await GuildSetupRankingServiceModule.ExternalExecuteAsync(this);
         }
+
+        public static string ValidateRankingModule(RankingSettings module, BotSocketInteractionContext Context)
+        {
+            if (module.IsRankingRoleAssignmentEnabled && string.IsNullOrWhiteSpace(module.Prefix) || !module.Prefix.Contains(": ") && !module.Prefix.EndsWith(": "))
+            {
+                return "❌ Ranking role prefix is not set, but role assignment is enabled.";
+            }
+
+            if (!RoleHelper.GetRolesWithPrefix(Context.Guild, module.Prefix).Any())
+            {
+                return "❌ Ranking role prefix conflicts with an existing role name.";
+            }
+
+            if (module.AllowedXpChannelIds == null || !module.AllowedXpChannelIds.Any())
+                return "❌ No allowed XP channels have been set.";
+
+            // -------- Logger Channel ----------
+
+            if (module.RankingLogChannelId <= 0)
+                return "❌ Ranking log channel ID must be a positive integer.";
+
+            // Direct lookup is faster than LINQ over .Channels
+            var channel = Context.Guild.GetChannel(module.RankingLogChannelId);
+            if (channel == null)
+                return "❌ Ranking log channel ID is invalid or does not exist.";
+
+            // -----------------------------------
+
+            if (module.BaseXpPerMessage < 1)
+                return "❌ Base XP per message must be at least 1.";
+
+            if (module.MessageScoreCooldownSeconds < 1)
+                return "❌ Message score cooldown must be at least 1 second.";
+
+            return null;
+        }
+
+
+
     }
 }
+

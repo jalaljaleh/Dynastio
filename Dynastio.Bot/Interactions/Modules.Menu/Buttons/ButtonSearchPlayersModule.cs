@@ -31,11 +31,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         // SECTION: IMenuComponentService Implementation
         //--------------------------------------------------------------------------------
 
-        /// <summary>
-        /// Identifies which ButtonType this module provides.
-        /// Copy and change to the correct enum value in your new module.
-        /// </summary>
-        public ButtonType Kind => ButtonType.Menu_SearchPlayers;  
+
 
         //--------------------------------------------------------------------------------
         // SECTION: Builder Method

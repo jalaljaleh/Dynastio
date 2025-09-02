@@ -19,7 +19,7 @@ namespace Dynastio.Bot
         private readonly DiscordSocketClient _discord;
         private readonly DynastioBotDatabase _database;
         private readonly ConfigurationService _config;
-        private readonly XpRankingSystemService _xpRanking;
+        private readonly RankingService _xpRanking;
         private readonly UsersService _users;
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Dynastio.Bot
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _database = services.GetRequiredService<DynastioBotDatabase>();
             _config = services.GetRequiredService<ConfigurationService>();
-            _xpRanking = services.GetRequiredService<XpRankingSystemService>();
+            _xpRanking = services.GetRequiredService<RankingService>();
             _users = services.GetRequiredService<UsersService>();
 
             _discord.MessageReceived += OnMessageReceivedAsync;

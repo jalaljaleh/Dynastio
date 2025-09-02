@@ -57,16 +57,16 @@ namespace Dynastio.Bot.Database
         /// <summary>
         /// XP system settings. Always kept non-null.
         /// </summary>
-        [BsonElement("xp")]
-        [JsonInclude, JsonPropertyName("xp")]
-        public XpSystemSettings XpSystemSettings { get; private set; } = new();
+        [BsonElement("rankingSettings")]
+        [JsonInclude, JsonPropertyName("rankingSettings")]
+        public RankingSettings RankingSettings { get; private set; } = new();
 
         /// <summary>
         /// Badge bridge settings. Always kept non-null.
         /// </summary>
-        [JsonInclude, JsonPropertyName("badges")]
-        [BsonElement("badges")]
-        public BadgeBridgeSettings BadgeBridgeSettings { get; private set; } = new();
+        [JsonInclude, JsonPropertyName("badgeSettings")]
+        [BsonElement("badgeSettings")]
+        public BadgesSyncerSettings BadgeSettings { get; private set; } = new();
 
 
         // --------------------------------------------------------------------
@@ -101,13 +101,13 @@ namespace Dynastio.Bot.Database
         /// <summary>
         /// Replaces the XP settings with a validated, non-null instance.
         /// </summary>
-        public bool SetXpSettings(XpSystemSettings settings)
+        public bool SetXpSettings(RankingSettings settings)
         {
             if (settings is null) settings = new();
-            if (XpSystemSettings.Equals(settings))
+            if (RankingSettings.Equals(settings))
                 return false;
 
-            XpSystemSettings = settings;
+            RankingSettings = settings;
             Touch();
             return true;
         }
@@ -115,23 +115,23 @@ namespace Dynastio.Bot.Database
         /// <summary>
         /// Applies an in-place update to XP settings, ensuring non-null and validation.
         /// </summary>
-        public void UpdateXpSettings(Action<XpSystemSettings> mutate)
+        public void UpdateXpSettings(Action<RankingSettings> mutate)
         {
-            if (XpSystemSettings is null) XpSystemSettings = new();
-            mutate?.Invoke(XpSystemSettings);
+            if (RankingSettings is null) RankingSettings = new();
+            mutate?.Invoke(RankingSettings);
             Touch();
         }
 
         /// <summary>
         /// Replaces the badge settings with a validated, non-null instance.
         /// </summary>
-        public bool SetBadgeSettings(BadgeBridgeSettings settings)
+        public bool SetBadgeSettings(BadgesSyncerSettings settings)
         {
             if (settings is null) settings = new();
-            if (BadgeBridgeSettings.Equals(settings))
+            if (BadgeSettings.Equals(settings))
                 return false;
 
-            BadgeBridgeSettings = settings;
+            BadgeSettings = settings;
             Touch();
             return true;
         }
@@ -139,10 +139,10 @@ namespace Dynastio.Bot.Database
         /// <summary>
         /// Applies an in-place update to badge settings, ensuring non-null and validation.
         /// </summary>
-        public void UpdateBadgeSettings(Action<BadgeBridgeSettings> mutate)
+        public void UpdateBadgeSettings(Action<BadgesSyncerSettings> mutate)
         {
-            if (BadgeBridgeSettings is null) BadgeBridgeSettings = new();
-            mutate?.Invoke(BadgeBridgeSettings);
+            if (BadgeSettings is null) BadgeSettings = new();
+            mutate?.Invoke(BadgeSettings);
             Touch();
         }
 
@@ -151,8 +151,8 @@ namespace Dynastio.Bot.Database
         /// </summary>
         public void ResetToDefaults()
         {
-            XpSystemSettings = new();
-            BadgeBridgeSettings = new();
+            RankingSettings = new();
+            BadgeSettings = new();
             Touch();
         }
 
@@ -173,13 +173,13 @@ namespace Dynastio.Bot.Database
                 return false;
             }
 
-            if (XpSystemSettings is null)
+            if (RankingSettings is null)
             {
                 error = "XpSystemSettings must not be null.";
                 return false;
             }
 
-            if (BadgeBridgeSettings is null)
+            if (BadgeSettings is null)
             {
                 error = "BadgeBridgeSettings must not be null.";
                 return false;
@@ -199,8 +199,8 @@ namespace Dynastio.Bot.Database
         /// </summary>
         public void EnsureDefaults()
         {
-            XpSystemSettings ??= new();
-            BadgeBridgeSettings ??= new();
+            RankingSettings ??= new();
+            BadgeSettings ??= new();
         }
 
 
@@ -211,7 +211,7 @@ namespace Dynastio.Bot.Database
         /// <summary>
         /// Updates the last modified timestamp and bumps the version for OCC.
         /// </summary>
-        private void Touch()
+        public void Touch()
         {
             UpdatedAtUtc = DateTime.UtcNow;
         }

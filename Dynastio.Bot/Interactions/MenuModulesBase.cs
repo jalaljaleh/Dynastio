@@ -15,6 +15,8 @@ namespace Dynastio.Bot.Interactions
     //
     public class MenuModulesBase : BotInteractionModuleBase<BotSocketInteractionContext>
     {
+
+
         public async Task ReplyWithSuccessAsync(string message)
         {
 
@@ -29,8 +31,6 @@ namespace Dynastio.Bot.Interactions
                 .WithSection(header)
                 
                 .WithSeparator(SeparatorSpacingSize.Small,true)
-                
-                .WithTextDisplay($"Your account **{BotUser.GetDefaultAccount().DisplayName}** added successfuly")
                 .WithTextDisplay($"{message}");
 
             ComponentBuilderV2 cb = new ComponentBuilderV2()
@@ -44,6 +44,7 @@ namespace Dynastio.Bot.Interactions
                 .WithMediaGallery(AssetUrlService[AssetType.banner_error])
                 .WithTextDisplay($"# {EmoteService.GetEmote(Net.BadgeType.Developer)}  Boar Gate Crash! !")
                .WithTextDisplay($"{EmoteService.GetEmote(Net.EntityType.Scooter)} {UserMention} Your command was ambushed by boar raiders at the data gate. Our pixelated knights are regrouping—try again in a moment.");
+         
             var containerc = new ContainerBuilder()
                 .WithAccentColor(Color.Red)
                 .WithTextDisplay($"### Error Message:```{message}```");
@@ -61,7 +62,7 @@ namespace Dynastio.Bot.Interactions
             // .WithMediaGallery(AssetUrlService[AssetType.banner_not_found])
 
             var containerb = new ContainerBuilder()
-                .WithMediaGallery(Common.Random.Next(1, 2) == 1 ? AssetUrlService[AssetType.banner_not_found] : AssetUrlService[AssetType.banner_not_found_gif])
+                .WithMediaGallery(Common.Random.Next(1, 10) == 9 ? AssetUrlService[AssetType.banner_not_found_gif] : AssetUrlService[AssetType.banner_not_found])
                 .WithAccentColor(Color.DarkerGrey)
                 .WithTextDisplay($"# {EmoteService.GetEmoteByName("shadow1")}  The Nightmare’s Empty Feast !")
                 .WithTextDisplay($"{EmoteService.GetEmote(Net.EntityType.Lamp)} {UserMention} By the light of a waning moon, the hungry Nightmare crept through these halls and swallowed every last record. What you see now is its aftermath: a silent void where data once danced.\nAdjust your filters, widen your search, and breathe fresh life into this page—before the Nightmare returns for another midnight banquet.")

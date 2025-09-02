@@ -2,9 +2,9 @@
 using Dynastio.Bot.Database;
 using Dynastio.Net;
 
-namespace Dynastio.Bot.Services.XpRankingSystem
+namespace Dynastio.Bot
 {
-    public static class XpNotificationController
+    public static class RankingServiceNotificationController
     {
         /// <summary>
         /// Notifies a user that they have leveled up by sending an embed
@@ -49,13 +49,13 @@ namespace Dynastio.Bot.Services.XpRankingSystem
             IGuild discordGuild,
             Guild guild)
         {
-            var channelId = guild.XpSystemSettings.RankingLogChannelId;
+            var channelId = guild.RankingSettings.RankingLogChannelId;
             if (channelId == 0)
                 return null;
 
             var channel = await discordGuild.GetTextChannelAsync(channelId);
             if (channel == null)
-                guild.XpSystemSettings.RankingLogChannelId = 0;
+                guild.RankingSettings.RankingLogChannelId = 0;
 
             return channel;
         }
@@ -95,7 +95,7 @@ namespace Dynastio.Bot.Services.XpRankingSystem
         /// Chooses a fallback embed color when no role icon is available.
         /// </summary>
         private static Color DetermineFallbackColor(User user, Guild guild) =>
-            guild.XpSystemSettings.IsGameRewardEnabled && user.HasLinkedAccount
+            guild.RankingSettings.IsGameRewardEnabled && user.HasLinkedAccount
                 ? Color.Green
                 : Color.Red;
 
@@ -108,7 +108,7 @@ namespace Dynastio.Bot.Services.XpRankingSystem
             GuildProgress profile)
         {
             var xpInfo = $"Reached level **{profile.Level}** with **{profile.Xp.ToMetric()} XP**!";
-            var rewardSeg = guild.XpSystemSettings.IsGameRewardEnabled
+            var rewardSeg = guild.RankingSettings.IsGameRewardEnabled
                 ? BuildRewardInfo(user, profile.Level)
                 : "In-game rewards are not supported on this server.";
 

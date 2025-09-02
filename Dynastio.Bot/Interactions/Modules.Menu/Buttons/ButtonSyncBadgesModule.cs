@@ -13,17 +13,18 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
     /// Acts as the “default” fallback for any unregistered or unknown button IDs.
     /// Inherit from MenuModulesBase and implement IButtonsServiceModule.
     /// </summary>
-    public class ButtonDefaultModule : MenuModulesBase, IMenuComponentRule
+   
+    public class ButtonSyncBadgesModule : MenuModulesBase, IMenuComponentRule
     {
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
         // -----------------------------------------------------------------------------------
-
+        public BadgesService BadgesRoleSyncService { get; set; }
         /// <summary>
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.menu.buttons.default";
+        public const string InteractionIdBase = "interactions.menu.buttons.syncbadges";
 
         /// <summary>
         /// Suffix format appended after the base ID.
@@ -51,12 +52,21 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// <returns>A fully configured ButtonBuilder instance.</returns>
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
-            var btn = new ButtonBuilder()
-                .WithLabel("button_not_found")
-                .WithEmote(module.EmoteService.GetEmoteByName("unknown"))
-                .WithStyle(ButtonStyle.Danger)
-                .WithDisabled(true)
-                .WithCustomId(BuildCustomId(trigger: CustomIdHelper.Generate()));
+            var btn= new ButtonBuilder()
+                .WithLabel("Sync Badges")
+                .WithDisabled(false)
+                .WithCustomId(BuildCustomId(trigger: "profile"))
+                .WithEmote(module.EmoteService.GetEmote(Net.BadgeType.Developer))
+                .WithStyle(ButtonStyle.Secondary);
+
+            if (!module.BotGuild.BadgeSettings.IsEnabled)
+            {
+                btn
+                    .WithLabel("Not Enabled")
+                    .WithDisabled(true)
+                    .WithCustomId(CustomIdHelper.Generate());
+            }
+
             return btn;
         }
 
@@ -98,20 +108,11 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             // Acknowledge the interaction to avoid the “This interaction failed” message
             await DeferAsync();
 
-            // Here you can parse out args from Context.Interaction.Data.CustomId
-            // or simply show a fallback message in case no module matched.
-
-            var containerb = new ContainerBuilder()
-              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
-              .WithAccentColor(Color.Green)
-              .WithTextDisplay($"# {EmoteService.GetEmote(Net.BadgeType.Friend)} Default !")
-              .WithTextDisplay($" You’re good to go !")
-              .WithTextDisplay($"");
-
-            ComponentBuilderV2 cb = new ComponentBuilderV2()
-                .WithContainer(containerb);
-
-            await ModifyMenuMessageAsync(components: cb.Build());
+            var res = await BadgesRoleSyncService.SynchronizeUserRolesAsync(BotGuild, (this.User as IGuildUser), BotUser).TryAsync();
+            if (res.isSuccessful && res.result)
+                await ReplyWithSuccessAsync("All Set, Working on your badges finished !");
+            else
+                await ReplyWithErrorAsync("Guild_NOT_SUPPORT_SYNC or BADGES_NOT_FOUND !");
 
         }
     }

@@ -3,6 +3,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Dynastio.Bot.Database;
 using Dynastio.Bot.Services;
+using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dynastio.Bot.Interactions
@@ -12,12 +13,16 @@ namespace Dynastio.Bot.Interactions
     /// </summary>
     public class BotSocketInteractionContext : SocketInteractionContext
     {
-        private readonly DynastioBotDatabase _db;
-        private readonly IServiceProvider _services;
+        public readonly IServiceProvider _services;
 
-        public UsersService UsersService { get; }
-        public SocketInteraction OverridedInteraction { get; set; }
-        public object CustomData { get; set; }
+        public readonly InteractionService InteractionService;
+        public readonly UsersService UsersService;
+        public readonly GuildServices GuildService;
+
+        public readonly EmoteService EmoteService;
+        public readonly AssetUrlService AssetUrlService;
+        public readonly DynastioBotDatabase DynastioApi;
+
 
         private User _user;
         private Guild _guild;
@@ -25,22 +30,28 @@ namespace Dynastio.Bot.Interactions
         public BotSocketInteractionContext(DiscordSocketClient client,SocketInteraction interaction,IServiceProvider services,User user = null,Guild guild = null): base(client, interaction)
         {
             _services = services;
-            _db = _services.GetRequiredService<DynastioBotDatabase>();
-            UsersService = _services.GetRequiredService<UsersService>();
+            UsersService = services.GetRequiredService<UsersService>();
+            GuildService = services.GetRequiredService<GuildServices>();
+            EmoteService = services.GetRequiredService<EmoteService>();
+            AssetUrlService = services.GetRequiredService<AssetUrlService>();
+            DynastioApi = services.GetRequiredService<DynastioBotDatabase>();
+            InteractionService = services.GetRequiredService<InteractionService>();
 
             _user = user;
             _guild = guild;
         }
 
+        public bool IsDeferred = false;
+
         /// <summary>
         /// Gets the bot's internal user model for the current interaction user.
         /// </summary>
-        public User BotUser => _user ??= _db.GetUserAsync(User.Id, true).Result;
+        public User BotUser => _user ??= DynastioApi.GetUserAsync(User.Id, true).Result;
 
         /// <summary>
         /// Gets the bot's internal guild model for the current interaction guild.
         /// </summary>
-        public Guild BotGuild => _guild ??= _db.GetGuildAsync(Guild.Id).Result;
+        public Guild BotGuild => _guild ??= DynastioApi.GetGuildAsync(Guild.Id).Result;
 
     }
 }

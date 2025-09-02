@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Interactions.Modules.Menu
+namespace Dynastio.Bot.Utilities.Helpers
 {
-    public class ProfileSettingsModule : MenuModulesBase
+    class Dynastio
     {
-
     }
 }

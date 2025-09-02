@@ -2,56 +2,61 @@
 using Discord.Rest;
 using Discord.Webhook;
 using Dynastio.Bot.Database;
-using Dynastio.Bot.Services.XpRankingSystem;
+using Dynastio.Bot.Services;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Dynastio.Bot.Services
+namespace Dynastio.Bot
 {
-    public class XpRankingSystemService
+    public class RankingService
     {
         private readonly DynastioApi _dynastioApi;
         private readonly IServiceProvider _services;
-        public XpRankingSystemService(IServiceProvider services)
+        public RankingService(IServiceProvider services)
         {
             _services = services;
             _dynastioApi = services.GetRequiredService<DynastioApi>();
         }
-
+        public async Task<List<IRole>> SyncDiscordRolesAsync(Guild guild, IGuildUser discordUser, GuildProgress profile)
+        {
+            if (guild.RankingSettings.IsRankingRoleAssignmentEnabled)
+            {
+                var result_ = await RankingServiceHelper.AssignmentUserRolesAsync(guild, discordUser, profile.Level).TryAsync();
+                return result_.result;
+            }
+            return default;
+        }
         public async Task TryAddMessageXpAsync(Guild guild, User user, IUserMessage message)
         {
-            if (!guild.XpSystemSettings.IsEnabled || message.Channel is not ITextChannel channel || !guild.XpSystemSettings.IsAllowedChannel(channel.Id))
+            if (!guild.RankingSettings.IsEnabled || message.Channel is not ITextChannel channel || !guild.RankingSettings.IsAllowedChannel(channel.Id))
                 return;
 
             var discordUser = message.Author as IGuildUser;
             var profile = user.GetOrCreateGuildProfile(guild.Id);
 
-            if (!IsXpIncreaseable(guild.XpSystemSettings, profile, message.CleanContent)) return;
+            if (!IsXpIncreaseable(guild.RankingSettings, profile, message.CleanContent)) return;
 
-            int baseXp = guild.XpSystemSettings.BaseXpPerMessage;
+            int baseXp = guild.RankingSettings.BaseXpPerMessage;
             if (discordUser?.PremiumSince != null)
-                baseXp += guild.XpSystemSettings.BoosterXp;
+                baseXp += guild.RankingSettings.BoosterXp;
 
-            int randomizedXp = Random.Shared.Next(baseXp - guild.XpSystemSettings.RandomXpBonus, baseXp + guild.XpSystemSettings.RandomXpBonus);
+            int randomizedXp = Random.Shared.Next(baseXp - guild.RankingSettings.RandomXpBonus, baseXp + guild.RankingSettings.RandomXpBonus);
             profile.RecordMessage(DateTime.UtcNow);
-            
-            profile.Xp +=randomizedXp;
+
+            profile.Xp += randomizedXp;
 
             bool leveledUp = LevelUp(profile);
             if (leveledUp)
             {
                 List<IRole> rolesResult = default;
-                if (guild.XpSystemSettings.IsRankingRoleAssignmentEnabled)
-                {
-                    var result_ = await XpRankingSystemServiceHelper.AssignmentUserRolesAsync(guild, discordUser, profile.Level).TryAsync();
-                    rolesResult = result_.result;
-                }
+                rolesResult = await SyncDiscordRolesAsync(guild, discordUser, profile);
 
-                await XpNotificationController.NotifyUserLevelUpAsync(user, guild, profile, discordUser, channel.Guild, channel, rolesResult);
+                await RankingServiceNotificationController.NotifyUserLevelUpAsync(user, guild, profile, discordUser, channel.Guild, channel, rolesResult);
 
                 await UpdateUserGameRewards(profile, user, guild).TryAsync();
             }
@@ -59,7 +64,7 @@ namespace Dynastio.Bot.Services
             await UpdateUserAsync(user, leveledUp);
         }
 
-        private bool IsXpIncreaseable(XpSystemSettings settings, GuildProgress profile, string content)
+        private bool IsXpIncreaseable(RankingSettings settings, GuildProgress profile, string content)
         {
             if (string.IsNullOrWhiteSpace(content) || content.Length < 10) return false;
             return (DateTime.UtcNow - profile.LastMessageAtUtc).TotalSeconds > settings.MessageScoreCooldownSeconds;
@@ -81,7 +86,7 @@ namespace Dynastio.Bot.Services
 
         public async Task<bool> UpdateUserGameRewards(GuildProgress profile, User user, Guild guild)
         {
-            if (!guild.XpSystemSettings.IsGameRewardEnabled || !user.HasLinkedAccount)
+            if (!guild.RankingSettings.IsGameRewardEnabled || !user.HasLinkedAccount)
                 return false;
 
             await _dynastioApi.UpdateDiscordRankAsync(user.GetDefaultAccount().Id, profile.Level);

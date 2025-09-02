@@ -5,15 +5,16 @@ using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
+namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
 {
     /// <summary>
     /// TEMPLATE: Copy this class when you need to add a new button module.
     /// Acts as the “default” fallback for any unregistered or unknown button IDs.
     /// Inherit from MenuModulesBase and implement IButtonsServiceModule.
     /// </summary>
-    public class ButtonDefaultModule : MenuModulesBase, IMenuComponentRule
+    public class ButtonBadgeSyncerActivatorModule : MenuModulesBase, IMenuComponentRule
     {
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
@@ -23,7 +24,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.menu.buttons.default";
+        public const string InteractionIdBase = "interactions.guild.buttons.guildetupBadgeSyncerActivator";
 
         /// <summary>
         /// Suffix format appended after the base ID.
@@ -52,11 +53,17 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("button_not_found")
-                .WithEmote(module.EmoteService.GetEmoteByName("unknown"))
-                .WithStyle(ButtonStyle.Danger)
-                .WithDisabled(true)
+                .WithLabel("Enable")
+                .WithEmote(module.EmoteService.GetEmoteByName("developer"))
+                .WithStyle(ButtonStyle.Secondary)
+                .WithDisabled(false)
                 .WithCustomId(BuildCustomId(trigger: CustomIdHelper.Generate()));
+
+            if (module.BotGuild.BadgeSettings.IsEnabled)
+            {
+                btn.WithLabel("Disable")
+                    .WithStyle(ButtonStyle.Danger);
+            }
             return btn;
         }
 
@@ -92,26 +99,44 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*")]
         [RequireMessageComponentOwner]
+        [RequireUserPermission(GuildPermission.Administrator)]
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger = "")
         {
-            // Acknowledge the interaction to avoid the “This interaction failed” message
-            await DeferAsync();
 
-            // Here you can parse out args from Context.Interaction.Data.CustomId
-            // or simply show a fallback message in case no module matched.
+            if (BotGuild.BadgeSettings.IsEnabled)
+            {
+                BotGuild.UpdateBadgeSettings(a => a.IsEnabled = false);
+                await RespondAsync("Badge Sync Service disabled !");
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(BotGuild.BadgeSettings.Prefix))
+                {
+                    await ReplyWithErrorAsync("Error: Prefix can't be null");
+                    return;
+                }
+                var headerRole = RoleHelper.GetRoleAbovePrefix(Guild, BotGuild.BadgeSettings.Prefix);
+                if (headerRole is null)
+                {
+                    await ReplyWithErrorAsync("Error: Header role not found !");
+                    return;
+                }
+                var roles = RoleHelper.GetRolesWithPrefix(Guild, BotGuild.BadgeSettings.Prefix);
+                if (roles is null || roles.Any() is false)
+                {
+                    await ReplyWithErrorAsync("Error: no any matched role found for badges !");
+                    return;
+                }
+                BotGuild.UpdateBadgeSettings(a => a.IsEnabled = true);
+                    await RespondAsync("Badge Sync Service enabled !");
+                
+            }
+            await GuildService.UpdateGuildAsync(Context.BotGuild);
 
-            var containerb = new ContainerBuilder()
-              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
-              .WithAccentColor(Color.Green)
-              .WithTextDisplay($"# {EmoteService.GetEmote(Net.BadgeType.Friend)} Default !")
-              .WithTextDisplay($" You’re good to go !")
-              .WithTextDisplay($"");
 
-            ComponentBuilderV2 cb = new ComponentBuilderV2()
-                .WithContainer(containerb);
-
-            await ModifyMenuMessageAsync(components: cb.Build());
+            Context.IsDeferred = true;
+            await GuildSetupBadgeSyncerServiceModule.ExternalExecuteAsync(this);
 
         }
     }

@@ -85,6 +85,11 @@ namespace Dynastio.Bot.Database
         [JsonInclude, JsonPropertyName("notes")]
         [BsonElement("notes")]
         public string Notes { get; private set; }
+
+        [JsonInclude, JsonPropertyName("addedAt")]
+        [BsonElement("addedAt"), BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        public DateTime AddedAt { get; private set; }  = DateTime.UtcNow;
+
         //======================================================================
         // Computed / ignored fields
         //======================================================================
@@ -124,7 +129,8 @@ namespace Dynastio.Bot.Database
                 LinkedAtUtc = DateTime.UtcNow,
                 IsDefault = false,
                 DisplayName = serviceName,
-                Notes = string.Empty
+                Notes = string.Empty,
+                AddedAt = DateTime.UtcNow,
             };
         }
 
@@ -132,6 +138,14 @@ namespace Dynastio.Bot.Database
         //======================================================================
         // Fluent Updaters
         //======================================================================
+
+
+        public GameAccount WithAddedAt(DateTime dateTime)
+        {
+            this.AddedAt = dateTime;
+            return this;
+        }
+
 
         /// <summary>
         /// Sets or clears the one-time PIN code.

@@ -2,7 +2,7 @@
 using Discord.WebSocket;
 using Dynastio.Bot.Database;
 using Dynastio.Bot.Services;
-using Dynastio.Bot.Services.XpRankingSystem;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;

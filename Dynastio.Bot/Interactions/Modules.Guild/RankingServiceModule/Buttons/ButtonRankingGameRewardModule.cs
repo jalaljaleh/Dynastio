@@ -1,19 +1,22 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualBasic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
+namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
 {
     /// <summary>
     /// TEMPLATE: Copy this class when you need to add a new button module.
     /// Acts as the “default” fallback for any unregistered or unknown button IDs.
     /// Inherit from MenuModulesBase and implement IButtonsServiceModule.
     /// </summary>
-    public class ButtonDefaultModule : MenuModulesBase, IMenuComponentRule
+    public class ButtonRankingGameRewardModule : MenuModulesBase, IMenuComponentRule
     {
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
@@ -23,7 +26,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.menu.buttons.default";
+        public const string InteractionIdBase = "interactions.guild.buttons.guildsetuprankingmodule.gamereward";
 
         /// <summary>
         /// Suffix format appended after the base ID.
@@ -52,11 +55,17 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("button_not_found")
-                .WithEmote(module.EmoteService.GetEmoteByName("unknown"))
-                .WithStyle(ButtonStyle.Danger)
-                .WithDisabled(true)
+                .WithLabel("Enable Reward")
+                .WithEmote(module.EmoteService.GetEmoteByName("developer"))
+                .WithStyle(ButtonStyle.Secondary)
+                .WithDisabled(false)
                 .WithCustomId(BuildCustomId(trigger: CustomIdHelper.Generate()));
+
+            if (module.Context.BotGuild.RankingSettings.IsGameRewardEnabled)
+            {
+                btn
+                     .WithLabel("Disable Rewards");
+            }
             return btn;
         }
 
@@ -92,27 +101,28 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*")]
         [RequireMessageComponentOwner]
+        [RequireTeam]
+        [RequireUserPermission(GuildPermission.Administrator)]
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger = "")
         {
-            // Acknowledge the interaction to avoid the “This interaction failed” message
-            await DeferAsync();
+            if (Context.BotGuild.RankingSettings.IsGameRewardEnabled == false)
+            {
+                await RespondAsync("Game rewards are now enabled ! Users will earn coins each time they level up.", ephemeral: false);
 
-            // Here you can parse out args from Context.Interaction.Data.CustomId
-            // or simply show a fallback message in case no module matched.
+                BotGuild.UpdateXpSettings(a => a.IsGameRewardEnabled = true);
+            }
+            else
+            {
+                await RespondAsync("Game rewards have been disabled. Users will no longer receive coins for leveling up.", ephemeral: false);
 
-            var containerb = new ContainerBuilder()
-              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
-              .WithAccentColor(Color.Green)
-              .WithTextDisplay($"# {EmoteService.GetEmote(Net.BadgeType.Friend)} Default !")
-              .WithTextDisplay($" You’re good to go !")
-              .WithTextDisplay($"");
+                BotGuild.UpdateXpSettings(a => a.IsGameRewardEnabled = false);
+            }
 
-            ComponentBuilderV2 cb = new ComponentBuilderV2()
-                .WithContainer(containerb);
+            await GuildService.UpdateGuildAsync(BotGuild);
 
-            await ModifyMenuMessageAsync(components: cb.Build());
-
+            Context.IsDeferred = true;
+            await GuildSetupRankingServiceModule.ExternalExecuteAsync(this);
         }
     }
 }

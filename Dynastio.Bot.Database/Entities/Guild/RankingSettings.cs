@@ -12,7 +12,7 @@ namespace Dynastio.Bot.Database
     /// and auto‐role assignments as users level up.
     /// </summary>
     [BsonIgnoreExtraElements]
-    public class XpSystemSettings
+    public class RankingSettings
     {
         // persisted fields ---------------------------------------------------
 
@@ -38,31 +38,31 @@ namespace Dynastio.Bot.Database
         /// Prefix for generated ranking roles (e.g. "Rank_").
         /// </summary>
         [BsonElement("rankingRolePrefix")]
-        public string RankingRolePrefix { get; set; } = "Rank_";
+        public string Prefix { get; set; } = "rank: ";
 
         /// <summary>
         /// Base XP awarded for each valid message.
         /// </summary>
         [BsonElement("xpPerMessage")]
-        public int BaseXpPerMessage { get; set; } = 10;
+        public int BaseXpPerMessage { get; set; } = 50;
 
         /// <summary>
         /// Flat XP bonus applied if a booster is active.
         /// </summary>
         [BsonElement("boosterXp")]
-        public int BoosterXp { get; set; } = 0;
+        public int BoosterXp { get; set; } = 15;
 
         /// <summary>
         /// Maximum random XP bonus to add (0..RandomXpBonus).
         /// </summary>
         [BsonElement("randomXpBonus")]
-        public int RandomXpBonus { get; set; } = 5;
+        public int RandomXpBonus { get; set; } = 10;
 
         /// <summary>
         /// Cooldown (in seconds) before the same user can earn XP again.
         /// </summary>
         [BsonElement("messageCooldownSeconds")]
-        public int MessageScoreCooldownSeconds { get; set; } = 60;
+        public int MessageScoreCooldownSeconds { get; set; } = 40;
 
         /// <summary>
         /// Discord channel ID where XP events and level‐ups get logged.
@@ -79,29 +79,16 @@ namespace Dynastio.Bot.Database
 
         // factory & cloning ---------------------------------------------------
 
-        /// <summary>
-        /// Returns a default settings instance with sensible defaults:
-        /// XP on, base 10xp/message, 5 random bonus, 60s cooldown.
-        /// </summary>
-        public static XpSystemSettings Default() => new XpSystemSettings
-        {
-            IsEnabled = true,
-            BaseXpPerMessage = 10,
-            BoosterXp = 0,
-            RandomXpBonus = 5,
-            MessageScoreCooldownSeconds = 60,
-            RankingRolePrefix = "Rank_"
-        };
 
         /// <summary>
         /// Creates a deep copy of these settings.
         /// </summary>
-        public XpSystemSettings Clone() => new XpSystemSettings
+        public RankingSettings Clone() => new RankingSettings
         {
             IsEnabled = this.IsEnabled,
             IsGameRewardEnabled = this.IsGameRewardEnabled,
             IsRankingRoleAssignmentEnabled = this.IsRankingRoleAssignmentEnabled,
-            RankingRolePrefix = this.RankingRolePrefix,
+            Prefix = this.Prefix,
             BaseXpPerMessage = this.BaseXpPerMessage,
             BoosterXp = this.BoosterXp,
             RandomXpBonus = this.RandomXpBonus,
@@ -111,28 +98,6 @@ namespace Dynastio.Bot.Database
         };
 
 
-        // validation -----------------------------------------------------------
-
-        /// <summary>
-        /// Throws if any setting is out of a valid range or required fields are blank.
-        /// </summary>
-        public void Validate()
-        {
-            if (BaseXpPerMessage < 0)
-                throw new InvalidOperationException("BaseXpPerMessage must be non-negative.");
-
-            if (BoosterXp < 0)
-                throw new InvalidOperationException("BoosterXp must be non-negative.");
-
-            if (RandomXpBonus < 0)
-                throw new InvalidOperationException("RandomXpBonus must be non-negative.");
-
-            if (MessageScoreCooldownSeconds < 0)
-                throw new InvalidOperationException("MessageScoreCooldownSeconds must be non-negative.");
-
-            if (string.IsNullOrWhiteSpace(RankingRolePrefix))
-                throw new InvalidOperationException("RankingRolePrefix must not be empty.");
-        }
 
 
         // channel utilities ---------------------------------------------------
@@ -165,48 +130,5 @@ namespace Dynastio.Bot.Database
             => AllowedXpChannelIds.Clear();
 
 
-        // role‐assignment utilities --------------------------------------------
-
-        /// <summary>
-        /// Builds a Discord role name for a level,
-        /// applying the configured <see cref="RankingRolePrefix"/>.
-        /// </summary>
-        public string BuildRankingRoleName(string levelName)
-        {
-            if (string.IsNullOrWhiteSpace(levelName))
-                throw new ArgumentException("levelName cannot be empty.", nameof(levelName));
-
-            var safe = levelName.Trim().Replace(' ', '_');
-            return $"{RankingRolePrefix}{safe}";
-        }
-
-
-        // XP calculation -------------------------------------------------------
-
-        /// <summary>
-        /// Computes total XP to award for one message:
-        /// base + optional booster + random bonus.
-        /// </summary>
-        /// <param name="boosterActive">Whether a booster is currently active.</param>
-        /// <param name="randomProvider">
-        /// Optional custom RNG (0..RandomXpBonus). Defaults to <see cref="Random"/>.
-        /// </param>
-        public int CalculateXpAward(
-            bool boosterActive,
-            Func<int> randomProvider = null)
-        {
-            var total = BaseXpPerMessage;
-
-            if (boosterActive)
-                total += BoosterXp;
-
-            if (RandomXpBonus > 0)
-            {
-                randomProvider ??= () => new Random().Next(0, RandomXpBonus + 1);
-                total += randomProvider();
-            }
-
-            return total;
-        }
     }
 }

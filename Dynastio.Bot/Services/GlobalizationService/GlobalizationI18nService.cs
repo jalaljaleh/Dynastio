@@ -8,7 +8,6 @@ using Dynastio.Bot.Services.GlobalizationService.Globally;
 
 namespace Dynastio.Bot
 {
-
     public static class GlobalizationI18nService
     {
         private static readonly ResourceManager Rm = GloballyLocale.ResourceManager;

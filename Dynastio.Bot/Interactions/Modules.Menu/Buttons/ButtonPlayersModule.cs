@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Dynastio.Bot.Database;
 using Dynastio.Bot.Interactions.Modules.Menu.Modal;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
@@ -18,13 +19,13 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
     /// Requires Guild context. Fetches, filters, sorts, paginates, and renders
     /// the list of online players, with optional modal search.
     /// </summary>
-    [RequireContext(ContextType.Guild)]
     public class ButtonPlayersModule : MenuModulesBase, IMenuComponentRule
     {
         //--------------------------------------------------------------------------------
         // SECTION: Dependency Injection
         //--------------------------------------------------------------------------------
 
+        public DynastioApi Dynastio { get; set; }
 
 
         //--------------------------------------------------------------------------------
@@ -124,6 +125,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Invokes ExecuteAsync with only pagination parameters.
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*:*:*")]
+        [RequireMessageComponentOwner]
+        [RequireContext(ContextType.Guild)]
         public async Task HandlePagingAsync(
             int page = 1,
             int pageSize = 20,
@@ -138,6 +141,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// and render the players list in the menu message.
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*:*:*:*:*:*:*")]
+        [RequireMessageComponentOwner]
+        [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(
             string playerNickname = "",
             string server = "",

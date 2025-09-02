@@ -6,7 +6,7 @@ using Dynastio.Bot.Services.GlobalizationService.Globally;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
+namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
 {
     /// <summary>
     /// TEMPLATE: Copy this class when you need to add a new button module.
@@ -23,7 +23,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.menu.buttons.default";
+        public const string InteractionIdBase = "interactions.guild.buttons.default";
 
         /// <summary>
         /// Suffix format appended after the base ID.
@@ -92,6 +92,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*")]
         [RequireMessageComponentOwner]
+        [RequireUserPermission(GuildPermission.Administrator)]
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger = "")
         {

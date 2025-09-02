@@ -59,6 +59,8 @@ namespace Dynastio.Bot.Database
         // Convenience Properties
         // --------------------------------------------------------------------
 
+
+
         /// <summary>
         /// Returns true if the user has at least one linked game account.
         /// </summary>

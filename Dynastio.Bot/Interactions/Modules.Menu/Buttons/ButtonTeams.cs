@@ -18,12 +18,12 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
     /// Requires Guild context. Fetches, sorts, paginates, and renders
     /// the list of teams in a Discord menu interaction.
     /// </summary>
-    [RequireContext(ContextType.Guild)]
     public class ButtonTeamsModule : MenuModulesBase, IMenuComponentRule
     {
-        // -----------------------------------------------------------------------------------
-        // SECTION: Constants and ID Formats
-        // -----------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
+        // SECTION: Dependency Injection
+        //--------------------------------------------------------------------------------
+        public DynastioApi Dynastio { get; set; }
 
         /// <summary>
         /// Prefix for all CustomIds in this module.
@@ -82,18 +82,21 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// <param name="pageSize">Items per page (default=10).</param>
         /// <param name="trigger">Context string (default="").</param>
         [ComponentInteraction(InteractionIdBase + ":*:*:*")]
+        [RequireMessageComponentOwner]
+        [RequireContext(ContextType.Guild)]
         public async Task HandleTeamsButtonAsync(int page = 1, int pageSize = 10, string trigger = "")
         {
             // 1️⃣ Acknowledge interaction to prevent timeout
             await DeferAsync();
 
             // 2️⃣ Retrieve all teams (live API or cache)
-            var allTeams = await Dynastio.GetTeamsAsync();
-            if (allTeams == null || allTeams.Count == 0)
+            var _allTeams = await Dynastio.GetTeamsAsync().TryAsync();
+            if (_allTeams.isSuccessful is false || _allTeams.result == null || _allTeams.result.Count == 0)
             {
                 await ReplyWithNotFoundAsync();
                 return;
             }
+            var allTeams = _allTeams.result;
 
             // 3️⃣ Sort teams (currently by Name; extendable)
             allTeams = SortTeams(allTeams, TeamsSortOrder.Name);

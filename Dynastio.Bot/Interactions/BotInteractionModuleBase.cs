@@ -19,10 +19,14 @@ namespace Dynastio.Bot.Interactions
     public class BotInteractionModuleBase<T> : InteractionModuleBase<T> where T : BotSocketInteractionContext
     {
 
-        public DynastioApi Dynastio { get; set; }
-        public EmoteService EmoteService { get; set; }
-        public AssetUrlService AssetUrlService { get; set; }
-        public DynastioBotDatabase _db { get; set; }
+        public UsersService UsersService { get => Context.UsersService; }
+        public GuildServices GuildService { get => Context.GuildService; }
+
+        public EmoteService EmoteService { get => Context.EmoteService; }
+        public AssetUrlService AssetUrlService { get => Context.AssetUrlService; }
+
+
+
         /// <summary>
         /// Access localized strings using a key.
         /// </summary>
@@ -33,8 +37,8 @@ namespace Dynastio.Bot.Interactions
         /// </summary>
         public string this[string key, object model] => I18nExtensions.Tfin(key, Context.Interaction.UserLocale, model);
 
-        public SocketUser User => Context.User;
-        public SocketGuild Guild => Context.Guild;
+
+
         /// <summary>
         /// Gets the bot's internal user model.
         /// </summary>
@@ -44,6 +48,19 @@ namespace Dynastio.Bot.Interactions
         /// Gets the bot's internal guild model.
         /// </summary>
         public Guild BotGuild => Context.BotGuild;
+
+        // ----------------     Discord     ---------------------------------------------------------
+
+
+        /// <summary>
+        /// Gets the Discord's Socket User model.
+        /// </summary>
+        public SocketUser User => Context.User;
+        /// <summary>
+        /// Gets the Discord's Socket Guild model.
+        /// </summary>
+        public SocketGuild Guild => Context.Guild;
+
 
 
         /// <summary>
@@ -55,6 +72,8 @@ namespace Dynastio.Bot.Interactions
         /// Gets the bot's avatar URL.
         /// </summary>
         public string BotAvatarUrl => Context.Client.CurrentUser.TryGetAvatarUrl();
+
+
 
         /// <summary>
         /// Gets the message associated with the current interaction, if applicable.
@@ -81,10 +100,19 @@ namespace Dynastio.Bot.Interactions
         /// </summary>
         public async Task<bool> UpdateBotGuildAsync()
         {
-            // Implement guild update logic if needed
-            //return await Context. _;
-            return false;
+            return await Context.GuildService.UpdateGuildAsync(BotGuild);
         }
+
+        /// <summary>
+        /// Defer Current Interaction 
+        /// </summary>
+        protected override Task DeferAsync(bool ephemeral = false, RequestOptions options = null)
+        {
+            base.Context.IsDeferred = true;
+            return Context.Interaction.DeferAsync(ephemeral, options);
+        }
+
+
 
         // 🔒 All other methods are commented for now.
 

@@ -20,6 +20,14 @@
     <Content Include="logo.ico" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Include="Interactions\Modules.Menu\Buttons\ButtonCloseModule.cs" />
+    <None Include="Interactions\Modules.Menu\ButtonMenuModule.cs" />
+    <None Include="Interactions\Modules.Menu\Buttons\ButtonRankModule.cs" />
+    <None Include="Interactions\Modules.Menu\Buttons\ButtonSyncBadgesModule.cs" />
+  </ItemGroup>
+
   <ItemGroup>
 	  <PackageReference Include="Discord.Net" Version="3.18.0" />
 	  <PackageReference Include="Dynastio.Net" Version="2.1.2" />

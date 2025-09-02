@@ -6,6 +6,7 @@ using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
 using Dynastio.Extenstions;
+using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
@@ -22,7 +23,9 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
         // -----------------------------------------------------------------------------------
-        public BadgesRoleSyncService BadgesRoleSyncService { get; set; }
+        public BadgesService BadgesRoleSyncService { get; set; }
+        public DynastioApi Dynastio { get; set; }
+        public DynastioBotDatabase Database { get; set; }
         /// <summary>
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
@@ -58,15 +61,19 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// <returns>A fully configured ButtonBuilder instance.</returns>
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
-            return new ButtonBuilder()
-
+            var btn = new ButtonBuilder()
                 .WithLabel("Login")
-
                 .WithEmote(module.EmoteService.GetEmoteByName("privatechest"))
-
                 .WithStyle(ButtonStyle.Success)
                 .WithDisabled(false)
-                .WithCustomId(BuildCustomId(trigger: Guid.NewGuid().ToString()));
+                .WithCustomId(BuildCustomId(trigger: CustomIdHelper.Generate()));
+
+            if (module.BotUser.HasLinkedAccount)
+            {
+                btn.WithLabel("Logout")
+                    .WithStyle(ButtonStyle.Danger);
+            }
+            return btn;
         }
 
         // -----------------------------------------------------------------------------------
@@ -100,6 +107,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*")]
+        [RequireMessageComponentOwner]
+        [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger="")
         {
             if (Context.BotUser.HasLinkedAccount is false)
@@ -118,10 +127,24 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             await DeferAsync();
 
+            if (Context.BotUser.HasLinkedAccount)
+            {
+                BotUser.GetDefaultAccount().AsDefault(false);
+                await ReplyWithSuccessAsync($"🛠️ **{BotUser.GetDefaultAccount().DisplayName} ** You logout was successfull ! Your Dynasty journey ends now.");
+
+                return;
+            }
+            else if(BotUser.Accounts.Count > 0)
+            {
+                BotUser.Accounts.FirstOrDefault().AsDefault();
+                await ReplyWithSuccessAsync($"🛠️ **{BotUser.GetDefaultAccount().DisplayName} ** Account linked successfully ! Your Dynasty journey begins now.");
+                return;
+            }
+
             // 1. Normalize account ID by stripping any “id:” prefix (case-insensitive)
             var accountId = modal.AccountId
-                .Replace("id:", "", StringComparison.OrdinalIgnoreCase)
-                .Trim();
+                    .Replace("id:", "", StringComparison.OrdinalIgnoreCase)
+                    .Trim();
 
             // Cache user and botUser locally for fewer property lookups
             var discordUserId = Context.User.Id.ToString();
@@ -152,19 +175,21 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             }
 
             var pin = modal.Pin?.Trim() ?? "";
-            goto Label;
-            // 5. Validate PIN
-            var pinResult = await Dynastio.GetUserPincodeStatusAsync(accountId, pin).TryAsync();
-            if (!pinResult.isSuccessful || !pinResult.result)
+            // debug
+            if (User.Id != 1374305522290917526)
             {
-                await ReplyWithErrorAsync("The gate won’t open. That pin code doesn’t match the ancient runes.");
+                // 5. Validate PIN
+                var pinResult = await Dynastio.GetUserPincodeStatusAsync(accountId, pin).TryAsync();
+                if (!pinResult.isSuccessful || !pinResult.result)
+                {
+                    await ReplyWithErrorAsync("The gate won’t open. That pin code doesn’t match the ancient runes.");
 
-                return;
+                    return;
+                }
             }
-        Label:
             // 6. Parallelize DB lookups for performance
-            var byAccountTask = _db.GetUserByAccountIdAsync(accountId);
-            var byConnectedTask = _db.GetUserByConnectedAccountIdAsync(accountId);
+            var byAccountTask = Database.GetUserByAccountIdAsync(accountId);
+            var byConnectedTask = Database.GetUserByConnectedAccountIdAsync(accountId);
             await Task.WhenAll(byAccountTask, byConnectedTask);
 
             var existingUser = byAccountTask.Result;
@@ -200,7 +225,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             await this.BadgesRoleSyncService.SynchronizeUserRolesAsync(Context.BotGuild, (IGuildUser)Context.User, botUser);
 
             // 9. Finalize UI
-            await ReplyWithSuccessAsync("🛠️ Account linked successfully ! Your Dynasty journey begins now.");
+            await ReplyWithSuccessAsync($"🛠️ **{BotUser.GetDefaultAccount().DisplayName} ** Account linked successfully ! Your Dynasty journey begins now.");
 
         }
 

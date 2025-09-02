@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System;
 using System.Globalization;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Dynastio.Bot
@@ -29,8 +30,7 @@ namespace Dynastio.Bot
         //}
         public static async Task Main(string[] args)
         {
-            //  await MainTest();
-
+       
             ConfigureJsonSerializer();
 
             try
@@ -75,9 +75,10 @@ namespace Dynastio.Bot
 
             // services
             services.AddSingleton<UsersService>();
+            services.AddSingleton<GuildServices>();
             services.AddSingleton<EmoteService>();
-            services.AddSingleton<XpRankingSystemService>();
-            services.AddSingleton<BadgesRoleSyncService>();
+            services.AddSingleton<RankingService>();
+            services.AddSingleton<BadgesService>();
             services.AddSingleton<RepeaterService>();
 
             // Discord
@@ -121,8 +122,9 @@ namespace Dynastio.Bot
 
             // Warm up services
             sp.GetRequiredService<UsersService>();
-            sp.GetRequiredService<XpRankingSystemService>();
-            sp.GetRequiredService<BadgesRoleSyncService>();
+            sp.GetRequiredService<GuildServices>();
+            sp.GetRequiredService<RankingService>();
+            sp.GetRequiredService<BadgesService>();
             sp.GetRequiredService<EmoteService>();
 
             // Handlers

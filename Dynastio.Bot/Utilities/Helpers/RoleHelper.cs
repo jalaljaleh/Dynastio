@@ -1,102 +1,100 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using Dynastio.Bot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Dynastio.Bot
 {
-    /// <summary>
-    /// Provides utility methods for working with Discord roles.
-    /// </summary>
     public static class RoleHelper
     {
-        /// <summary>
-        /// Converts a role name to a badge-compatible enum string by removing a prefix and whitespace.
-        /// </summary>
-        /// <param name="roleName">The full role name.</param>
-        /// <param name="prefix">The prefix to remove.</param>
-        /// <returns>A cleaned string suitable for enum conversion.</returns>
+
+        /// <summary> 
+        /// Converts a role name to a badge-compatible enum string by removing a prefix and whitespace. 
+        /// </summary> /// <param name="roleName">The full role name.</param> 
+        /// <param name="prefix">The prefix to remove.</param> 
+        /// <returns>A cleaned string suitable for enum conversion.</returns> 
         public static string ToBadgeEnumAble(this string roleName, string prefix)
         {
-            return roleName.Replace(prefix, "", StringComparison.OrdinalIgnoreCase)
-                           .Replace(" ", "")
-                           .Trim();
+            return roleName
+                .Replace(prefix, "", StringComparison.OrdinalIgnoreCase)
+                .Replace(" ", "").Trim();
         }
 
         /// <summary>
-        /// Retrieves all roles from the guild that start with the specified prefix.
+        /// Finds the first guild role whose Position is strictly greater than
+        /// the highest Position among all roles that start with the given prefix.
         /// </summary>
-        /// <param name="guild">The guild to search.</param>
-        /// <param name="rolePrefix">The prefix to match.</param>
-        /// <returns>A list of matching roles, ordered by  position.</returns>
-        public static List<IRole> GetRolesStartingWith(IGuild guild, string rolePrefix)
+        public static IRole? GetRoleAbovePrefix(IGuild guild, string prefix)
         {
+            // all roles matching your prefix, ordered by position
+            var prefixRoles = GetRolesWithPrefix(guild, prefix);
+            if (!prefixRoles.Any())
+                return null;
+
+            // highest position in that series
+            var maxPos = prefixRoles.Max(r => r.Position);
+
+            // the next role above it
             return guild.Roles
-                        .Where(role => role.Name.StartsWith(rolePrefix, StringComparison.OrdinalIgnoreCase))
-                        .OrderByDescending(role => role.Position)
+                        .Where(r => r.Position > maxPos)
+                        .OrderBy(r => r.Position)
+                        .FirstOrDefault();
+        }
+
+
+        /// <summary>
+        /// Returns all guild roles whose Name starts with the given prefix, ordered by Position ascending.
+        /// </summary>
+        public static List<IRole> GetRolesWithPrefix(IGuild guild, string prefix)
+        {
+            if (guild == null) throw new ArgumentNullException(nameof(guild));
+            if (prefix == null) throw new ArgumentNullException(nameof(prefix));
+
+            return guild.Roles
+                        .Where(r => r.Name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                        .OrderBy(r => r.Position)
                         .ToList();
         }
-        /// <summary>
-        /// Retrieves all roles from the user that start with the specified prefix.
-        /// </summary>
-        /// <param name="user">The user to search.</param>
-        /// <param name="rolePrefix">The prefix to match.</param>
-        /// <returns>A list of matching roles, ordered by  position.</returns>
-        public static List<IRole> GetRolesStartingWith(IGuildUser user, string rolePrefix)
-        {
-            return GetRolesStartingWith(user.Guild, rolePrefix);
-        }
-        /// <summary>
-        /// Retrieves the last role from the user that start with the specified prefix.
-        /// </summary>
-        /// <param name="user">The user to search.</param>
-        /// <param name="rolePrefix">The prefix to match.</param>
-        /// <returns>Last role of matching roles, ordered by  position.</returns>
-        public static IRole GetLatestRoleStartWith(IGuild user, string rolePrefix)
-        {
-            return GetRolesStartingWith(user, rolePrefix).LastOrDefault();
-        }
-        /// <summary>
-        /// Retrieves the first role from the user that start with the specified prefix.
-        /// </summary>
-        /// <param name="user">The user to search.</param>
-        /// <param name="rolePrefix">The prefix to match.</param>
-        /// <returns>Last role of matching roles, ordered by  position.</returns>
-        public static IRole GetFirstRoleStartWith(IGuild user, string rolePrefix)
-        {
-            return GetRolesStartingWith(user, rolePrefix).FirstOrDefault();
-        }
-        /// <summary>
-        /// Finds the next higher role above the highest role that matches the given prefix.
-        /// </summary>
-        /// <param name="guild">The guild to search.</param>
-        /// <param name="rolePrefix">The prefix to match.</param>
-        /// <returns>The next higher role, or null if none found.</returns>
-        public static IRole? GetNextHigherHeaderRole(IGuild guild, string rolePrefix)
-        {
-            var highestMatching = GetFirstRoleStartWith(guild, rolePrefix);
-            return GetNextHigherRole(highestMatching);
 
-
-        }
-        public static IRole GetNextHigherRole(IRole role)
+        /// <summary>
+        /// Returns only those roles (from the prefixed set) that the user actually has.
+        /// </summary>
+        public static List<IRole> GetUserRolesWithPrefix(IGuildUser user, string prefix)
         {
-            return role.Guild.Roles
-                      .OrderBy(role => role.Position)
-                      .Where(role => role.Position > role.Position)
-                      .FirstOrDefault();
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            // Reuse the guild-level method, then filter by membership
+            return GetRolesWithPrefix(user.Guild, prefix)
+                   .Where(r => user.RoleIds.Contains(r.Id))
+                   .ToList();
         }
-        public static IRole GetNextRankingHigherRole(IGuildUser user, string rolePrefix = "")
+
+        /// <summary>
+        /// From the roles the user has (with that prefix), returns the highest one by Position.
+        /// </summary>
+        public static IRole GetHighestUserRoleWithPrefix(IGuildUser user, string prefix)
         {
-            var latestPerfixRole = user.Guild.Roles
-                .Where(role => user.RoleIds.Contains(role.Id) && role.Name.StartsWith(rolePrefix, StringComparison.OrdinalIgnoreCase))
-                        .OrderByDescending(role => role.Position).FirstOrDefault();
+            return GetUserRolesWithPrefix(user, prefix)
+                   .OrderBy(r => r.Position)
+                   .LastOrDefault();
+        }
 
-            if (latestPerfixRole is null) return null;
+        /// <summary>
+        /// From the full prefixed list, returns the very next role above the user's highest one.
+        /// </summary>
+        public static IRole GetNextRoleWithPrefix(IGuildUser user, string prefix)
+        {
+            // All roles with prefix, sorted by Position
+            var all = GetRolesWithPrefix(user.Guild, prefix);
 
-            return GetNextHigherRole(latestPerfixRole);
+            // User's highest one (or null if none)
+            var highest = GetHighestUserRoleWithPrefix(user, prefix);
+
+            // Take the first role whose Position is strictly greater than highest.Position
+            return all
+                .Where(r => highest == null || r.Position > highest.Position)
+                .OrderBy(r => r.Position)
+                .FirstOrDefault();
         }
     }
 }

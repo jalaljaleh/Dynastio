@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Dynastio.Bot.Database;
-using Dynastio.Bot.Services.XpRankingSystem;
+
 using Microsoft.Extensions.Logging;
 
 namespace Dynastio.Bot.Services
@@ -14,12 +14,12 @@ namespace Dynastio.Bot.Services
     public class UsersService
     {
         private readonly DynastioBotDatabase _db;
-        private readonly BadgesRoleSyncService _badgesSync;
+        private readonly BadgesService _badgesSync;
 
         /// <summary>
         /// Constructor with required dependencies injected.
         /// </summary>
-        public UsersService(DynastioBotDatabase db, BadgesRoleSyncService badgesSync)
+        public UsersService(DynastioBotDatabase db, BadgesService badgesSync)
         {
             _db = db;
             _badgesSync = badgesSync;
@@ -32,7 +32,11 @@ namespace Dynastio.Bot.Services
         {
             return await _db.GetUserAsync(discordUserId, allowCreate: alloCreate);
         }
-        public async Task<User> GetUserByAccountIdAsync(string accountId) { var user = await _db.GetUserByAccountIdAsync(accountId); return user; }
+        public async Task<User> GetUserByAccountIdAsync(string accountId)
+        {
+            var user = await _db.GetUserByAccountIdAsync(accountId);
+            return user;
+        }
         /// <summary>
         /// Synchronizes badge and XP roles for a guild user.
         /// Runs both syncs in parallel to minimize latency.
@@ -56,8 +60,8 @@ namespace Dynastio.Bot.Services
                 .SynchronizeUserRolesAsync(botGuild, guildUser, botUser)
                 .TryAsync();
 
-            var xpSyncTask = botGuild.XpSystemSettings.IsRankingRoleAssignmentEnabled
-                ? XpRankingSystemServiceHelper
+            var xpSyncTask = botGuild.RankingSettings.IsRankingRoleAssignmentEnabled
+                ? RankingServiceHelper
                     .AssignmentUserRolesAsync(botGuild, guildUser, level)
                     .TryAsync()
                 : Task.FromResult<(bool isSuccessful, List<IRole> result)>((true, new List<IRole>()));
@@ -69,10 +73,10 @@ namespace Dynastio.Bot.Services
 
             if (!badgeOk || !xpOk)
             {
-              Console.WriteLine(
-                    "Role sync failed for User={UserId} · BadgesOk={BadgeOk} ({BadgeErr}) · XpOk={XpOk} ({XpErr})",
-                    guildUser.Id, badgeOk, badgeErr, xpOk, xpErr
-                );
+                Console.WriteLine(
+                      "Role sync failed for User={UserId} · BadgesOk={BadgeOk} ({BadgeErr}) · XpOk={XpOk} ({XpErr})",
+                      guildUser.Id, badgeOk, badgeErr, xpOk, xpErr
+                  );
             }
 
             return badgeOk && xpOk;
