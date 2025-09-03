@@ -47,7 +47,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] suffixArgs)
         {
             return new ButtonBuilder()
-                .WithLabel("🔍 Search Players")
+                .WithLabel(module["buttons.interactions.menu.searchPlayers.label"])
                 .WithEmote(module.EmoteService.GetEmoteByName("search"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithCustomId(InteractionIdBase);

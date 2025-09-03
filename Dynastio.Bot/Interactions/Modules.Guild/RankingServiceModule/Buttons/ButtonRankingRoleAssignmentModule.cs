@@ -55,7 +55,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("Enable")
+                .WithLabel(module["buttons.interactions.guildsetuprankingmodule.roleassignment.enable.label"])
                 .WithEmote(module.EmoteService.GetEmoteByName("developer"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithDisabled(false)
@@ -64,7 +64,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
             if (module.Context.BotGuild.RankingSettings.IsRankingRoleAssignmentEnabled)
             {
                 btn
-                     .WithLabel("Disable")
+                     .WithLabel(module["buttons.interactions.guildsetuprankingmodule.roleassignment.disable.label"])
                      .WithStyle(ButtonStyle.Danger);
             }
             return btn;

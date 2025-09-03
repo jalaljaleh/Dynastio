@@ -53,7 +53,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn= new ButtonBuilder()
-                .WithLabel("Sync Badges")
+                .WithLabel(module["buttons.interactions.menu.syncBadges.label"])
                 .WithDisabled(false)
                 .WithCustomId(BuildCustomId(trigger: "profile"))
                 .WithEmote(module.EmoteService.GetEmote(Net.BadgeType.Developer))
@@ -62,7 +62,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             if (!module.BotGuild.BadgeSettings.IsEnabled)
             {
                 btn
-                    .WithLabel("Not Enabled")
+                    .WithLabel(module["not_enabled"])
                     .WithDisabled(true)
                     .WithCustomId(CustomIdHelper.Generate());
             }

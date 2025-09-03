@@ -41,7 +41,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             var id = BuildPagingCustomId(1, 20, "menu");
 
             return new ButtonBuilder()
-                .WithLabel("Players")
+                .WithLabel(module["buttons.interactions.menu.players.label"])
                 .WithEmote(Emoji.Parse("⚔️"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithCustomId(id);

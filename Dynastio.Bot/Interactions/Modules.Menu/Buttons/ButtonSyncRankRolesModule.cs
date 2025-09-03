@@ -52,7 +52,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("Sync Roles")
+                .WithLabel(module["buttons.interactions.menu.syncRankRoles.label"])
                 .WithEmote(module.EmoteService.GetEmoteByName("developer"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithDisabled(false)

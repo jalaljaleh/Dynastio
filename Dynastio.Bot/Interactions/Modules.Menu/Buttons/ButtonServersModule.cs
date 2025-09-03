@@ -50,7 +50,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             // Example stub; replace values as needed.
             return new ButtonBuilder()
-                .WithLabel("Servers")
+                .WithLabel(module["buttons.interactions.menu.servers.label"])
                 .WithEmote(module.EmoteService.GetEmoteByName("left_build_icon"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithCustomId(BuildCustomId(

@@ -55,7 +55,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             return new ButtonBuilder()
 
-                .WithLabel("Rank")
+                .WithLabel(module["buttons.interactions.menu.rank.label"])
 
                 .WithEmote(module.EmoteService.GetEmoteByName("tab_leaders_icon_active"))
 

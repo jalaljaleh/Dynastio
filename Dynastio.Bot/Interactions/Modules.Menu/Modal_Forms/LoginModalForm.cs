@@ -14,7 +14,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu
         /// <summary>
         /// The unique account identifier (e.g. numeric or alphanumeric string).
         /// </summary>
-        [InputLabel("Account ID")]
+        [InputLabel( "Account ID")]
         [RequiredInput(true)]
         [ModalTextInput(
             customId: "account_id",

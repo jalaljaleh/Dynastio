@@ -56,7 +56,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             return new ButtonBuilder()
 
-                .WithLabel("Menu")
+                .WithLabel(module["buttons.interactions.menu.menu.label"])
 
                 .WithEmote(module.EmoteService.GetEmoteByName("left_shop_icon1"))
 
@@ -108,7 +108,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// <summary>
         /// Displays the main Dynast.io navigation menu.
         /// </summary>
-        [SlashCommand(SlashCommandName, "Opens the central Dynast.io menu hub.")]
+        [SlashCommand(SlashCommandName, "menu.description")]
         [ComponentInteraction(InteractionIdBase + ":*")]
         [RequireContext(ContextType.Guild)]
         public async Task ShowMenuAsync()
@@ -221,7 +221,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 components.WithContainer(containerAdmin);
             }
 
-            components.WithActionRow([ButtonCloseModule.BuildButton(this)]);
+            components.WithActionRow([ButtonCloseModule.BuildButton(this), GetLinkedButton()]);
 
             await ModifyMenuMessageAsync(components: components.Build());
         }

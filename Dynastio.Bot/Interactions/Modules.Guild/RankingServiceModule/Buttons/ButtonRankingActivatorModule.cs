@@ -55,7 +55,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("Enable Module")
+                .WithLabel(module["enable_module"])
                 .WithEmote(module.EmoteService.GetEmoteByName("developer"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithDisabled(false)
@@ -66,7 +66,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
             if (module.BotGuild.RankingSettings.IsEnabled)
             {
                 btn
-                    .WithLabel("All Set (disable)")
+                    .WithLabel(module["all_set"])
                     .WithStyle(ButtonStyle.Success);
             }
             return btn;

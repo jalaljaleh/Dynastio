@@ -56,7 +56,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             return new ButtonBuilder()
 
-                .WithLabel("Personal Chest")
+                .WithLabel(module["buttons.interactions.menu.privatechest.label"])
 
                 .WithEmote(module.EmoteService.GetEmoteByName("privatechest"))
 

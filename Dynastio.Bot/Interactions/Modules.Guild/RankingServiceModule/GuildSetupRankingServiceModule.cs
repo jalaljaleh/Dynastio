@@ -71,7 +71,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("Ranking Module")
+                .WithLabel(module["ranking_module"])
                 .WithEmote(module.EmoteService.GetEmoteByName("left_build_icon"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithDisabled(false)

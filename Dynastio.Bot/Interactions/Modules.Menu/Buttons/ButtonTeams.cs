@@ -64,7 +64,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] suffixArgs)
         {
             return new ButtonBuilder()
-                .WithLabel("Teams")
+                .WithLabel(module["buttons.interactions.menu.teams.label"])
                 .WithEmote(new Emoji("🎪"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithCustomId(BuildCustomId(1, 10, "menu"));

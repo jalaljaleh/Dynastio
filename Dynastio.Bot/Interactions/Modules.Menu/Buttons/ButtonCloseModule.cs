@@ -53,7 +53,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             return new ButtonBuilder()
 
-                .WithLabel("Close")
+                .WithLabel(module["buttons.interactions.menu.close.label"])
 
                 .WithEmote(module.EmoteService.GetEmoteByName("exit_button"))
 
@@ -100,7 +100,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             await DeferAsync();
 
 
-            await ReplyWithSuccessAsync("Menu closed successfuly @");
+            await ReplyWithSuccessAsync("Menu closed successfuly !");
 
         }
     }

@@ -57,7 +57,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             return new ButtonBuilder()
 
-                .WithLabel("Profile")
+                .WithLabel(module["buttons.interactions.menu.profile.label"])
 
                 .WithEmote(module.EmoteService.GetEmoteByName("left_team_icon"))
 

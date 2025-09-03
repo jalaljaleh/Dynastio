@@ -61,67 +61,209 @@ namespace Dynastio.Bot.Services.GlobalizationService.Globally {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Command not found in my command modules sir !.
+        ///   Looks up a localized string similar to All Set !.
         /// </summary>
-        public static string error_interactions_hanlder_unknown {
+        public static string all_set {
             get {
-                return ResourceManager.GetString("error.interactions.hanlder.unknown", resourceCulture);
+                return ResourceManager.GetString("all_set", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Badge Syncer.
         /// </summary>
-        public static string menu_closed_description {
+        public static string badge_syncer {
             get {
-                return ResourceManager.GetString("menu.closed.description", resourceCulture);
+                return ResourceManager.GetString("badge_syncer", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Button Not Found.
         /// </summary>
-        public static string menu_closed_title {
+        public static string button_not_found {
             get {
-                return ResourceManager.GetString("menu.closed.title", resourceCulture);
+                return ResourceManager.GetString("button.not.found", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///### Your ranking **Level** is {level} and your **Xp** is {xp}.
-        /// .
+        ///   Looks up a localized string similar to Enable Reward.
         /// </summary>
-        public static string rank_embed_description {
+        public static string buttons_interactions_guildsetuprankingmodule_gamereward_label {
             get {
-                return ResourceManager.GetString("rank.embed.description", resourceCulture);
+                return ResourceManager.GetString("buttons.interactions.guildsetuprankingmodule.gamereward.label", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Level {level}.
+        ///   Looks up a localized string similar to Disable.
         /// </summary>
-        public static string rank_embed_title {
+        public static string buttons_interactions_guildsetuprankingmodule_roleassignment_disable_label {
             get {
-                return ResourceManager.GetString("rank.embed.title", resourceCulture);
+                return ResourceManager.GetString("buttons.interactions.guildsetuprankingmodule.roleassignment.disable.label", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rank represents a user’s level within the XP Ranking System. As members send messages they earn XP, and accumulating enough XP advances their rank. Ranks are displayed in a leaderboard and can unlock role rewards at milestone levels. Explore the full documentation for the XP Ranking System : \n **[Read More .. Full Doucument](https://github.com/jalaljaleh/Dynastio.Bot/blob/master/Dynastio.Bot/Services/XpRankingSystem/XpRankingSystemService.md)**.
+        ///   Looks up a localized string similar to Enable.
         /// </summary>
-        public static string rank_help_embed_description {
+        public static string buttons_interactions_guildsetuprankingmodule_roleassignment_enable_label {
             get {
-                return ResourceManager.GetString("rank-help.embed.description", resourceCulture);
+                return ResourceManager.GetString("buttons.interactions.guildsetuprankingmodule.roleassignment.enable.label", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynast.io Bot XP Ranking System.
+        ///   Looks up a localized string similar to Close.
         /// </summary>
-        public static string rank_help_embed_title {
+        public static string buttons_interactions_menu_close_label {
             get {
-                return ResourceManager.GetString("rank-help.embed.title", resourceCulture);
+                return ResourceManager.GetString("buttons.interactions.menu.close.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login.
+        /// </summary>
+        public static string buttons_interactions_menu_login_label {
+            get {
+                return ResourceManager.GetString("buttons.interactions.menu.login.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LogOut.
+        /// </summary>
+        public static string buttons_interactions_menu_logout_label {
+            get {
+                return ResourceManager.GetString("buttons.interactions.menu.logout.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Menu.
+        /// </summary>
+        public static string buttons_interactions_menu_menu_label {
+            get {
+                return ResourceManager.GetString("buttons.interactions.menu.menu.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Players.
+        /// </summary>
+        public static string buttons_interactions_menu_players_label {
+            get {
+                return ResourceManager.GetString("buttons.interactions.menu.players.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal Chest.
+        /// </summary>
+        public static string buttons_interactions_menu_privatechest_label {
+            get {
+                return ResourceManager.GetString("buttons.interactions.menu.privatechest.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile.
+        /// </summary>
+        public static string buttons_interactions_menu_profile_label {
+            get {
+                return ResourceManager.GetString("buttons.interactions.menu.profile.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rank.
+        /// </summary>
+        public static string buttons_interactions_menu_rank_label {
+            get {
+                return ResourceManager.GetString("buttons.interactions.menu.rank.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 🔍 Search Players.
+        /// </summary>
+        public static string buttons_interactions_menu_searchPlayers_label {
+            get {
+                return ResourceManager.GetString("buttons.interactions.menu.searchPlayers.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Servers.
+        /// </summary>
+        public static string buttons_interactions_menu_servers_label {
+            get {
+                return ResourceManager.GetString("buttons.interactions.menu.servers.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sync Badges.
+        /// </summary>
+        public static string buttons_interactions_menu_syncBadges_label {
+            get {
+                return ResourceManager.GetString("buttons.interactions.menu.syncBadges.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sync Roles.
+        /// </summary>
+        public static string buttons_interactions_menu_syncRankRoles_label {
+            get {
+                return ResourceManager.GetString("buttons.interactions.menu.syncRankRoles.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Teams.
+        /// </summary>
+        public static string buttons_interactions_menu_teams_label {
+            get {
+                return ResourceManager.GetString("buttons.interactions.menu.teams.label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Prefix.
+        /// </summary>
+        public static string change_prefix {
+            get {
+                return ResourceManager.GetString("change_prefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Module.
+        /// </summary>
+        public static string enable_module {
+            get {
+                return ResourceManager.GetString("enable_module", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not Enabled.
+        /// </summary>
+        public static string not_enabled {
+            get {
+                return ResourceManager.GetString("not_enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ranking Modul.
+        /// </summary>
+        public static string ranking_module {
+            get {
+                return ResourceManager.GetString("ranking_module", resourceCulture);
             }
         }
     }

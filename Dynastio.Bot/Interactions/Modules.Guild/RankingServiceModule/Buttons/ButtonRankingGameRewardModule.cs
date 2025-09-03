@@ -55,7 +55,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("Enable Reward")
+                .WithLabel(module["buttons.interactions.guildsetuprankingmodule.gamereward.label"])
                 .WithEmote(module.EmoteService.GetEmoteByName("developer"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithDisabled(false)

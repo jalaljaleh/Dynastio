@@ -26,7 +26,7 @@ namespace Dynastio.Bot.Services
         /// </summary>
         public static ConfigurationService Load()
         {
-            return Common.IsDebug()
+            return Common.Developer || Common.IsDebug()
                 ? LoadFromFile(PathHelper.GetDebugFile())
                 : LoadEncrypted(PathHelper.GetData(), GetEncryptionKey());
         }

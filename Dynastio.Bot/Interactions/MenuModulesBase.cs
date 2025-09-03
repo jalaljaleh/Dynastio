@@ -16,7 +16,15 @@ namespace Dynastio.Bot.Interactions
     public class MenuModulesBase : BotInteractionModuleBase<BotSocketInteractionContext>
     {
 
-
+        public static ButtonBuilder GetLinkedButton()
+        {
+            return new ButtonBuilder()
+            {
+                Url = "https://t.me/halunteam/27",
+                Label = "Report bugs | Сообщайте о багах",
+                Style = ButtonStyle.Link,
+            };
+        }
         public async Task ReplyWithSuccessAsync(string message)
         {
 
@@ -36,6 +44,8 @@ namespace Dynastio.Bot.Interactions
             ComponentBuilderV2 cb = new ComponentBuilderV2()
                 .WithContainer(containerb);
 
+            cb.WithActionRow([GetLinkedButton()]);
+
             await ModifyMenuMessageAsync(components: cb.Build());
         }
         public async Task ReplyWithErrorAsync(string message)
@@ -52,6 +62,8 @@ namespace Dynastio.Bot.Interactions
             ComponentBuilderV2 cb = new ComponentBuilderV2()
                 .WithContainer(containerb)
                 .WithContainer(containerc);
+
+            cb.WithActionRow([GetLinkedButton()]);
 
             await ModifyMenuMessageAsync(components: cb.Build());
         }
@@ -71,11 +83,15 @@ namespace Dynastio.Bot.Interactions
             ComponentBuilderV2 cb = new ComponentBuilderV2()
                 .WithContainer(containerb);
 
+            cb.WithActionRow([GetLinkedButton()]);
+
             await ModifyMenuMessageAsync(components: cb.Build());
         }
         public async Task<IUserMessage> ModifyMenuMessageAsync(string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null, RequestOptions options = null, MessageComponent components = null, Embed embed = null,
             MessageFlags messageFlags = MessageFlags.None)
         {
+
+            
             if (CurrentMessage == null)
             {
                 if (this.Context.Interaction.HasResponded)

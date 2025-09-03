@@ -71,7 +71,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("Badge Syncer")
+                .WithLabel(module["badge_syncer"])
                 .WithEmote(module.EmoteService.GetEmoteByName("left_build_icon"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithDisabled(false)

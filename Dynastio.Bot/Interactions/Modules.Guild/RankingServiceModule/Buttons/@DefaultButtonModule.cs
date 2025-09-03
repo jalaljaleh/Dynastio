@@ -52,7 +52,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("button_not_found")
+                .WithLabel(module["button.not.found"])
                 .WithEmote(module.EmoteService.GetEmoteByName("unknown"))
                 .WithStyle(ButtonStyle.Danger)
                 .WithDisabled(true)

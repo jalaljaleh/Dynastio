@@ -117,27 +117,73 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="rank-help.embed.description" xml:space="preserve">
-    <value>Rank represents a user’s level within the XP Ranking System. As members send messages they earn XP, and accumulating enough XP advances their rank. Ranks are displayed in a leaderboard and can unlock role rewards at milestone levels. Explore the full documentation for the XP Ranking System : \n **[Read More .. Full Doucument](https://github.com/jalaljaleh/Dynastio.Bot/blob/master/Dynastio.Bot/Services/XpRankingSystem/XpRankingSystemService.md)**</value>
+  <data name="buttons.interactions.menu.teams.label" xml:space="preserve">
+    <value>Teams</value>
   </data>
-  <data name="rank.embed.description" xml:space="preserve">
-    <value>
-### Your ranking **Level** is {level} and your **Xp** is {xp}.
- </value>
+  <data name="not_enabled" xml:space="preserve">
+    <value>Not Enabled</value>
   </data>
-  <data name="rank.embed.title" xml:space="preserve">
-    <value>Level {level}</value>
+  <data name="button.not.found" xml:space="preserve">
+    <value>Button Not Found</value>
   </data>
-  <data name="rank-help.embed.title" xml:space="preserve">
-    <value>Dynast.io Bot XP Ranking System</value>
+  <data name="all_set" xml:space="preserve">
+    <value>All Set !</value>
   </data>
-  <data name="menu.closed.title" xml:space="preserve">
-    <value />
+  <data name="ranking_module" xml:space="preserve">
+    <value>Ranking Modul</value>
   </data>
-  <data name="menu.closed.description" xml:space="preserve">
-    <value />
+  <data name="badge_syncer" xml:space="preserve">
+    <value>Badge Syncer</value>
   </data>
-  <data name="error.interactions.hanlder.unknown" xml:space="preserve">
-    <value>Command not found in my command modules sir !</value>
+  <data name="enable_module" xml:space="preserve">
+    <value>Enable Module</value>
+  </data>
+  <data name="buttons.interactions.menu.syncRankRoles.label" xml:space="preserve">
+    <value>Sync Roles</value>
+  </data>
+  <data name="buttons.interactions.menu.syncBadges.label" xml:space="preserve">
+    <value>Sync Badges</value>
+  </data>
+  <data name="buttons.interactions.menu.servers.label" xml:space="preserve">
+    <value>Servers</value>
+  </data>
+  <data name="buttons.interactions.menu.rank.label" xml:space="preserve">
+    <value>Rank</value>
+  </data>
+  <data name="buttons.interactions.guildsetuprankingmodule.roleassignment.disable.label" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="buttons.interactions.menu.close.label" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="buttons.interactions.guildsetuprankingmodule.roleassignment.enable.label" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="buttons.interactions.guildsetuprankingmodule.gamereward.label" xml:space="preserve">
+    <value>Enable Reward</value>
+  </data>
+  <data name="change_prefix" xml:space="preserve">
+    <value>Change Prefix</value>
+  </data>
+  <data name="buttons.interactions.menu.profile.label" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="buttons.interactions.menu.players.label" xml:space="preserve">
+    <value>Players</value>
+  </data>
+  <data name="buttons.interactions.menu.privatechest.label" xml:space="preserve">
+    <value>Personal Chest</value>
+  </data>
+  <data name="buttons.interactions.menu.login.label" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="buttons.interactions.menu.logout.label" xml:space="preserve">
+    <value>LogOut</value>
+  </data>
+  <data name="buttons.interactions.menu.menu.label" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="buttons.interactions.menu.searchPlayers.label" xml:space="preserve">
+    <value>🔍 Search Players</value>
   </data>
 </root>

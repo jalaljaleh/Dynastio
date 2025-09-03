@@ -62,7 +62,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("Login")
+                .WithLabel(module["buttons.interactions.menu.login.label"])
                 .WithEmote(module.EmoteService.GetEmoteByName("privatechest"))
                 .WithStyle(ButtonStyle.Success)
                 .WithDisabled(false)
@@ -70,7 +70,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 
             if (module.BotUser.HasLinkedAccount)
             {
-                btn.WithLabel("Logout")
+                btn.WithLabel(module["buttons.interactions.menu.logout.label"])
                     .WithStyle(ButtonStyle.Danger);
             }
             return btn;
@@ -111,7 +111,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger="")
         {
-            if (Context.BotUser.HasLinkedAccount)
+            if (Context.BotUser.GetDefaultAccount() is not null)
             {
                 BotUser.GetDefaultAccount().AsDefault(false);
                 await ReplyWithSuccessAsync($"🛠️ **{BotUser.GetDefaultAccount().DisplayName} ** You logout was successfull ! Your Dynasty journey ends now.");
@@ -128,7 +128,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             if (Context.BotUser.HasLinkedAccount is false)
                 await RespondWithModalAsync<AccountLoginModal>(InteractionModalId);
             else
-                await this.ReplyWithErrorAsync("You've already linked your account. No need to craft another identity!");
+                await ReplyWithErrorAsync("You’ve reached your account limit. One warrior, one destiny.");
+
         }
 
 
@@ -157,14 +158,14 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             if (accountId.Contains("discord", StringComparison.OrdinalIgnoreCase)
                 && !accountId.Contains(discordUserId, StringComparison.Ordinal))
             {
-                await ReplyWithErrorAsync("That’s not your Discord scroll. Only the true owner may wield its magic.");
+                await ReplyWithErrorAsync($"That’s not your Discord scroll. Only the true owner (<@{discordUserId}>) may wield its magic.");
                 return;
             }
 
             // 3. Guard: only one account allowed per user
             if (accounts.Count >= 1)
             {
-                await this.ReplyWithErrorAsync("You've already linked your account. No need to craft another identity!");
+                await ReplyWithErrorAsync("You’ve reached your account limit. One warrior, one destiny.");
                 return;
             }
 
@@ -201,7 +202,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 && existingMainUser is not null
                 && existingMainUser.Id != Context.User.Id)
             {
-                await ReplyWithErrorAsync("This account is already pledged to another Dynasty. You must forge your own path.");
+                await ReplyWithErrorAsync($"This account is already pledged to another Dynasty ({existingMainUser.Id}). You must forge your own path.");
                 return;
             }
 

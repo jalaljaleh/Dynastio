@@ -117,16 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="rank-help.description" xml:space="preserve">
-    <value>help you about dynast.io bot xp ranking system.</value>
+  <data name="menu.description" xml:space="preserve">
+    <value>Opens the central Dynast.io menu hub.</value>
   </data>
-  <data name="rank-help.name" xml:space="preserve">
-    <value>rank-help</value>
-  </data>
-  <data name="rank.description" xml:space="preserve">
-    <value>your server rank</value>
-  </data>
-  <data name="rank.name" xml:space="preserve">
-    <value>rank</value>
+  <data name="menu.name" xml:space="preserve">
+    <value>menu</value>
   </data>
 </root>

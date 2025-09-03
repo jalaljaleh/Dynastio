@@ -62,38 +62,20 @@ namespace Dynastio.Bot.Services.GlobalizationService.InteractionCommands {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to your server rank.
+        ///   Looks up a localized string similar to Opens the central Dynast.io menu hub..
         /// </summary>
-        public static string rank_description {
+        public static string menu_description {
             get {
-                return ResourceManager.GetString("rank.description", resourceCulture);
+                return ResourceManager.GetString("menu.description", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to help you about dynast.io bot xp ranking system..
+        ///   Looks up a localized string similar to menu.
         /// </summary>
-        public static string rank_help_description {
+        public static string menu_name {
             get {
-                return ResourceManager.GetString("rank-help.description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to rank-help.
-        /// </summary>
-        public static string rank_help_name {
-            get {
-                return ResourceManager.GetString("rank-help.name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to rank.
-        /// </summary>
-        public static string rank_name {
-            get {
-                return ResourceManager.GetString("rank.name", resourceCulture);
+                return ResourceManager.GetString("menu.name", resourceCulture);
             }
         }
     }
