@@ -36,19 +36,6 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         // SECTION: Builder Method
         // -----------------------------------------------------------------------------------
 
-        /// <summary>
-        /// Construct the ButtonBuilder that appears in the UI whenever this module is used.
-        /// Copy-and-paste this method into your new module and adjust:
-        /// - Label text
-        /// - Emote key
-        /// - Button style
-        /// - CustomId construction
-        /// </summary>
-        /// <param name="args">
-        /// Optional string parameters that will be embedded in the CustomId.
-        /// Helps pass context (like page or filter) back to ExecuteAsync.
-        /// </param>
-        /// <returns>A fully configured ButtonBuilder instance.</returns>
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()

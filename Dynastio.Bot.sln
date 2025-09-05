@@ -8,8 +8,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynastio.Bot", "Dynastio.Bot\Dynastio.Bot.csproj", "{E1C8438D-1AF9-4759-85B3-96B3B37DFA6F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynastio.Graphic", "Dynastio.Graphic\Dynastio.Graphic.csproj", "{CCBE2198-A1DD-4C32-825F-1D00CF4D0BF6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4CE7D54B-137E-4594-B648-6AD78C806A1C} = {4CE7D54B-137E-4594-B648-6AD78C806A1C}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynastio.Bot.Database", "Dynastio.Bot.Database\Dynastio.Bot.Database.csproj", "{6771A389-E163-46F4-A2D1-BE3EF34AA4A5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4CE7D54B-137E-4594-B648-6AD78C806A1C} = {4CE7D54B-137E-4594-B648-6AD78C806A1C}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynastio.Extenstions", "Dynastio.Extenstions\Dynastio.Extenstions.csproj", "{F00EE665-19A6-4CFA-A66F-0596D0B13E33}"
 EndProject

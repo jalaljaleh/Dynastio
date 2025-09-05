@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Dynastio.Bot
 {
-    internal class Program
+    public class Program
     {
         //public static async Task MainTest()
         //{
@@ -28,9 +28,25 @@ namespace Dynastio.Bot
 
         //    Environment.Exit(0);
         //}
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
-       
+            while (true)
+            {
+                try
+                {
+                    new Program().StartAsync().GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Fatal error during main:");
+                    Console.WriteLine(ex);
+
+                    Task.Delay(120000).GetAwaiter().GetResult();
+                }
+            }
+        }
+        public async Task StartAsync()
+        {
             ConfigureJsonSerializer();
 
             try
@@ -59,7 +75,8 @@ namespace Dynastio.Bot
         private static readonly InteractionServiceConfig _interactionServiceConfig = new()
         {
             LocalizationManager = new ResxLocalizationManager("Dynastio.Bot.Services.GlobalizationService.InteractionCommands.InetactionCommandsLocale", Assembly.GetEntryAssembly(),
-           new CultureInfo("en-US"), new CultureInfo("ru"))
+              new CultureInfo("en-US"),
+              new CultureInfo("ru"))
         };
 
         private static ServiceProvider BuildServiceProvider(ConfigurationService config)
@@ -72,6 +89,7 @@ namespace Dynastio.Bot
             services.AddSingleton<DynastioBotDatabase>();
             services.AddSingleton<DynastioGraphic>();
             services.AddSingleton<AssetUrlService>();
+            services.AddSingleton<DynastioItemsService>();
 
             // services
             services.AddSingleton<UsersService>();
@@ -119,6 +137,7 @@ namespace Dynastio.Bot
 
             // Graphics & Localization
             sp.GetRequiredService<DynastioGraphic>().Initialize();
+            sp.GetRequiredService<DynastioItemsService>().Initialize();
 
             // Warm up services
             sp.GetRequiredService<UsersService>();

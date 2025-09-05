@@ -49,6 +49,7 @@ namespace Dynastio.Bot
         public AssetUrlService(IServiceProvider services)
         {
             _services = services;
+
             var config = _services.GetRequiredService<ConfigurationService>();
             GitHubRawBase = config.GitHubRawBase;
             JsDelivrCdnBase = config.JsDelivrCdnBase;

@@ -1,0 +1,7687 @@
+{
+  "items": {
+    "acidball": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "acidball",
+      "stack": 300,
+      "weight": 1
+    },
+    "acidwand": {
+      "durability": 150,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": false,
+        "animation_length": 1,
+        "bullet_entity_type": "acidball",
+        "bullet_item_type": "acidball",
+        "bullet_offset": 0.4,
+        "bullet_speed": 17,
+        "damage": 13,
+        "distance": 6,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.7,
+        "pre_timeout": 0.3,
+        "push": 5,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0
+      },
+      "item_type": "acidwand",
+      "personal": true,
+      "repair_price": 300,
+      "stack": 1,
+      "weight": 1
+    },
+    "archertowerweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "bullet_entity_type": "arrow",
+        "bullet_item_type": "arrow",
+        "bullet_offset": 1,
+        "bullet_speed": 17,
+        "damage": 12,
+        "distance": 10,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 1,
+        "pre_timeout": 0.2,
+        "push": 3,
+        "redirect": false,
+        "stamina": 5,
+        "tag": "Range",
+        "tag_mul": {
+          "incrasedtowerdamage": 1.3
+        },
+        "type": "rangedweapon",
+        "weight": 0
+      },
+      "item_type": "archertowerweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "archerweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "bullet_entity_type": "arrow",
+        "bullet_item_type": "arrow",
+        "bullet_offset": 0.6,
+        "bullet_speed": 17,
+        "damage": 7,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 1,
+        "pre_timeout": 0.3,
+        "push": 0,
+        "redirect": false,
+        "stamina": 9,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 1
+      },
+      "item_type": "archerweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "arrow": {
+      "grade": 1,
+      "is_tool": true,
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "arrow",
+      "stack": 300,
+      "weight": 1
+    },
+    "astralite": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "astralite",
+      "stack": 999,
+      "weight": 1
+    },
+    "astraspear": {
+      "durability": 500,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "attack_angle": 15,
+        "damage": 21,
+        "distance": 2.3,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.18,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.35,
+        "power": 1,
+        "pre_timeout": 0.25,
+        "push": 2,
+        "redirect": false,
+        "stamina": 16,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.8
+      },
+      "item_type": "astraspear",
+      "stack": 1,
+      "weight": 1
+    },
+    "astrasword": {
+      "durability": 500,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 19,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.15,
+        "push": 0,
+        "redirect": false,
+        "stamina": 8,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.2
+      },
+      "item_type": "astrasword",
+      "stack": 1,
+      "weight": 1
+    },
+    "axe": {
+      "durability": 150,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 4,
+        "distance": 0.9,
+        "dodge": 0,
+        "gathering": {
+          "axeable": 1
+        },
+        "hand_type": "onehanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 2,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 1.0,
+          "pickaxeable": 0.5
+        },
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "axe",
+      "repair_price": 10,
+      "stack": 1,
+      "weight": 1
+    },
+    "axepickaxe": {
+      "durability": 1350,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 10,
+        "distance": 1,
+        "dodge": 0,
+        "gathering": {
+          "axeable": 1.0,
+          "pickaxeable": 1.0
+        },
+        "hand_type": "onehanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.23,
+        "power": 7,
+        "pre_timeout": 0.11,
+        "push": 2,
+        "redirect": false,
+        "stamina": 8,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 1.0,
+          "pickaxeable": 1.0
+        },
+        "type": "meleeweapon",
+        "weight": 0.4
+      },
+      "item_type": "axepickaxe",
+      "personal": true,
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "ball": {
+      "item_action": {
+        "entity_type": "ball",
+        "friend_ignore_tags": [
+          "floor"
+        ],
+        "ignore_tags": [
+          "characters"
+        ],
+        "ignore_types": [
+          "ball"
+        ],
+        "offset": 1.5,
+        "type": "spawn"
+      },
+      "item_type": "ball",
+      "stack": 1,
+      "weight": 1
+    },
+    "bandage": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "heal",
+        "animation": {
+          "interval": 0.75
+        },
+        "args": {
+          "heal": 12
+        },
+        "pre_timeout": 2.5,
+        "type": "use"
+      },
+      "item_type": "bandage",
+      "stack": 3,
+      "weight": 1
+    },
+    "baseballhat": {
+      "grade": 1,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "baseballhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "battlefan": {
+      "durability": 300,
+      "grade": 3,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 7,
+        "distance": 1.5,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.24,
+        "power": 1,
+        "pre_timeout": 0.14,
+        "push": 5,
+        "redirect": true,
+        "stamina": 6,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.1
+      },
+      "item_type": "battlefan",
+      "repair_price": 80,
+      "stack": 1,
+      "weight": 1
+    },
+    "batweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": false,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "bullet_entity_type": "fireball",
+        "bullet_item_type": "fireball",
+        "bullet_offset": 0.6,
+        "bullet_speed": 15,
+        "damage": 9,
+        "distance": 8,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [
+          "redspider",
+          "bat"
+        ],
+        "make_fire": true,
+        "player": 0,
+        "post_timeout": 0.9,
+        "pre_timeout": 0.2,
+        "push": 3,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0
+      },
+      "item_type": "batweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "batwithnails": {
+      "durability": 900,
+      "grade": 3,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.4,
+        "attack_angle": 110,
+        "damage": 15,
+        "distance": 1.15,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 1,
+        "pre_timeout": 0.2,
+        "push": 3,
+        "redirect": true,
+        "stamina": 8,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.8
+      },
+      "item_type": "batwithnails",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "bearhat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "bearhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "bearweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.83,
+        "attack_angle": 100,
+        "damage": 17,
+        "distance": 1.4,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.5,
+        "power": 0,
+        "pre_timeout": 0.5,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "bearweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "blackfern": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "blackfern",
+      "stack": 25,
+      "weight": 1
+    },
+    "boarweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 120,
+        "damage": 13,
+        "distance": 1.3,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [
+          "pig"
+        ],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.9,
+        "power": 0,
+        "pre_timeout": 0.5,
+        "push": 3,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "boarweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "bone": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "bone",
+      "stack": 999,
+      "weight": 1
+    },
+    "boneclub": {
+      "durability": 600,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 110,
+        "damage": 9,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.14,
+        "push": 1,
+        "redirect": true,
+        "stamina": 12,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.9
+      },
+      "item_type": "boneclub",
+      "repair_price": 10,
+      "stack": 1,
+      "weight": 1
+    },
+    "bonehat": {
+      "grade": 2,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "bonehat",
+      "stack": 1,
+      "weight": 1
+    },
+    "boomerang": {
+      "durability": 100,
+      "grade": 2,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": "0.35",
+        "bullet_entity_type": "boomerang",
+        "bullet_item_type": "boomerang",
+        "bullet_offset": 1,
+        "bullet_speed": 12,
+        "damage": 12,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0,
+        "pre_timeout": "0.3",
+        "push": 1,
+        "redirect": false,
+        "stamina": 11,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.4
+      },
+      "item_type": "boomerang",
+      "stack": 1,
+      "weight": 1
+    },
+    "boostpad": {
+      "is_tool": true,
+      "item_action": {
+        "entity_type": "boostpad",
+        "friend_ignore_tags": [
+          "floor"
+        ],
+        "ignore_tags": [
+          "characters"
+        ],
+        "ignore_types": [
+          "boostpad"
+        ],
+        "offset": 1.5,
+        "type": "spawn"
+      },
+      "item_type": "boostpad",
+      "stack": 50,
+      "weight": 1
+    },
+    "bow": {
+      "durability": 50,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "bullet_entity_type": "arrow",
+        "bullet_item_type": "arrow",
+        "bullet_offset": 0.4,
+        "bullet_speed": 17,
+        "damage": 5,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.4,
+        "pre_timeout": 0.2,
+        "push": 2,
+        "redirect": false,
+        "stamina": 9,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0.4
+      },
+      "item_type": "bow",
+      "repair_price": 10,
+      "stack": 1,
+      "weight": 1
+    },
+    "boxinggloves": {
+      "durability": 500,
+      "grade": 2,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 90,
+        "damage": 7,
+        "distance": 0.8,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.24,
+        "power": 1,
+        "pre_timeout": 0.14,
+        "push": 3,
+        "redirect": false,
+        "stamina": 6,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.1
+      },
+      "item_type": "boxinggloves",
+      "personal": false,
+      "repair_price": 50,
+      "stack": 1,
+      "weight": 1
+    },
+    "bronzeaxe": {
+      "durability": 1000,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 5,
+        "distance": 1,
+        "dodge": 0,
+        "gathering": {
+          "axeable": 1
+        },
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 2,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 1.0,
+          "pickaxeable": 0.5
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "bronzeaxe",
+      "repair_price": 10,
+      "stack": 1,
+      "weight": 1
+    },
+    "bronzecrate": {
+      "is_tool": true,
+      "item_action": {
+        "entity_type": "bronzecrate",
+        "friend_ignore_tags": [
+          "floor"
+        ],
+        "ignore_tags": [],
+        "ignore_types": [],
+        "offset": 1.5,
+        "type": "spawn"
+      },
+      "item_type": "bronzecrate",
+      "stack": 50,
+      "weight": 1
+    },
+    "bronzekey": {
+      "durability": 1,
+      "is_tool": true,
+      "item_action": {
+        "animation_length": 0.5,
+        "attack_angle": 90,
+        "distance": 1,
+        "hand_type": "onehanded",
+        "key_type": "bronze",
+        "post_timeout": 0.3,
+        "pre_timeout": 0.2,
+        "type": "open"
+      },
+      "item_type": "bronzekey",
+      "stack": 1,
+      "weight": 1
+    },
+    "bronzepickaxe": {
+      "durability": 1000,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 5,
+        "distance": 1,
+        "dodge": 0,
+        "gathering": {
+          "pickaxeable": 1
+        },
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 2,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 0.5,
+          "pickaxeable": 1.0
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "bronzepickaxe",
+      "repair_price": 10,
+      "stack": 1,
+      "weight": 1
+    },
+    "bronzespear": {
+      "durability": 150,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.9,
+        "attack_angle": 15,
+        "damage": 10,
+        "distance": 2.3,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.5,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.4,
+        "power": 1,
+        "pre_timeout": 0.5,
+        "push": 2,
+        "redirect": false,
+        "stamina": 16,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "bronzespear",
+      "repair_price": 10,
+      "stack": 1,
+      "weight": 1
+    },
+    "bronzethrowingknife": {
+      "durability": -1,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "bronzethrowingknife",
+        "bullet_item_type": "bronzethrowingknife",
+        "bullet_offset": 1,
+        "bullet_speed": 10,
+        "damage": 10,
+        "distance": 6,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "pre_timeout": 0.2,
+        "push": 1,
+        "redirect": false,
+        "stamina": 6,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.9
+      },
+      "item_type": "bronzethrowingknife",
+      "repair_price": 10,
+      "stack": 25,
+      "weight": 1
+    },
+    "buffalohat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "buffalohat",
+      "stack": 1,
+      "weight": 1
+    },
+    "buffaloweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 120,
+        "damage": 24,
+        "distance": 1.5,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.7,
+        "power": 0,
+        "pre_timeout": 0.4,
+        "push": 5,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "buffaloweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "buildingpotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "buff",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "buff": "FastBuild",
+          "timeout": 300
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "buildingpotion",
+      "stack": 40,
+      "weight": 1
+    },
+    "bushhat": {
+      "grade": 1,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "bushhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "cactus": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "cactus",
+      "stack": 999,
+      "weight": 1
+    },
+    "cactushat": {
+      "grade": 2,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "cactushat",
+      "stack": 1,
+      "weight": 1
+    },
+    "cactushook": {
+      "durability": 400,
+      "grade": 3,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": false,
+        "animation_length": 0.6,
+        "break_joint_distance": 20,
+        "bullet_entity_type": "cactushook",
+        "bullet_offset": 0.4,
+        "bullet_speed": 15,
+        "damage": 0,
+        "distance": 4,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "joint_power": 15,
+        "make_fire": false,
+        "max_joint_acceleration": 13,
+        "min_joint_distance": 1.6,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.3,
+        "push": 0,
+        "redirect": false,
+        "stamina": 20,
+        "stamina_pulse_timeout": 0.5,
+        "stamina_pulse_value": 5,
+        "tag": "Range",
+        "type": "grappling",
+        "weight": 0
+      },
+      "item_type": "cactushook",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 0.1
+    },
+    "cactushookrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "CactusHook",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "cactushookrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "cactuspotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "cool",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "none": "none"
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "cactuspotion",
+      "stack": 40,
+      "weight": 1
+    },
+    "cactuspotionrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "CactusPotion",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "cactuspotionrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "cactusshield": {
+      "durability": 2100,
+      "grade": 4,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.31
+        },
+        "hand_type": "onehanded",
+        "push": 0,
+        "type": "shield"
+      },
+      "item_type": "cactusshield",
+      "repair_price": 200,
+      "stack": 1,
+      "weight": 1.05
+    },
+    "cactusshieldrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "CactusShield",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "cactusshieldrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "cactussword": {
+      "durability": 2100,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": false,
+        "animation_length": 0.35,
+        "attack_angle": 110,
+        "damage": 17,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": true,
+        "player": 1,
+        "post_timeout": 0.32,
+        "power": 1,
+        "pre_timeout": 0.2,
+        "push": 0,
+        "redirect": false,
+        "stamina": 7,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.3
+      },
+      "item_type": "cactussword",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1
+    },
+    "cactusswordrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "CactusSword",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "cactusswordrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "cactusweapon": {
+      "durability": 150,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 10,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.2,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "power": 1,
+        "pre_timeout": 0.2,
+        "push": 0,
+        "redirect": false,
+        "stamina": 13,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "cactusweapon",
+      "stack": 1,
+      "weight": 0.3
+    },
+    "candy": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "candy",
+      "stack": 999,
+      "weight": 1
+    },
+    "charmofreturn": {
+      "is_tool": true,
+      "item_action": {
+        "action": "return",
+        "animation": {
+          "interval": 1
+        },
+        "effect": {
+          "interval": 0.5,
+          "name": "charge"
+        },
+        "pre_timeout": 8,
+        "type": "use"
+      },
+      "item_type": "charmofreturn",
+      "stack": 1,
+      "weight": 1
+    },
+    "chimeraweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.6,
+        "allow_redirect": true,
+        "animation_length": 1.83,
+        "attack_angle": 110,
+        "block_mirror": true,
+        "damage": 25,
+        "distance": 1.3,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.15,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.65,
+        "power": 0,
+        "pre_timeout": 0.5,
+        "push": -1,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "tag_mul": {
+          "buildings": 100.0
+        },
+        "type": "meleeweapon",
+        "weight": 0.9
+      },
+      "item_type": "chimeraweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "chitin": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "chitin",
+      "stack": 999,
+      "weight": 1
+    },
+    "chitinbow": {
+      "durability": 500,
+      "grade": 3,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "bullet_entity_type": "timeritearrow",
+        "bullet_item_type": "arrow",
+        "bullet_offset": 0.4,
+        "bullet_speed": 17,
+        "damage": 13,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.05,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.4,
+        "pre_timeout": 0.2,
+        "push": 2,
+        "redirect": false,
+        "stamina": 16,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0.4
+      },
+      "item_type": "chitinbow",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "chitinshield": {
+      "durability": 2100,
+      "grade": 3,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.36
+        },
+        "hand_type": "onehanded",
+        "push": 1,
+        "type": "shield"
+      },
+      "item_type": "chitinshield",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1.09
+    },
+    "christmascoinblue": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "christmascoinblue",
+      "stack": 300,
+      "weight": 1
+    },
+    "christmascoingreen": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "christmascoingreen",
+      "stack": 300,
+      "weight": 1
+    },
+    "christmascoinred": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "christmascoinred",
+      "stack": 300,
+      "weight": 1
+    },
+    "christmasdeerweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1.1,
+        "attack_angle": 120,
+        "damage": 40,
+        "distance": 2,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.2,
+        "power": 0,
+        "pre_timeout": 1.1,
+        "push": 5,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "christmasdeerweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "christmasgnomeweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 120,
+        "damage": 20,
+        "distance": 1.5,
+        "dodge": 0,
+        "ignore_shield": true,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.1,
+        "power": 0,
+        "pre_timeout": 0.1,
+        "push": 5,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Melee",
+        "type": "suicide",
+        "weight": 0
+      },
+      "item_type": "christmasgnomeweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "christmashat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "christmashat",
+      "stack": 1,
+      "weight": 1
+    },
+    "christmashatrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "ChristmasHat",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "christmashatrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "christmaspotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "christmaspotion",
+        "bullet_item_type": "christmaspotion",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 1,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.15,
+        "push": 1,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.6
+      },
+      "item_type": "christmaspotion",
+      "personal": false,
+      "stack": 40,
+      "weight": 1
+    },
+    "christmaspotionrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "ChristmasPotion",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "christmaspotionrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "christmasshield": {
+      "custom_effect_type": "fireresist",
+      "durability": 1515,
+      "grade": 4,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "custom_resist": {
+            "fire": 1.0
+          },
+          "resist": 0.4
+        },
+        "hand_type": "onehanded",
+        "push": 0,
+        "type": "shield"
+      },
+      "item_type": "christmasshield",
+      "personal": false,
+      "stack": 1,
+      "weight": 1.02
+    },
+    "christmasshieldrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "ChristmasShield",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "christmasshieldrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "christmaswand": {
+      "durability": 900,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": false,
+        "animation_length": "0.55",
+        "bullet_entity_type": "snowball",
+        "bullet_item_type": "snowball",
+        "bullet_offset": 0.4,
+        "bullet_speed": 18,
+        "damage": 6,
+        "distance": 15,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.1,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.4,
+        "pre_timeout": 0.1,
+        "push": 5,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "triplebulletweapon",
+        "weight": 0
+      },
+      "item_type": "christmaswand",
+      "stack": 1,
+      "weight": 1
+    },
+    "christmaswandrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "ChristmasWand",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "christmaswandrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "chromeboneclub": {
+      "durability": 600,
+      "grade": 3,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 110,
+        "damage": 15,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.22,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 2,
+        "redirect": true,
+        "stamina": 13,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.8
+      },
+      "item_type": "chromeboneclub",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "claws": {
+      "durability": 300,
+      "grade": 2,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 90,
+        "damage": 10,
+        "distance": 0.8,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.24,
+        "power": 1,
+        "pre_timeout": 0.14,
+        "push": 0,
+        "redirect": false,
+        "stamina": 6,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.1
+      },
+      "item_type": "claws",
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "club": {
+      "durability": 100,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 110,
+        "damage": 7,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "power": 1,
+        "pre_timeout": 0.2,
+        "push": 1,
+        "redirect": false,
+        "stamina": 7,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "club",
+      "repair_price": 10,
+      "stack": 1,
+      "weight": 1
+    },
+    "coin": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "coin",
+      "stack": 999,
+      "weight": 1
+    },
+    "copperaxe": {
+      "durability": 200,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 4,
+        "distance": 0.9,
+        "dodge": 0,
+        "gathering": {
+          "axeable": 1
+        },
+        "hand_type": "onehanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 3,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 1.0,
+          "pickaxeable": 0.5
+        },
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "copperaxe",
+      "repair_price": 10,
+      "stack": 1,
+      "weight": 1
+    },
+    "copperore": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "copperore",
+      "stack": 999,
+      "weight": 1
+    },
+    "copperpickaxe": {
+      "durability": 200,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 4,
+        "distance": 0.9,
+        "dodge": 0,
+        "gathering": {
+          "pickaxeable": 1
+        },
+        "hand_type": "onehanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 3,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 0.5,
+          "pickaxeable": 1.0
+        },
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "copperpickaxe",
+      "repair_price": 10,
+      "stack": 1,
+      "weight": 1
+    },
+    "coppershield": {
+      "durability": 600,
+      "grade": 1,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.27
+        },
+        "hand_type": "onehanded",
+        "push": 1,
+        "type": "shield"
+      },
+      "item_type": "coppershield",
+      "stack": 1,
+      "weight": 1.03
+    },
+    "copperspear": {
+      "durability": 250,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.6,
+        "allow_redirect": true,
+        "animation_length": 0.66,
+        "attack_angle": 15,
+        "damage": 10,
+        "distance": 2.3,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.1,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.35,
+        "power": 1,
+        "pre_timeout": 0.25,
+        "push": 2,
+        "redirect": false,
+        "stamina": 15,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "copperspear",
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "copperthrowingknife": {
+      "durability": -1,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "copperthrowingknife",
+        "bullet_item_type": "copperthrowingknife",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 5,
+        "distance": 10,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "pre_timeout": 0.2,
+        "push": 0,
+        "redirect": false,
+        "stamina": 6,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.5
+      },
+      "item_type": "copperthrowingknife",
+      "stack": 25,
+      "weight": 1
+    },
+    "cowhat": {
+      "grade": 2,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "cowhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "crowbar": {
+      "durability": 60,
+      "item_action": {
+        "animation_length": 0.5,
+        "attack_angle": 90,
+        "chance": 0.07,
+        "distance": 1,
+        "hand_type": "twohanded",
+        "make_fire": false,
+        "post_timeout": 0.3,
+        "pre_timeout": 0.2,
+        "stamina": 0.1,
+        "type": "break"
+      },
+      "item_type": "crowbar",
+      "stack": 1,
+      "weight": 1
+    },
+    "crownhat": {
+      "grade": 2,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "crownhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "crystalthreads": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "crystalthreads",
+      "stack": 100,
+      "weight": 1
+    },
+    "daemonknife": {
+      "durability": -1,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "daemonknife",
+        "bullet_item_type": "daemonknife",
+        "bullet_offset": 1,
+        "bullet_speed": 20,
+        "damage": 7,
+        "distance": 20,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "pre_timeout": 0.2,
+        "push": 0,
+        "redirect": false,
+        "stamina": 6,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.9
+      },
+      "item_type": "daemonknife",
+      "stack": 25,
+      "weight": 1
+    },
+    "daemonpotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "buff",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "buff": "NoEnvironmentEffects",
+          "timeout": 300
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "daemonpotion",
+      "personal": false,
+      "stack": 40,
+      "weight": 1
+    },
+    "daemonshield": {
+      "custom_effect_type": "fire_chance",
+      "durability": 1800,
+      "grade": 4,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.39
+        },
+        "hand_type": "onehanded",
+        "push": 1,
+        "type": "shield"
+      },
+      "item_type": "daemonshield",
+      "personal": false,
+      "repair_price": 80,
+      "stack": 1,
+      "weight": 1.02
+    },
+    "daemonsword": {
+      "custom_effect_type": "critical_hit",
+      "durability": 1800,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 130,
+        "damage": 18,
+        "distance": 1.2,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.1,
+        "ignore_types": [],
+        "make_fire": true,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.15,
+        "push": 0,
+        "redirect": false,
+        "stamina": 8,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.4
+      },
+      "item_type": "daemonsword",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1
+    },
+    "darkboomerang": {
+      "durability": 500,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": "0.35",
+        "bullet_entity_type": "darkboomerang",
+        "bullet_item_type": "darkboomerang",
+        "bullet_offset": 1,
+        "bullet_speed": 14,
+        "damage": 17,
+        "distance": 14,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.4,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0,
+        "pre_timeout": "0.3",
+        "push": 1,
+        "redirect": false,
+        "stamina": 11,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.3
+      },
+      "item_type": "darkboomerang",
+      "stack": 1,
+      "weight": 1
+    },
+    "darkmatter": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "darkmatter",
+      "stack": 999,
+      "weight": 1
+    },
+    "darkshield": {
+      "durability": 1200,
+      "grade": 2,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.33
+        },
+        "hand_type": "onehanded",
+        "push": 1,
+        "type": "shield"
+      },
+      "item_type": "darkshield",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1.08
+    },
+    "darkspear": {
+      "durability": 600,
+      "grade": 2,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.66,
+        "attack_angle": 15,
+        "damage": 15,
+        "distance": 2.3,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.26,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.48,
+        "power": 1,
+        "pre_timeout": 0.31,
+        "push": 2,
+        "redirect": false,
+        "stamina": 13,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "darkspear",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "darksword": {
+      "custom_effect_type": "shadow_spawn",
+      "durability": 1500,
+      "grade": 2,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 15,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 11,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.5
+      },
+      "item_type": "darksword",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "darkthrowingknife": {
+      "durability": -1,
+      "grade": 2,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "darkthrowingknife",
+        "bullet_item_type": "darkthrowingknife",
+        "bullet_offset": 1,
+        "bullet_speed": 17,
+        "damage": 11,
+        "distance": 15,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "pre_timeout": 0.2,
+        "push": 1,
+        "redirect": false,
+        "stamina": 6,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.5
+      },
+      "item_type": "darkthrowingknife",
+      "stack": 25,
+      "weight": 1
+    },
+    "deadlog": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "deadlog",
+      "stack": 999,
+      "weight": 1
+    },
+    "deathscythe": {
+      "durability": 1400,
+      "grade": 3,
+      "item_action": {
+        "action": {
+          "action": "buff",
+          "args": {
+            "buff": "Bleed",
+            "timeout": 10
+          },
+          "chance": 0.15
+        },
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.4,
+        "attack_angle": 150,
+        "damage": 18,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.17,
+        "power": 1,
+        "pre_timeout": 0.17,
+        "push": 0,
+        "redirect": false,
+        "stamina": 14,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.7
+      },
+      "item_type": "deathscythe",
+      "repair_price": 300,
+      "stack": 1,
+      "weight": 1
+    },
+    "deathshield": {
+      "durability": 2000,
+      "grade": 4,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.39
+        },
+        "hand_type": "onehanded",
+        "push": 1,
+        "type": "shield"
+      },
+      "item_type": "deathshield",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1.02
+    },
+    "diamond": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "diamond",
+      "stack": 999,
+      "weight": 1
+    },
+    "diamondaxe": {
+      "durability": 2500,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 4,
+        "distance": 1,
+        "dodge": 0,
+        "gathering": {
+          "axeable": 1
+        },
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 5,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 1.0,
+          "pickaxeable": 0.5
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "diamondaxe",
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "diamondpickaxe": {
+      "durability": 2500,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 4,
+        "distance": 1,
+        "dodge": 0,
+        "gathering": {
+          "pickaxeable": 1
+        },
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 5,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 0.5,
+          "pickaxeable": 1.0
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "diamondpickaxe",
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "diamondshield": {
+      "durability": 1800,
+      "grade": 2,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "custom_resist": {
+            "fire": 0.65,
+            "range": 0.78
+          },
+          "resist": 0.4
+        },
+        "hand_type": "onehanded",
+        "push": -1,
+        "type": "shield"
+      },
+      "item_type": "diamondshield",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1.96
+    },
+    "dirtyfryingpane": {
+      "durability": 1900,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 130,
+        "damage": 17,
+        "distance": 1.2,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 1,
+        "redirect": true,
+        "stamina": 12,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.45
+      },
+      "item_type": "dirtyfryingpane",
+      "repair_price": 300,
+      "stack": 1,
+      "weight": 1
+    },
+    "disguisehat": {
+      "grade": 5,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "disguisehat",
+      "personal": true,
+      "stack": 1,
+      "weight": 1
+    },
+    "droppotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "buff",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "buff": "Drop",
+          "timeout": 300
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "droppotion",
+      "stack": 40,
+      "weight": 1
+    },
+    "druidhat": {
+      "grade": 2,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "druidhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "dust": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "dust",
+      "stack": 999,
+      "weight": 1
+    },
+    "eaglehat": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "eaglehat",
+      "stack": 1,
+      "weight": 1
+    },
+    "electricitykatana": {
+      "durability": 800,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 17,
+        "distance": 1,
+        "dodge": 3.3,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 1,
+        "redirect": false,
+        "stamina": 13,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.3
+      },
+      "item_type": "electricitykatana",
+      "repair_price": 450,
+      "stack": 1,
+      "weight": 1
+    },
+    "experiencepotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "buff",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "buff": "Experience",
+          "timeout": 300
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "experiencepotion",
+      "stack": 40,
+      "weight": 1
+    },
+    "extinguisher": {
+      "durability": 250,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 120,
+        "damage": 0,
+        "distance": 5,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0,
+        "power": 0,
+        "pre_timeout": 0.1,
+        "push": 0.1,
+        "redirect": false,
+        "stamina": 0,
+        "tag": "Melee",
+        "type": "sprayweapon",
+        "weight": 0
+      },
+      "item_type": "extinguisher",
+      "stack": 1,
+      "weight": 1
+    },
+    "feather": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "feather",
+      "stack": 999,
+      "weight": 1
+    },
+    "fiber": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "fiber",
+      "stack": 999,
+      "weight": 1
+    },
+    "fireball": {
+      "grade": 2,
+      "is_tool": true,
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "fireball",
+      "stack": 300,
+      "weight": 1
+    },
+    "fireballtowerweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "fireball",
+        "bullet_item_type": "fireball",
+        "bullet_offset": 0.6,
+        "bullet_speed": 17,
+        "damage": 18,
+        "distance": 14,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": true,
+        "player": 0,
+        "post_timeout": 0.15,
+        "pre_timeout": 0.15,
+        "push": 2,
+        "redirect": false,
+        "stamina": 5,
+        "tag": "Range",
+        "tag_mul": {
+          "incrasedtowerdamage": 1.8
+        },
+        "type": "rangedweapon",
+        "weight": 0
+      },
+      "item_type": "fireballtowerweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "fireballweapon": {
+      "durability": 500,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "bullet_entity_type": "fireball",
+        "bullet_item_type": "fireball",
+        "bullet_offset": 0.7,
+        "bullet_speed": 17,
+        "damage": 15,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.2,
+        "ignore_types": [],
+        "make_fire": true,
+        "player": 1,
+        "post_timeout": 0.4,
+        "pre_timeout": 0.2,
+        "push": 1,
+        "redirect": false,
+        "stamina": 13,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0.2
+      },
+      "item_type": "fireballweapon",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1
+    },
+    "firepotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "buff",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "buff": "Fire",
+          "timeout": 90
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "firepotion",
+      "stack": 40,
+      "weight": 1
+    },
+    "fitosaurweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 120,
+        "damage": 40,
+        "distance": 1.4,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.75,
+        "power": 0,
+        "pre_timeout": 0.4,
+        "push": 3,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "fitosaurweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "flowercactushat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "flowercactushat",
+      "stack": 1,
+      "weight": 1
+    },
+    "flowercactushatrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "FlowerCactusHat",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "flowercactushatrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "fryingpane": {
+      "durability": 3000,
+      "grade": 3,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 130,
+        "damage": 14,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.14,
+        "push": 1,
+        "redirect": true,
+        "stamina": 12,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.7
+      },
+      "item_type": "fryingpane",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "fur": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "fur",
+      "stack": 999,
+      "weight": 1
+    },
+    "furhat": {
+      "grade": 1,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "furhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "gatherpotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "buff",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "buff": "Gather",
+          "timeout": 300
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "gatherpotion",
+      "stack": 40,
+      "weight": 1
+    },
+    "geistweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "bullet_entity_type": "geistedrock",
+        "bullet_item_type": "rock",
+        "bullet_offset": 0.6,
+        "bullet_speed": 17,
+        "damage": 50,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.8,
+        "pre_timeout": 0.6,
+        "push": 3,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0.1
+      },
+      "item_type": "geistweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "ghostthread": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "ghostthread",
+      "stack": 50,
+      "weight": 1
+    },
+    "goldenaxe": {
+      "durability": 900,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 4,
+        "distance": 1,
+        "dodge": 0,
+        "gathering": {
+          "axeable": 1
+        },
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 4,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 1.0,
+          "pickaxeable": 0.5
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "goldenaxe",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "goldenbow": {
+      "durability": 300,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "bullet_entity_type": "arrow",
+        "bullet_item_type": "arrow",
+        "bullet_offset": 0.4,
+        "bullet_speed": 17,
+        "damage": 9,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.2,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.4,
+        "pre_timeout": 0.2,
+        "push": 2,
+        "redirect": false,
+        "stamina": 14,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0.4
+      },
+      "item_type": "goldenbow",
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "goldencrate": {
+      "is_tool": true,
+      "item_action": {
+        "entity_type": "goldencrate",
+        "friend_ignore_tags": [
+          "floor"
+        ],
+        "ignore_tags": [],
+        "ignore_types": [],
+        "offset": 1.5,
+        "type": "spawn"
+      },
+      "item_type": "goldencrate",
+      "stack": 50,
+      "weight": 1
+    },
+    "goldenhammer": {
+      "durability": 500,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1.2,
+        "attack_angle": 120,
+        "damage": 30,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "power": 7,
+        "pre_timeout": 0.9,
+        "push": 0,
+        "redirect": false,
+        "stamina": 16,
+        "tag": "Melee",
+        "tag_mul": {
+          "buildings": 3.0,
+          "treasurechest": 3.0
+        },
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "goldenhammer",
+      "stack": 1,
+      "weight": 1
+    },
+    "goldenhelmet": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "goldenhelmet",
+      "stack": 1,
+      "weight": 1
+    },
+    "goldenkatana": {
+      "durability": 900,
+      "grade": 2,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 13,
+        "distance": 1,
+        "dodge": 2.25,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.26,
+        "power": 1,
+        "pre_timeout": 0.17,
+        "push": 1,
+        "redirect": false,
+        "stamina": 14,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.4
+      },
+      "item_type": "goldenkatana",
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "goldenkey": {
+      "durability": 1,
+      "is_tool": true,
+      "item_action": {
+        "animation_length": 0.5,
+        "attack_angle": 90,
+        "distance": 1,
+        "hand_type": "onehanded",
+        "key_type": "golden",
+        "post_timeout": 0.3,
+        "pre_timeout": 0.2,
+        "type": "open"
+      },
+      "item_type": "goldenkey",
+      "stack": 1,
+      "weight": 1
+    },
+    "goldenpickaxe": {
+      "durability": 1000,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 4,
+        "distance": 1,
+        "dodge": 0,
+        "gathering": {
+          "pickaxeable": 1
+        },
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 4,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 0.5,
+          "pickaxeable": 1.0
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "goldenpickaxe",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "goldenshield": {
+      "durability": 900,
+      "grade": 1,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.31
+        },
+        "hand_type": "onehanded",
+        "push": 1,
+        "type": "shield"
+      },
+      "item_type": "goldenshield",
+      "stack": 1,
+      "weight": 1.07
+    },
+    "goldenspear": {
+      "durability": 500,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "attack_angle": 15,
+        "damage": 13,
+        "distance": 2.3,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.18,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.35,
+        "power": 1,
+        "pre_timeout": 0.25,
+        "push": 2,
+        "redirect": false,
+        "stamina": 16,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "goldenspear",
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "goldensword": {
+      "durability": 1000,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 11,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.15,
+        "push": 0,
+        "redirect": false,
+        "stamina": 8,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.2
+      },
+      "item_type": "goldensword",
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "goldenvikingaxe": {
+      "durability": 1000,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "attack_angle": 170,
+        "damage": 21,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "power": 2,
+        "pre_timeout": 0.3,
+        "push": 0,
+        "redirect": false,
+        "stamina": 15,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.8
+      },
+      "item_type": "goldenvikingaxe",
+      "repair_price": 100,
+      "stack": 1,
+      "weight": 1
+    },
+    "goldore": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "goldore",
+      "stack": 999,
+      "weight": 1
+    },
+    "grapplinghook": {
+      "durability": 500,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": false,
+        "animation_length": 0.6,
+        "break_joint_distance": 20,
+        "bullet_entity_type": "hook",
+        "bullet_offset": 0.4,
+        "bullet_speed": 27,
+        "damage": 0,
+        "distance": 6,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "joint_power": 15,
+        "make_fire": false,
+        "max_joint_acceleration": 13,
+        "min_joint_distance": 1.6,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.3,
+        "push": 0,
+        "redirect": false,
+        "stamina": 20,
+        "stamina_pulse_timeout": 0.5,
+        "stamina_pulse_value": 2,
+        "tag": "Range",
+        "type": "grappling",
+        "weight": 0
+      },
+      "item_type": "grapplinghook",
+      "repair_price": 300,
+      "stack": 1,
+      "weight": 0.1
+    },
+    "grenadefire": {
+      "grade": 3,
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "grenadefire",
+        "bullet_item_type": "grenadefire",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 1,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.15,
+        "push": 1,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.6
+      },
+      "item_type": "grenadefire",
+      "personal": true,
+      "stack": 40,
+      "weight": 1
+    },
+    "grenadeice": {
+      "grade": 3,
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "grenadeice",
+        "bullet_item_type": "grenadeice",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 1,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.15,
+        "push": 1,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.6
+      },
+      "item_type": "grenadeice",
+      "personal": true,
+      "stack": 40,
+      "weight": 1
+    },
+    "grenadesmoke": {
+      "grade": 3,
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "grenadesmoke",
+        "bullet_item_type": "grenadesmoke",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 1,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.15,
+        "push": 1,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.6
+      },
+      "item_type": "grenadesmoke",
+      "personal": true,
+      "stack": 40,
+      "weight": 1
+    },
+    "grenadesticky": {
+      "grade": 3,
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "grenadesticky",
+        "bullet_item_type": "grenadesticky",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 1,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.15,
+        "push": 1,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.6
+      },
+      "item_type": "grenadesticky",
+      "personal": true,
+      "stack": 40,
+      "weight": 1
+    },
+    "grenadetoxic": {
+      "grade": 3,
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "grenadetoxic",
+        "bullet_item_type": "grenadetoxic",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 1,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.15,
+        "push": 1,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.6
+      },
+      "item_type": "grenadetoxic",
+      "personal": true,
+      "stack": 40,
+      "weight": 1
+    },
+    "guardarcherweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "bullet_entity_type": "arrow",
+        "bullet_item_type": "arrow",
+        "bullet_offset": 0.6,
+        "bullet_speed": 17,
+        "damage": 7,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 1,
+        "pre_timeout": 0.3,
+        "push": 0,
+        "redirect": false,
+        "stamina": 12,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 1
+      },
+      "item_type": "guardarcherweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "guardweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 7,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 1,
+        "power": 0,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 15,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "guardweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "halloweencarrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "HalloweenCar",
+            "ty": "Building"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "halloweencarrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "halloweencoin": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "halloweencoin",
+      "stack": 300,
+      "weight": 1
+    },
+    "halloweenhat": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "halloweenhat",
+      "personal": false,
+      "stack": 1,
+      "weight": 1
+    },
+    "halloweenhatrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "HalloweenHat",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "halloweenhatrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "halloweenpotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "random_buff",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "buffs": [
+            "RangedDamage",
+            "Fire",
+            "Stamina",
+            "Gather",
+            "Regeneration",
+            "Drop",
+            "Resist",
+            "HighDamage"
+          ],
+          "timeout": 120
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "halloweenpotion",
+      "personal": false,
+      "stack": 40,
+      "weight": 1
+    },
+    "halloweenpotionrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "HalloweenPotion",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "halloweenpotionrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "halloweenshield": {
+      "custom_effect_type": "poisonchance",
+      "durability": 2100,
+      "grade": 4,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.44
+        },
+        "hand_type": "onehanded",
+        "push": 0,
+        "type": "shield"
+      },
+      "item_type": "halloweenshield",
+      "personal": false,
+      "repair_price": 80,
+      "stack": 1,
+      "weight": 1.01
+    },
+    "halloweenshieldrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "HalloweenShield",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "halloweenshieldrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "halloweensword": {
+      "durability": 1200,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 140,
+        "damage": 5,
+        "distance": 1.2,
+        "dodge": 3.4,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 12,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "halloweensword",
+      "personal": false,
+      "repair_price": 200,
+      "stack": 1,
+      "weight": 1
+    },
+    "halloweenswordrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "HalloweenSword",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "halloweenswordrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "hammer": {
+      "durability": 150,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1.2,
+        "attack_angle": 120,
+        "damage": 20,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "power": 7,
+        "pre_timeout": 0.9,
+        "push": 0,
+        "redirect": false,
+        "stamina": 16,
+        "tag": "Melee",
+        "tag_mul": {
+          "buildings": 3.0,
+          "treasurechest": 3.0
+        },
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "hammer",
+      "stack": 1,
+      "weight": 1
+    },
+    "hand": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 90,
+        "damage": 3,
+        "distance": 0.5,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.1
+      },
+      "item_type": "hand",
+      "stack": 1,
+      "weight": 1
+    },
+    "happyclub": {
+      "custom_effect_type": "critical_hit",
+      "durability": 300,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 110,
+        "critical_chance": "0.2",
+        "damage": 11,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "power": 1,
+        "pre_timeout": 0.2,
+        "push": 1,
+        "redirect": false,
+        "stamina": 9,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.8
+      },
+      "item_type": "happyclub",
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "harlequinhat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "harlequinhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "harleywig": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "harleywig",
+      "stack": 1,
+      "weight": 1
+    },
+    "harpoon": {
+      "durability": 500,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": false,
+        "animation_length": 0.6,
+        "break_joint_distance": 20,
+        "bullet_entity_type": "harpoon",
+        "bullet_offset": 0.4,
+        "bullet_speed": 27,
+        "damage": 5,
+        "distance": 6,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "joint_power": 15,
+        "make_fire": false,
+        "max_joint_acceleration": 13,
+        "min_joint_distance": 1.6,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.3,
+        "push": 0,
+        "redirect": false,
+        "stamina": 20,
+        "stamina_pulse_timeout": 0.5,
+        "stamina_pulse_value": 1,
+        "tag": "Range",
+        "type": "grappling",
+        "weight": 0
+      },
+      "item_type": "harpoon",
+      "personal": true,
+      "repair_price": 180,
+      "stack": 1,
+      "weight": 0.1
+    },
+    "healwand": {
+      "durability": 1000,
+      "grade": 3,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": false,
+        "animation_length": 1.5,
+        "damage": 8,
+        "distance": 4,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "health": 10,
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 1,
+        "pre_timeout": 0.5,
+        "push": 5,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "aoehealweapon",
+        "weight": 0
+      },
+      "item_type": "healwand",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1
+    },
+    "heraldicshield": {
+      "durability": 1800,
+      "grade": 3,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.42
+        },
+        "hand_type": "onehanded",
+        "push": 0,
+        "type": "shield"
+      },
+      "item_type": "heraldicshield",
+      "repair_price": 300,
+      "stack": 1,
+      "weight": 1.08
+    },
+    "hermitcrabweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 110,
+        "damage": 80,
+        "distance": 1.3,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.05,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 1.3,
+        "power": 0,
+        "pre_timeout": 0.3,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "hermitcrabweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "holidaycrate": {
+      "is_tool": true,
+      "item_action": {
+        "entity_type": "holidaycrate",
+        "friend_ignore_tags": [
+          "floor"
+        ],
+        "ignore_tags": [],
+        "ignore_types": [],
+        "offset": 1.5,
+        "type": "spawn"
+      },
+      "item_type": "holidaycrate",
+      "stack": 50,
+      "weight": 1
+    },
+    "iceball": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "iceball",
+      "stack": 300,
+      "weight": 1
+    },
+    "iceshield": {
+      "custom_effect_type": "ice_trap_spawn",
+      "durability": 3000,
+      "grade": 5,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.5
+        },
+        "hand_type": "onehanded",
+        "push": 0,
+        "type": "shield"
+      },
+      "item_type": "iceshield",
+      "personal": true,
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1.01
+    },
+    "icespear": {
+      "durability": 800,
+      "grade": 4,
+      "item_action": {
+        "action": {
+          "action": "trap",
+          "args": {
+            "trap": "IceTrap"
+          },
+          "chance": 0.11
+        },
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "attack_angle": 15,
+        "damage": 16,
+        "distance": 2.5,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.25,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.35,
+        "power": 1,
+        "pre_timeout": 0.25,
+        "push": 2,
+        "redirect": false,
+        "stamina": 18,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "icespear",
+      "stack": 1,
+      "weight": 1
+    },
+    "icewand": {
+      "durability": 300,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": false,
+        "animation_length": 1.5,
+        "bullet_entity_type": "iceball",
+        "bullet_item_type": "iceball",
+        "bullet_offset": 0.4,
+        "bullet_speed": 17,
+        "damage": 9,
+        "distance": 8,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 1,
+        "pre_timeout": 0.3,
+        "push": 5,
+        "redirect": false,
+        "stamina": 60,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0
+      },
+      "item_type": "icewand",
+      "repair_price": 500,
+      "stack": 1,
+      "weight": 1
+    },
+    "ignorepushshield": {
+      "durability": 1500,
+      "grade": 4,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0
+        },
+        "hand_type": "onehanded",
+        "push": 0,
+        "type": "shield"
+      },
+      "item_type": "ignorepushshield",
+      "stack": 1,
+      "weight": 1
+    },
+    "illusionhat": {
+      "grade": 5,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "illusionhat",
+      "personal": true,
+      "stack": 1,
+      "weight": 1
+    },
+    "improvedstickypotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "improvedstickypotion",
+        "bullet_item_type": "improvedstickypotion",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 1,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.15,
+        "push": 1,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.6
+      },
+      "item_type": "improvedstickypotion",
+      "personal": true,
+      "stack": 40,
+      "weight": 1
+    },
+    "infecteddiamond": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "infecteddiamond",
+      "stack": 999,
+      "weight": 1
+    },
+    "inquisitorhat": {
+      "grade": 5,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "inquisitorhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "invisiblepotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "invisible",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "damage": 0.015,
+          "timeout": 1000
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "invisiblepotion",
+      "stack": 40,
+      "weight": 1
+    },
+    "iodinepotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "buff",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "buff": "StopRadiation",
+          "timeout": 240
+        },
+        "pre_timeout": 0.5,
+        "type": "use"
+      },
+      "item_type": "iodinepotion",
+      "stack": 40,
+      "weight": 1
+    },
+    "ironclub": {
+      "durability": 900,
+      "grade": 3,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 110,
+        "damage": 17,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.1,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 1,
+        "redirect": true,
+        "stamina": 9,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "ironclub",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "jasonhat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "jasonhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "katana": {
+      "durability": 600,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 10,
+        "distance": 1,
+        "dodge": 2,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.16,
+        "push": 1,
+        "redirect": false,
+        "stamina": 10,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.3
+      },
+      "item_type": "katana",
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "kunai": {
+      "durability": -1,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "kunai",
+        "bullet_item_type": "kunai",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 10,
+        "distance": 6,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "passthrough_tags": [
+          "characters"
+        ],
+        "player": 1,
+        "post_timeout": 0.3,
+        "pre_timeout": 0.2,
+        "push": 1,
+        "redirect": false,
+        "stamina": 6,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.9
+      },
+      "item_type": "kunai",
+      "personal": true,
+      "stack": 25,
+      "weight": 1
+    },
+    "lamphat": {
+      "grade": 1,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "lamphat",
+      "stack": 1,
+      "weight": 1
+    },
+    "lasersword": {
+      "durability": 1000,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 17,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": true,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 1,
+        "pre_timeout": 0.15,
+        "push": 1,
+        "redirect": true,
+        "stamina": 13,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.55
+      },
+      "item_type": "lasersword",
+      "repair_price": 180,
+      "stack": 1,
+      "weight": 1
+    },
+    "leather": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "leather",
+      "stack": 999,
+      "weight": 1
+    },
+    "lightball": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "lightball",
+      "stack": 30,
+      "weight": 1
+    },
+    "lightwand": {
+      "durability": 150,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": false,
+        "animation_length": 1,
+        "bullet_entity_type": "lightball",
+        "bullet_item_type": "lightball",
+        "bullet_offset": 0.4,
+        "bullet_speed": 17,
+        "damage": 13,
+        "distance": 6,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.7,
+        "pre_timeout": 0.3,
+        "push": 5,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0
+      },
+      "item_type": "lightwand",
+      "personal": true,
+      "repair_price": 300,
+      "stack": 1,
+      "weight": 1
+    },
+    "log": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "log",
+      "stack": 999,
+      "weight": 1
+    },
+    "lollipop": {
+      "durability": -1,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "lollipop",
+        "bullet_item_type": "lollipop",
+        "bullet_offset": 1,
+        "bullet_speed": 17,
+        "damage": 20,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.1,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.15,
+        "pre_timeout": 0.15,
+        "push": 2,
+        "redirect": false,
+        "stamina": 3,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.2
+      },
+      "item_type": "lollipop",
+      "stack": 75,
+      "weight": 1
+    },
+    "mace": {
+      "durability": 900,
+      "grade": 3,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.5,
+        "attack_angle": 140,
+        "damage": 18,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.15,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.25,
+        "push": 3,
+        "redirect": false,
+        "stamina": 12,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.9
+      },
+      "item_type": "mace",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "machete": {
+      "durability": 1500,
+      "grade": 4,
+      "item_action": {
+        "action": {
+          "action": "buff",
+          "args": {
+            "buff": "Bleed",
+            "timeout": 10
+          },
+          "chance": 0.1
+        },
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 17,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.24,
+        "power": 1,
+        "pre_timeout": 0.14,
+        "push": 0,
+        "redirect": false,
+        "stamina": 8,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.6
+      },
+      "item_type": "machete",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1
+    },
+    "magicball": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "magicball",
+      "stack": 300,
+      "weight": 1
+    },
+    "magichat": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "magichat",
+      "stack": 1,
+      "weight": 0.5
+    },
+    "magickdust": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "magickdust",
+      "stack": 999,
+      "weight": 1
+    },
+    "magicwand": {
+      "durability": 1500,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": false,
+        "animation_length": 1,
+        "bullet_entity_type": "magicball",
+        "bullet_item_type": "magicball",
+        "bullet_offset": 0.6,
+        "bullet_speed": 13,
+        "damage": 13,
+        "distance": 16,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield_chance": 0.91,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.6,
+        "pre_timeout": 0.35,
+        "push": 3,
+        "redirect": false,
+        "stamina": 12,
+        "tag": "Range",
+        "tag_mul": {
+          "buildings": 2.0
+        },
+        "type": "triplebulletweapon",
+        "weight": 0.9
+      },
+      "item_type": "magicwand",
+      "stack": 1,
+      "weight": 1
+    },
+    "magma": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "magma",
+      "stack": 100,
+      "weight": 1
+    },
+    "meat": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "meat",
+      "stack": 999,
+      "weight": 1
+    },
+    "medicinehat": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "medicinehat",
+      "stack": 1,
+      "weight": 1
+    },
+    "mercenaryweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 7,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 1,
+        "power": 0,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 10,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "mercenaryweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "molochweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 100,
+        "damage": 22,
+        "distance": 1.5,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.9,
+        "power": 0,
+        "pre_timeout": 0.4,
+        "push": 3,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "molochweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "moneyhat": {
+      "grade": 5,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "moneyhat",
+      "personal": true,
+      "stack": 1,
+      "weight": 1
+    },
+    "monsterhunterhat": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "monsterhunterhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "moonward": {
+      "durability": 1300,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 180,
+        "damage": 7,
+        "distance": 4.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.5,
+        "power": 1,
+        "pre_timeout": 0.5,
+        "push": 9,
+        "redirect": true,
+        "stamina": 12,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.9
+      },
+      "item_type": "moonward",
+      "repair_price": 200,
+      "stack": 1,
+      "weight": 1
+    },
+    "murderer": {
+      "durability": 15,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.4,
+        "attack_angle": 150,
+        "damage": 27,
+        "distance": 1.2,
+        "dodge": 0,
+        "gathering": {
+          "axeable": 1.2
+        },
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 9,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 3
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "murderer",
+      "repair_price": 0,
+      "stack": 1,
+      "weight": 1
+    },
+    "nails": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "nails",
+      "stack": 999,
+      "weight": 1
+    },
+    "nightmarehat": {
+      "grade": 5,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "nightmarehat",
+      "stack": 1,
+      "weight": 1
+    },
+    "nightmarescythe": {
+      "durability": 1800,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.4,
+        "attack_angle": 150,
+        "damage": 25,
+        "distance": 1.2,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 1,
+        "pre_timeout": 0.2,
+        "push": 0,
+        "redirect": false,
+        "stamina": 15,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.7
+      },
+      "item_type": "nightmarescythe",
+      "repair_price": 550,
+      "stack": 1,
+      "weight": 1
+    },
+    "nightmareshield": {
+      "custom_effect_type": "reflect_damage",
+      "durability": 2700,
+      "grade": 5,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.48
+        },
+        "hand_type": "onehanded",
+        "push": 1,
+        "type": "shield"
+      },
+      "item_type": "nightmareshield",
+      "repair_price": 550,
+      "stack": 1,
+      "weight": 1.01
+    },
+    "nightmaresuriken": {
+      "durability": -1,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.2,
+        "bullet_entity_type": "nightmaresuriken",
+        "bullet_item_type": "nightmaresuriken",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 14,
+        "distance": 6,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.1,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 10,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.6
+      },
+      "item_type": "nightmaresuriken",
+      "stack": 75,
+      "weight": 1
+    },
+    "nightmareweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 120,
+        "damage": 30,
+        "distance": 1.5,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.3,
+        "power": 0,
+        "pre_timeout": 0.5,
+        "push": 5,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "tag_mul": {
+          "buildings": 5.0,
+          "defense": 5.0
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "nightmareweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "nothing": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "nothing",
+      "stack": 999,
+      "weight": 1
+    },
+    "oil": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "oil",
+      "stack": 100,
+      "weight": 1
+    },
+    "phantomarrow": {
+      "grade": 3,
+      "is_tool": true,
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "phantomarrow",
+      "stack": 300,
+      "weight": 1
+    },
+    "phantombow": {
+      "durability": 800,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "bullet_entity_type": "phantomarrow",
+        "bullet_item_type": "phantomarrow",
+        "bullet_offset": 0.4,
+        "bullet_speed": 17,
+        "damage": 17,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.2,
+        "ignore_types": [],
+        "make_fire": false,
+        "passthrough_tags": [
+          "characters"
+        ],
+        "player": 1,
+        "post_timeout": 0.4,
+        "pre_timeout": 0.2,
+        "push": 1,
+        "redirect": false,
+        "stamina": 18,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0.3
+      },
+      "item_type": "phantombow",
+      "repair_price": 800,
+      "stack": 1,
+      "weight": 1
+    },
+    "phantomshield": {
+      "durability": 2500,
+      "grade": 4,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.45
+        },
+        "hand_type": "onehanded",
+        "push": 0,
+        "type": "shield"
+      },
+      "item_type": "phantomshield",
+      "personal": false,
+      "repair_price": 200,
+      "stack": 1,
+      "weight": 1.05
+    },
+    "phantomtowerweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "magicball",
+        "bullet_item_type": "magicball",
+        "bullet_offset": 0.6,
+        "bullet_speed": 17,
+        "damage": 22,
+        "distance": 16,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.15,
+        "pre_timeout": 0.15,
+        "push": 2,
+        "redirect": false,
+        "stamina": 5,
+        "tag": "Range",
+        "tag_mul": {
+          "incrasedtowerdamage": 2.2
+        },
+        "type": "rangedweapon",
+        "weight": 0
+      },
+      "item_type": "phantomtowerweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "pickaxe": {
+      "durability": 100,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 4,
+        "distance": 0.9,
+        "dodge": 0,
+        "gathering": {
+          "pickaxeable": 1
+        },
+        "hand_type": "onehanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 2,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 0.5,
+          "pickaxeable": 1.0
+        },
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "pickaxe",
+      "repair_price": 10,
+      "stack": 1,
+      "weight": 1
+    },
+    "pilothat": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "pilothat",
+      "stack": 1,
+      "weight": 1
+    },
+    "pinkshooterhat": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "pinkshooterhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "polarbombpotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "polarbombpotion",
+        "bullet_item_type": "polarbombpotion",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 1,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.15,
+        "push": 1,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.6
+      },
+      "item_type": "polarbombpotion",
+      "personal": false,
+      "stack": 40,
+      "weight": 1
+    },
+    "polarbombpotionrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "PolarBombPotion",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "polarbombpotionrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "polarbow": {
+      "custom_effect_type": "critical_hit",
+      "durability": 500,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "bullet_entity_type": "arrow",
+        "bullet_item_type": "arrow",
+        "bullet_offset": 0.4,
+        "bullet_speed": 19,
+        "critical_chance": 0.05,
+        "damage": 15,
+        "distance": 15,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.1,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "pre_timeout": 0.2,
+        "push": 2,
+        "redirect": false,
+        "stamina": 14,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0.2
+      },
+      "item_type": "polarbow",
+      "personal": false,
+      "stack": 1,
+      "weight": 1
+    },
+    "polarbowrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "PolarBow",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "polarbowrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "polarcoin": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "polarcoin",
+      "stack": 300,
+      "weight": 1
+    },
+    "polarhat": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "polarhat",
+      "personal": false,
+      "stack": 1,
+      "weight": 1
+    },
+    "polarhatrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "PolarHat",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "polarhatrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "polarpotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "buff",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "buff": "RangedDamage",
+          "timeout": 300
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "polarpotion",
+      "personal": false,
+      "stack": 40,
+      "weight": 1
+    },
+    "polarpotionrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "PolarPotion",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "polarpotionrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "polarshield": {
+      "custom_effect_type": "hard_to_penetrate",
+      "durability": 2100,
+      "grade": 4,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.4
+        },
+        "hand_type": "onehanded",
+        "push": 0,
+        "type": "shield"
+      },
+      "item_type": "polarshield",
+      "personal": false,
+      "stack": 1,
+      "weight": 1.01
+    },
+    "polarshieldrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "PolarShield",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "polarshieldrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "polarsword": {
+      "custom_effect_type": "critical_hit",
+      "durability": 2100,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.35,
+        "attack_angle": 120,
+        "critical_chance": 0.05,
+        "damage": 17,
+        "distance": 1.2,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 9,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "polarsword",
+      "personal": false,
+      "stack": 1,
+      "weight": 1
+    },
+    "polarswordrecipe": {
+      "item_action": {
+        "action": "unlock",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "unlockable": {
+            "content": "PolarSword",
+            "ty": "Item"
+          }
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "polarswordrecipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "powder": {
+      "is_tool": true,
+      "item_action": {
+        "entity_type": "powder",
+        "friend_ignore_tags": [],
+        "ignore_tags": [
+          "characters"
+        ],
+        "ignore_types": [
+          "powder"
+        ],
+        "offset": 1,
+        "type": "spawn"
+      },
+      "item_type": "powder",
+      "stack": 300,
+      "weight": 1
+    },
+    "premiumbow": {
+      "durability": 900,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "bullet_entity_type": "arrow",
+        "bullet_item_type": "arrow",
+        "bullet_offset": 0.4,
+        "bullet_speed": 17,
+        "damage": 15,
+        "distance": 14,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.2,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.4,
+        "pre_timeout": 0.2,
+        "push": 3,
+        "redirect": false,
+        "stamina": 14,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0.2
+      },
+      "item_type": "premiumbow",
+      "personal": true,
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "premiumcharmofreturn": {
+      "is_tool": true,
+      "item_action": {
+        "action": "return",
+        "animation": {
+          "interval": 1
+        },
+        "effect": {
+          "interval": 0.5,
+          "name": "charge"
+        },
+        "pre_timeout": 3.5,
+        "type": "use"
+      },
+      "item_type": "premiumcharmofreturn",
+      "personal": true,
+      "stack": 1,
+      "weight": 1
+    },
+    "premiumkopis": {
+      "durability": 3000,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 150,
+        "damage": 19,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 7,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.9
+      },
+      "item_type": "premiumkopis",
+      "personal": true,
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "premiumlongsword": {
+      "durability": 3000,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.35,
+        "attack_angle": 140,
+        "damage": 21,
+        "distance": 1.3,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 10,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "premiumlongsword",
+      "personal": true,
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "premiumshield": {
+      "durability": 3000,
+      "grade": 5,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "custom_resist": {
+            "fire": 0.7,
+            "range": 0.6
+          },
+          "resist": 0.53
+        },
+        "hand_type": "onehanded",
+        "push": 0,
+        "type": "shield"
+      },
+      "item_type": "premiumshield",
+      "personal": true,
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1.01
+    },
+    "propellerhat": {
+      "grade": 2,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "propellerhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "pumpkin": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "pumpkin",
+      "stack": 100,
+      "weight": 1
+    },
+    "pumpkinhat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "pumpkinhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "ragehat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "ragehat",
+      "stack": 1,
+      "weight": 1
+    },
+    "recipe": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "recipe",
+      "stack": 1,
+      "weight": 1
+    },
+    "redspiderweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": false,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "bullet_entity_type": "fireball",
+        "bullet_item_type": "fireball",
+        "bullet_offset": 0.6,
+        "bullet_speed": 17,
+        "damage": 17,
+        "distance": 10,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [
+          "redspider",
+          "bat",
+          "spider",
+          "spidercocoon"
+        ],
+        "make_fire": true,
+        "player": 0,
+        "post_timeout": 0.9,
+        "pre_timeout": 0.6,
+        "push": 4,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0.1
+      },
+      "item_type": "redspiderweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "redsword": {
+      "durability": 900,
+      "grade": 3,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 110,
+        "damage": 16,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.17,
+        "push": 0,
+        "redirect": false,
+        "stamina": 8,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.9
+      },
+      "item_type": "redsword",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "reflectshield": {
+      "custom_effect_type": "reflect_projectile",
+      "durability": 800,
+      "grade": 4,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.06
+        },
+        "hand_type": "onehanded",
+        "push": 0,
+        "type": "shield"
+      },
+      "item_type": "reflectshield",
+      "repair_price": 500,
+      "stack": 1,
+      "weight": 1.09
+    },
+    "regenerationpotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "buff",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "buff": "Regeneration",
+          "timeout": 120
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "regenerationpotion",
+      "stack": 40,
+      "weight": 1
+    },
+    "rock": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "rock",
+      "stack": 999,
+      "weight": 1
+    },
+    "rockethat": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "rockethat",
+      "stack": 1,
+      "weight": 1
+    },
+    "rubysword": {
+      "durability": 900,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 19,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 11,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "rubysword",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1
+    },
+    "santahat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "santahat",
+      "stack": 1,
+      "weight": 1
+    },
+    "santaweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": false,
+        "animation_length": 0.7,
+        "bullet_entity_type": "magicball",
+        "bullet_item_type": "magicball",
+        "bullet_offset": 0.6,
+        "bullet_speed": 17,
+        "damage": 11,
+        "distance": 15,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": true,
+        "ignore_shield_chance": true,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.4,
+        "pre_timeout": 0.3,
+        "push": 5,
+        "redirect": false,
+        "stamina": 11,
+        "tag": "Range",
+        "tag_mul": {
+          "buildings": 2.0
+        },
+        "type": "triplebulletweapon",
+        "weight": 0
+      },
+      "item_type": "santaweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "scissors": {
+      "durability": 1,
+      "is_tool": true,
+      "item_action": {
+        "animation_length": 0.5,
+        "attack_angle": 90,
+        "distance": 1,
+        "hand_type": "onehanded",
+        "key_type": "scissors",
+        "post_timeout": 0.3,
+        "pre_timeout": 0.2,
+        "type": "open"
+      },
+      "item_type": "scissors",
+      "stack": 1,
+      "weight": 1
+    },
+    "scorehat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "scorehat",
+      "stack": 1,
+      "weight": 1
+    },
+    "shadowweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 90,
+        "damage": 13,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.7,
+        "power": 0,
+        "pre_timeout": 0.3,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "tag_mul": {
+          "buildings": 2.2,
+          "defense": 2.0
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "shadowweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "shooterhat": {
+      "grade": 1,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "shooterhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "silvercrate": {
+      "is_tool": true,
+      "item_action": {
+        "entity_type": "silvercrate",
+        "friend_ignore_tags": [
+          "floor"
+        ],
+        "ignore_tags": [],
+        "ignore_types": [],
+        "offset": 1.5,
+        "type": "spawn"
+      },
+      "item_type": "silvercrate",
+      "stack": 50,
+      "weight": 1
+    },
+    "silverkey": {
+      "durability": 1,
+      "is_tool": true,
+      "item_action": {
+        "animation_length": 0.5,
+        "attack_angle": 90,
+        "distance": 1,
+        "hand_type": "onehanded",
+        "key_type": "silver",
+        "post_timeout": 0.3,
+        "pre_timeout": 0.2,
+        "type": "open"
+      },
+      "item_type": "silverkey",
+      "stack": 1,
+      "weight": 1
+    },
+    "simpleshield": {
+      "durability": 200,
+      "grade": 1,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.26
+        },
+        "hand_type": "onehanded",
+        "push": 1,
+        "type": "shield"
+      },
+      "item_type": "simpleshield",
+      "stack": 1,
+      "weight": 1.05
+    },
+    "skeletonweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 120,
+        "damage": 18,
+        "distance": 1.5,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.7,
+        "power": 0,
+        "pre_timeout": 0.35,
+        "push": 5,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "skeletonweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "skinswitcher_anime": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "anime"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_anime",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_banshee": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "banshee"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_banshee",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_berserk": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "berserk"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_berserk",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_catgirl": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "catgirl"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_catgirl",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_cernianshieldmaiden": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "cernianshieldmaiden"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_cernianshieldmaiden",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_chosenbynightmare": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "chosenbynightmare"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_chosenbynightmare",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_cube": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "cube"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_cube",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_daemon": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "daemon"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_daemon",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_halloween": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "halloween"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_halloween",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_harlequin": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "harlequin"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_harlequin",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_heavenknight": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "heavenknight"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_heavenknight",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_kitsune": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "kitsune"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_kitsune",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_mascot": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "mascot"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_mascot",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_mascotwoman": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "mascotwoman"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_mascotwoman",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_mussurian": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "mussurian"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_mussurian",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_ninja": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "ninja"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_ninja",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_plaguedoctor": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "plaguedoctor"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_plaguedoctor",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_polarwalker": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "polarwalker"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_polarwalker",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_premiumdarkknight": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "premiumdarkknight"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_premiumdarkknight",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_rabbit": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "rabbit"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_rabbit",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_random": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "CernianShieldMaiden",
+            "PremiumDarkKnight",
+            "Halloween",
+            "Anime",
+            "Robot",
+            "Soldier",
+            "Cube",
+            "SteamWarrior",
+            "Banshee",
+            "ChosenbyNightmare",
+            "Mascot",
+            "Berserk",
+            "SwampPioneer",
+            "VoidKnight",
+            "Harlequin",
+            "Mussurian",
+            "Ninja",
+            "Kitsune",
+            "Polarwalker",
+            "Xenomorph",
+            "Symbiont",
+            "Shrek",
+            "HeavenKnight",
+            "MascotWoman",
+            "PlagueDoctor",
+            "Daemon",
+            "Catgirl",
+            "Rabbit"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_random",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_robot": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "robot"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_robot",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_shrek": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "shrek"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_shrek",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_soldier": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "soldier"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_soldier",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_steamwarrior": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "steamwarrior"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_steamwarrior",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_swamppioneer": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "swamppioneer"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_swamppioneer",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_symbiont": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "symbiont"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_symbiont",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_voidknight": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "voidknight"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_voidknight",
+      "stack": 20,
+      "weight": 1
+    },
+    "skinswitcher_xenomorph": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "set_skin",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "ty": [
+            "xenomorph"
+          ]
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "skinswitcher_xenomorph",
+      "stack": 20,
+      "weight": 1
+    },
+    "slimeweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.9,
+        "attack_angle": 360,
+        "damage": 30,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.5,
+        "power": 0,
+        "pre_timeout": 0.5,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "slimeweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "sniperhat": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "sniperhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "snowball": {
+      "durability": -1,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "snowball",
+        "bullet_item_type": "snowball",
+        "bullet_offset": 1,
+        "bullet_speed": 17,
+        "damage": 1,
+        "distance": 13,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.15,
+        "pre_timeout": 0.15,
+        "push": 1,
+        "redirect": false,
+        "stamina": 4,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.5
+      },
+      "item_type": "snowball",
+      "stack": 300,
+      "weight": 1
+    },
+    "snowballtowerweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "snowball",
+        "bullet_item_type": "snowball",
+        "bullet_offset": 0.6,
+        "bullet_speed": 17,
+        "damage": 15,
+        "distance": 15,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.15,
+        "pre_timeout": 0.15,
+        "push": 2,
+        "redirect": false,
+        "stamina": 15,
+        "tag": "Range",
+        "tag_mul": {
+          "incrasedtowerdamage": 1.8
+        },
+        "type": "rangedweapon",
+        "weight": 0
+      },
+      "item_type": "snowballtowerweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "snowmanweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": false,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 120,
+        "bullet_entity_type": "snowball",
+        "bullet_item_type": "snowball",
+        "bullet_offset": 0.6,
+        "bullet_speed": 17,
+        "damage": 20,
+        "distance": 1.2,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.5,
+        "power": 0,
+        "pre_timeout": 0.4,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "snowmanweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "sonichat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "sonichat",
+      "stack": 1,
+      "weight": 1
+    },
+    "spear": {
+      "durability": 150,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.9,
+        "attack_angle": 15,
+        "damage": 9,
+        "distance": 2.3,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.5,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.4,
+        "power": 1,
+        "pre_timeout": 0.5,
+        "push": 2,
+        "redirect": false,
+        "stamina": 16,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "spear",
+      "repair_price": 10,
+      "stack": 1,
+      "weight": 1
+    },
+    "speedhat": {
+      "grade": 1,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "speedhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "spidercore": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "spidercore",
+      "stack": 100,
+      "weight": 1
+    },
+    "spideregg": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "spideregg",
+        "bullet_item_type": "spideregg",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 1,
+        "distance": 6,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.15,
+        "push": 1,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.6
+      },
+      "item_type": "spideregg",
+      "personal": true,
+      "stack": 30,
+      "weight": 1
+    },
+    "spiderhat": {
+      "grade": 4,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "spiderhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "spidermotherweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1.5,
+        "attack_angle": 120,
+        "damage": 80,
+        "distance": 2,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.4,
+        "power": 0,
+        "pre_timeout": 1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "tag_mul": {
+          "buildings": 100.0
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "spidermotherweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "spidershield": {
+      "custom_effect_type": "web_trap_spawn",
+      "durability": 2000,
+      "grade": 4,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.35
+        },
+        "hand_type": "onehanded",
+        "push": 1,
+        "type": "shield"
+      },
+      "item_type": "spidershield",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1.05
+    },
+    "spidersword": {
+      "custom_effect_type": "grab_items",
+      "durability": 900,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 19,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 0,
+        "pre_timeout": 0.15,
+        "push": 0,
+        "redirect": false,
+        "stamina": 12,
+        "tag": "Melee",
+        "tag_mul": {
+          "spider": 2.0
+        },
+        "type": "meleeweapon",
+        "weight": "0.6"
+      },
+      "item_type": "spidersword",
+      "repair_price": 600,
+      "stack": 1,
+      "weight": 1
+    },
+    "spidertowerweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": false,
+        "animation_length": 1,
+        "bullet_entity_type": "webball",
+        "bullet_item_type": "webball",
+        "bullet_offset": 0.6,
+        "bullet_speed": 17,
+        "damage": 14,
+        "distance": 9,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 1,
+        "pre_timeout": 0.2,
+        "push": 5,
+        "redirect": false,
+        "stamina": 14,
+        "tag": "Range",
+        "tag_mul": {
+          "incrasedtowerdamage": 1.8
+        },
+        "type": "rangedweapon",
+        "weight": 0
+      },
+      "item_type": "spidertowerweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "spiderwand": {
+      "durability": 150,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": false,
+        "animation_length": 1,
+        "bullet_entity_type": "webball",
+        "bullet_item_type": "webball",
+        "bullet_offset": 0.4,
+        "bullet_speed": 17,
+        "damage": 9,
+        "distance": 6,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.9,
+        "pre_timeout": 0.3,
+        "push": 5,
+        "redirect": false,
+        "stamina": 55,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0
+      },
+      "item_type": "spiderwand",
+      "repair_price": 200,
+      "stack": 1,
+      "weight": 1
+    },
+    "spiderweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1.5,
+        "attack_angle": 90,
+        "damage": 11,
+        "distance": 0.9,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.75,
+        "power": 0,
+        "pre_timeout": 0.65,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "spiderweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "spikehat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "spikehat",
+      "stack": 1,
+      "weight": 1
+    },
+    "spikeshield": {
+      "custom_effect_type": "reflect_damage",
+      "durability": 600,
+      "grade": 1,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.31
+        },
+        "hand_type": "onehanded",
+        "push": 1,
+        "type": "shield"
+      },
+      "item_type": "spikeshield",
+      "stack": 1,
+      "weight": 1.08
+    },
+    "spit": {
+      "durability": 900,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 17,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 8,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.55
+      },
+      "item_type": "spit",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1
+    },
+    "staffofplague": {
+      "durability": 300,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "plagueball",
+        "bullet_offset": 0.6,
+        "bullet_speed": 17,
+        "damage": 22,
+        "distance": 16,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.15,
+        "pre_timeout": 0.15,
+        "push": 2,
+        "redirect": false,
+        "stamina": 5,
+        "tag": "Range",
+        "type": "rangedweapon",
+        "weight": 0
+      },
+      "item_type": "staffofplague",
+      "stack": 1,
+      "weight": 1
+    },
+    "staminapotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "buff",
+        "animation": {
+          "interval": 2
+        },
+        "args": {
+          "buff": "Stamina",
+          "timeout": 300
+        },
+        "pre_timeout": 1,
+        "type": "use"
+      },
+      "item_type": "staminapotion",
+      "stack": 40,
+      "weight": 1
+    },
+    "stickypotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "stickypotion",
+        "bullet_item_type": "stickypotion",
+        "bullet_offset": 1,
+        "bullet_speed": 15,
+        "damage": 1,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "pre_timeout": 0.15,
+        "push": 1,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.6
+      },
+      "item_type": "stickypotion",
+      "stack": 40,
+      "weight": 1
+    },
+    "stonearchertowerweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "bullet_entity_type": "arrow",
+        "bullet_item_type": "arrow",
+        "bullet_offset": 0.6,
+        "bullet_speed": 17,
+        "damage": 15,
+        "distance": 12,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 1,
+        "pre_timeout": 0.2,
+        "push": 3,
+        "redirect": false,
+        "stamina": 5,
+        "tag": "Range",
+        "tag_mul": {
+          "incrasedtowerdamage": 1.4
+        },
+        "type": "rangedweapon",
+        "weight": 0
+      },
+      "item_type": "stonearchertowerweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "suriken": {
+      "durability": -1,
+      "grade": 2,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.2,
+        "bullet_entity_type": "suriken",
+        "bullet_item_type": "suriken",
+        "bullet_offset": 1,
+        "bullet_speed": 10,
+        "damage": 10,
+        "distance": 6,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.1,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 4,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.7
+      },
+      "item_type": "suriken",
+      "stack": 75,
+      "weight": 1
+    },
+    "swampmonsterweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 120,
+        "damage": 30,
+        "distance": 1.2,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.05,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.5,
+        "power": 0,
+        "pre_timeout": 0.4,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "swampmonsterweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "swamppotion": {
+      "is_potion": true,
+      "is_tool": true,
+      "item_action": {
+        "action": "heal_and_remove_buffs",
+        "animation": {
+          "interval": 0.75
+        },
+        "args": {
+          "heal": 100
+        },
+        "pre_timeout": 7,
+        "type": "use"
+      },
+      "item_type": "swamppotion",
+      "stack": 40,
+      "weight": 1
+    },
+    "swampwormweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.8,
+        "allow_redirect": true,
+        "animation_length": 1.99,
+        "attack_angle": 30,
+        "damage": 35,
+        "distance": 2.3,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 1,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.6,
+        "power": 0,
+        "pre_timeout": 0.6,
+        "push": 1,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "swampwormweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "sword": {
+      "durability": 250,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.25,
+        "attack_angle": 120,
+        "damage": 8,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.25,
+        "power": 1,
+        "pre_timeout": 0.15,
+        "push": 0,
+        "redirect": false,
+        "stamina": 9,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.1
+      },
+      "item_type": "sword",
+      "repair_price": 10,
+      "stack": 1,
+      "weight": 1
+    },
+    "techhat": {
+      "grade": 1,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "techhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "thiefhat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "thiefhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "throwingknife": {
+      "durability": -1,
+      "grade": 1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "ai_use_predicted_transform": true,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "bullet_entity_type": "throwingknife",
+        "bullet_item_type": "throwingknife",
+        "bullet_offset": 1,
+        "bullet_speed": 10,
+        "damage": 7,
+        "distance": 6,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "pre_timeout": 0.2,
+        "push": 0,
+        "redirect": false,
+        "stamina": 6,
+        "tag": "Range",
+        "type": "throwingweapon",
+        "weight": 0.9
+      },
+      "item_type": "throwingknife",
+      "stack": 25,
+      "weight": 1
+    },
+    "thunderwand": {
+      "durability": 1200,
+      "grade": 5,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 360,
+        "damage": 9,
+        "distance": 4.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.5,
+        "power": 1,
+        "pre_timeout": 0.5,
+        "push": 9,
+        "redirect": true,
+        "stamina": 12,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.9
+      },
+      "item_type": "thunderwand",
+      "personal": true,
+      "repair_price": 200,
+      "stack": 1,
+      "weight": 1
+    },
+    "timeriteaxe": {
+      "durability": 2800,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 4,
+        "distance": 1,
+        "dodge": 0,
+        "gathering": {
+          "axeable": 1.0
+        },
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 6,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 1.0,
+          "pickaxeable": 0.5
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "timeriteaxe",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1
+    },
+    "timeriteblock": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "timeriteblock",
+      "stack": 1,
+      "weight": 1
+    },
+    "timeriteore": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "timeriteore",
+      "stack": 999,
+      "weight": 1
+    },
+    "timeritepickaxe": {
+      "durability": 2800,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 4,
+        "distance": 1,
+        "dodge": 0,
+        "gathering": {
+          "pickaxeable": 1.0
+        },
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 6,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 0.5,
+          "pickaxeable": 1.0
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "timeritepickaxe",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1
+    },
+    "timeriteshield": {
+      "durability": 2500,
+      "grade": 3,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "custom_resist": {
+            "fire": 0.8,
+            "range": 0.9
+          },
+          "resist": 0.4
+        },
+        "hand_type": "onehanded",
+        "push": -1,
+        "type": "shield"
+      },
+      "item_type": "timeriteshield",
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1.85
+    },
+    "timeritespear": {
+      "durability": 2250,
+      "grade": 3,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "attack_angle": 15,
+        "damage": 17,
+        "distance": 2.3,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.25,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.35,
+        "power": 1,
+        "pre_timeout": 0.25,
+        "push": 1,
+        "redirect": false,
+        "stamina": 18,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "timeritespear",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "timeritesword": {
+      "durability": 2250,
+      "grade": 3,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.35,
+        "attack_angle": 130,
+        "damage": 17,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.32,
+        "power": 1,
+        "pre_timeout": 0.2,
+        "push": 1,
+        "redirect": false,
+        "stamina": 15,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.6
+      },
+      "item_type": "timeritesword",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "tinore": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "tinore",
+      "stack": 999,
+      "weight": 1
+    },
+    "tool": {
+      "durability": 200,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 110,
+        "damage": 20,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.2,
+        "power": 1,
+        "pre_timeout": 0.1,
+        "push": 0,
+        "redirect": false,
+        "stamina": 2,
+        "tag": "Melee",
+        "type": "repair",
+        "weight": 0
+      },
+      "item_type": "tool",
+      "stack": 1,
+      "weight": 1
+    },
+    "tortoiseweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 100,
+        "damage": 10,
+        "distance": 1.5,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 1,
+        "power": 0,
+        "pre_timeout": 0.5,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "tortoiseweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "touristhat": {
+      "grade": 1,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "touristhat",
+      "stack": 1,
+      "weight": 1
+    },
+    "vampirehat": {
+      "grade": 3,
+      "item_action": {
+        "type": "hat"
+      },
+      "item_type": "vampirehat",
+      "stack": 1,
+      "weight": 1
+    },
+    "vikingaxe": {
+      "durability": 250,
+      "grade": 2,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.6,
+        "attack_angle": 120,
+        "damage": 18,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "power": 2,
+        "pre_timeout": 0.3,
+        "push": 0,
+        "redirect": false,
+        "stamina": 16,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.7
+      },
+      "item_type": "vikingaxe",
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1
+    },
+    "voidaxepickaxe": {
+      "durability": 1500,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.3,
+        "attack_angle": 120,
+        "damage": 10,
+        "distance": 1,
+        "dodge": 0,
+        "gathering": {
+          "axeable": 1.0,
+          "pickaxeable": 1.0
+        },
+        "hand_type": "onehanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.23,
+        "power": 6,
+        "pre_timeout": 0.11,
+        "push": 2,
+        "redirect": false,
+        "stamina": 4,
+        "tag": "Melee",
+        "tag_mul": {
+          "axeable": 1.0,
+          "pickaxeable": 1.0
+        },
+        "type": "meleeweapon",
+        "weight": 0.2
+      },
+      "item_type": "voidaxepickaxe",
+      "personal": false,
+      "repair_price": 30,
+      "stack": 1,
+      "weight": 1
+    },
+    "voidshield": {
+      "durability": 1200,
+      "grade": 4,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "resist": 0.34
+        },
+        "hand_type": "onehanded",
+        "push": 1,
+        "type": "shield"
+      },
+      "item_type": "voidshield",
+      "personal": false,
+      "repair_price": 70,
+      "stack": 1,
+      "weight": 1.07
+    },
+    "voidspear": {
+      "durability": 500,
+      "grade": 4,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.66,
+        "attack_angle": 15,
+        "damage": 17,
+        "distance": 2.2,
+        "dodge": 3,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.18,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.45,
+        "power": 1,
+        "pre_timeout": 0.35,
+        "push": 2,
+        "redirect": false,
+        "stamina": 16,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0.85
+      },
+      "item_type": "voidspear",
+      "personal": false,
+      "repair_price": 150,
+      "stack": 1,
+      "weight": 1
+    },
+    "wallbreakershield": {
+      "durability": 1500,
+      "grade": 4,
+      "item_action": {
+        "armor": {
+          "absorb": 0,
+          "custom_resist": {
+            "fire": 0.95,
+            "range": 0.95
+          },
+          "resist": 0.75
+        },
+        "hand_type": "onehanded",
+        "push": 0,
+        "tag_mul": {
+          "range": 0.1
+        },
+        "type": "shield"
+      },
+      "item_type": "wallbreakershield",
+      "stack": 1,
+      "tag_mul": {
+        "range": 0.1
+      },
+      "weight": 1.01
+    },
+    "wallbreakerweapon": {
+      "durability": 250,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1.2,
+        "attack_angle": 120,
+        "damage": 18,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.3,
+        "power": 7,
+        "pre_timeout": 0.9,
+        "push": 0,
+        "redirect": false,
+        "stamina": 20,
+        "tag": "Melee",
+        "tag_mul": {
+          "buildings": 5.0
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "wallbreakerweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "web": {
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "web",
+      "stack": 999,
+      "weight": 1
+    },
+    "webball": {
+      "grade": 3,
+      "item_action": {
+        "type": "none"
+      },
+      "item_type": "webball",
+      "stack": 300,
+      "weight": 1
+    },
+    "werewolfweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 100,
+        "damage": 13,
+        "distance": 1.2,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.9,
+        "power": 0,
+        "pre_timeout": 0.5,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "werewolfweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "whitebearweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 0.83,
+        "attack_angle": 100,
+        "damage": 42,
+        "distance": 1.5,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.4,
+        "power": 0,
+        "pre_timeout": 0.35,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "whitebearweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "wolfweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 100,
+        "damage": 13,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "twohanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.9,
+        "power": 0,
+        "pre_timeout": 0.5,
+        "push": 0,
+        "redirect": false,
+        "stamina": 1,
+        "tag": "Melee",
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "wolfweapon",
+      "stack": 1,
+      "weight": 1
+    },
+    "woodenhammer": {
+      "durability": 140,
+      "is_tool": true,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1.2,
+        "attack_angle": 120,
+        "damage": 10,
+        "distance": 1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield": false,
+        "ignore_shield_chance": false,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 1,
+        "post_timeout": 0.3,
+        "power": 7,
+        "pre_timeout": 0.9,
+        "push": 0,
+        "redirect": false,
+        "stamina": 16,
+        "tag": "Melee",
+        "tag_mul": {
+          "buildings": 3.0,
+          "treasurechest": 3.0
+        },
+        "type": "meleeweapon",
+        "weight": 1
+      },
+      "item_type": "woodenhammer",
+      "stack": 1,
+      "weight": 1
+    },
+    "zombieweapon": {
+      "durability": -1,
+      "item_action": {
+        "ai_distance_mul": 0.7,
+        "allow_redirect": true,
+        "animation_length": 1,
+        "attack_angle": 110,
+        "damage": 40,
+        "distance": 1.1,
+        "dodge": 0,
+        "hand_type": "onehanded",
+        "ignore_shield_chance": 0.1,
+        "ignore_types": [],
+        "make_fire": false,
+        "player": 0,
+        "post_timeout": 0.8,
+        "power": 0,
+        "pre_timeout": 0.4,
+        "push": 0,
+        "redirect": false,
+        "stamina": 0,
+        "tag": "Melee",
+        "tag_mul": {
+          "buildings": 6.0,
+          "defense": 5.0
+        },
+        "type": "meleeweapon",
+        "weight": 0
+      },
+      "item_type": "zombieweapon",
+      "stack": 1,
+      "weight": 1
+    }
+  }
+}

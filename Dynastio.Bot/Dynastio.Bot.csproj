@@ -7,26 +7,25 @@
     <Nullable>disable</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <ApplicationIcon>logo.ico</ApplicationIcon>
+    <StartupObject></StartupObject>
+    <Copyright>Halun™️ - Jalal Jaleh 2020</Copyright>
+    <PackageProjectUrl>https://github.com/jalaljaleh/Dynastio.Bot</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jalaljaleh/Dynastio.Bot</RepositoryUrl>
+    <NeutralLanguage>en</NeutralLanguage>
+    <AssemblyVersion></AssemblyVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
 
-  <ItemGroup>
-    <Content Include="config.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="data">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="logo.ico" />
-  </ItemGroup>
 
-
-  <ItemGroup>
-    <None Include="Interactions\Modules.Menu\Buttons\ButtonCloseModule.cs" />
-    <None Include="Interactions\Modules.Menu\ButtonMenuModule.cs" />
-    <None Include="Interactions\Modules.Menu\Buttons\ButtonRankModule.cs" />
-    <None Include="Interactions\Modules.Menu\Buttons\ButtonSyncBadgesModule.cs" />
-  </ItemGroup>
 
   <ItemGroup>
 	  <PackageReference Include="Discord.Net" Version="3.18.0" />
@@ -45,6 +44,11 @@
 
 	
   <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Update="Services\GlobalizationService\Globally\GloballyLocale.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -59,6 +63,10 @@
 
 	
   <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Services\GlobalizationService\Globally\GloballyLocale.ru.resx">
       <LastGenOutput>GloballyLocale.ru.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -79,6 +87,9 @@
   </ItemGroup>
 
 
-	
+	<ItemGroup>
+		<Content Include="assets\**" CopyToOutputDirectory="PreserveNewest" />
+
+	</ItemGroup>
 	
 </Project>

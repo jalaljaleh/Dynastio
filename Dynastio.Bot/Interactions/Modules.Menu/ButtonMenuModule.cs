@@ -168,6 +168,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                  ButtonServersModule.BuildButton(this),
                  ButtonTeamsModule.BuildButton(this),
                  ButtonSearchPlayersModule.BuildButton(this)])
+
+                .WithActionRow([Interactions.Modules.Owner.ItemsModule.BuildButton(this)])
                 .WithSeparator(SeparatorSpacingSize.Small, true);
 
             if (BotUser.HasLinkedAccount)

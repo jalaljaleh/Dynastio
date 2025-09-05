@@ -54,10 +54,10 @@ namespace Dynastio.Bot
         /// <summary>
         /// Wraps the value in triple backticks (```value```), creating a Markdown code block.
         /// </summary>
-        public static string ToCodeBlock(this string value)
+        public static string ToCodeBlock(this string value,string language = "md")
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
-            return $"```{value}```";
+            return $"```{language}\n{value}```";
         }
 
         /// <summary>
