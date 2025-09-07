@@ -82,6 +82,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// <param name="pageSize">Items per page (default=10).</param>
         /// <param name="trigger">Context string (default="").</param>
         [ComponentInteraction(InteractionIdBase + ":*:*:*")]
+        [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireContext(ContextType.Guild)]
         public async Task HandleTeamsButtonAsync(int page = 1, int pageSize = 10, string trigger = "")

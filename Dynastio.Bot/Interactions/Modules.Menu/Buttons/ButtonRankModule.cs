@@ -95,6 +95,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*")]
+        [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger = "")
@@ -151,17 +152,17 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 var rankSummary = new StringBuilder()
                     .AppendLine($"**Roles:** {userRankRoles.Count}/{allRankRoles.Count}")
                     .AppendLine()
-                    .AppendLine($"**Owned ({userRankRoles.Count}):** " +
-                                (userRankRoles.Any()
-                                  ? string.Join(" ", userRankRoles.Take(15).Select(r => r.Mention)) + " More ..."
-                                  : "None"))
+                    .AppendLine($"**Owned:** ` {userRankRoles.Count} ` ")
+                    //            (userRankRoles.Any()
+                    //              ? string.Join(" ", userRankRoles.Take(15).Select(r => r.Mention)) + " More ..."
+                    //              : "None"))
+                    //.AppendLine()
+                    .AppendLine($"**Locked:** ` {lockedRankRoles.Count} ` ")
                     .AppendLine()
-                    .AppendLine($"**Locked ({lockedRankRoles.Count}):** ")
-                    .AppendLine()
-                    .AppendLine($"**Next role:** " +
-                                (nextBadge != null
-                                  ? $"{nextBadge.Mention} (requires Level {BotUser.GetOrCreateGuildProfile(Guild.Id).Level + 1})"
-                                  : "All roles unlocked!"))
+                    //.AppendLine($"**Next role:** " +
+                    //            (nextBadge != null
+                    //              ? $"{nextBadge.Mention} (requires Level {BotUser.GetOrCreateGuildProfile(Guild.Id).Level + 1})"
+                    //              : "All roles unlocked!"))
                     .ToString();
 
                 // 5. Inject into your embed/container

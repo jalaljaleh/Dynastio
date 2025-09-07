@@ -111,6 +111,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
         [ComponentInteraction(InteractionIdBase)]
+        [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireUserPermission(GuildPermission.Administrator)]
         [RequireContext(ContextType.Guild)]
@@ -118,6 +119,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild
 
 
         [ComponentInteraction(InteractionIdBase + ":*")]
+        [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireUserPermission(GuildPermission.Administrator)]
         [RequireContext(ContextType.Guild)]

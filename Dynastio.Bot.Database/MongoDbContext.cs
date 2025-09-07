@@ -63,30 +63,15 @@ namespace Dynastio.Bot.Database
         /// </summary>
         private async Task DoWorkAsync()
         {
-            //var users = JsonSerializer.Deserialize<List<User>>(File.ReadAllText("W:\\Halun\\Dynastio.Bot\\database\\newUsersDb.json"));
+            //var users = await GetAllUsersAsync();
 
             //foreach (var user in users)
             //{
-            //    if (user.HasLinkedAccount)
-            //    {
-            //        var account = user.GetDefaultAccount().Clone();
-            //        account.AsDefault(true);
-
-            //        user.ClearAccounts();
-
-            //        user.AddAccount(account);
-            //    }
-            //    else
-            //    {
-            //        user.ClearAccounts();
-            //    }
+            //    var a = user.GetDefaultAccount();
+            //    if (a != null)
+            //        user.SetRewardAccount(a.Id);
             //}
-            //   await _users.InsertManyAsync(users);
-
-
-            //File.WriteAllText("newUsersDb.json", JsonSerializer.Serialize(newUsers));
-
-            // Reserved for data migration or background operations
+            //await UpdateManyUsersAsync(users);
             await Task.CompletedTask;
         }
 

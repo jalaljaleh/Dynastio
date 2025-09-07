@@ -110,6 +110,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// </summary>
         [SlashCommand(SlashCommandName, "menu.description")]
         [ComponentInteraction(InteractionIdBase + ":*")]
+        [RequireMessageComponentTimeout]
         [RequireContext(ContextType.Guild)]
         public async Task ShowMenuAsync()
         {
@@ -223,7 +224,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 components.WithContainer(containerAdmin);
             }
 
-            components.WithActionRow([ButtonCloseModule.BuildButton(this), GetLinkedButton()]);
+            components.WithActionRow([ButtonCloseModule.BuildButton(this),GetDiscordButton(), GetTelegramButton()]);
 
             await ModifyMenuMessageAsync(components: components.Build());
         }

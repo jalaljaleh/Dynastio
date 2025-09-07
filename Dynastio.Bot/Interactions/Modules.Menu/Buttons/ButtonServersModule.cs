@@ -111,6 +111,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// <param name="pageSize">Items per page (default = 20).</param>
         /// <param name="trigger">Context label (default = "main").</param>
         [ComponentInteraction(InteractionIdBase + ":*:*:*:*")]
+        [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireContext(ContextType.Guild)]
         public async Task ShowServersAsync(

@@ -16,12 +16,21 @@ namespace Dynastio.Bot.Interactions
     public class MenuModulesBase : BotInteractionModuleBase<BotSocketInteractionContext>
     {
 
-        public static ButtonBuilder GetLinkedButton()
+        public static ButtonBuilder GetTelegramButton()
         {
             return new ButtonBuilder()
             {
                 Url = "https://t.me/halunteam/27",
                 Label = "Report bugs | Сообщайте о багах",
+                Style = ButtonStyle.Link,
+            };
+        }
+        public static ButtonBuilder GetDiscordButton()
+        {
+            return new ButtonBuilder()
+            {
+                Url = "https://discord.gg/rbfnf9VZVZ",
+                Label = "Disocrd Server",
                 Style = ButtonStyle.Link,
             };
         }
@@ -44,7 +53,7 @@ namespace Dynastio.Bot.Interactions
             ComponentBuilderV2 cb = new ComponentBuilderV2()
                 .WithContainer(containerb);
 
-            cb.WithActionRow([GetLinkedButton()]);
+            cb.WithActionRow([GetDiscordButton(),GetTelegramButton()]);
 
             await ModifyMenuMessageAsync(components: cb.Build());
         }
@@ -63,7 +72,8 @@ namespace Dynastio.Bot.Interactions
                 .WithContainer(containerb)
                 .WithContainer(containerc);
 
-            cb.WithActionRow([GetLinkedButton()]);
+
+            cb.WithActionRow([GetDiscordButton(), GetTelegramButton()]);
 
             await ModifyMenuMessageAsync(components: cb.Build());
         }
@@ -83,7 +93,8 @@ namespace Dynastio.Bot.Interactions
             ComponentBuilderV2 cb = new ComponentBuilderV2()
                 .WithContainer(containerb);
 
-            cb.WithActionRow([GetLinkedButton()]);
+
+            cb.WithActionRow([GetDiscordButton(), GetTelegramButton()]);
 
             await ModifyMenuMessageAsync(components: cb.Build());
         }

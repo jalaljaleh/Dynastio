@@ -62,6 +62,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Displays the SearchPlayerModalForm to gather filter inputs.
         /// </summary>
         [ComponentInteraction(InteractionIdBase)]
+        [RequireMessageComponentTimeout]
         public async Task ModalSearchPlayers()
         {
             // Opens the modal defined by SearchPlayerModalForm

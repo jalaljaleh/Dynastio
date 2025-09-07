@@ -10,7 +10,7 @@ namespace Dynastio.Bot
 
         public static Random Random = new Random();
 
-        public static bool Developer { get; set; } = false;
+        public static bool Developer { get; set; } = true;
         public static bool IsDebug()
         {
 #if DEBUG

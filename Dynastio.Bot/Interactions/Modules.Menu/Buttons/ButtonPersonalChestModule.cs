@@ -21,7 +21,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         // SECTION: Constants
         // -----------------------------------------------------------------------------------
         public DynastioApi Dynastio { get; set; }
-     
+
         /// <summary>
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
@@ -96,6 +96,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*")]
+        [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger = "")
@@ -103,7 +104,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             await DeferAsync();
 
             var account = Context.BotUser.GetDefaultAccount();
-            var chest = await Dynastio.GetUserPersonalchestAsync(account.Id);
+            var chest = await account.GetCachedPersonalChestAsync(Dynastio.GetUserPersonalchestAsync(account.Id));
 
             var shape = new DynastioShapeGenerator(EmoteService).GeneratePersonalChest(chest);
 
@@ -121,10 +122,38 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
               .WithTextDisplay($"You logined as {account.DisplayName} Peek into your Dynast.io legacy — see your linked account, level, score, badges, and more. Every survivor has a story… this is yours.")
 
               .WithSeparator(SeparatorSpacingSize.Large, true)
-              .WithSection(sectionAccount)
-              .WithSeparator(SeparatorSpacingSize.Small, true)
+              .WithSection(sectionAccount);
 
-              .WithActionRow([ButtonCloseModule.BuildButton(this)]);
+
+
+            // Constants for easy tuning
+            const int TotalButtons = 20;
+            const int ButtonsPerRow = 5;
+            int totalRows = TotalButtons / ButtonsPerRow;
+
+            // Cache your dictionary once
+            var items = chest.GetAsDictionary();
+
+            // should separator ? add if you need it
+            container.WithSeparator(SeparatorSpacingSize.Small, true);
+
+            for (int rowIndex = 0; rowIndex < totalRows; rowIndex++)
+            {
+                var actionRow = new ActionRowBuilder();
+
+                for (int colIndex = 0; colIndex < ButtonsPerRow; colIndex++)
+                {
+                    int currentIndex = rowIndex * ButtonsPerRow + colIndex;
+
+                    items.TryGetValue(currentIndex, out PersonalChestItem item);
+
+                    var button = ButtonPersonalChestItemModule.BuildButton(this, item);
+                    actionRow.WithButton(button);
+                }
+
+                // Attach the completed row
+                container.WithActionRow(actionRow);
+            }
 
             var component = new ComponentBuilderV2()
                 .WithContainer(container)

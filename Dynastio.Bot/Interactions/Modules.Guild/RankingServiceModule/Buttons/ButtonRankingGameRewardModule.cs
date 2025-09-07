@@ -100,6 +100,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*")]
+        [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireTeam]
         [RequireUserPermission(GuildPermission.Administrator)]

@@ -89,7 +89,7 @@ namespace Dynastio.Bot
             if (!guild.RankingSettings.IsGameRewardEnabled || !user.HasLinkedAccount)
                 return false;
 
-            await _dynastioApi.UpdateDiscordRankAsync(user.GetDefaultAccount().Id, profile.Level);
+            await _dynastioApi.UpdateDiscordRankAsync(user.GetRewardAccount().Id, profile.Level);
             return true;
         }
 

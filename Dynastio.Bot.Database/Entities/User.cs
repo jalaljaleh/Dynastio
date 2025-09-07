@@ -59,7 +59,12 @@ namespace Dynastio.Bot.Database
         // Convenience Properties
         // --------------------------------------------------------------------
 
-
+        /// <summary>
+        /// Returns true if the user has at least one reward game account.
+        /// </summary>
+        [BsonIgnore]
+        [JsonIgnore]
+        public bool HasRewardAccount => Accounts.Any(a => a.IsPrimaryRewardAccount);
 
         /// <summary>
         /// Returns true if the user has at least one linked game account.
@@ -193,7 +198,22 @@ namespace Dynastio.Bot.Database
 
             return target;
         }
+        /// <summary>
+        /// Marks one account as Reward if no any mark account available.
+        /// </summary>
+        /// <param name="accountId">ID of the account to set as reward.</param>
+        /// <returns>The newly false, if not found or there be another reward account.</returns>
+        public bool SetRewardAccount(string accountId)
+        {
+            var target = GetAccount(accountId);
+            if (target == null) return false;
 
+            if (Accounts.Any(a => a.IsPrimaryRewardAccount))
+                return false;
+
+            target.AsPrimaryRewardAccount();
+            return true;
+        }
         /// <summary>
         /// Retrieves the default account, or first account if none set.
         /// </summary>
@@ -203,7 +223,14 @@ namespace Dynastio.Bot.Database
             return Accounts.FirstOrDefault(a => a.IsDefault)
                    ?? Accounts.FirstOrDefault();
         }
-
+        /// <summary>
+        /// Retrieves the default account, or first account if none set.
+        /// </summary>
+        /// <returns>The default GameAccount, or null if no accounts exist.</returns>
+        public GameAccount? GetRewardAccount()
+        {
+            return Accounts.FirstOrDefault(a => a.IsPrimaryRewardAccount);
+        }
         /// <summary>
         /// Clears all linked game accounts.
         /// </summary>

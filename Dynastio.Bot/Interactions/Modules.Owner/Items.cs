@@ -41,7 +41,8 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
                  + IdParameterFormat.StarIfNullFormat(trigger);
         }
 
-        [RequireMessageComponentOwnerAttribute]
+        [RequireMessageComponentTimeout]
+        [RequireMessageComponentOwner]
         [ComponentInteraction(InteractionIdBase + ":*")]
         public async Task randomItemAsync(string trigger = "default")
         {

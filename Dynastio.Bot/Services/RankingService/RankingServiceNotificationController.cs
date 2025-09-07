@@ -120,11 +120,11 @@ namespace Dynastio.Bot
         /// </summary>
         private static string BuildRewardInfo(User user, int level)
         {
-            if (!user.HasLinkedAccount)
+            if (!user.HasRewardAccount)
                 return "⚠️ Connect your game account to claim your coins.";
 
             var coins = XpCalculator.GetLevelCoinsReward(level);
-            var accountName = user.GetDefaultAccount().ServiceName;
+            var accountName = user.GetRewardAccount().ServiceName;
             return $"In-game reward: **{coins} coins** added to **{accountName}**.";
         }
     }

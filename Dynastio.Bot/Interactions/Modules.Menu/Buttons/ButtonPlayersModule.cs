@@ -125,6 +125,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Invokes ExecuteAsync with only pagination parameters.
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*:*:*")]
+        [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireContext(ContextType.Guild)]
         public async Task HandlePagingAsync(
@@ -141,6 +142,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// and render the players list in the menu message.
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*:*:*:*:*:*:*")]
+        [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(

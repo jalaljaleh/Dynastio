@@ -97,6 +97,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*")]
+        [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger = null)
@@ -108,7 +109,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             var account = Context.BotUser.GetDefaultAccount();
             var guildProfile = BotUser.GetOrCreateGuildProfile(Guild.Id);
     
-            var profile = await Dynastio.GetUserProfileCardAsync(account.Id);
+            var profile = await account.GetCachedProfileCardAsync(Dynastio.GetUserProfileCardAsync(account.Id));
 
             /// test
             //profile.UnlockedSkins.AddRange([SkinType.Ninja, SkinType.Snowman, SkinType.Anime, SkinType.Girl]);

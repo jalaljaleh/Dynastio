@@ -1,37 +1,39 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Dynastio.Bot.Database;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
+using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
+namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 {
     /// <summary>
     /// TEMPLATE: Copy this class when you need to add a new button module.
     /// Acts as the “default” fallback for any unregistered or unknown button IDs.
     /// Inherit from MenuModulesBase and implement IButtonsServiceModule.
     /// </summary>
-    public class ButtonBadgeSyncerActivatorModule : MenuModulesBase, IMenuComponentRule
+    public class ButtonPersonalChestItemModule : MenuModulesBase, IMenuComponentRule
     {
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
         // -----------------------------------------------------------------------------------
+        public DynastioApi Dynastio { get; set; }
 
         /// <summary>
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.guild.buttons.guildetupBadgeSyncerActivator";
+        public const string InteractionIdBase = "interactions.menu.buttons.personalchest.item";
 
         /// <summary>
         /// Suffix format appended after the base ID.
         /// {0} = page, {1} = page size, {2} = trigger context.
         /// Allows you to pass parameters through the button’s CustomId.
         /// </summary>
-        public const string IdParameterFormat = ":{0}";
+        public const string IdParameterFormat = ":{0}:{1}";
 
         // -----------------------------------------------------------------------------------
         // SECTION: Builder Method
@@ -50,20 +52,23 @@ namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
         /// Helps pass context (like page or filter) back to ExecuteAsync.
         /// </param>
         /// <returns>A fully configured ButtonBuilder instance.</returns>
-        public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
+        public static ButtonBuilder BuildButton(MenuModulesBase module, PersonalChestItem item, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("Enable")
-                .WithEmote(module.EmoteService.GetEmoteByName("developer"))
+                .WithLabel("Slot 0" )
+                .WithEmote(module.EmoteService.GetEmoteByName("unknown"))
                 .WithStyle(ButtonStyle.Secondary)
-                .WithDisabled(false)
-                .WithCustomId(BuildCustomId(trigger: CustomIdHelper.Generate()));
+                .WithDisabled(item == null)
+                .WithCustomId(BuildCustomId("unkown", trigger: CustomIdHelper.Generate()));
 
-            if (module.BotGuild.BadgeSettings.IsEnabled)
+            if (item != null)
             {
-                btn.WithLabel("Disable")
-                    .WithStyle(ButtonStyle.Danger);
+                btn
+                .WithLabel("Slot " + (item.Index + 1))
+                .WithEmote(module.EmoteService.GetEmote(item.ItemType))
+                .WithCustomId(BuildCustomId(item.ItemType.ToString(), trigger: CustomIdHelper.Generate()));
             }
+
             return btn;
         }
 
@@ -79,12 +84,12 @@ namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
         /// <param name="take">Items per page (default = 10).</param>
         /// <param name="trigger">Context label (default = empty).</param>
         /// <returns>Fully formatted CustomId for use with ComponentInteraction.</returns>
-        public static string BuildCustomId(string trigger = "")
+        public static string BuildCustomId(string item, string trigger = "")
         {
             // Concatenate base prefix + formatted parameters
             // .StarIfNullFormat ensures safe formatting even if trigger is null/empty
             return InteractionIdBase
-                 + IdParameterFormat.StarIfNullFormat(trigger);
+                 + IdParameterFormat.StarIfNullFormat(item, trigger);
         }
 
         // -----------------------------------------------------------------------------------
@@ -97,48 +102,64 @@ namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
         /// Copy-and-paste into your new module and adjust the attribute:
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
-        [ComponentInteraction(InteractionIdBase + ":*")]
+        [ComponentInteraction(InteractionIdBase + ":*:*")]
         [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
-        [RequireUserPermission(GuildPermission.Administrator)]
         [RequireContext(ContextType.Guild)]
-        public async Task ExecuteAsync(string trigger = "")
+        public async Task ExecuteAsync(ItemType item, string trigger = "")
         {
+            await DeferAsync();
 
-            if (BotGuild.BadgeSettings.IsEnabled)
+            var account = Context.BotUser.GetDefaultAccount();
+            var chest = await account.GetCachedPersonalChestAsync(Dynastio.GetUserPersonalchestAsync(account.Id));
+            var target = chest.Items.FirstOrDefault(a => a.ItemType == item);
+
+            string ownerMention = " Not Found ";
+            if (!string.IsNullOrEmpty(target.OwnerId))
             {
-                BotGuild.UpdateBadgeSettings(a => a.IsEnabled = false);
-                await RespondAsync("Badge Sync Service disabled !");
+                if (target.OwnerId.Contains("discord"))
+                {
+                    ownerMention = $"<@{target.OwnerId.Replace("discord:", "")}>";
+                }
+                else
+                {
+                    var itemOwner = await this.Context.DynastioApi.GetUserByConnectedAccountIdAsync(target.OwnerId);
+                    if (itemOwner != null)
+                    {
+                        ownerMention = $"<@{itemOwner.Id}>";
+                    }
+                }
             }
-            else
-            {
-                if (string.IsNullOrEmpty(BotGuild.BadgeSettings.Prefix))
-                {
-                    await ReplyWithErrorAsync("Error: Prefix can't be null");
-                    return;
-                }
-                var headerRole = RoleHelper.GetRoleAbovePrefix(Guild, BotGuild.BadgeSettings.Prefix);
-                if (headerRole is null)
-                {
-                    await ReplyWithErrorAsync("Error: Header role not found !");
-                    return;
-                }
-                var roles = RoleHelper.GetRolesWithPrefix(Guild, BotGuild.BadgeSettings.Prefix);
-                if (roles is null || roles.Any() is false)
-                {
-                    await ReplyWithErrorAsync("Error: no any matched role found for badges !");
-                    return;
-                }
-                BotGuild.UpdateBadgeSettings(a => a.IsEnabled = true);
-                    await RespondAsync("Badge Sync Service enabled !");
-                
+                var sectionAccount = new SectionBuilder()
+                               .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmote(item).Url))
+                            // .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmoteByName("privatechest").Url))
+                            .WithTextDisplay(
+                              $"# {EmoteService.GetEmoteByName("privatechest")} Slot {target.Index + 1}  ` {target.ItemType} `" +
+                              $"\n## Slot: ` {target.Index.ToRegularCounter()} `     Count: ` {target.Count} `" +
+                              $"\n### Durability: ` {target.Durability} `" +
+                              $"\n### Details: ` {target.Details} `" +
+                              $"\n### Owner ` crafted by `: || {ownerMention} ||" +
+                              $"\nToken: ` {target.Token} `" +
+                              $"" +
+                              $"\n");
+
+
+                var container = new ContainerBuilder()
+                  .WithAccentColor(Color.Green)
+                  .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
+                  .WithTextDisplay($"You logined as {account.DisplayName} !")
+
+                  .WithSeparator(SeparatorSpacingSize.Large, true)
+                  .WithSection(sectionAccount);
+                //     .WithSeparator(SeparatorSpacingSize.Small, true)
+
+                //    .WithActionRow([ButtonCloseModule.BuildButton(this)]);
+
+                var component = new ComponentBuilderV2()
+                    .WithContainer(container)
+                    ;
+                await ModifyMenuMessageAsync(components: component.Build());
             }
-            await GuildService.UpdateGuildAsync(Context.BotGuild);
-
-
-            Context.IsDeferred = true;
-            await GuildSetupBadgeSyncerServiceModule.ExternalExecuteAsync(this);
-
-        }
+        
     }
 }

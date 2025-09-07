@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Dynastio.Net;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Text.Json.Serialization;
@@ -11,7 +12,7 @@ namespace Dynastio.Bot.Database
     /// Fluent setters allow updating individual fields while preserving invariants.
     /// </summary>
     [BsonIgnoreExtraElements]
-    public sealed class GameAccount 
+    public sealed class GameAccount
     {
         [JsonIgnore]
         private const char Delimiter = ':';
@@ -88,7 +89,14 @@ namespace Dynastio.Bot.Database
 
         [JsonInclude, JsonPropertyName("addedAt")]
         [BsonElement("addedAt"), BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-        public DateTime AddedAt { get; private set; }  = DateTime.UtcNow;
+        public DateTime AddedAt { get; private set; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// If true, this is the default account for rewards in the game.
+        /// </summary>
+        [JsonInclude, JsonPropertyName("isPrimaryRewardAccount")]
+        [BsonElement("isPrimaryRewardAccount")]
+        public bool IsPrimaryRewardAccount { get; private set; } = false;
 
         //======================================================================
         // Computed / ignored fields
@@ -103,11 +111,42 @@ namespace Dynastio.Bot.Database
             => (ServiceName, ServiceAccountId);
 
 
+        [BsonIgnore, JsonIgnore]
+        private PersonalChest _personalChest = null;
+        private DateTime _personalChestCache = default;
+
+        public async Task<PersonalChest> GetCachedPersonalChestAsync(Task<PersonalChest> func, int cacheMintes = 5)
+        {
+            if ((DateTime.UtcNow - _personalChestCache) > TimeSpan.FromMinutes(cacheMintes) || _personalChest is null)
+            {
+                _personalChest = await func;
+                _personalChestCache = DateTime.UtcNow;
+            }
+            return _personalChest;
+        }
+
+
+        [BsonIgnore, JsonIgnore]
+        private ProfileCard _profileCard = null;
+        private DateTime _profileCardCache = default;
+
+        public async Task<ProfileCard> GetCachedProfileCardAsync(Task<ProfileCard> func, int cacheMintes = 5)
+        {
+            if ((DateTime.UtcNow - _profileCardCache) > TimeSpan.FromMinutes(cacheMintes) || _profileCard is null)
+            {
+                _profileCard = await func;
+                _profileCardCache = DateTime.UtcNow;
+            }
+            return _profileCard;
+        }
+
+
+
         //======================================================================
         // Construction & Parsing
         //======================================================================
 
-      //  private GameAccount() { /* for deserialization */ }
+        //  private GameAccount() { /* for deserialization */ }
 
         /// <summary>
         /// Creates a new <see cref="GameAccount"/> from service + accountId.
@@ -131,6 +170,7 @@ namespace Dynastio.Bot.Database
                 DisplayName = serviceName,
                 Notes = string.Empty,
                 AddedAt = DateTime.UtcNow,
+                IsPrimaryRewardAccount = false
             };
         }
 
@@ -143,6 +183,15 @@ namespace Dynastio.Bot.Database
         public GameAccount WithAddedAt(DateTime dateTime)
         {
             this.AddedAt = dateTime;
+            return this;
+        }
+
+        /// <summary>
+        /// Set as primary reward account.
+        /// </summary>
+        public GameAccount AsPrimaryRewardAccount()
+        {
+            IsPrimaryRewardAccount = true;
             return this;
         }
 
