@@ -55,7 +55,7 @@ namespace Dynastio.Bot.Interactions
 
             cb.WithActionRow([GetDiscordButton(),GetTelegramButton()]);
 
-            await ModifyMenuMessageAsync(components: cb.Build());
+            await ReplyOrModifyAsync(components: cb.Build());
         }
         public async Task ReplyWithErrorAsync(string message)
         {
@@ -75,7 +75,7 @@ namespace Dynastio.Bot.Interactions
 
             cb.WithActionRow([GetDiscordButton(), GetTelegramButton()]);
 
-            await ModifyMenuMessageAsync(components: cb.Build());
+            await ReplyOrModifyAsync(components: cb.Build());
         }
 
         public async Task ReplyWithNotFoundAsync()
@@ -96,13 +96,12 @@ namespace Dynastio.Bot.Interactions
 
             cb.WithActionRow([GetDiscordButton(), GetTelegramButton()]);
 
-            await ModifyMenuMessageAsync(components: cb.Build());
+            await ReplyOrModifyAsync(components: cb.Build());
         }
-        public async Task<IUserMessage> ModifyMenuMessageAsync(string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null, RequestOptions options = null, MessageComponent components = null, Embed embed = null,
+        public async Task<IUserMessage> ReplyOrModifyAsync(string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null, RequestOptions options = null, MessageComponent components = null, Embed embed = null,
             MessageFlags messageFlags = MessageFlags.None)
         {
 
-            
             if (CurrentMessage == null)
             {
                 if (this.Context.Interaction.HasResponded)
@@ -125,7 +124,7 @@ namespace Dynastio.Bot.Interactions
                  x.Components = components;
                  x.Embed = embed;
                  x.Embeds = embeds;
-                 x.Flags = MessageFlags.ComponentsV2;
+                 x.Flags = messageFlags == MessageFlags.None ? CurrentMessage.Flags.Value : messageFlags;
              });
             return CurrentMessage;
         }

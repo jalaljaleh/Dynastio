@@ -185,7 +185,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                     .WithSection(sectionRanks);
             }
 
-            await ModifyMenuMessageAsync(components: new ComponentBuilderV2()
+            await ReplyOrModifyAsync(components: new ComponentBuilderV2()
                 .WithContainer(container)
                 // .WithActionRow([ButtonCloseModule.BuildButton(this)])
                 .Build());

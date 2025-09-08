@@ -226,7 +226,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 
             components.WithActionRow([ButtonCloseModule.BuildButton(this),GetDiscordButton(), GetTelegramButton()]);
 
-            await ModifyMenuMessageAsync(components: components.Build());
+            await ReplyOrModifyAsync(components: components.Build());
         }
     }
 }

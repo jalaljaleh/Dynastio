@@ -104,7 +104,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             await DeferAsync();
 
             var account = Context.BotUser.GetDefaultAccount();
-            var chest = await account.GetCachedPersonalChestAsync(Dynastio.GetUserPersonalchestAsync(account.Id));
+            var chest = await account.GetCachedPersonalChestAsync(Dynastio);
 
             var shape = new DynastioShapeGenerator(EmoteService).GeneratePersonalChest(chest);
 
@@ -158,7 +158,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             var component = new ComponentBuilderV2()
                 .WithContainer(container)
                 ;
-            await ModifyMenuMessageAsync(components: component.Build());
+            await ReplyOrModifyAsync(components: component.Build());
         }
     }
 }

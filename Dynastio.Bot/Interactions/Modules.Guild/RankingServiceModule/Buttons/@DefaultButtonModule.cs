@@ -113,7 +113,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
             ComponentBuilderV2 cb = new ComponentBuilderV2()
                 .WithContainer(containerb);
 
-            await ModifyMenuMessageAsync(components: cb.Build());
+            await ReplyOrModifyAsync(components: cb.Build());
 
         }
     }

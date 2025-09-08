@@ -21,8 +21,9 @@ namespace Dynastio.Bot.Interactions
 
         public readonly EmoteService EmoteService;
         public readonly AssetUrlService AssetUrlService;
-        public readonly DynastioBotDatabase DynastioApi;
+        public readonly DynastioBotDatabase Database;
 
+        public readonly DynastioApi Dynastio;
 
         private User _user;
         private Guild _guild;
@@ -34,7 +35,9 @@ namespace Dynastio.Bot.Interactions
             GuildService = services.GetRequiredService<GuildServices>();
             EmoteService = services.GetRequiredService<EmoteService>();
             AssetUrlService = services.GetRequiredService<AssetUrlService>();
-            DynastioApi = services.GetRequiredService<DynastioBotDatabase>();
+            Database = services.GetRequiredService<DynastioBotDatabase>();
+            Dynastio = services.GetRequiredService<DynastioApi>();
+
             InteractionService = services.GetRequiredService<InteractionService>();
 
             _user = user;
@@ -46,12 +49,12 @@ namespace Dynastio.Bot.Interactions
         /// <summary>
         /// Gets the bot's internal user model for the current interaction user.
         /// </summary>
-        public User BotUser => _user ??= DynastioApi.GetUserAsync(User.Id, true).Result;
+        public User BotUser => _user ??= Database.GetUserAsync(User.Id, true).Result;
 
         /// <summary>
         /// Gets the bot's internal guild model for the current interaction guild.
         /// </summary>
-        public Guild BotGuild => _guild ??= DynastioApi.GetGuildAsync(Guild.Id).Result;
+        public Guild BotGuild => _guild ??= Database.GetGuildAsync(Guild.Id).Result;
 
     }
 }

@@ -109,7 +109,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             var account = Context.BotUser.GetDefaultAccount();
             var guildProfile = BotUser.GetOrCreateGuildProfile(Guild.Id);
     
-            var profile = await account.GetCachedProfileCardAsync(Dynastio.GetUserProfileCardAsync(account.Id));
+            var profile = await account.GetCachedProfileCardAsync(Dynastio);
 
             /// test
             //profile.UnlockedSkins.AddRange([SkinType.Ninja, SkinType.Snowman, SkinType.Anime, SkinType.Girl]);
@@ -188,7 +188,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             //   .WithActionRow([ButtonCloseModule.BuildButton(this)]);
             //    .WithActionRow([ButtonProfileModule.BuildButton(this)]);
             ;
-            await ModifyMenuMessageAsync(components: cb.Build());
+            await ReplyOrModifyAsync(components: cb.Build());
         }
     }
 }

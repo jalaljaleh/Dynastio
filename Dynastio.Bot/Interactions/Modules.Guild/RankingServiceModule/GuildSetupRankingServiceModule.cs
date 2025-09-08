@@ -181,7 +181,7 @@ namespace Dynastio.Bot.Interactions.Modules.Guild
 
             cb.WithActionRow([GuildSetupRankingServiceModule.BuildButton(this)]);
 
-            await ModifyMenuMessageAsync(components: cb.Build());
+            await ReplyOrModifyAsync(components: cb.Build());
 
         }
         public ContainerBuilder GetGameRewardContainer()

@@ -196,7 +196,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 && existingMainUser is not null
                 && existingMainUser.Id != Context.User.Id)
             {
-                await ReplyWithErrorAsync($"This account is already pledged to another Dynasty ({existingMainUser.Id}). You must forge your own path.");
+                await ReplyWithErrorAsync($"This account is already pledged to another Dynasty <@{existingMainUser.Id}>. You must forge your own path.");
                 return;
             }
 

@@ -187,7 +187,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             var components = new ComponentBuilderV2()
                 .WithContainer(container);
 
-            await ModifyMenuMessageAsync(components: components.Build());
+            await ReplyOrModifyAsync(components: components.Build());
         }
 
         // -----------------------------------------------------------------------------------

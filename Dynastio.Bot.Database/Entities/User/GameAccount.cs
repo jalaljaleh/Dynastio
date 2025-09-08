@@ -115,11 +115,11 @@ namespace Dynastio.Bot.Database
         private PersonalChest _personalChest = null;
         private DateTime _personalChestCache = default;
 
-        public async Task<PersonalChest> GetCachedPersonalChestAsync(Task<PersonalChest> func, int cacheMintes = 5)
+        public async Task<PersonalChest> GetCachedPersonalChestAsync(DynastioApi api, int cacheMintes = 5)
         {
             if ((DateTime.UtcNow - _personalChestCache) > TimeSpan.FromMinutes(cacheMintes) || _personalChest is null)
             {
-                _personalChest = await func;
+                _personalChest = await api.GetUserPersonalchestAsync(this.Id);
                 _personalChestCache = DateTime.UtcNow;
             }
             return _personalChest;
@@ -130,11 +130,11 @@ namespace Dynastio.Bot.Database
         private ProfileCard _profileCard = null;
         private DateTime _profileCardCache = default;
 
-        public async Task<ProfileCard> GetCachedProfileCardAsync(Task<ProfileCard> func, int cacheMintes = 5)
+        public async Task<ProfileCard> GetCachedProfileCardAsync(DynastioApi api, int cacheMintes = 5)
         {
             if ((DateTime.UtcNow - _profileCardCache) > TimeSpan.FromMinutes(cacheMintes) || _profileCard is null)
             {
-                _profileCard = await func;
+                _profileCard = await api.GetUserProfileCardAsync(this.Id);
                 _profileCardCache = DateTime.UtcNow;
             }
             return _profileCard;

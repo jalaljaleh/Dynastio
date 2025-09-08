@@ -47,7 +47,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         public async Task randomItemAsync(string trigger = "default")
         {
             await DeferAsync();
-            await ModifyMenuMessageAsync(components: getContent(ItemsService.GetRandomItem()).Build());
+            await ReplyOrModifyAsync(components: getContent(ItemsService.GetRandomItem()).Build());
         }
 
         [SlashCommand("items", "description")]

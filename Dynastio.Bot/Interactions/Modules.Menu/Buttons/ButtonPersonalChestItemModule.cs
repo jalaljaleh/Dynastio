@@ -64,7 +64,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             if (item != null)
             {
                 btn
-                .WithLabel("Slot " + (item.Index + 1))
+                .WithLabel("Slot " + (item.Index + 1).ToRegularCounter())
                 .WithEmote(module.EmoteService.GetEmote(item.ItemType))
                 .WithCustomId(BuildCustomId(item.ItemType.ToString(), trigger: CustomIdHelper.Generate()));
             }
@@ -111,7 +111,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             await DeferAsync();
 
             var account = Context.BotUser.GetDefaultAccount();
-            var chest = await account.GetCachedPersonalChestAsync(Dynastio.GetUserPersonalchestAsync(account.Id));
+            var chest = await account.GetCachedPersonalChestAsync(Dynastio);
             var target = chest.Items.FirstOrDefault(a => a.ItemType == item);
 
             string ownerMention = " Not Found ";
@@ -123,7 +123,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 }
                 else
                 {
-                    var itemOwner = await this.Context.DynastioApi.GetUserByConnectedAccountIdAsync(target.OwnerId);
+                    var itemOwner = await this.Context.Database.GetUserByConnectedAccountIdAsync(target.OwnerId);
                     if (itemOwner != null)
                     {
                         ownerMention = $"<@{itemOwner.Id}>";
@@ -158,7 +158,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 var component = new ComponentBuilderV2()
                     .WithContainer(container)
                     ;
-                await ModifyMenuMessageAsync(components: component.Build());
+                await ReplyOrModifyAsync(components: component.Build());
             }
         
     }
