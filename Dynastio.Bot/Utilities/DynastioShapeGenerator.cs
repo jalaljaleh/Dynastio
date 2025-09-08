@@ -25,7 +25,7 @@ namespace Dynastio.Bot
 
             int width = 6;
             int height = 5;
-            var items = personalChest.Items;
+            var items = personalChest.Items.OrderBy(a=>a.Index).ToList();
             var sb = new StringBuilder();
 
             for (int y = 0; y < height; y++)

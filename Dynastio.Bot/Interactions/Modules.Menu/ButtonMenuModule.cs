@@ -169,7 +169,6 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                  ButtonServersModule.BuildButton(this),
                  ButtonTeamsModule.BuildButton(this),
                  ButtonSearchPlayersModule.BuildButton(this)])
-
                 .WithActionRow([Interactions.Modules.Owner.ItemsModule.BuildButton(this)])
                 .WithSeparator(SeparatorSpacingSize.Small, true);
 
@@ -181,6 +180,12 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                        ButtonProfileModule.BuildButton(this, "1"),
                        BUttonPersonalChestModule.BuildButton(this),
                        ButtonRankModule.BuildButton(this)])
+
+                                   .WithActionRow([
+                    ButtonProfileStatsModule. BuildButton(this,"kill"),
+                    ButtonProfileStatsModule. BuildButton(this,"gather"),
+                    ButtonProfileStatsModule. BuildButton(this,"death"),
+                    ButtonProfileStatsModule.  BuildButton(this,"craft")])
                   //.WithActionRow([stat.BuildButton(this)])
                   //.WithActionRow([rank.BuildButton(this)])
                   // .WithTextDisplay("");
@@ -198,33 +203,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             var components = new ComponentBuilderV2()
                 .WithContainer(container);
 
-            if ((User as IGuildUser).GuildPermissions.Administrator)
-            {
-
-
-                var containerAdmin = new ContainerBuilder()
-                      //.WithMediaGallery(AssetUrlService[AssetType.])
-                      .WithAccentColor(Color.DarkGreen)
-                      .WithTextDisplay($"## {EmoteService.GetEmoteByName("administrator")} Administrator Menu")
-                      .WithTextDisplay("Access powerful tools to configure and manage your server’s Dynast.io bot integration. Adjust roles, permissions, features, and automate server management to fit your community’s needs.")
-                      .WithSeparator(SeparatorSpacingSize.Large, true);
-
-                var sectionAdmin = new SectionBuilder()
-                    .WithTextDisplay("Admin tools for managing and configuring your server’s Dynast.io bot module. Access advanced settings and controls to optimize your community’s experience.")
-                    .WithAccessory(GuildSetupRankingServiceModule.BuildButton(this));
-
-                containerAdmin.WithSection(sectionAdmin);
-
-                var sectionBadgeSyncerModule = new SectionBuilder()
-                    .WithTextDisplay("Sync in-game badges with Discord roles. Use this module to automatically assign roles based on players’ achievements in Dynast.io.")
-                    .WithAccessory(GuildSetupBadgeSyncerServiceModule.BuildButton(this));
-
-                containerAdmin.WithSection(sectionBadgeSyncerModule);
-
-                components.WithContainer(containerAdmin);
-            }
-
-            components.WithActionRow([ButtonCloseModule.BuildButton(this),GetDiscordButton(), GetTelegramButton()]);
+            components.WithActionRow([ButtonCloseModule.BuildButton(this), GetDiscordButton(), GetTelegramButton()]);
 
             await ReplyOrModifyAsync(components: components.Build());
         }

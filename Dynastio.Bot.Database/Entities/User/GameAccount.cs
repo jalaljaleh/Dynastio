@@ -115,7 +115,7 @@ namespace Dynastio.Bot.Database
         private PersonalChest _personalChest = null;
         private DateTime _personalChestCache = default;
 
-        public async Task<PersonalChest> GetCachedPersonalChestAsync(DynastioApi api, int cacheMintes = 5)
+        public async Task<PersonalChest> GetCachedPersonalChestAsync(DynastioApi api, int cacheMintes = 10)
         {
             if ((DateTime.UtcNow - _personalChestCache) > TimeSpan.FromMinutes(cacheMintes) || _personalChest is null)
             {
@@ -130,7 +130,7 @@ namespace Dynastio.Bot.Database
         private ProfileCard _profileCard = null;
         private DateTime _profileCardCache = default;
 
-        public async Task<ProfileCard> GetCachedProfileCardAsync(DynastioApi api, int cacheMintes = 5)
+        public async Task<ProfileCard> GetCachedProfileCardAsync(DynastioApi api, int cacheMintes = 10)
         {
             if ((DateTime.UtcNow - _profileCardCache) > TimeSpan.FromMinutes(cacheMintes) || _profileCard is null)
             {
@@ -140,7 +140,19 @@ namespace Dynastio.Bot.Database
             return _profileCard;
         }
 
+        [BsonIgnore, JsonIgnore]
+        private PlayerStat _profileStat = null;
+        private DateTime _profileStatCache = default;
 
+        public async Task<PlayerStat> GetCachedProfileStatAsync(DynastioApi api, int cacheMintes = 50)
+        {
+            if ((DateTime.UtcNow - _profileStatCache) > TimeSpan.FromMinutes(cacheMintes) || _profileStat is null)
+            {
+                _profileStat = await api.GetUserStatAsync(this.Id);
+                _profileStatCache = DateTime.UtcNow;
+            }
+            return _profileStat;
+        }
 
         //======================================================================
         // Construction & Parsing

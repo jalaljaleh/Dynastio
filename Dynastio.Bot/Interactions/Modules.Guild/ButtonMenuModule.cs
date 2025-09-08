@@ -1,32 +1,32 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Dynastio.Bot.Database;
+using Dynastio.Bot.Interactions.Modules.Guild;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
+
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
+namespace Dynastio.Bot.Interactions.Modules.Guild.Buttons
 {
     /// <summary>
     /// TEMPLATE: Copy this class when you need to add a new button module.
     /// Acts as the “default” fallback for any unregistered or unknown button IDs.
     /// Inherit from MenuModulesBase and implement IButtonsServiceModule.
     /// </summary>
-    public class BUttonPersonalChestModule : MenuModulesBase, IMenuComponentRule
+    public class ButtonMenuModule : MenuModulesBase, IMenuComponentRule
     {
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
         // -----------------------------------------------------------------------------------
-        public DynastioApi Dynastio { get; set; }
 
         /// <summary>
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.menu.buttons.personalchest";
+        public const string InteractionIdBase = "interactions.guild.buttons.menu";
 
         /// <summary>
         /// Suffix format appended after the base ID.
@@ -56,13 +56,13 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             return new ButtonBuilder()
 
-                .WithLabel(module["buttons.interactions.menu.privatechest.label"])
+                .WithLabel(module["buttons.interactions.menu.menu.label"])
 
-                .WithEmote(module.EmoteService.GetEmoteByName("privatechest"))
+                .WithEmote(module.EmoteService.GetEmoteByName("left_shop_icon1"))
 
-                .WithStyle(ButtonStyle.Secondary)
+                .WithStyle(ButtonStyle.Success)
                 .WithDisabled(false)
-                .WithCustomId(BuildCustomId(trigger: CustomIdHelper.Generate()));
+                .WithCustomId(BuildCustomId(trigger: "menu"));
         }
 
         // -----------------------------------------------------------------------------------
@@ -95,71 +95,71 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Copy-and-paste into your new module and adjust the attribute:
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
+        // ===== Constants =====
+
+        /// <summary>
+        /// Slash command name for opening the menu.
+        /// </summary>
+        public const string SlashCommandName = "guild";
+
+
+        // ===== Slash Command =====
+
+        /// <summary>
+        /// Displays the main Dynast.io navigation menu.
+        /// </summary>
+        [SlashCommand(SlashCommandName, "menu.description")]
         [ComponentInteraction(InteractionIdBase + ":*")]
         [RequireMessageComponentTimeout]
-        [RequireMessageComponentOwner]
-        [RequireLinkedAccount]
+        [RequireUserPermission(GuildPermission.Administrator)]
         [RequireContext(ContextType.Guild)]
-        public async Task ExecuteAsync(string trigger = "")
+        public async Task ShowMenuAsync()
         {
-            await DeferAsync();
+            if (!Context.IsDeferred)
+                await DeferAsync(); 
 
-            var account = Context.BotUser.GetDefaultAccount();
-            var chest = await account.GetCachedPersonalChestAsync(Dynastio);
+      
 
-            var shape = new DynastioShapeGenerator(EmoteService).GeneratePersonalChest(chest);
-
-            var sectionAccount = new SectionBuilder()
-                           .WithAccessory(new ThumbnailBuilder(User.TryGetAvatarUrl()))
-                        // .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmoteByName("privatechest").Url))
-                        .WithTextDisplay(
-                          $"# {EmoteService.GetEmoteByName("privatechest")} Personal Chest {account.DisplayName} \n" +
-                          shape);
-
-
+            // 2️⃣ Build container with header
             var container = new ContainerBuilder()
-              .WithAccentColor(Color.Green)
-              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
-              .WithTextDisplay($"You logined as {account.DisplayName} Peek into your Dynast.io legacy — see your linked account, level, score, badges, and more. Every survivor has a story… this is yours.")
+                .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
+                .WithAccentColor(Color.DarkGreen)
+         
+                .WithSeparator(SeparatorSpacingSize.Small, true);
 
-              .WithSeparator(SeparatorSpacingSize.Large, true)
-              .WithSection(sectionAccount);
+            // 5️⃣ Build and send final menu
+            var components = new ComponentBuilderV2()
+                .WithContainer(container);
 
-
-
-            // Constants for easy tuning
-            const int TotalButtons = 20;
-            const int ButtonsPerRow = 5;
-            int totalRows = TotalButtons / ButtonsPerRow;
-
-            // Cache your dictionary once
-            var items = chest.GetAsDictionary();
-
-            // should separator ? add if you need it
-            container.WithSeparator(SeparatorSpacingSize.Small, true);
-
-            for (int rowIndex = 0; rowIndex < totalRows; rowIndex++)
+            if ((User as IGuildUser).GuildPermissions.Administrator)
             {
-                var actionRow = new ActionRowBuilder();
 
-                for (int colIndex = 0; colIndex < ButtonsPerRow; colIndex++)
-                {
-                    int currentIndex = rowIndex * ButtonsPerRow + colIndex;
+                var containerAdmin = new ContainerBuilder()
+                      //.WithMediaGallery(AssetUrlService[AssetType.])
+                      .WithAccentColor(Color.DarkGreen)
+                      .WithTextDisplay($"## {EmoteService.GetEmoteByName("administrator")} Administrator Menu")
+                      .WithTextDisplay("Access powerful tools to configure and manage your server’s Dynast.io bot integration. Adjust roles, permissions, features, and automate server management to fit your community’s needs.")
+                      .WithSeparator(SeparatorSpacingSize.Large, true);
 
-                    items.TryGetValue(currentIndex, out PersonalChestItem item);
+                var sectionAdmin = new SectionBuilder()
+                    .WithTextDisplay("Admin tools for managing and configuring your server’s Dynast.io bot module. Access advanced settings and controls to optimize your community’s experience.")
+                    .WithAccessory(GuildSetupRankingServiceModule.BuildButton(this));
 
-                    var button = ButtonPersonalChestItemModule.BuildButton(this, item);
-                    actionRow.WithButton(button);
-                }
+                containerAdmin.WithSection(sectionAdmin);
 
-                // Attach the completed row
-                container.WithActionRow(actionRow);
+                var sectionBadgeSyncerModule = new SectionBuilder()
+                    .WithTextDisplay("Sync in-game badges with Discord roles. Use this module to automatically assign roles based on players’ achievements in Dynast.io.")
+                    .WithAccessory(GuildSetupBadgeSyncerServiceModule.BuildButton(this));
+
+                containerAdmin.WithSection(sectionBadgeSyncerModule);
+
+                components.WithContainer(containerAdmin);
             }
 
-            var component = new ComponentBuilderV2()
-                .WithContainer(container)
-                ;
-            await ReplyOrModifyAsync(components: component.Build());
+
+            components.WithActionRow([Menu.Buttons.ButtonCloseModule.BuildButton(this), GetDiscordButton(), GetTelegramButton()]);
+
+            await ReplyOrModifyAsync(components: components.Build());
         }
     }
 }

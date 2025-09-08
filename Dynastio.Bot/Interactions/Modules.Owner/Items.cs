@@ -55,7 +55,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         {
             await DeferAsync();
 
-            var result = ItemsService.TryGetItem(item, out var target);
+            var result = ItemsService.TryGetItem(item.ToLower().Trim(), out var target);
             if (result != false)
                 await FollowupAsync(components: getContent(target).Build());
             else

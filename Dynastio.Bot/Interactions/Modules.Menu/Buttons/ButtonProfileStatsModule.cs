@@ -1,10 +1,8 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Dynastio.Bot.Database;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
-using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
@@ -15,18 +13,17 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
     /// Acts as the “default” fallback for any unregistered or unknown button IDs.
     /// Inherit from MenuModulesBase and implement IButtonsServiceModule.
     /// </summary>
-    public class BUttonPersonalChestModule : MenuModulesBase, IMenuComponentRule
+    public class ButtonProfileStatsModule : MenuModulesBase, IMenuComponentRule
     {
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
         // -----------------------------------------------------------------------------------
-        public DynastioApi Dynastio { get; set; }
 
         /// <summary>
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.menu.buttons.personalchest";
+        public const string InteractionIdBase = "interactions.menu.buttons.profileStats";
 
         /// <summary>
         /// Suffix format appended after the base ID.
@@ -39,30 +36,15 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         // SECTION: Builder Method
         // -----------------------------------------------------------------------------------
 
-        /// <summary>
-        /// Construct the ButtonBuilder that appears in the UI whenever this module is used.
-        /// Copy-and-paste this method into your new module and adjust:
-        /// - Label text
-        /// - Emote key
-        /// - Button style
-        /// - CustomId construction
-        /// </summary>
-        /// <param name="args">
-        /// Optional string parameters that will be embedded in the CustomId.
-        /// Helps pass context (like page or filter) back to ExecuteAsync.
-        /// </param>
-        /// <returns>A fully configured ButtonBuilder instance.</returns>
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
-            return new ButtonBuilder()
-
-                .WithLabel(module["buttons.interactions.menu.privatechest.label"])
-
-                .WithEmote(module.EmoteService.GetEmoteByName("privatechest"))
-
+            var btn = new ButtonBuilder()
+                .WithLabel("Stats: " + args.FirstOrDefault().ToString())
+                .WithEmote(module.EmoteService.GetEmoteByName("unknown"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithDisabled(false)
-                .WithCustomId(BuildCustomId(trigger: CustomIdHelper.Generate()));
+                .WithCustomId(BuildCustomId(trigger: args.FirstOrDefault().ToString()));
+            return btn;
         }
 
         // -----------------------------------------------------------------------------------
@@ -104,62 +86,41 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             await DeferAsync();
 
-            var account = Context.BotUser.GetDefaultAccount();
-            var chest = await account.GetCachedPersonalChestAsync(Dynastio);
-
-            var shape = new DynastioShapeGenerator(EmoteService).GeneratePersonalChest(chest);
-
-            var sectionAccount = new SectionBuilder()
-                           .WithAccessory(new ThumbnailBuilder(User.TryGetAvatarUrl()))
-                        // .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmoteByName("privatechest").Url))
-                        .WithTextDisplay(
-                          $"# {EmoteService.GetEmoteByName("privatechest")} Personal Chest {account.DisplayName} \n" +
-                          shape);
-
-
-            var container = new ContainerBuilder()
-              .WithAccentColor(Color.Green)
-              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
-              .WithTextDisplay($"You logined as {account.DisplayName} Peek into your Dynast.io legacy — see your linked account, level, score, badges, and more. Every survivor has a story… this is yours.")
-
-              .WithSeparator(SeparatorSpacingSize.Large, true)
-              .WithSection(sectionAccount);
-
-
-
-            // Constants for easy tuning
-            const int TotalButtons = 20;
-            const int ButtonsPerRow = 5;
-            int totalRows = TotalButtons / ButtonsPerRow;
-
-            // Cache your dictionary once
-            var items = chest.GetAsDictionary();
-
-            // should separator ? add if you need it
-            container.WithSeparator(SeparatorSpacingSize.Small, true);
-
-            for (int rowIndex = 0; rowIndex < totalRows; rowIndex++)
+            var profile = Context.BotUser.GetDefaultAccount();
+            var stat = await profile.GetCachedProfileStatAsync(Context.Dynastio);
+            if (stat == null)
             {
-                var actionRow = new ActionRowBuilder();
-
-                for (int colIndex = 0; colIndex < ButtonsPerRow; colIndex++)
-                {
-                    int currentIndex = rowIndex * ButtonsPerRow + colIndex;
-
-                    items.TryGetValue(currentIndex, out PersonalChestItem item);
-
-                    var button = ButtonPersonalChestItemModule.BuildButton(this, item);
-                    actionRow.WithButton(button);
-                }
-
-                // Attach the completed row
-                container.WithActionRow(actionRow);
+                await ReplyWithErrorAsync("Can't find your stat !");
+                return;
             }
 
-            var component = new ComponentBuilderV2()
-                .WithContainer(container)
-                ;
-            await ReplyOrModifyAsync(components: component.Build());
+            string content = trigger switch
+            {
+                "kill" => string.Join(" | ", stat.Kill.OrderByDescending(a=>a.Value).Select(a => " " + EmoteService.GetEmote(a.Key).ToString() + $" ` {a.Value.ToMetric()} `")),
+                "gather" => string.Join(" | ", stat.Gather.OrderByDescending(a => a.Value).Select(a => " " + EmoteService.GetEmote(a.Key).ToString() + $" ` {a.Value.ToMetric()}`")),
+                "death" => string.Join(" | ", stat.Death.OrderByDescending(a => a.Value).Select(a => " " + EmoteService.GetEmote(a.Key).ToString() + $" ` {a.Value.ToMetric()}`")),
+                "craft" => string.Join(" | ", stat.Craft.OrderByDescending(a => a.Value).Select(a => " " + EmoteService.GetEmote(a.Key).ToString() + $" ` {a.Value.ToMetric()}`")),
+                _ => "not found"
+            };
+
+            if (content.Length > 3800)
+                content = content.Substring(0, 3800);
+
+            var containerb = new ContainerBuilder()
+              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
+            //  .WithAccentColor(Color.Green)
+              .WithTextDisplay($"# {trigger} Stats \n#" + content);
+              //.WithActionRow([
+              //    BuildButton(this,"kill"),
+              //    BuildButton(this,"gather"),
+              //    BuildButton(this,"death"),
+              //    BuildButton(this,"craft")]);
+
+            ComponentBuilderV2 cb = new ComponentBuilderV2()
+                .WithContainer(containerb);
+
+            await ReplyOrModifyAsync(components: cb.Build());
+
         }
     }
 }

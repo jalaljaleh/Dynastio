@@ -105,6 +105,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         [ComponentInteraction(InteractionIdBase + ":*:*")]
         [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
+        [RequireLinkedAccount]
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(ItemType item, string trigger = "")
         {
