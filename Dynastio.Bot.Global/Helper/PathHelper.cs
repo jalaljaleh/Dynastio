@@ -22,15 +22,15 @@ namespace Dynastio.Bot.Global
         }
         public static string GetConfigFile()
         {
-            return Path.Combine(CurrentDirectory, $@"config.json");
+            return Path.Combine(CurrentDirectory, $@"assets\config.json");
         }
         public static string GetDebugFile()
         {
-            return Path.Combine(CurrentDirectory, $@"C:\Users\Jaleh\source\repos\jalaljaleh\Dynastio\Dynastio.Bot\debug.json");
+            return Path.Combine(CurrentDirectory, $@"W:\projects\Dynastio.Bot\debug.json");
         }
         public static string GetData()
         {
-            return Path.Combine(CurrentDirectory, @"data");
+            return Path.Combine(CurrentDirectory, @"assets\data");
         }
 
     }

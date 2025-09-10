@@ -1,11 +1,10 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
-using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
-using SixLabors.ImageSharp.Drawing;
 using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
@@ -15,17 +14,18 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
     /// Acts as the “default” fallback for any unregistered or unknown button IDs.
     /// Inherit from MenuModulesBase and implement IButtonsServiceModule.
     /// </summary>
-    public class ButtonProfileStatsModule : MenuModulesBase, IMenuComponentRule
+    public class DropdownSwitchAccountModule : MenuModulesBase, IMenuComponentRule
     {
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
         // -----------------------------------------------------------------------------------
-
+        public const int MaxSelectionCount = 1;
+        public const int MinSelectionCount = 1;
         /// <summary>
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.menu.buttons.profileStats";
+        public const string InteractionIdBase = "interactions.menu.dropdown.switchAccount";
 
         /// <summary>
         /// Suffix format appended after the base ID.
@@ -38,24 +38,41 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         // SECTION: Builder Method
         // -----------------------------------------------------------------------------------
 
-        public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
+        /// <summary>
+        /// Construct the ButtonBuilder that appears in the UI whenever this module is used.
+        /// Copy-and-paste this method into your new module and adjust:
+        /// - Label text
+        /// - Emote key
+        /// - Button style
+        /// - CustomId construction
+        /// </summary>
+        /// <param name="args">
+        /// Optional string parameters that will be embedded in the CustomId.
+        /// Helps pass context (like page or filter) back to ExecuteAsync.
+        /// </param>
+        /// <returns>A fully configured ButtonBuilder instance.</returns>
+        public static SelectMenuBuilder BuildSelectMenu(MenuModulesBase module, params string[] args)
         {
-            var stat = args.FirstOrDefault().ToString();
-            var emote = stat switch
+            var accounts = module.BotUser.Accounts.Select(a => new SelectMenuOptionBuilder()
+            .WithLabel(a.DisplayName)
+            .WithDescription(a.Notes)
+            .WithDefault(a.IsDefault)
+            .WithValue(a.GetHashCode().ToString())
+            .WithEmote(
+                a.IsDefault
+                ? module.EmoteService.GetEmoteByName("skull")
+                : module.EmoteService.GetEmoteByName("tab_profile_icon_active"))
+            ).ToList();
+
+            var accountsBuilder = new SelectMenuBuilder()
             {
-                "kill" => "skull",
-                "death" => "guard",
-                "gather" => "left_shop_icon1",
-                "craft" => "left_craft_icon",
-                _ => "not found"
+                IsDisabled = false,
+                MinValues = MinSelectionCount,
+                MaxValues = MaxSelectionCount,
+                Options = accounts,
+                CustomId = BuildCustomId(),
             };
-            var btn = new ButtonBuilder()
-                .WithLabel("Stats: " + stat)
-                .WithEmote(module.EmoteService.GetEmoteByName(emote))
-                .WithStyle(ButtonStyle.Secondary)
-                .WithDisabled(false)
-                .WithCustomId(BuildCustomId(trigger: stat));
-            return btn;
+            return accountsBuilder;
         }
 
         // -----------------------------------------------------------------------------------
@@ -74,8 +91,9 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             // Concatenate base prefix + formatted parameters
             // .StarIfNullFormat ensures safe formatting even if trigger is null/empty
-            return InteractionIdBase
-                 + IdParameterFormat.StarIfNullFormat(trigger);
+            return string.IsNullOrEmpty(trigger)
+                ? InteractionIdBase /*+ IdParameterFormat*/
+                : InteractionIdBase; /*+ IdParameterFormat.StarIfNullFormat(trigger);*/
         }
 
         // -----------------------------------------------------------------------------------
@@ -88,65 +106,24 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Copy-and-paste into your new module and adjust the attribute:
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
-        [ComponentInteraction(InteractionIdBase + ":*")]
+        [ComponentInteraction(InteractionIdBase)]
         [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
-        [RequireLinkedAccount]
         [RequireContext(ContextType.Guild)]
-        public async Task ExecuteAsync(string trigger = "")
+        public async Task ExecuteAsync()
         {
             await DeferAsync();
 
-            var profile = Context.BotUser.GetDefaultAccount();
-            var stat = await profile.GetCachedProfileStatAsync(Context.Dynastio);
-            if (stat == null)
-            {
-                await ReplyWithErrorAsync("Can't find your stat !");
-                return;
-            }
+            var data = (Context.Interaction as SocketMessageComponent).Data;
+            var accountHashCode = data.Values.First();
+          
+            BotUser
+                .GetAccountByHashCode(accountHashCode)
+                .AsDefault();
 
-            string FormatStatRows<T>(Dictionary<T, int> data) where T : struct, Enum
-            {
-                return string.Concat(
-                    data
-                    .OrderByDescending(x => x.Value)
-                    .Select((x, idx) => new
-                    {
-                        Text = EmoteService.GetEmote<T>(x.Key).ToString() + $" `{x.Value.ToMetric()}`",
-                        Group = idx / 3
-                    })
-                    .GroupBy(x => x.Group)
-                    .Select(g => "\n" + string.Join(" | ", g.Select(e => e.Text)))
-                );
-            }
+            await UpdateBotUserAsync();
 
-            // 2) Your original switch now becomes
-            string content = trigger switch
-            {
-                "kill" => FormatStatRows(stat.Kill),
-                "gather" => FormatStatRows(stat.Gather),
-                "death" => FormatStatRows(stat.Death),
-                "craft" => FormatStatRows(stat.Craft),
-                _ => "not found"
-            };
-
-            if (content.Length > 3800)
-                content = content.Substring(0, 3800);
-
-            var containerb = new ContainerBuilder()
-              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
-            //  .WithAccentColor(Color.Green)
-              .WithTextDisplay($"# {trigger} Stats \n#" + content);
-            //.WithActionRow([
-            //    BuildButton(this,"kill"),
-            //    BuildButton(this,"gather"),
-            //    BuildButton(this,"death"),
-            //    BuildButton(this,"craft")]);
-
-            ComponentBuilderV2 cb = new ComponentBuilderV2()
-                .WithContainer(containerb);
-
-            await ReplyOrModifyAsync(components: cb.Build());
+            await ReplyWithSuccessAsync("Account switched successfly !");
 
         }
     }

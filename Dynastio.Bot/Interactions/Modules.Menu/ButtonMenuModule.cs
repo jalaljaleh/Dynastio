@@ -1,13 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Dynastio.Bot.Interactions.Modules.Guild;
-using Dynastio.Bot.Interactions.Precondinations;
-using Dynastio.Bot.Services;
-using Dynastio.Bot.Services.GlobalizationService.Globally;
 
-using Dynastio.Net;
-using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 {
@@ -168,9 +161,9 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 [ButtonPlayersModule.BuildButton(this),
                  ButtonServersModule.BuildButton(this),
                  ButtonTeamsModule.BuildButton(this),
-                 ButtonSearchPlayersModule.BuildButton(this)])
-                .WithActionRow([Interactions.Modules.Owner.ItemsModule.BuildButton(this)])
-                .WithSeparator(SeparatorSpacingSize.Small, true);
+                 ButtonSearchPlayersModule.BuildButton(this)]);
+
+            container.WithSeparator(SeparatorSpacingSize.Small, true);
 
             if (BotUser.HasLinkedAccount)
             {
@@ -181,14 +174,22 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                        BUttonPersonalChestModule.BuildButton(this),
                        ButtonRankModule.BuildButton(this)])
 
-                                   .WithActionRow([
-                    ButtonProfileStatsModule. BuildButton(this,"kill"),
-                    ButtonProfileStatsModule. BuildButton(this,"gather"),
-                    ButtonProfileStatsModule. BuildButton(this,"death"),
-                    ButtonProfileStatsModule.  BuildButton(this,"craft")])
-                  //.WithActionRow([stat.BuildButton(this)])
-                  //.WithActionRow([rank.BuildButton(this)])
-                  // .WithTextDisplay("");
+
+
+
+                   .WithActionRow([
+                            ButtonProfileStatsModule. BuildButton(this,"kill"),
+                            ButtonProfileStatsModule. BuildButton(this,"gather"),
+                            ButtonProfileStatsModule. BuildButton(this,"death"),
+                            ButtonProfileStatsModule.  BuildButton(this,"craft")])
+
+
+
+                .WithSeparator(SeparatorSpacingSize.Small, true)
+
+
+                   .WithActionRow([ButtonSwitchAccountModule.BuildButton(this)])
+
                   ;
             }
             else
@@ -198,6 +199,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                   .WithActionRow([ButtonLoginModule.BuildButton(this)]);
             }
 
+            container.WithActionRow([Interactions.Modules.Owner.ItemsModule.BuildButton(this)]);
 
             // 5️⃣ Build and send final menu
             var components = new ComponentBuilderV2()

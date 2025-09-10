@@ -159,16 +159,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         }
         private static string NV(string? value)
             => string.IsNullOrWhiteSpace(value) ? "—" : value!;
-        private static string FormatList(IEnumerable<string>? list)
-        {
-            if (list == null)
-                return "—";
-            var items = new List<string>();
-            foreach (var s in list)
-                if (!string.IsNullOrWhiteSpace(s))
-                    items.Add(s);
-            return items.Count > 0 ? string.Join(", ", items) : "—";
-        }
+
         private static string FormatDict(Dictionary<string, double>? dict)
         {
             if (dict == null || dict.Count == 0)

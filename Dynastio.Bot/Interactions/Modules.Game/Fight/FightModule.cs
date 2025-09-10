@@ -187,9 +187,7 @@ namespace Dynastio.Bot.Interactions.Modules.Game.Fight
         }
 
         // Safely computes a total “power score” from chest items
-        private static double ComputeScore(
-            IEnumerable<PersonalChestItem> items,
-            DynastioItemsService svc)
+        private static double ComputeScore(IEnumerable<PersonalChestItem> items, DynastioItemsService svc)
         {
             // Return zero if inputs are missing
             if (items == null || svc == null)

@@ -127,6 +127,11 @@ namespace Dynastio.Bot.Services
         public Emote GetEmote(BadgeType badge)
             => GetEmoteByName(badge.ToString().ToLowerInvariant());
 
+        public Emote GetEmote<TEnum>(TEnum value) where TEnum : struct, Enum
+        {
+            var name = value.ToString().ToLowerInvariant();
+            return GetEmoteByName(name);
+        }
         // Works for any enum when the name matches your emote keys
         public string GetEmoteTag<TEnum>(TEnum value)
             where TEnum : struct, Enum
@@ -412,5 +417,7 @@ namespace Dynastio.Bot.Services
 
             return uploaded;
         }
+
+
     }
 }

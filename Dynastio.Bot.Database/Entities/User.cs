@@ -111,7 +111,18 @@ namespace Dynastio.Bot.Database
 
             return Accounts.FirstOrDefault(a => a.Id == accountId);
         }
+        /// <summary>
+        /// Finds a linked account by its service-specific ID.
+        /// </summary>
+        /// <param name="accountId">The external account identifier.</param>
+        /// <returns>The matching GameAccount, or null if none found.</returns>
+        public GameAccount? GetAccountByHashCode(string hashCodeString)
+        {
+            if (!int.TryParse(hashCodeString, out var code))
+                return null;
 
+            return Accounts.FirstOrDefault(a => a.GetHashCode() == code);
+        }
         /// <summary>
         /// Checks whether a specific account ID is already linked.
         /// </summary>

@@ -3,9 +3,7 @@ using Discord.Interactions;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
-using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
-using SixLabors.ImageSharp.Drawing;
 using System.Threading.Tasks;
 
 namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
@@ -15,7 +13,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
     /// Acts as the “default” fallback for any unregistered or unknown button IDs.
     /// Inherit from MenuModulesBase and implement IButtonsServiceModule.
     /// </summary>
-    public class ButtonProfileStatsModule : MenuModulesBase, IMenuComponentRule
+    public class ButtonSwitchAccountModule : MenuModulesBase, IMenuComponentRule
     {
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
@@ -25,7 +23,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.menu.buttons.profileStats";
+        public const string InteractionIdBase = "interactions.menu.buttons.switchAccount";
 
         /// <summary>
         /// Suffix format appended after the base ID.
@@ -40,21 +38,12 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 
         public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
-            var stat = args.FirstOrDefault().ToString();
-            var emote = stat switch
-            {
-                "kill" => "skull",
-                "death" => "guard",
-                "gather" => "left_shop_icon1",
-                "craft" => "left_craft_icon",
-                _ => "not found"
-            };
             var btn = new ButtonBuilder()
-                .WithLabel("Stats: " + stat)
-                .WithEmote(module.EmoteService.GetEmoteByName(emote))
+                .WithLabel("Switch Account")
+                .WithEmote(module.EmoteService.GetEmoteByName("gear"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithDisabled(false)
-                .WithCustomId(BuildCustomId(trigger: stat));
+                .WithCustomId(BuildCustomId(trigger: CustomIdHelper.Generate()));
             return btn;
         }
 
@@ -91,57 +80,17 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         [ComponentInteraction(InteractionIdBase + ":*")]
         [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
-        [RequireLinkedAccount]
         [RequireContext(ContextType.Guild)]
         public async Task ExecuteAsync(string trigger = "")
         {
             await DeferAsync();
 
-            var profile = Context.BotUser.GetDefaultAccount();
-            var stat = await profile.GetCachedProfileStatAsync(Context.Dynastio);
-            if (stat == null)
-            {
-                await ReplyWithErrorAsync("Can't find your stat !");
-                return;
-            }
-
-            string FormatStatRows<T>(Dictionary<T, int> data) where T : struct, Enum
-            {
-                return string.Concat(
-                    data
-                    .OrderByDescending(x => x.Value)
-                    .Select((x, idx) => new
-                    {
-                        Text = EmoteService.GetEmote<T>(x.Key).ToString() + $" `{x.Value.ToMetric()}`",
-                        Group = idx / 3
-                    })
-                    .GroupBy(x => x.Group)
-                    .Select(g => "\n" + string.Join(" | ", g.Select(e => e.Text)))
-                );
-            }
-
-            // 2) Your original switch now becomes
-            string content = trigger switch
-            {
-                "kill" => FormatStatRows(stat.Kill),
-                "gather" => FormatStatRows(stat.Gather),
-                "death" => FormatStatRows(stat.Death),
-                "craft" => FormatStatRows(stat.Craft),
-                _ => "not found"
-            };
-
-            if (content.Length > 3800)
-                content = content.Substring(0, 3800);
 
             var containerb = new ContainerBuilder()
               .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
-            //  .WithAccentColor(Color.Green)
-              .WithTextDisplay($"# {trigger} Stats \n#" + content);
-            //.WithActionRow([
-            //    BuildButton(this,"kill"),
-            //    BuildButton(this,"gather"),
-            //    BuildButton(this,"death"),
-            //    BuildButton(this,"craft")]);
+              .WithAccentColor(Color.Green)
+              .WithTextDisplay($"# {EmoteService.GetEmote(Net.BadgeType.MapMaker)} Switch Account !")
+              .WithActionRow([DropdownSwitchAccountModule.BuildSelectMenu(this, null)]);
 
             ComponentBuilderV2 cb = new ComponentBuilderV2()
                 .WithContainer(containerb);

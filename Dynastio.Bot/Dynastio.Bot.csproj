@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <ApplicationIcon>assets\logo.ico</ApplicationIcon>
     <StartupObject></StartupObject>
     <Copyright>Halun™️ - Jalal Jaleh 2020</Copyright>
     <PackageProjectUrl>https://github.com/jalaljaleh/Dynastio.Bot</PackageProjectUrl>
@@ -90,6 +90,11 @@
 	<ItemGroup>
 		<Content Include="assets\**" CopyToOutputDirectory="PreserveNewest" />
 
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <Folder Include="Interactions\NewFolder\" />
 	</ItemGroup>
 	
 </Project>

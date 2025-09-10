@@ -1,5 +1,0 @@
-build:
-  docker:
-    worker: Dynastio.Bot/Dockerfile
-run:
-     worker: Dynastio.Bot/Dockerfile
