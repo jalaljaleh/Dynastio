@@ -91,10 +91,5 @@
 		<Content Include="assets\**" CopyToOutputDirectory="PreserveNewest" />
 
 	</ItemGroup>
-
-
-	<ItemGroup>
-	  <Folder Include="Interactions\NewFolder\" />
-	</ItemGroup>
 	
 </Project>

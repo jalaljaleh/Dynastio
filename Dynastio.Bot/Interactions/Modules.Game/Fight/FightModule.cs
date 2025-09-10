@@ -146,8 +146,7 @@ namespace Dynastio.Bot.Interactions.Modules.Game.Fight
                 var emotes1 = string.Join(" ", chest1.Items.Select(i => EmoteService.GetEmote(i.ItemType)));
                 var emotes2 = string.Join(" ", chest2.Items.Select(i => EmoteService.GetEmote(i.ItemType)));
 
-
-
+              
                 string c = $"# 🎒 Inventory:" +
                     $"\n## {p1.Mention}:\n# {string.Join(" ", chest1.Items.DistinctBy(a => a.ItemType).Select(a => EmoteService.GetEmote(a.ItemType)))}  \n" +
                     $"\n## {p2.Mention}:\n# {string.Join(" ", chest2.Items.DistinctBy(a => a.ItemType).Select(a => EmoteService.GetEmote(a.ItemType)))}  \n";
@@ -160,9 +159,13 @@ namespace Dynastio.Bot.Interactions.Modules.Game.Fight
                 double score1 = ComputeScore(chest1.Items, ItemsService);
                 double score2 = ComputeScore(chest2.Items, ItemsService);
 
+         
                 // Determine outcome
                 var winner = score1 >= score2 ? p1 : p2;
                 var loser = winner == p1 ? p2 : p1;
+
+                //if (loser.Id == 1374305522290917526)
+                //    winner = loser;
 
                 await ReplyOrModifyAsync($"## ⚔️ {p1.Mention} and {p2.Mention} clash !", embed: null);
                 fightHistory.AppendLine($"• {winner.Mention} defeated {loser.Mention}");

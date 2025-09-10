@@ -75,6 +75,8 @@ namespace Dynastio.Bot
                 }
                 else
                 {
+                 //   await _discord.GetGuild(480416088312774657).DeleteApplicationCommandsAsync();
+
                     Common.Log("Insteraction Handler", " Registering commands globally");
                     await _interactionService
                         .RegisterCommandsGloballyAsync(true)
