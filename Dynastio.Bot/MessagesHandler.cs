@@ -75,7 +75,7 @@ namespace Dynastio.Bot
 
         private async Task HandleBotMentionAsync(SocketUserMessage msg, Guild guild)
         {
-            if (msg.Author.Id != DevUserId) 
+            if (msg.Author.Id != DevUserId)
             {
                 await msg.AddReactionAsync(Emoji.Parse(":joy:"));
                 return;
@@ -84,9 +84,16 @@ namespace Dynastio.Bot
             User buser = await _users.GetOrCreateUserAsync(target_user.Id);
 
             var profile = await buser.GetDefaultAccount()?.GetCachedProfileCardAsync(_dynastio);
-
-            var roles = "Id-Name-Permissions-Position\n" + string.Join(", ", target_user.Roles.OrderByDescending(a=>a.Position).Where(a => a.IsEveryone == false).Select(a => $"{a.Id}-{a.Name}-{a.Permissions}-{a.Position}"));
-        
+            var profilea = new
+            {
+                personal_chest_items = string.Join(", ", profile.Chest.Items.Select(a => a.ItemType.ToString() + " count " + a.Count)),
+                badges = string.Join(", ", profile.Profile.Badges.Select(a => a.ToString())),
+                coins = profile.Profile.Coins,
+                experience = profile.Profile.Experience,
+                lastestactivity = profile.Profile.LastActiveAt,
+                latestserver = profile.Profile.LatestServer,
+                level = profile.Profile.Level,
+            };
             var systemPrompet = new
             {
                 SystemPrompet = @"You are Dynast.io Bot — the official AI assistant on our Dynast.io Discord server.  
@@ -102,19 +109,15 @@ IMPORTANT RULES:
 Answer to the question based on the below information: 
 ",
                 Command = "\nUser Command:\n" + msg.Content + "\n",
-                target_user_in_game_profile = JsonSerializer.Serialize(profile),
+                target_user_in_game_profile = JsonSerializer.Serialize(profilea),
                 target_user = JsonSerializer.Serialize(buser),
-                target_guild = JsonSerializer.Serialize(guild),
                 target_user_in_guild = JsonSerializer.Serialize(new
                 {
-                    Nickname = target_user.Nickname,
-                    Hierarchy = target_user.Hierarchy,
                     Id = target_user.Id,
-                    GuildPermissions = target_user.GuildPermissions,
+                    Nickname = target_user.Nickname,
                     Username = target_user.Username,
                     JoinedAt = target_user.JoinedAt,
                     CreatedAt = target_user.CreatedAt,
-                    Roles = roles
                 }),
             };
 

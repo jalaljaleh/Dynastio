@@ -16,6 +16,10 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
             Interactions.Modules.Menu.Buttons.ButtonLoginModule.BypassPinCode = newCode;
             await RespondAsync($"PinCode-bypass created successfuly.", ephemeral: true);
         }
+        public enum PuzzleDifficulty { Hard, Easy, Medium }
+
+       
+
 
         public DynastioItemsService ItemsService { get; set; }
         public AiChatService Ai { get; set; }
@@ -31,7 +35,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
                 return;
             }
 
-           
+
             string systemPrompt = @"
 Important:
 - You are Dynast.io Bot, the official AI assistant on our Dynast.io Discord server.
@@ -41,12 +45,13 @@ Important:
 
 Analyze this Dynast.io game item and explain it clearly:
 ";
-           
+
             // 3) Query
-            string aiResponse = await Ai.QueryAsync(null,systemPrompt + Newtonsoft.Json.JsonConvert.SerializeObject(target));
+            string aiResponse = await Ai.QueryAsync(null, systemPrompt + Newtonsoft.Json.JsonConvert.SerializeObject(target));
 
             // 4) Send back
             await FollowupAsync(aiResponse);
         }
+
     }
 }

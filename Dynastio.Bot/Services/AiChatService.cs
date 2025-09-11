@@ -71,7 +71,7 @@ namespace Dynastio.Bot
             {
                 system = systemPrompt,
                 prompt = $"User prompt:\n{userPrompt}",
-                userId = $"#/chat/{userId}",
+                userId = $"#/chat/{userId}{Common.Random.Next(99999999)}",
                 network = true,
                 stream = false
             };
