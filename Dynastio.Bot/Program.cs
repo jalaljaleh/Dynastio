@@ -7,6 +7,7 @@ using Dynastio.Bot.Services;
 using Dynastio.Graphic;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Globalization;
@@ -56,6 +57,9 @@ namespace Dynastio.Bot
 
                 await InitializeInfrastructureAsync(serviceProvider, config);
                 await StartDiscordClientAsync(serviceProvider, config);
+
+                Task.Delay(120000).GetAwaiter().GetResult();
+
             }
             catch (Exception ex)
             {
@@ -85,11 +89,15 @@ namespace Dynastio.Bot
 
             // Core configuration & APIs
             services.AddSingleton(config);
+            services.AddSingleton<HttpClient>();
             services.AddSingleton(_ => new DynastioApi(config.Tokens["dynastio-api"]) { });
             services.AddSingleton<DynastioBotDatabase>();
             services.AddSingleton<DynastioGraphic>();
             services.AddSingleton<AssetUrlService>();
             services.AddSingleton<DynastioItemsService>();
+
+            // 2) Add your HF token and optional model ID
+            services.AddSingleton<AiChatService>();
 
             // services
             services.AddSingleton<UsersService>();

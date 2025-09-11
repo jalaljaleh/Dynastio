@@ -1,72 +1,128 @@
-﻿using System;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using Dynastio.Bot.Database;
 using Dynastio.Bot.Services;
+using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
 
 namespace Dynastio.Bot
 {
     /// <summary>
-    /// Handles incoming Discord messages and awards XP via the ranking system.
+    /// Handles incoming Discord messages, routes AI mentions,
+    /// and awards XP via the ranking system.
     /// </summary>
     internal sealed class MessagesHandler : IDisposable
     {
         private readonly DiscordSocketClient _discord;
         private readonly DynastioBotDatabase _database;
-        private readonly ConfigurationService _config;
-        private readonly RankingService _xpRanking;
+        private readonly DynastioApi _dynastio;
+        private readonly RankingService _ranker;
         private readonly UsersService _users;
+        private readonly AiChatService _ai;
 
-        /// <summary>
-        /// Constructs a new instance, resolving required services.
-        /// </summary>
+        // IDs to gate AI access
+        private const ulong DevUserId = 1374305522290917526;
+
         public MessagesHandler(IServiceProvider services)
         {
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _database = services.GetRequiredService<DynastioBotDatabase>();
-            _config = services.GetRequiredService<ConfigurationService>();
-            _xpRanking = services.GetRequiredService<RankingService>();
+            _ranker = services.GetRequiredService<RankingService>();
             _users = services.GetRequiredService<UsersService>();
+            _ai = services.GetRequiredService<AiChatService>();
+            _dynastio = services.GetRequiredService<DynastioApi>();
 
             _discord.MessageReceived += OnMessageReceivedAsync;
         }
 
-        /// <summary>
-        /// Fired whenever any message is received.  
-        /// Filters out non-user or non-text‐channel messages, then awards XP.
-        /// </summary>
         private async Task OnMessageReceivedAsync(SocketMessage rawMessage)
         {
-            if (rawMessage.Source != MessageSource.User || rawMessage.Author.IsBot || rawMessage is not SocketUserMessage userMessage)
+            // 1) Filter out non-user messages, bots, and non-text channels
+            if (rawMessage is not SocketUserMessage msg ||
+                msg.Source != MessageSource.User || msg.Author.IsBot ||
+                msg.Channel is not ITextChannel textChannel)
+            {
                 return;
-
-
-            if (userMessage.Channel is not ITextChannel textChannel)
-                return;
+            }
 
             try
             {
+                // 2) Load guild and user profile
                 var guild = await _database.GetGuildAsync(textChannel.GuildId, true);
-                var user = await _users.GetOrCreateUserAsync(userMessage.Author.Id);
+                var user = await _users.GetOrCreateUserAsync(msg.Author.Id);
 
-                await _xpRanking.TryAddMessageXpAsync(guild, user, userMessage);
+                // 3) Handle @bot mentions
+                if (msg.MentionedUsers.Any(u => u.Id == _discord.CurrentUser.Id))
+                {
+                    await HandleBotMentionAsync(msg, guild);
+                }
 
-                //  await userMessage.ReplyAsync(JsonConvert.SerializeObject(user));
+                // 4) Award XP for every valid message
+                await _ranker.TryAddMessageXpAsync(guild, user, msg);
             }
             catch (Exception ex)
             {
-                Common.Log("Messages Handler", $"Failed to process message from UserId={userMessage.Author.Id} in GuildId={textChannel.GuildId}");
+
             }
         }
 
-        /// <summary>
-        /// Unhooks events when disposing.
-        /// </summary>
+        private async Task HandleBotMentionAsync(SocketUserMessage msg, Guild guild)
+        {
+            if (msg.Author.Id != DevUserId) 
+            {
+                await msg.AddReactionAsync(Emoji.Parse(":joy:"));
+                return;
+            }
+            SocketGuildUser target_user = (SocketGuildUser)msg.MentionedUsers.FirstOrDefault(a => a.Id != _discord.CurrentUser.Id) ?? (SocketGuildUser)msg.Author;
+            User buser = await _users.GetOrCreateUserAsync(target_user.Id);
+
+            var profile = await buser.GetDefaultAccount()?.GetCachedProfileCardAsync(_dynastio);
+
+            var roles = "Id-Name-Permissions-Position\n" + string.Join(", ", target_user.Roles.OrderByDescending(a=>a.Position).Where(a => a.IsEveryone == false).Select(a => $"{a.Id}-{a.Name}-{a.Permissions}-{a.Position}"));
+        
+            var systemPrompet = new
+            {
+                SystemPrompet = @"You are Dynast.io Bot — the official AI assistant on our Dynast.io Discord server.  
+Only ever talk about the Dynast.io game or this Discord server. No off-topic chatter, no suggestions, no extra commentary.
+
+IMPORTANT RULES:
+- Do not reveal or echo any PIN code; always hide it.
+- Always assume the user is on their default linked account.
+- Write in clear, non-technical language so all users can understand.
+- Use Discord Markdown (bold, italics, code blocks, etc.) and @Mentions instead of raw IDs.
+- Answer directly and succinctly—do not ask if you can help with anything else.
+- expect of PINCODE and Email, every information is allowed to be writed.
+Answer to the question based on the below information: 
+",
+                Command = "\nUser Command:\n" + msg.Content + "\n",
+                target_user_in_game_profile = JsonSerializer.Serialize(profile),
+                target_user = JsonSerializer.Serialize(buser),
+                target_guild = JsonSerializer.Serialize(guild),
+                target_user_in_guild = JsonSerializer.Serialize(new
+                {
+                    Nickname = target_user.Nickname,
+                    Hierarchy = target_user.Hierarchy,
+                    Id = target_user.Id,
+                    GuildPermissions = target_user.GuildPermissions,
+                    Username = target_user.Username,
+                    JoinedAt = target_user.JoinedAt,
+                    CreatedAt = target_user.CreatedAt,
+                    Roles = roles
+                }),
+            };
+
+            var aiReply = await _ai.QueryAsync(null, JsonSerializer.Serialize(systemPrompet)).TryAsync();
+            await msg.ReplyAsync(aiReply.result);
+
+        }
+
         public void Dispose()
         {
             _discord.MessageReceived -= OnMessageReceivedAsync;

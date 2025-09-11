@@ -50,7 +50,7 @@ namespace Dynastio.Bot.Database
         /// </summary>
         [JsonInclude, JsonPropertyName("pinCode")]
         [BsonElement("pinCode")]
-        public string PinCode { get; private set; }
+        public string PinCode {  get; private set; }
 
         /// <summary>
         /// Contact email for notifications related to this account.
@@ -154,6 +154,11 @@ namespace Dynastio.Bot.Database
             return _profileStat;
         }
 
+
+        public string GetPinCode()
+        {
+            return PinCode;
+        }
         //======================================================================
         // Construction & Parsing
         //======================================================================
