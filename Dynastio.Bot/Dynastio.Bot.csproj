@@ -38,6 +38,7 @@
        <ProjectReference Include="..\Dynastio.Bot.Global\Dynastio.Bot.Global.csproj" />
        <ProjectReference Include="..\Dynastio.Extenstions\Dynastio.Extenstions.csproj" />
        <ProjectReference Include="..\Dynastio.Graphic\Dynastio.Graphic.csproj" />
+       <ProjectReference Include="..\Dynastio.Support.Bot\Dynastio.Support.Bot.csproj" />
  
   </ItemGroup>
 

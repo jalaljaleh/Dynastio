@@ -39,8 +39,6 @@ namespace Dynastio.Bot.EventHandlers
         {
             //Console.WriteLine( "Developer Debug Actions");
 
-            //var guild = _discord.Guilds.FirstOrDefault(a => a.Id == 480416088312774657);
-
             //var roles = RoleHelper.GetLatestRoleStartWith(guild, "rank: ");
             //var he = RoleHelper.GetNextHigherHeaderRole(guild, "rank: ");
 
@@ -115,15 +113,16 @@ namespace Dynastio.Bot.EventHandlers
         {
             try
             {
+                await RunDeveloperDebugActionsAsync();
+
                 // Schedule periodic status updates every 10 minutes
                 _repeater.AddAction(UpdateBotStatusAsync, TimeSpan.FromMinutes(10));
                 //  _logger.LogInformation("Scheduled periodic status updates");
 
                 // Send a ready notification to the first owner on the app's team
-                await NotifyTeamOwnersAsync();
+                await NotifyTeamOwnersAsync().TryAsync();
                 //  _logger.LogInformation("Sent ready notification to team owners");
 
-                await RunDeveloperDebugActionsAsync();
             }
             catch (Exception ex)
             {

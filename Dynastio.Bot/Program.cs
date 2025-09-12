@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Dynastio.Bot.Database;
@@ -14,6 +15,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Dynastio.Support.Bot;
 
 namespace Dynastio.Bot
 {
@@ -42,8 +44,8 @@ namespace Dynastio.Bot
                     Console.WriteLine("Fatal error during main:");
                     Console.WriteLine(ex);
 
-                    Task.Delay(120000).GetAwaiter().GetResult();
                 }
+                    Task.Delay(120000).GetAwaiter().GetResult();
             }
         }
         public async Task StartAsync()
@@ -58,7 +60,6 @@ namespace Dynastio.Bot
                 await InitializeInfrastructureAsync(serviceProvider, config);
                 await StartDiscordClientAsync(serviceProvider, config);
 
-                Task.Delay(120000).GetAwaiter().GetResult();
 
             }
             catch (Exception ex)
@@ -66,6 +67,7 @@ namespace Dynastio.Bot
                 Console.WriteLine("Fatal error during startup:");
                 Console.WriteLine(ex);
             }
+                Task.Delay(120000).GetAwaiter().GetResult();
         }
 
         private static void ConfigureJsonSerializer()
@@ -120,6 +122,8 @@ namespace Dynastio.Bot
 
             services.AddSingleton<InteractionService>(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>(), _interactionServiceConfig));
             services.AddSingleton<InteractionsHandler>();
+            services.AddSingleton<CommandService>();
+            services.AddSingleton<CommandHandlerService>();
             services.AddSingleton<MessagesHandler>();
 
 
@@ -128,6 +132,9 @@ namespace Dynastio.Bot
             services.AddSingleton<IDiscordEvent, GuildJoinedEvent>();
             services.AddSingleton<IDiscordEvent, BotReadyEvent>();
             services.AddSingleton<EventsHandler>();
+
+            services.AddSingleton<SupportBot>();
+
 
             return services.BuildServiceProvider();
         }
@@ -160,6 +167,10 @@ namespace Dynastio.Bot
 
             sp.GetRequiredService<MessagesHandler>();
             await sp.GetRequiredService<InteractionsHandler>().InitializeAsync();
+            await sp.GetRequiredService<CommandHandlerService>().InitializeAsync();
+
+
+            await sp.GetRequiredService<SupportBot>().InitializeAsync(config.Tokens["supportBotToken"]);
 
         }
 
