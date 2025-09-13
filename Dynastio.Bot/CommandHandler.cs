@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using Dynastio.Bot.Database;
 using Dynastio.Bot.Services;
 using Dynastio.Net;
+using Google.Apis.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -24,18 +25,19 @@ namespace Dynastio.Bot
         private readonly DynastioBotDatabase _database;
         private readonly DynastioApi _dynastio;
         private readonly RankingService _ranker;
+        private readonly ClientService _clientService;
         private readonly IServiceProvider _services;
         public CommandHandlerService(IServiceProvider services)
         {
             _services = services;
             _dynastio = services.GetRequiredService<DynastioApi>();
             _commands = services.GetRequiredService<CommandService>();
+            _clientService = services.GetRequiredService<ClientService>();
             _database = services.GetRequiredService<DynastioBotDatabase>();
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _ranker = services.GetRequiredService<RankingService>();
             _users = services.GetRequiredService<UsersService>();
             _ai = services.GetRequiredService<AiChatService>();
-
             // Hook CommandExecuted to handle post-command-execution logic.
             _commands.CommandExecuted += CommandExecutedAsync;
             // Hook MessageReceived so we can process each message to see

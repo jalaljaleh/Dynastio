@@ -70,7 +70,7 @@ namespace Dynastio.Bot
             var payload = new
             {
                 system = systemPrompt,
-                prompt = $"User prompt:\n{userPrompt}",
+                prompt = userPrompt,
                 userId = $"#/chat/{userId}{Common.Random.Next(99999999)}",
                 network = true,
                 stream = false

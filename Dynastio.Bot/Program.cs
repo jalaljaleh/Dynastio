@@ -31,13 +31,19 @@ namespace Dynastio.Bot
 
         //    Environment.Exit(0);
         //}
-        public static void Main(string[] args)
+        public static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
+        public async Task MainAsync()
         {
             while (true)
             {
+                ConfigureJsonSerializer();
                 try
                 {
-                    new Program().StartAsync().GetAwaiter().GetResult();
+                    var config = ConfigurationService.Load();
+                    using var serviceProvider = BuildServiceProvider(config);
+
+                    await InitializeInfrastructureAsync(serviceProvider, config);
+                    await StartDiscordClientAsync(serviceProvider, config);
                 }
                 catch (Exception ex)
                 {
@@ -45,29 +51,8 @@ namespace Dynastio.Bot
                     Console.WriteLine(ex);
 
                 }
-                    Task.Delay(120000).GetAwaiter().GetResult();
-            }
-        }
-        public async Task StartAsync()
-        {
-            ConfigureJsonSerializer();
-
-            try
-            {
-                var config = ConfigurationService.Load();
-                using var serviceProvider = BuildServiceProvider(config);
-
-                await InitializeInfrastructureAsync(serviceProvider, config);
-                await StartDiscordClientAsync(serviceProvider, config);
-
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Fatal error during startup:");
-                Console.WriteLine(ex);
-            }
                 Task.Delay(120000).GetAwaiter().GetResult();
+            }
         }
 
         private static void ConfigureJsonSerializer()
@@ -117,8 +102,10 @@ namespace Dynastio.Bot
                 MessageCacheSize = 1024,
                 DefaultRetryMode = RetryMode.AlwaysRetry,
                 UseSystemClock = false,
-                UseInteractionSnowflakeDate = false
+                UseInteractionSnowflakeDate = false,
             }));
+
+            services.AddSingleton<ClientService>();
 
             services.AddSingleton<InteractionService>(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>(), _interactionServiceConfig));
             services.AddSingleton<InteractionsHandler>();

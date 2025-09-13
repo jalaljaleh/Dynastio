@@ -140,9 +140,8 @@ namespace Dynastio.Bot.EventHandlers
                 .GetApplicationInfoAsync()
                 .ConfigureAwait(false);
 
-            var owner = appInfo.Team?.TeamMembers?.FirstOrDefault()?.User;
-            if (owner != null)
-                await owner.SendMessageAsync("Bot is now ready!").ConfigureAwait(false);
+            foreach (var owner in appInfo.Team?.TeamMembers ?? default)
+                await owner.User.SendMessageAsync("Bot is now ready!").TryAsync();
         }
 
         /// <summary>

@@ -69,7 +69,7 @@ namespace Dynastio.Support.Bot
 
             client.Log += log =>
             {
-                Console.WriteLine(log);
+                Console.WriteLine("support bot logger is off");
                 return Task.CompletedTask;
             };
 

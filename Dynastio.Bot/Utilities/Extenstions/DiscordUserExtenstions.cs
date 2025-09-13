@@ -19,5 +19,6 @@ namespace Dynastio.Bot
         {
             return (user as SocketGuildUser)?.Roles?.Where(a => a.IsHoisted)?.OrderByDescending(a => a.Position)?.FirstOrDefault()?.Color ?? Color.Default;
         }
+        
     }
 }

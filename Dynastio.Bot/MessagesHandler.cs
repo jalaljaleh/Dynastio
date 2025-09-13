@@ -6,6 +6,7 @@ using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -20,21 +21,23 @@ namespace Dynastio.Bot
     /// </summary>
     internal sealed class MessagesHandler : IDisposable
     {
-        private readonly DiscordSocketClient _discord;
-        private readonly DynastioBotDatabase _database;
+        private readonly UsersService _users;
         private readonly DynastioApi _dynastio;
         private readonly RankingService _ranker;
-        private readonly UsersService _users;
+        private readonly ClientService _clientService;
+        private readonly DiscordSocketClient _discord;
+        private readonly DynastioBotDatabase _database;
 
         private readonly CommandHandlerService _commandHandlerService;
 
         public MessagesHandler(IServiceProvider services)
         {
-            _discord = services.GetRequiredService<DiscordSocketClient>();
-            _database = services.GetRequiredService<DynastioBotDatabase>();
-            _ranker = services.GetRequiredService<RankingService>();
             _users = services.GetRequiredService<UsersService>();
             _dynastio = services.GetRequiredService<DynastioApi>();
+            _ranker = services.GetRequiredService<RankingService>();
+            _discord = services.GetRequiredService<DiscordSocketClient>();
+            _clientService = services.GetRequiredService<ClientService>();
+            _database = services.GetRequiredService<DynastioBotDatabase>();
             _commandHandlerService = services.GetRequiredService<CommandHandlerService>();
 
             _discord.MessageReceived += OnMessageReceivedAsync;
@@ -54,6 +57,14 @@ namespace Dynastio.Bot
 
                 var result = await _commandHandlerService.MessageReceivedAsync(msg);
 
+                if (result is not null)
+                    if (!result.IsSuccess)
+                        if (!_clientService.HasTeamRole(user.Id))
+                        {
+                            await msg.AddReactionAsync(Emoji.Parse(":joy:"));
+                            return;
+                        }
+
                 if (result == null || !result.IsSuccess)
                     await _ranker.TryAddMessageXpAsync(guild, user, msg);
 
@@ -64,7 +75,7 @@ namespace Dynastio.Bot
             }
         }
 
-      
+
 
         public void Dispose()
         {

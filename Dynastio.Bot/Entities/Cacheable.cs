@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Dynastio.Net.Entities
+namespace Dynastio.Bot
 {
     public class Cacheable<T>
     {
