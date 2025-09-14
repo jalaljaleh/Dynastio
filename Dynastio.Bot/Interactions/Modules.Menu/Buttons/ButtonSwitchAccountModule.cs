@@ -90,7 +90,9 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
               .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
               .WithAccentColor(Color.Green)
               .WithTextDisplay($"# {EmoteService.GetEmote(Net.BadgeType.MapMaker)} Switch Account !")
-              .WithActionRow([DropdownSwitchAccountModule.BuildSelectMenu(this, null)]);
+              .WithActionRow([DropdownSwitchAccountModule.BuildSelectMenu(this, null)])
+              .WithSeparator(SeparatorSpacingSize.Large,true)
+              .WithActionRow([ButtonLoginModule.BuildButton(this)]);
 
             ComponentBuilderV2 cb = new ComponentBuilderV2()
                 .WithContainer(containerb);
