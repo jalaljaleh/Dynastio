@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Discord;
+using Discord.WebSocket;
+using Dynastio.Bot.Database;
+using Dynastio.Bot.Global.Helper;
+using Dynastio.Net;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -26,9 +32,12 @@ namespace Dynastio.Bot
 
         private readonly HttpClient _http;
         private readonly JsonSerializerOptions _jsonOptions;
+        private readonly DynastioApi _dynastio;
 
-        public AiChatService()
+        public AiChatService(IServiceProvider services)
         {
+            _dynastio = services.GetRequiredService<DynastioApi>();
+
             _http = new();
             _http.BaseAddress = new Uri(BaseUrl);
             _http.DefaultRequestHeaders.Accept.Clear();
@@ -60,6 +69,78 @@ namespace Dynastio.Bot
                 return "I can't answer to this !";
             }
             else return aiReply.result;
+        }
+
+        // ── Rate-limiting state ───────────────────────────────────────────
+        // Holds the UTC timestamps of the last 60 requests.
+        /// <summary>
+        /// Sliding-window rate limiter: max 60 requests in any 60-minute span.
+        /// </summary>
+        private readonly object _rateLock = new object();
+        private readonly Queue<DateTimeOffset> _timestamps = new Queue<DateTimeOffset>();
+        private DateTimeOffset _lastSuccess = DateTimeOffset.MinValue;
+
+        public bool TryAcquireSlot()
+        {
+            var now = DateTimeOffset.UtcNow;
+
+            lock (_rateLock)
+            {
+                // Remove timestamps older than 60 minutes
+                while (_timestamps.Count > 0 && now - _timestamps.Peek() > TimeSpan.FromMinutes(60))
+                {
+                    _timestamps.Dequeue();
+                }
+
+                // Rule 1: at least 2 minutes since last success
+                if (now - _lastSuccess < TimeSpan.FromMinutes(1))
+                {
+                    return false;
+                }
+
+                // Rule 2: no more than 60 in the last 60 minutes
+                if (_timestamps.Count >= 60)
+                {
+                    return false;
+                }
+
+                // Passed both checks → success
+                _timestamps.Enqueue(now);
+                _lastSuccess = now;
+                return true;
+            }
+        }
+        public async Task ReplyMessageAsync(SocketUserMessage msg, User user)
+        {
+            string data = "account not linked";
+            try
+            {
+                if (user.HasLinkedAccount)
+                {
+                    var profile = await user.GetDefaultAccount()?.GetCachedProfileCardAsync(_dynastio) ?? null;
+                    data = profile is null ? data : JsonSerializer.Serialize(new
+                    {
+                        personal_chest_items = string.Join(", ", profile.Chest.Items.Select(a => a.ItemType.ToString() + " count " + a.Count)),
+                        badges = string.Join(", ", profile.Profile.Badges.Select(a => a.ToString())),
+                        coins = profile.Profile.Coins,
+                        experience = profile.Profile.Experience,
+                        lastestactivity = profile.Profile.LastActiveAt,
+                        latestserver = profile.Profile.LatestServer,
+                        level = profile.Profile.Level,
+                    });
+                }
+            }
+            catch
+            {
+            }
+
+            string systemPrompt = AiHelper.answer + $"data: {data} \n\n User Message= {msg.Author.Mention}\n\n said: {msg.Content}";
+
+            // 3) Query
+            string aiResponse = await QueryAsync(null, systemPrompt);
+
+            // 4) Send back
+            await msg.ReplyAsync(aiResponse);
         }
         private async Task<string> PostQueryAsync(string systemPrompt, string userPrompt, string userId = "1")
         {

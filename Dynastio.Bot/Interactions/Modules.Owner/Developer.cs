@@ -124,7 +124,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
             {
             }
 
-            string systemPrompt = AiHelper.answer + $"data: {data}\n\n User Message= {msg.Author.Mention}\n\n said: {message.Content}";
+            string systemPrompt = AiHelper.answer + $"data: {data} \n\n User Message= {msg.Author.Mention}\n\n said: {message.Content}";
 
             // 3) Query
             string aiResponse = await Ai.QueryAsync(null, systemPrompt);
