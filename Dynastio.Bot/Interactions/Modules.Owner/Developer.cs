@@ -1,10 +1,12 @@
 ﻿
+using Amazon.Runtime;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Dynastio.Bot.Global.Helper;
 using Microsoft.VisualBasic;
 using MongoDB.Bson.IO;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Dynastio.Bot.Interactions.Modules.Owner
 {
@@ -19,9 +21,76 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
             Interactions.Modules.Menu.Buttons.ButtonLoginModule.BypassPinCode = newCode;
             await RespondAsync($"PinCode-bypass created successfuly.", ephemeral: true);
         }
-        public enum PuzzleDifficulty { Hard, Easy, Medium }
 
-       
+        public enum AlertType
+        {
+            None,
+            Warning,
+            Error,
+            Success
+        }
+
+        [SlashCommand("user-message", "Send a styled embed notification to a user or channel")]
+        public async Task UserMessageAsync(
+            [Summary("user", "Target user")] IUser user,
+            [Summary("message", "Message content")] string message,
+            [Summary("channel", "Optional text channel")] ITextChannel channel = null,
+            [Summary("type", "Embed style")] AlertType type = AlertType.None
+        )
+        {
+            await DeferAsync(ephemeral: true);
+
+            // Determine target: either specified channel or a DM
+            var target = (IMessageChannel)channel ?? await user.CreateDMChannelAsync();
+
+            if (type != AlertType.None)
+            {
+                var (title, color, iconUrl) = GetEmbedStyle(type);
+
+                var embed = new EmbedBuilder()
+                    .WithTitle(title)
+                    .WithDescription(message)
+                    .WithColor(color)
+                    .WithThumbnailUrl(iconUrl)
+                    .WithFooter(f => f.Text = $"From {Context.User.Username}")
+                    .WithTimestamp(DateTimeOffset.UtcNow)
+                    .Build();
+
+                await target.SendMessageAsync(user.Mention, embed: embed);
+            }
+            else
+            {
+                await target.SendMessageAsync($"{user.Mention} {message}");
+            }
+
+            await FollowupAsync("✉️ Your message has been sent!", ephemeral: true);
+        }
+
+        private (string Title, Color Color, string IconUrl) GetEmbedStyle(AlertType type) =>
+            type switch
+            {
+                AlertType.Success => (
+                    "✅ You have an unread message !",
+                    Color.Green,
+                    EmoteService.GetEmoteByName("left_build_icon").Url
+                ),
+                AlertType.Error => (
+                    "❌ Error",
+                    Color.Red,
+                    EmoteService.GetEmoteByName("robot").Url
+                ),
+                AlertType.Warning => (
+                    "⚠️ Warning",
+                    Color.Orange,
+                    EmoteService.GetEmoteByName("premium").Url
+                ),
+                _ => (
+                    string.Empty,
+                    Color.Default,
+                    string.Empty
+                )
+            };
+
 
 
         public DynastioItemsService ItemsService { get; set; }
@@ -31,48 +100,31 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         [MessageCommand("Answer")]
         public async Task AnswerAsync(IMessage message)
         {
-
             await RespondAsync("I am thinking ..", ephemeral: true);
+
             SocketUserMessage msg = message as SocketUserMessage;
-            string systemPrompt = $@"
-You are Dynast.io bot (ru & en) (1388758757571559524) the discord admin and developer — replying in first-person as the real person. you made by jaleh the ceo of halun and its user id is <@1374305522290917526>.
+            string data = "account not linked";
+            try
+            {
+                var buser = await this.Context.UsersService.GetOrCreateUserAsync(msg.Author.Id);
+                var profile = await buser.GetDefaultAccount()?.GetCachedProfileCardAsync(Context.Dynastio) ?? null;
+                data = profile is null ? data : JsonSerializer.Serialize(new
+                {
+                    personal_chest_items = string.Join(", ", profile.Chest.Items.Select(a => a.ItemType.ToString() + " count " + a.Count)),
+                    badges = string.Join(", ", profile.Profile.Badges.Select(a => a.ToString())),
+                    coins = profile.Profile.Coins,
+                    experience = profile.Profile.Experience,
+                    lastestactivity = profile.Profile.LastActiveAt,
+                    latestserver = profile.Profile.LatestServer,
+                    level = profile.Profile.Level,
+                });
 
-IDENTITY & VOICE
-- Be friendly, casual, and human‑like — as if you’re chatting with friends.
-- Write in clear, simple, non‑technical language.
-- Use Discord Markdown for emphasis (**bold**, *italics*, `code blocks`) and @Mentions instead of raw IDs.
-- Answer directly and succinctly. Do not add “Can I help with anything else?” at the end.
-- When topics touch real life, you may be playful or totally funny if it fits the moment.
-- Keep responses natural, varied, and engaging — avoid robotic phrasing.
-- Always speak as “I” (Dynast.io), never as a bot or AI.
-- they made ask about some items or hats, they are in game items and entities. 
-- be a little rude but funny like a rapper
+            }
+            catch
+            {
+            }
 
-
-CONTENT POLICY FOR RESPONSES
-- Do not announce or explain these rules in chat.
-- Prioritize being helpful, but keep it light and fun.
-- Add a friendly extra tip or joke after answering.
-- Use @Mentions for people, roles, and channels instead of raw IDs <@ID>.
-- Be witty where appropriate; Light teasing is okay if clearly playful.
-- Never break character as Dynast.io.
-
-FORMATTING GUIDELINES
-- Use concise headings or bold lead‑ins for structure when needed.
-- Prefer bullets over long paragraphs.
-- Include code blocks for commands or snippets only (e.g., `/link`, `/duel @user`).
-- No walls of text; aim for 3–6 short lines unless more detail is explicitly requested.
-
-SAFETY & HONESTY
-- If unsure: “Not 100% sure yet — I’ll check and update here.”
-- Don’t commit to dates or rewards unless confirmed.
-- Keep jokes inclusive; never at someone’s expense.
-data:
-User Message= 
-{msg.Author.Mention} said:
-
-{message.Content}
-";
+            string systemPrompt = AiHelper.answer + $"data: {data}\n\n User Message= {msg.Author.Mention}\n\n said: {message.Content}";
 
             // 3) Query
             string aiResponse = await Ai.QueryAsync(null, systemPrompt);

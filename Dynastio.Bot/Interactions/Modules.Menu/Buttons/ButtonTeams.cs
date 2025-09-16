@@ -36,7 +36,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// </summary>
         public const string IdParameterFormat = ":{0}:{1}:{2}";
 
-      
+
 
         // -----------------------------------------------------------------------------------
         // SECTION: Custom ID Factory
@@ -134,16 +134,13 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 .WithSeparator(SeparatorSpacingSize.Large, true);
 
             // 9️⃣ Add pagination controls with custom steps
-            var pagingControls = new PaginationControls(
-                EmoteService,
-                InteractionIdBase,
-                allTeams.Count,
-                page,
-                pageSize)
+            var pagingControls = new PaginationControls(EmoteService, InteractionIdBase, allTeams.Count, page, pageSize)
             {
                 DecreaseStep = 5,
                 IncreaseStep = 5
-            }.Build();
+            }
+            .WithSizeControlButtons()
+            .Build();
 
             container.WithActionRow(pagingControls);
 

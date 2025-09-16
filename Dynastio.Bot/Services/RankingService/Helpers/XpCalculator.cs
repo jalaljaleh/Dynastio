@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dynastio.Net;
 
 namespace Dynastio.Bot
 {
@@ -23,12 +24,7 @@ namespace Dynastio.Bot
         }
 
 
-        public static double GetLevelCoinsReward(int level)
-        {
-            double growthRate = 0.025;
-            double baseReward = 10000.0 / (Math.Exp(1.0) - 1.0);
-            return Math.Round(baseReward * (Math.Exp(growthRate * level) - 1.0));
-        }
+        public static double GetLevelCoinsReward(int level)=> DynastioApiHelper.GetLevelCoinsReward(level);
     }
 }
 

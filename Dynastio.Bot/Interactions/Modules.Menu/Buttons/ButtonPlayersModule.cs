@@ -128,14 +128,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireContext(ContextType.Guild)]
-        public async Task HandlePagingAsync(
-            int page = 1,
-            int pageSize = 20,
-            string trigger = "main")
-            => await ExecuteAsync(
-                "", "", "", false,
-                page, pageSize, trigger
-            );
+        public async Task HandlePagingAsync(int page = 1, int pageSize = 20, string trigger = "main")
+            => await ExecuteAsync("", "", "", false, page, pageSize, trigger);
 
         /// <summary>
         /// Central entry point: fetch, filter, sort, paginate,

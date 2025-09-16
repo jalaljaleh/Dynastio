@@ -4,6 +4,7 @@ using Dynastio.Bot.Database;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
+using Dynastio.Bot.Utilities;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
@@ -21,6 +22,9 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         // SECTION: Constants
         // -----------------------------------------------------------------------------------
         public DynastioApi Dynastio { get; set; }
+
+
+        public const string InteractionIdBasePagenation = "interactions.menu.buttons.personalchest.page";
 
         /// <summary>
         /// Prefix used on every custom ID for this module.
@@ -62,7 +66,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 
                 .WithStyle(ButtonStyle.Secondary)
                 .WithDisabled(false)
-                .WithCustomId(BuildCustomId(trigger: CustomIdHelper.Generate()));
+                .WithCustomId(BuildCustomId(trigger: "0"));
         }
 
         // -----------------------------------------------------------------------------------
@@ -77,7 +81,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// <param name="take">Items per page (default = 10).</param>
         /// <param name="trigger">Context label (default = empty).</param>
         /// <returns>Fully formatted CustomId for use with ComponentInteraction.</returns>
-        public static string BuildCustomId(string trigger = "")
+        public static string BuildCustomId(string trigger = "0")
         {
             // Concatenate base prefix + formatted parameters
             // .StarIfNullFormat ensures safe formatting even if trigger is null/empty
@@ -90,21 +94,39 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         // -----------------------------------------------------------------------------------
 
         /// <summary>
-        /// This method is invoked when Discord receives a button click
-        /// whose CustomId matches InteractionIdBase + IdParameterFormat.
-        /// Copy-and-paste into your new module and adjust the attribute:
-        /// [ComponentInteraction(YourBase + YourFormat)]
+        /// Handle simple paging button clicks.
+        /// Invokes ExecuteAsync with only pagination parameters.
         /// </summary>
+        [ComponentInteraction(InteractionIdBasePagenation + ":*:*:*")]
+        [RequireLinkedAccount]
+        [RequireMessageComponentOwner]
+        [RequireMessageComponentTimeout]
+        [RequireContext(ContextType.Guild)]
+
+        public async Task HandlePagingAsync(int page = 1, int pageSize = 20, string trigger = "main")
+            => await ExecuteAsync(page);
+
         [ComponentInteraction(InteractionIdBase + ":*")]
         [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireLinkedAccount]
         [RequireContext(ContextType.Guild)]
-        public async Task ExecuteAsync(string trigger = "")
+        public async Task ExecuteAsync(int page = 0)
         {
             await DeferAsync();
 
-            var account = Context.BotUser.GetDefaultAccount();
+            var account = page == 0 ? Context.BotUser.GetDefaultAccount() : Context.BotUser.Accounts[page - 1] ?? Context.BotUser.GetDefaultAccount();
+
+
+            var container = new ContainerBuilder()
+              .WithAccentColor(Color.Green)
+              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
+              .WithTextDisplay($"You logined as {account.DisplayName} Peek into your Dynast.io legacy — see your linked account, level, score, badges, and more. Every survivor has a story… this is yours.")
+              ;
+
+            container.WithSeparator(SeparatorSpacingSize.Large, true);
+
+
             var chest = await account.GetCachedPersonalChestAsync(Dynastio);
 
             var shape = new DynastioShapeGenerator(EmoteService).GeneratePersonalChest(chest);
@@ -116,15 +138,10 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                           $"# {EmoteService.GetEmoteByName("privatechest")} Personal Chest {account.DisplayName} \n" +
                           shape);
 
+            container.WithSection(sectionAccount);
 
-            var container = new ContainerBuilder()
-              .WithAccentColor(Color.Green)
-              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
-              .WithTextDisplay($"You logined as {account.DisplayName} Peek into your Dynast.io legacy — see your linked account, level, score, badges, and more. Every survivor has a story… this is yours.")
-
-              .WithSeparator(SeparatorSpacingSize.Large, true)
-              .WithSection(sectionAccount);
-
+                    // should separator ? add if you need it
+            container.WithSeparator(SeparatorSpacingSize.Small, true);
 
 
             // Constants for easy tuning
@@ -134,9 +151,6 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 
             // Cache your dictionary once
             var items = chest.GetAsDictionary();
-
-            // should separator ? add if you need it
-            container.WithSeparator(SeparatorSpacingSize.Small, true);
 
             for (int rowIndex = 0; rowIndex < totalRows; rowIndex++)
             {
@@ -156,10 +170,22 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 container.WithActionRow(actionRow);
             }
 
+            container.WithSeparator(SeparatorSpacingSize.Large, true);
+
+            var pageg = new PaginationControls(EmoteService, InteractionIdBasePagenation, BotUser.Accounts.Count, page, 1)
+                .WithRefreshButton(false)
+                .WithSizeControlButtons(false)
+               .Build();
+            container.WithActionRow(pageg);
+
             var component = new ComponentBuilderV2()
-                .WithContainer(container)
-                ;
+                .WithContainer(container);
+
+
+
             await ReplyOrModifyAsync(components: component.Build());
         }
+
+
     }
 }

@@ -34,16 +34,41 @@ namespace Dynastio.Bot.Utilities
             _baseCustomId = baseCustomId ?? throw new ArgumentNullException(nameof(baseCustomId));
         }
 
+        public PaginationControls WithSizeControlButtons(bool enable = true)
+        {
+            ShowRowSizeControls = true;
+            EnabledRowSizeControls = enable;
+            return this;
+        }
+        public PaginationControls WithRefreshButton(bool enable = true)
+        {
+            ShowRefreshButton = true;
+            EnabledRefreshButton = enable;
+            return this;
+        }
         // ===== CONFIGURATION FLAGS =====
+
+
+        /// <summary>If true, a Refresh button will be shown. Default: True</summary>
+        public bool EnabledRefreshButton { get; set; } = true;
+
+        /// <summary>If true, a Refresh button will be shown. Default: False</summary>
+        public bool ShowRefreshButton { get; set; } = false;
+
+
+        /// <summary>If true, buttons to change the number of rows per page will be shown. Default: False</summary>
+        public bool ShowRowSizeControls { get; set; } = false;
+
+        /// <summary>If true, buttons to change the number of rows per page will be shown. Default: False</summary>
+        public bool EnabledRowSizeControls { get; set; } = false;
+
+
 
         /// <summary>If true, Back/Next page buttons will be shown. Default: True</summary>
         public bool ShowPageNavigation { get; set; } = true;
+        /// <summary>If true, Back/Next page buttons will be shown. Default: True</summary>
+        public bool EnabledPageNavigation { get; set; } = true;
 
-        /// <summary>If true, a Refresh button will be shown. Default: True</summary>
-        public bool ShowRefreshButton { get; set; } = true;
-
-        /// <summary>If true, buttons to change the number of rows per page will be shown. Default: True</summary>
-        public bool ShowRowSizeControls { get; set; } = true;
 
         // ===== ROW SIZE CONTROL SETTINGS =====
 
@@ -76,14 +101,17 @@ namespace Dynastio.Bot.Utilities
                 // Collect all parts, skipping null or empty ones
                 var parts = new[]
                 {
-                            _baseCustomId,
+                            _baseCustomId + "",
                             extraPrefix,     // Only included if not null/empty
                             pagingData,
                             extraSuffix      // Only included if not null/empty
                             };
 
                 // Join only the non-null/empty parts with ":"
-                return string.Join(":", parts.Where(p => !string.IsNullOrEmpty(p))) + $":paginationcontrols_button_{buttonName}";
+                var id= 
+                    string.Join(":", parts.Where(p => !string.IsNullOrEmpty(p))) 
+                    + $":pagenation.button.{buttonName}";
+                return id;
             }
 
             var row = new ActionRowBuilder();
@@ -96,7 +124,7 @@ namespace Dynastio.Bot.Utilities
                     customId: BuildCustomId($"{_currentPage - 1}:{_rowsPerPage}", "back"),
                     style: ButtonStyle.Primary,
                     emoteName: "travolatorleft",
-                    disabled: _currentPage <= 1
+                    disabled: _currentPage <= 1 || !EnabledPageNavigation
                 ));
             }
 
@@ -108,7 +136,7 @@ namespace Dynastio.Bot.Utilities
                     customId: BuildCustomId($"{_currentPage}:{_rowsPerPage - DecreaseStep}", "decrease"),
                     style: ButtonStyle.Secondary,
                     emoteName: "zoomout",
-                    disabled: _rowsPerPage - DecreaseStep < MinRowsPerPage
+                    disabled: (_rowsPerPage - DecreaseStep < MinRowsPerPage) || !EnabledRowSizeControls
                 ));
             }
 
@@ -119,7 +147,8 @@ namespace Dynastio.Bot.Utilities
                     label: "Refresh",
                     customId: BuildCustomId($"{1}:{(MaxRowsRefreshPage == 0 ? _rowsPerPage : MaxRowsRefreshPage)}", "refresh"),
                     style: ButtonStyle.Success,
-                    emoteName: "portal"
+                    emoteName: "portal",
+                    disabled: !EnabledRefreshButton
                 ));
             }
 
@@ -131,7 +160,7 @@ namespace Dynastio.Bot.Utilities
                     customId: BuildCustomId($"{_currentPage}:{_rowsPerPage + IncreaseStep}", "increase"),
                     style: ButtonStyle.Secondary,
                     emoteName: "zoomin",
-                    disabled: _rowsPerPage + IncreaseStep > MaxRowsPerPage
+                    disabled: (_rowsPerPage + IncreaseStep > MaxRowsPerPage) || !EnabledRowSizeControls
                 ));
             }
 
@@ -143,7 +172,7 @@ namespace Dynastio.Bot.Utilities
                     customId: BuildCustomId($"{_currentPage + 1}:{_rowsPerPage}", "next"),
                     style: ButtonStyle.Primary,
                     emoteName: "travolatorright",
-                    disabled: _currentPage * _rowsPerPage >= _totalItemCount
+                    disabled: (_currentPage * _rowsPerPage >= _totalItemCount) || !EnabledPageNavigation
                 ));
             }
 

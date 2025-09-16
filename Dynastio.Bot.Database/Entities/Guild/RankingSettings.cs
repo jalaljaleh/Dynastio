@@ -44,19 +44,19 @@ namespace Dynastio.Bot.Database
         /// Base XP awarded for each valid message.
         /// </summary>
         [BsonElement("xpPerMessage")]
-        public int BaseXpPerMessage { get; set; } = 50;
+        public int BaseXpPerMessage { get; set; } = 90;
 
         /// <summary>
         /// Flat XP bonus applied if a booster is active.
         /// </summary>
         [BsonElement("boosterXp")]
-        public int BoosterXp { get; set; } = 15;
+        public int BoosterXp { get; set; } = 30;
 
         /// <summary>
         /// Maximum random XP bonus to add (0..RandomXpBonus).
         /// </summary>
         [BsonElement("randomXpBonus")]
-        public int RandomXpBonus { get; set; } = 10;
+        public int RandomXpBonus { get; set; } = 20;
 
         /// <summary>
         /// Cooldown (in seconds) before the same user can earn XP again.

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Dynastio.Net;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -233,6 +234,17 @@ namespace Dynastio.Bot.Database
         {
             return Accounts.FirstOrDefault(a => a.IsDefault)
                    ?? Accounts.FirstOrDefault();
+        }
+
+        public async Task<List<PersonalChest>> GetPersonalChestsAsync(DynastioApi api)
+        {
+            List<PersonalChest> result = new();
+            foreach (var acc in Accounts)
+            {
+                result.Add(await acc.GetCachedPersonalChestAsync(api, 10));
+                await Task.Delay(500);
+            }
+            return result;
         }
         /// <summary>
         /// Retrieves the default account, or first account if none set.

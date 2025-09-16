@@ -169,16 +169,12 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 .WithSeparator(SeparatorSpacingSize.Large, true);
 
             // 9️⃣ Add pagination controls with custom step sizes
-            var pagingControls = new PaginationControls(
-                    EmoteService,
-                    InteractionIdBase,
-                    allServers.Count,
-                    page,
-                    pageSize)
+            var pagingControls = new PaginationControls(EmoteService, InteractionIdBase, allServers.Count, page, pageSize)
             {
                 DecreaseStep = 5,
                 IncreaseStep = 5
             }
+            .WithSizeControlButtons()
                 .Build(sort.ToString());
 
             container.WithActionRow(pagingControls);
