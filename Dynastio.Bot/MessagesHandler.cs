@@ -60,31 +60,15 @@ namespace Dynastio.Bot
             if (raw is not SocketUserMessage message || message.Source != MessageSource.User || message.Author.IsBot || message.Channel is not ITextChannel textChannel)
                 return;
 
-
             try
             {
                 var guild = await _database.GetGuildAsync(textChannel.GuildId).ConfigureAwait(false);
                 var user = await _users.GetOrCreateUserAsync(message.Author.Id).ConfigureAwait(false);
 
-                var cmdResult = await _commandHandler.MessageReceivedAsync(message).ConfigureAwait(false);
+                var cmdResult = await _commandHandler.ExecuteCommandAsync(message, guild, user).ConfigureAwait(false);
                 if (cmdResult is null)
                 {
                     await _ranker.TryAddMessageXpAsync(guild, user, message).ConfigureAwait(false);
-                    return;
-                }
-
-                if (guild.Id != 480416088312774657) return;
-
-                // 4. If command handler returned a result, handle AI or reaction
-                if (!cmdResult.IsSuccess)
-                {
-                    if (!_aiChat.TryAcquireSlot())
-                    {
-                        await message.AddReactionAsync(new Emoji("😂")).ConfigureAwait(false);
-                        return;
-
-                    }
-                    await _aiChat.ReplyMessageAsync(message, user).ConfigureAwait(false);
                     return;
                 }
 

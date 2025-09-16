@@ -103,34 +103,9 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
             await RespondAsync("I am thinking ..", ephemeral: true);
 
             SocketUserMessage msg = message as SocketUserMessage;
-            string data = "account not linked";
-            try
-            {
-                var buser = await this.Context.UsersService.GetOrCreateUserAsync(msg.Author.Id);
-                var profile = await buser.GetDefaultAccount()?.GetCachedProfileCardAsync(Context.Dynastio) ?? null;
-                data = profile is null ? data : JsonSerializer.Serialize(new
-                {
-                    personal_chest_items = string.Join(", ", profile.Chest.Items.Select(a => a.ItemType.ToString() + " count " + a.Count)),
-                    badges = string.Join(", ", profile.Profile.Badges.Select(a => a.ToString())),
-                    coins = profile.Profile.Coins,
-                    experience = profile.Profile.Experience,
-                    lastestactivity = profile.Profile.LastActiveAt,
-                    latestserver = profile.Profile.LatestServer,
-                    level = profile.Profile.Level,
-                });
+            var buser = await this.Context.UsersService.GetOrCreateUserAsync(msg.Author.Id);
 
-            }
-            catch
-            {
-            }
-
-            string systemPrompt = AiHelper.answer + $"data: {data} \n\n User Message= {msg.Author.Mention}\n\n said: {message.Content}";
-
-            // 3) Query
-            string aiResponse = await Ai.QueryAsync(null, systemPrompt);
-
-            // 4) Send back
-            await msg.ReplyAsync(aiResponse);
+            await Ai.ReplyMessageAsync(msg, buser);
         }
 
         [SlashCommand("items", "items config")]

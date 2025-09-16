@@ -78,14 +78,13 @@ namespace Dynastio.Bot.Interactions
         /// <summary>
         /// Gets the message associated with the current interaction, if applicable.
         /// </summary>
-        public IUserMessage CurrentMessage =>
-            Context.Interaction.Type switch
-            {
-                InteractionType.ModalSubmit => (Context.Interaction as SocketModal)?.Message,
-                InteractionType.MessageComponent => (Context.Interaction as SocketMessageComponent)?.Message,
-                //     InteractionType.ApplicationCommand => (Context.Interaction as Component)
-                _ => null
-            };
+        public IUserMessage CurrentMessage=> Context.Interaction.Type switch
+        {
+            InteractionType.ModalSubmit => (Context.Interaction as SocketModal)?.Message,
+            InteractionType.MessageComponent => (Context.Interaction as SocketMessageComponent)?.Message,
+            //     InteractionType.ApplicationCommand => (Context.Interaction as Component)
+            _ => null
+        };
 
         /// <summary>
         /// Updates the bot's user profile in the database.

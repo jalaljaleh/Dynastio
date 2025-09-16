@@ -68,8 +68,9 @@ namespace Dynastio.Bot.Interactions.Modules.Game.Fight
 
             // Update arena text once
             var updated = new StringBuilder(ArenaIntro)
+
                 .AppendLine("\n---\n")
-                .AppendLine($"**Fighters ({fighters.Count}):** {string.Join(", ", fighters.Select(u => u.Mention))}")
+                .AppendLine($"**Fighters ({fighters.Count}):**\n>>> {string.Join("\n", fighters.Select(u => $"{fighters.IndexOf(u).ToRegularCounter()}. {u.Mention}"))}")
                 .ToString();
 
             // Preserve original buttons
@@ -106,7 +107,7 @@ namespace Dynastio.Bot.Interactions.Modules.Game.Fight
             await Task.Delay(1000);
             for (int i = 3; i > 0; i--)
             {
-                await ReplyOrModifyAsync($"⏳ Tournament begins in **{i}**...");
+                await ReplyOrModifyAsync($"#⏳ Tournament begins in **{i}**...");
                 await Task.Delay(3000);
             }
 
@@ -140,26 +141,28 @@ namespace Dynastio.Bot.Interactions.Modules.Game.Fight
                               ?? new PersonalChest(new() { new PersonalChestItem { ItemType = ItemType.Nothing } });
 
                 // Announce round and inventory
-                await ReplyOrModifyAsync($"# **Round {roundNumber}:**\n{p1.Mention} vs {p2.Mention}");
+                await ReplyOrModifyAsync(
+                    $"# ⚔️ PvP Arena ⚔️\n" +
+                    $"# **Round {roundNumber}:**\n{p1.Mention} vs {p2.Mention}");
                 await Task.Delay(2000);
 
                 var emotes1 = string.Join(" ", chest1.Items.Select(i => EmoteService.GetEmote(i.ItemType)));
                 var emotes2 = string.Join(" ", chest2.Items.Select(i => EmoteService.GetEmote(i.ItemType)));
 
-              
-                string c = $"# 🎒 Inventory:" +
-                    $"\n## {p1.Mention}:\n# {string.Join(" ", chest1.Items.DistinctBy(a => a.ItemType).Select(a => EmoteService.GetEmote(a.ItemType)))}  \n" +
-                    $"\n## {p2.Mention}:\n# {string.Join(" ", chest2.Items.DistinctBy(a => a.ItemType).Select(a => EmoteService.GetEmote(a.ItemType)))}  \n";
+
+                string c = $"# 🎒 Inventory:";
+                string p11 = $"\n## {p1.Mention}:\n# {string.Join(" ", chest1.Items.DistinctBy(a => a.ItemType).Select(a => EmoteService.GetEmote(a.ItemType)))}  \n";
+                string p21 = $"\n## {p2.Mention}:\n# {string.Join(" ", chest2.Items.DistinctBy(a => a.ItemType).Select(a => EmoteService.GetEmote(a.ItemType)))}  \n";
 
 
-                await ReplyOrModifyAsync(text: "", embed: c.ToEmbed());
+                await ReplyOrModifyAsync(text: "", embeds:new Embed[] {p11.ToEmbed(null,p1.TryGetAvatarUrl()),p21.ToEmbed(null, p2.TryGetAvatarUrl()) });
                 await Task.Delay(8000);
 
                 // Compute scores safely
                 double score1 = ComputeScore(chest1.Items, ItemsService);
                 double score2 = ComputeScore(chest2.Items, ItemsService);
 
-         
+
                 // Determine outcome
                 var winner = score1 >= score2 ? p1 : p2;
                 var loser = winner == p1 ? p2 : p1;
@@ -167,11 +170,15 @@ namespace Dynastio.Bot.Interactions.Modules.Game.Fight
                 //if (loser.Id == 1374305522290917526)
                 //    winner = loser;
 
-                await ReplyOrModifyAsync($"## ⚔️ {p1.Mention} and {p2.Mention} clash !", embed: null);
+                await ReplyOrModifyAsync(
+                   $"# ⚔️ PvP Arena ⚔️\n" +
+                    $"## ⚔️ {p1.Mention} and {p2.Mention} clash !", embed: null);
                 fightHistory.AppendLine($"• {winner.Mention} defeated {loser.Mention}");
                 await Task.Delay(6000);
 
-                await ReplyOrModifyAsync($"## 🎉 Winner: 🏅 {winner.Mention}");
+                await ReplyOrModifyAsync(
+                     $"# ⚔️ PvP Arena ⚔️\n" +
+                    $"## 🎉 Winner: 🏅 {winner.Mention}");
                 eliminationQ.Enqueue(winner);
                 roundNumber++;
 
