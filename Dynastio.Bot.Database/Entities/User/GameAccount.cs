@@ -50,7 +50,7 @@ namespace Dynastio.Bot.Database
         /// </summary>
         [JsonInclude, JsonPropertyName("pinCode")]
         [BsonElement("pinCode")]
-        public string PinCode {  get; private set; }
+        public string PinCode { get; private set; }
 
         /// <summary>
         /// Contact email for notifications related to this account.
@@ -221,7 +221,7 @@ namespace Dynastio.Bot.Database
         /// <summary>
         /// Toggles this account as default.
         /// </summary>
-        public GameAccount AsDefault(bool isDefault = true)
+        internal GameAccount AsDefault(bool isDefault = true)
         {
             IsDefault = isDefault;
             return this;

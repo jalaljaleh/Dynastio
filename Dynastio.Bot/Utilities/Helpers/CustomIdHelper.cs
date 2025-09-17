@@ -10,7 +10,7 @@ namespace Dynastio.Bot
     {
         public static string Generate()
         {
-            return Common.Random.Next(100, 99999).ToString();
+            return Common.Random.Next(-999999999, 999999999).ToString();
         }
     }
 }

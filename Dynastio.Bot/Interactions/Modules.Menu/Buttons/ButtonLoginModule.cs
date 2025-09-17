@@ -109,7 +109,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 
             if (BotUser.GetDefaultAccount() is null)
             {
-                BotUser.Accounts.FirstOrDefault().AsDefault();
+                BotUser.SetDefaultAccount(BotUser.Accounts.FirstOrDefault().Id);
                 await ReplyWithSuccessAsync($"🛠️ **{BotUser.GetDefaultAccount().DisplayName} ** Default account updated successfully ! Your Dynasty journey begins now.");
                 return;
             }

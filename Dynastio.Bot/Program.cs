@@ -17,6 +17,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Dynastio.Support.Bot;
 
+
 namespace Dynastio.Bot
 {
     public class Program
@@ -31,9 +32,12 @@ namespace Dynastio.Bot
 
         //    Environment.Exit(0);
         //}
+        
         public static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
         public async Task MainAsync()
         {
+         //   AssetsFinder.Intilize();
+
             while (true)
             {
                 ConfigureJsonSerializer();
@@ -121,7 +125,7 @@ namespace Dynastio.Bot
             services.AddSingleton<EventsHandler>();
 
             services.AddSingleton<SupportBot>();
-
+            services.AddSingleton<TelegramBotService>(x=> new TelegramBotService(config.Tokens["telegram-bot"]));
 
             return services.BuildServiceProvider();
         }

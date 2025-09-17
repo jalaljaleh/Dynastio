@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
 namespace Dynastio.Bot
 {
@@ -33,6 +34,7 @@ namespace Dynastio.Bot
         private readonly CommandService _commands;
         private readonly AiChatService _aiChat;
         private readonly DynastioApi _dynastioApi;
+        private readonly TelegramBotService _telegram;
         private readonly IServiceProvider _services;
 
         public MessagesHandler(IServiceProvider services)
@@ -46,6 +48,8 @@ namespace Dynastio.Bot
             _aiChat = services.GetRequiredService<AiChatService>();
             _dynastioApi = services.GetRequiredService<DynastioApi>();
             _commands = services.GetRequiredService<CommandService>();
+            _telegram = services.GetRequiredService<TelegramBotService>();
+
             _services = services;
             // Subscribe to all incoming messages
             _discord.MessageReceived += OnMessageReceivedAsync;
@@ -56,6 +60,18 @@ namespace Dynastio.Bot
         /// </summary>
         private async Task OnMessageReceivedAsync(SocketMessage raw)
         {
+            if (raw.Channel.Id == 480951629978533898) //┊〢📢│𝐀𝐧𝐧𝐨𝐮𝐧𝐜𝐞𝐦𝐞𝐧𝐭𝐬
+            {
+                if (raw.Attachments.Count == 0)
+                {
+                    await _telegram.SendMessageAsync("@DynastioBot", raw.CleanContent);
+                }
+                else
+                {
+                    await _telegram.SendPhotoMessageAsync("@DynastioBot", raw.Attachments.First().Url, raw.Content);
+                }
+                return;
+            }
             // 1. Ignore system/bot messages, DMs, and non-text channels
             if (raw is not SocketUserMessage message || message.Source != MessageSource.User || message.Author.IsBot || message.Channel is not ITextChannel textChannel)
                 return;

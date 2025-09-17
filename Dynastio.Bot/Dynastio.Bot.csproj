@@ -33,7 +33,8 @@
 	  <PackageReference Include="Google.Apis.YouTube.v3" Version="1.67.0.3343" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 	  <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
-	 
+	  <PackageReference Include="Telegram.Bot" Version="22.7.2" />
+	  
 	  <ProjectReference Include="..\Dynastio.Bot.Database\Dynastio.Bot.Database.csproj" />
        <ProjectReference Include="..\Dynastio.Bot.Global\Dynastio.Bot.Global.csproj" />
        <ProjectReference Include="..\Dynastio.Extenstions\Dynastio.Extenstions.csproj" />
@@ -91,6 +92,11 @@
 	<ItemGroup>
 		<Content Include="assets\**" CopyToOutputDirectory="PreserveNewest" />
 
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <None Include="Interactions\Modules.Menu\Buttons\ButtonShapeGeneratorModule.cs" />
 	</ItemGroup>
 	
 </Project>

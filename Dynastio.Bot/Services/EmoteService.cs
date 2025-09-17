@@ -418,6 +418,118 @@ namespace Dynastio.Bot.Services
             return uploaded;
         }
 
+        /// <summary>
+        /// Deletes application emotes that do not satisfy the keepFilter.
+        /// Example keepFilter: name => localAssetNames.Contains(name)
+        /// </summary>
+        /// <param name="keepFilter">
+        /// Predicate to decide which emote names to retain.
+        /// If null, all emotes except the “unknown” emote will be deleted.
+        /// </param>
+        /// <param name="maxRemovals">
+        /// Optional cap on how many emotes to delete in one run.
+        /// </param>
+        /// <param name="logger">
+        /// Optional per-emote log action. Default: Console.WriteLine.
+        /// </param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>Number of emotes actually removed.</returns>
+        public async Task<int> RemoveExtraEmotesAsync(
+            Func<string, bool>? keepFilter = null,
+            int? maxRemovals = null,
+            Action<string>? logger = null,
+            CancellationToken ct = default)
+        {
+            await EnsureReadyAsync(ct).ConfigureAwait(false);
+            await RefreshCacheAsync(ct).ConfigureAwait(false);
 
+            logger ??= msg => Console.WriteLine($"Emotes Service    {msg}");
+
+            // By default, keep only the “unknown” emote
+            keepFilter ??= name =>
+                string.Equals(name, _unknownEmoteName, StringComparison.OrdinalIgnoreCase);
+
+            // Fetch current application emotes
+            var allEmotes = await _discord
+                .GetApplicationEmotesAsync()
+                .ConfigureAwait(false);
+
+            // Determine which to delete
+            var toDelete = allEmotes
+                .Where(e => !keepFilter(e.Name))
+                .Take(maxRemovals ?? int.MaxValue)
+                .ToList();
+
+            logger($"Found {allEmotes.Count} emotes, will delete {toDelete.Count}.");
+
+            var removedCount = 0;
+            foreach (var emote in toDelete)
+            {
+                ct.ThrowIfCancellationRequested();
+                try
+                {
+                    // Delete via Discord.NET extension
+                    await _discord
+                        .DeleteApplicationEmoteAsync(emote.Id)
+                        .ConfigureAwait(false);
+
+                    removedCount++;
+                    logger($"Deleted emote: {emote.Name} ({emote.Id})");
+                }
+                catch (Exception ex)
+                {
+                    logger($"Failed to delete {emote.Name}: {ex.Message}");
+                }
+            }
+
+            // Refresh cache so next lookup sees the updates
+            if (removedCount > 0)
+                await RefreshCacheAsync(ct).ConfigureAwait(false);
+
+            return removedCount;
+        }
+
+        /// <summary>
+        /// Shortcut: delete a single emote by exact name (case-insensitive).
+        /// </summary>
+        public Task<bool> RemoveEmoteByNameAsync(string name, CancellationToken ct = default)
+        {
+            name = NormalizeName(name);
+            if (!_emotesByName.TryGetValue(name, out var emote))
+                return Task.FromResult(false);
+
+            return RemoveEmoteAsync(emote, ct);
+        }
+
+        /// <summary>
+        /// Shortcut: delete a single emote instance.
+        /// </summary>
+        public async Task<bool> RemoveEmoteAsync(Emote emote, CancellationToken ct = default)
+        {
+            try
+            {
+                await _discord
+                    .DeleteApplicationEmoteAsync(emote.Id)
+                    .ConfigureAwait(false);
+
+                // Update in-memory collections
+                await _cacheLock.WaitAsync(ct).ConfigureAwait(false);
+                try
+                {
+                    _emoteNames.Remove(emote.Name);
+                    _emotesByName.Remove(emote.Name);
+                }
+                finally
+                {
+                    _cacheLock.Release();
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

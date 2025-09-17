@@ -33,7 +33,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// {0} = page, {1} = page size, {2} = trigger context.
         /// Allows you to pass parameters through the button’s CustomId.
         /// </summary>
-        public const string IdParameterFormat = ":{0}:{1}";
+        public const string IdParameterFormat = ":{0}:{1}:{2}";
 
         // -----------------------------------------------------------------------------------
         // SECTION: Builder Method
@@ -52,21 +52,21 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Helps pass context (like page or filter) back to ExecuteAsync.
         /// </param>
         /// <returns>A fully configured ButtonBuilder instance.</returns>
-        public static ButtonBuilder BuildButton(MenuModulesBase module, PersonalChestItem item, params string[] args)
+        public static ButtonBuilder BuildButton(MenuModulesBase module, PersonalChestItem item, int accountIndex, params string[] args)
         {
             var btn = new ButtonBuilder()
-                .WithLabel("Slot 0" )
+                .WithLabel("Slot 0")
                 .WithEmote(module.EmoteService.GetEmoteByName("unknown"))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithDisabled(item == null)
-                .WithCustomId(BuildCustomId("unkown", trigger: CustomIdHelper.Generate()));
+                .WithCustomId(BuildCustomId("unkown", accountIndex, trigger: CustomIdHelper.Generate()));
 
             if (item != null)
             {
                 btn
                 .WithLabel("Slot " + (item.Index + 1).ToRegularCounter())
                 .WithEmote(module.EmoteService.GetEmote(item.ItemType))
-                .WithCustomId(BuildCustomId(item.ItemType.ToString(), trigger: CustomIdHelper.Generate()));
+                .WithCustomId(BuildCustomId(item.ItemType.ToString(), accountIndex, trigger: CustomIdHelper.Generate()));
             }
 
             return btn;
@@ -84,12 +84,12 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// <param name="take">Items per page (default = 10).</param>
         /// <param name="trigger">Context label (default = empty).</param>
         /// <returns>Fully formatted CustomId for use with ComponentInteraction.</returns>
-        public static string BuildCustomId(string item, string trigger = "")
+        public static string BuildCustomId(string item, int accountIndex, string trigger = "")
         {
             // Concatenate base prefix + formatted parameters
             // .StarIfNullFormat ensures safe formatting even if trigger is null/empty
             return InteractionIdBase
-                 + IdParameterFormat.StarIfNullFormat(item, trigger);
+                 + IdParameterFormat.StarIfNullFormat(item, accountIndex, trigger);
         }
 
         // -----------------------------------------------------------------------------------
@@ -102,16 +102,16 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Copy-and-paste into your new module and adjust the attribute:
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
-        [ComponentInteraction(InteractionIdBase + ":*:*")]
+        [ComponentInteraction(InteractionIdBase + ":*:*:*")]
         [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireLinkedAccount]
         [RequireContext(ContextType.Guild)]
-        public async Task ExecuteAsync(ItemType item, string trigger = "")
+        public async Task ExecuteAsync(ItemType item, int accountIndex, string trigger = "")
         {
             await DeferAsync();
 
-            var account = Context.BotUser.GetDefaultAccount();
+            var account = accountIndex == 0 ? Context.BotUser.GetDefaultAccount() : Context.BotUser.Accounts[accountIndex - 1];
             var chest = await account.GetCachedPersonalChestAsync(Dynastio);
             var target = chest.Items.FirstOrDefault(a => a.ItemType == item);
 
@@ -131,36 +131,37 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                     }
                 }
             }
-                var sectionAccount = new SectionBuilder()
-                               .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmote(item).Url))
-                            // .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmoteByName("privatechest").Url))
-                            .WithTextDisplay(
-                              $"# {EmoteService.GetEmoteByName("privatechest")} Slot {target.Index + 1}  ` {target.ItemType} `" +
-                              $"\n## Slot: ` {target.Index.ToRegularCounter()} `     Count: ` {target.Count} `" +
-                              $"\n### Durability: ` {target.Durability} `" +
-                              $"\n### Details: ` {target.Details} `" +
-                              $"\n### Owner ` crafted by `: || {ownerMention} ||" +
-                              $"\nToken: ` {target.Token} `" +
-                              $"" +
-                              $"\n");
+            var sectionAccount = new SectionBuilder()
+                           .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmote(item).Url))
+                        // .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmoteByName("privatechest").Url))
+                        .WithTextDisplay(
+                          $"# {EmoteService.GetEmoteByName("privatechest")} Personal Chest {account.DisplayName} \n" +
+                          $"# {EmoteService.GetEmoteByName("privatechest")} Slot {target.Index + 1}  ` {target.ItemType} `" +
+                          $"\n## Slot: ` {target.Index.ToRegularCounter()} `     Count: ` {target.Count} `" +
+                          $"\n### Durability: ` {target.Durability} `" +
+                          $"\n### Details: ` {target.Details} `" +
+                          $"\n### Owner ` crafted by `: || {ownerMention} ||" +
+                          $"\nToken: ` {target.Token} `" +
+                          $"" +
+                          $"\n");
 
 
-                var container = new ContainerBuilder()
-                  .WithAccentColor(Color.Green)
-                  .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
-                  .WithTextDisplay($"You logined as {account.DisplayName} !")
+            var container = new ContainerBuilder()
+              .WithAccentColor(Color.Green)
+              .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
+              .WithTextDisplay($"You logined as {account.DisplayName} !")
 
-                  .WithSeparator(SeparatorSpacingSize.Large, true)
-                  .WithSection(sectionAccount);
-                //     .WithSeparator(SeparatorSpacingSize.Small, true)
+              .WithSeparator(SeparatorSpacingSize.Large, true)
+              .WithSection(sectionAccount);
+            //     .WithSeparator(SeparatorSpacingSize.Small, true)
 
-                //    .WithActionRow([ButtonCloseModule.BuildButton(this)]);
+            //    .WithActionRow([ButtonCloseModule.BuildButton(this)]);
 
-                var component = new ComponentBuilderV2()
-                    .WithContainer(container)
-                    ;
-                await ReplyOrModifyAsync(components: component.Build());
-            }
-        
+            var component = new ComponentBuilderV2()
+                .WithContainer(container)
+                ;
+            await ReplyOrModifyAsync(components: component.Build());
+        }
+
     }
 }

@@ -1,11 +1,13 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Discord.WebSocket;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
+using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Threading.Tasks;
+using static Dynastio.Bot.Interactions.Modules.Owner.Developer;
 
 namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 {
@@ -14,18 +16,17 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
     /// Acts as the “default” fallback for any unregistered or unknown button IDs.
     /// Inherit from MenuModulesBase and implement IButtonsServiceModule.
     /// </summary>
-    public class DropdownSwitchAccountModule : MenuModulesBase, IMenuComponentRule
+    public class ButtonShapeGeneratorModule : MenuModulesBase, IMenuComponentRule
     {
         // -----------------------------------------------------------------------------------
         // SECTION: Constants
         // -----------------------------------------------------------------------------------
-        public const int MaxSelectionCount = 1;
-        public const int MinSelectionCount = 1;
+
         /// <summary>
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
         /// </summary>
-        public const string InteractionIdBase = "interactions.menu.dropdown.switchAccount";
+        public const string InteractionIdBase = "interactions.menu.buttons.shapeGenerator";
 
         /// <summary>
         /// Suffix format appended after the base ID.
@@ -38,44 +39,15 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         // SECTION: Builder Method
         // -----------------------------------------------------------------------------------
 
-        /// <summary>
-        /// Construct the ButtonBuilder that appears in the UI whenever this module is used.
-        /// Copy-and-paste this method into your new module and adjust:
-        /// - Label text
-        /// - Emote key
-        /// - Button style
-        /// - CustomId construction
-        /// </summary>
-        /// <param name="args">
-        /// Optional string parameters that will be embedded in the CustomId.
-        /// Helps pass context (like page or filter) back to ExecuteAsync.
-        /// </param>
-        /// <returns>A fully configured ButtonBuilder instance.</returns>
-        public static SelectMenuBuilder BuildSelectMenu(MenuModulesBase module, params string[] args)
+        public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
         {
-            if (module.BotUser.Accounts.Where(a => a.IsDefault).Count() > 1)
-                module.BotUser.SetDefaultAccount(module.BotUser.Accounts.FirstOrDefault().Id);
-
-            var accounts = module.BotUser.Accounts.Take(24).Select(a => new SelectMenuOptionBuilder()
-                                .WithLabel(a.DisplayName)
-                                .WithDescription(a.Notes)
-                                .WithDefault(a.IsDefault)
-                                .WithValue(a.GetHashCode().ToString())
-                                .WithEmote(
-                                    a.IsDefault
-                                    ? module.EmoteService.GetEmoteByName("skull")
-                                    : module.EmoteService.GetEmoteByName("tab_profile_icon_active"))
-                                ).ToList();
-
-            var accountsBuilder = new SelectMenuBuilder()
-            {
-                IsDisabled = false,
-                MinValues = MinSelectionCount,
-                MaxValues = MaxSelectionCount,
-                Options = accounts,
-                CustomId = BuildCustomId(),
-            };
-            return accountsBuilder;
+            var btn = new ButtonBuilder()
+                .WithLabel("Shape Generator")
+                .WithEmote(module.EmoteService.GetEmoteByName("ball"))
+                .WithStyle(ButtonStyle.Primary)
+                .WithDisabled(false)
+                .WithCustomId(BuildCustomId(trigger: CustomIdHelper.Generate()));
+            return btn;
         }
 
         // -----------------------------------------------------------------------------------
@@ -94,9 +66,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         {
             // Concatenate base prefix + formatted parameters
             // .StarIfNullFormat ensures safe formatting even if trigger is null/empty
-            return string.IsNullOrEmpty(trigger)
-                ? InteractionIdBase /*+ IdParameterFormat*/
-                : InteractionIdBase; /*+ IdParameterFormat.StarIfNullFormat(trigger);*/
+            return InteractionIdBase
+                 + IdParameterFormat.StarIfNullFormat(trigger);
         }
 
         // -----------------------------------------------------------------------------------
@@ -109,22 +80,27 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Copy-and-paste into your new module and adjust the attribute:
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
-        [ComponentInteraction(InteractionIdBase)]
+        [ComponentInteraction(InteractionIdBase + ":*")]
         [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireContext(ContextType.Guild)]
-        public async Task ExecuteAsync()
+        public async Task ExecuteAsync(string trigger = "")
         {
-            await DeferAsync();
+            var shapeGen = new DynastioShapeGenerator(EmoteService);
+            int size = Common.Random.Next(2, 6);
+            bool type = Common.Random.Next(2) == 0;
 
-            var data = (Context.Interaction as SocketMessageComponent).Data;
-            var accountHashCode = data.Values.First();
+            string shape = type switch
+            {
+                false => await shapeGen.CreateRandomShapeAsync<EntityType>(size, size),
+                true => await shapeGen.CreateRandomShapeAsync<ItemType>(size, size),
+            };
 
-            BotUser.SetDefaultAccount(BotUser.GetAccountByHashCode(accountHashCode).Id);
+            ComponentBuilderV2 cb = new ComponentBuilderV2()
+                .WithTextDisplay("# Shape Generator")
+                .WithTextDisplay(shape);
 
-            await UpdateBotUserAsync();
-
-            await ReplyWithSuccessAsync("Account switched successfly !");
+            await ReplyOrModifyAsync(components: cb.Build());
 
         }
     }

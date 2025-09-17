@@ -111,27 +111,9 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 await DeferAsync(); // Acknowledge interaction early
 
             // 1️⃣ Header section
-            var headerSection = new SectionBuilder()
-                   .WithTextDisplay(
-                   "# Dynast.io Bot   \n" +
-                    $"**Welcome** {UserMention} this is the central nexus of your [Dynast.io](https://dynast.io/) journey. " +
-                    "It’s your all‑in‑one hub to view your profile, personal chest, stats, manage settings, " +
-                    "and keep everything running smoothly.\n\n")
-             .WithAccessory(new ThumbnailBuilder(this.User.TryGetAvatarUrl(), "Dynast.io Bot", false));
 
-            var profileButtonSection = new SectionBuilder();
-            if (BotUser.HasLinkedAccount)
-            {
-                profileButtonSection.WithTextDisplay("Open your bot profile settings !")
-               .WithAccessory(ButtonLoginModule.BuildButton(this));
-            }
-            else
-            {
-                profileButtonSection
-                  .WithTextDisplay("Login to your game account !")
-                     .WithAccessory(ButtonLoginModule.BuildButton(this));
 
-            }
+
             //var rankButtonSection = new SectionBuilder()
             //   .WithTextDisplay("Open your ranking menu !")
             //   .WithAccessory(ButtonsService.GetButton(BtnType.Settings, "e4"));
@@ -144,11 +126,29 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             var container = new ContainerBuilder()
                 .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
                 .WithAccentColor(Color.DarkGreen)
-                .WithSection(headerSection)
-                .WithSection(profileButtonSection)
+
                 //.WithSection(rankButtonSection)
                 //.WithSection(settingsButtonSection)
                 .WithSeparator(SeparatorSpacingSize.Small, true);
+
+            var headerSection = new SectionBuilder()
+       .WithTextDisplay(
+       "# Dynast.io Bot   \n" +
+        $"**Welcome** {UserMention} this is the central nexus of your [Dynast.io](https://dynast.io/) journey. " +
+        "It’s your all‑in‑one hub to view your profile, personal chest, stats, manage settings, " +
+        "and keep everything running smoothly.\n\n")
+ .WithAccessory(new ThumbnailBuilder(this.User.TryGetAvatarUrl(), "Dynast.io Bot", false));
+
+            container.WithSection(headerSection);
+
+            if (!BotUser.HasLinkedAccount)
+            {
+                var profileButtonSection = new SectionBuilder()
+                  .WithTextDisplay("Login to your game account !")
+                  .WithAccessory(ButtonLoginModule.BuildButton(this));
+                container.WithSection(profileButtonSection);
+            }
+
 
             // 3️⃣ Public commands section
             //var publicSection = new SectionBuilder()
@@ -178,19 +178,19 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 
 
                    .WithActionRow([
-                            ButtonProfileStatsModule. BuildButton(this,"kill"),
-                            ButtonProfileStatsModule. BuildButton(this,"gather"),
-                            ButtonProfileStatsModule. BuildButton(this,"death"),
+                            ButtonProfileStatsModule.  BuildButton(this,"kill"),
+                            ButtonProfileStatsModule.  BuildButton(this,"gather"),
+                            ButtonProfileStatsModule.  BuildButton(this,"death"),
                             ButtonProfileStatsModule.  BuildButton(this,"craft")])
 
 
 
-                .WithSeparator(SeparatorSpacingSize.Small, true)
+                .WithSeparator(SeparatorSpacingSize.Large, true)
 
 
-                   .WithActionRow([ButtonSwitchAccountModule.BuildButton(this)])
-
-                  ;
+               .WithActionRow([ButtonLoginModule.BuildButton(this),ButtonSwitchAccountModule.BuildButton(this)])
+               .WithSeparator(SeparatorSpacingSize.Large, true)
+                ;
             }
             else
             {
@@ -199,7 +199,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                   .WithActionRow([ButtonLoginModule.BuildButton(this)]);
             }
 
-            container.WithActionRow([Interactions.Modules.Owner.ItemsModule.BuildButton(this)]);
+            container.WithActionRow([Owner.ItemsModule.BuildButton(this), ButtonShapeGeneratorModule.BuildButton(this)]);
 
             // 5️⃣ Build and send final menu
             var components = new ComponentBuilderV2()

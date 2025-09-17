@@ -130,7 +130,7 @@ namespace Dynastio.Bot
                         latestserver = profile.Profile.LatestServer,
                         level = profile.Profile.Level,
                         killed = killed,
-                        killedFrom= killedFrom
+                        killed_From = killedFrom
                     });
                 }
             }
@@ -138,13 +138,13 @@ namespace Dynastio.Bot
             {
             }
 
-            string systemPrompt = AiHelper.answer + $"data: {data} \n\n User Message= {msg.Author.Mention}\n\n said: {msg.Content}";
-
+            string systemPrompt = AiHelper.answer + $"data: {data}\n User Mention= {msg.Author.Mention}\n\n User Wrote= {msg.Content}";
+            Console.WriteLine("systemPrompt " + systemPrompt.Length);
             // 3) Query
             string aiResponse = await QueryAsync(null, systemPrompt);
 
             // 4) Send back
-            await msg.ReplyAsync(aiResponse);
+            await msg.ReplyAsync(aiResponse, allowedMentions: AllowedMentions.None);
         }
         private async Task<string> PostQueryAsync(string systemPrompt, string userPrompt, string userId = "1")
         {

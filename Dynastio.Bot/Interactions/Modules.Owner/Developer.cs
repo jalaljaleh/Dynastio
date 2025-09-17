@@ -4,6 +4,7 @@ using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Dynastio.Bot.Global.Helper;
+using Dynastio.Net;
 using Microsoft.VisualBasic;
 using MongoDB.Bson.IO;
 using System.Text.Json;
@@ -20,6 +21,26 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         {
             Interactions.Modules.Menu.Buttons.ButtonLoginModule.BypassPinCode = newCode;
             await RespondAsync($"PinCode-bypass created successfuly.", ephemeral: true);
+        }
+
+        public enum ShapeType { Items, Entities }
+        [SlashCommand("shape", "description")]
+        public async Task shape(int width, int height, ShapeType type)
+        {
+            var shapeGen = new DynastioShapeGenerator(EmoteService);
+
+            string shape = type switch
+            {
+                ShapeType.Items => await shapeGen.CreateRandomShapeAsync<EntityType>(width, height),
+                ShapeType.Entities => await shapeGen.CreateRandomShapeAsync<ItemType>(width, height),
+                _ => null
+            };
+
+
+            ComponentBuilderV2 cb = new ComponentBuilderV2()
+                .WithTextDisplay(shape);
+
+            await RespondAsync(components: cb.Build());
         }
 
         public enum AlertType

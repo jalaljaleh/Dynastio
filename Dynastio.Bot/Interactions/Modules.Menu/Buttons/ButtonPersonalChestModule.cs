@@ -116,7 +116,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             await DeferAsync();
 
             var account = page == 0 ? Context.BotUser.GetDefaultAccount() : Context.BotUser.Accounts[page - 1] ?? Context.BotUser.GetDefaultAccount();
-
+          //  BotUser.SetDefaultAccount(account.Id);
 
             var container = new ContainerBuilder()
               .WithAccentColor(Color.Green)
@@ -162,7 +162,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 
                     items.TryGetValue(currentIndex, out PersonalChestItem item);
 
-                    var button = ButtonPersonalChestItemModule.BuildButton(this, item);
+                    var button = ButtonPersonalChestItemModule.BuildButton(this, item,page);
                     actionRow.WithButton(button);
                 }
 
