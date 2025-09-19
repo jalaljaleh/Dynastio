@@ -25,7 +25,7 @@ namespace Dynastio.Bot
 
             int width = 6;
             int height = 5;
-            var items = personalChest.Items.OrderBy(a=>a.Index).ToList();
+            var items = personalChest.Items.OrderBy(a => a.Index).ToList();
             var sb = new StringBuilder();
 
             for (int y = 0; y < height; y++)
@@ -57,7 +57,7 @@ namespace Dynastio.Bot
             return sb.ToString();
         }
 
-        public async Task<string> CreateRandomShapeAsync<TEnum>(int width, int height)
+        public async Task<string> CreateRandomShapeAsync<TEnum>(int width, int height, bool spoiled = true)
             where TEnum : struct, Enum
         {
             // Ensure emote cache is ready
@@ -72,11 +72,17 @@ namespace Dynastio.Bot
                 {
                     // Pick a random enum value
                     var value = values[_random.Next(values.Length)];
+
                     // Get emote tag from EmoteService
                     var emoteTag = _emoteService.GetEmoteTag(value);
 
+                    while (emoteTag.Contains("unknown"))
+                    {
+                        value = values[_random.Next(values.Length)];
+                        emoteTag = _emoteService.GetEmoteTag(value);
+                    }
                     // Append emote to our row
-                    content += $"|| {emoteTag} ||";
+                    content += spoiled ? $"|| {emoteTag} ||" : $" {emoteTag} ";
                 }
                 if (height - 1 > y)
                     content += "\n# ";
@@ -84,5 +90,37 @@ namespace Dynastio.Bot
 
             return content;
         }
+
+        public async Task<string> CreateEmojiListAsync<TEnum>(int from = 1, int count = 100, bool spoiled = true) where TEnum : struct, Enum
+        {
+            // Ensure emote cache is ready
+            await _emoteService.EnsureReadyAsync();
+
+            var sb = new StringBuilder();
+
+            // Get enum names (strings)
+            var names = Enum.GetNames(typeof(TEnum))
+                            .Skip(from - 1)
+                            .Take(count);
+
+            var preString = typeof(TEnum) == typeof(SkinType) ? "skin_" : "";
+
+            foreach (var name in names)
+            {
+                // Get emote tag from EmoteService by name
+                var emoteTag = _emoteService.GetEmoteByName(preString + name).ToDiscordTag();
+
+                if (emoteTag.Contains("unknown"))
+                    continue;
+
+                // Append emote to our row
+                sb.Append(spoiled ? $"|| {emoteTag} ||" : $"{emoteTag} ");
+            }
+
+            return sb.ToString();
+        }
+
+
+
     }
 }

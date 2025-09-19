@@ -112,7 +112,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 
             // 1️⃣ Header section
 
-
+          
 
             //var rankButtonSection = new SectionBuilder()
             //   .WithTextDisplay("Open your ranking menu !")

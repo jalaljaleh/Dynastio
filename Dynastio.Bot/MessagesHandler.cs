@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
@@ -23,8 +24,6 @@ namespace Dynastio.Bot
     /// </summary>
     internal sealed class MessagesHandler : IDisposable
     {
-        private const ulong DevUserId = 1374305522290917526UL;
-
         private readonly DiscordSocketClient _discord;
         private readonly DynastioBotDatabase _database;
         private readonly UsersService _users;
@@ -58,41 +57,54 @@ namespace Dynastio.Bot
         /// <summary>
         /// Entry point for every Discord message. Filters, routes commands or AI, and awards XP.
         /// </summary>
+        /// 
+        //if (raw.Channel.Id == 480951629978533898) //┊〢📢│𝐀𝐧𝐧𝐨𝐮𝐧𝐜𝐞𝐦𝐞𝐧𝐭𝐬
+        //{
+        //    if (raw.Attachments.Count == 0)
+        //    {
+        //        await _telegram.SendMessageAsync("@DynastioBot", raw.CleanContent);
+        //    }
+        //    else
+        //    {
+        //        await _telegram.SendPhotoMessageAsync("@DynastioBot", raw.Attachments.First().Url, raw.Content);
+        //    }
+        //    return;
+        //}
+
         private async Task OnMessageReceivedAsync(SocketMessage raw)
         {
-            if (raw.Channel.Id == 480951629978533898) //┊〢📢│𝐀𝐧𝐧𝐨𝐮𝐧𝐜𝐞𝐦𝐞𝐧𝐭𝐬
-            {
-                if (raw.Attachments.Count == 0)
-                {
-                    await _telegram.SendMessageAsync("@DynastioBot", raw.CleanContent);
-                }
-                else
-                {
-                    await _telegram.SendPhotoMessageAsync("@DynastioBot", raw.Attachments.First().Url, raw.Content);
-                }
-                return;
-            }
-            // 1. Ignore system/bot messages, DMs, and non-text channels
-            if (raw is not SocketUserMessage message || message.Source != MessageSource.User || message.Author.IsBot || message.Channel is not ITextChannel textChannel)
-                return;
+            _ = Task.Run(async () =>
+             {
+                 // 1. Ignore system/bot messages, DMs, and non-text channels
+                 if (raw is not SocketUserMessage message || message.Source != MessageSource.User || message.Author.IsBot || message.Channel is not IGuildChannel guildChannel)
+                     return;
 
-            try
-            {
-                var guild = await _database.GetGuildAsync(textChannel.GuildId).ConfigureAwait(false);
-                var user = await _users.GetOrCreateUserAsync(message.Author.Id).ConfigureAwait(false);
+                 Program.UnsafeCode = true;
+                 var text = message.Content.ToLowerInvariant();
+                 string[] triggers = { "jale", "1374305522290917526", "джалеху" };
+                 if (triggers.Any(trigger => text.Contains(trigger)))
+                 {
+                     await message.AddReactionAsync(new Emoji("👀"));
+                 }
 
-                var cmdResult = await _commandHandler.ExecuteCommandAsync(message, guild, user).ConfigureAwait(false);
-                if (cmdResult is null)
-                {
-                    await _ranker.TryAddMessageXpAsync(guild, user, message).ConfigureAwait(false);
-                    return;
-                }
+                 try
+                 {
+                     var guild = await _database.GetGuildAsync(guildChannel.GuildId).ConfigureAwait(false);
+                     var user = await _users.GetOrCreateUserAsync(message.Author.Id).ConfigureAwait(false);
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error processing incoming message");
-            }
+                     var cmdResult = await _commandHandler.ExecuteCommandAsync(message, guild, user).ConfigureAwait(false);
+                     if (cmdResult is null)
+                     {
+                         await _ranker.TryAddMessageXpAsync(guild, user, message).ConfigureAwait(false);
+                         return;
+                     }
+
+                 }
+                 catch (Exception ex)
+                 {
+                     Console.WriteLine("Error processing incoming message");
+                 }
+             });
         }
 
         /// <summary>

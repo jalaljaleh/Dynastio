@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Dynastio.Bot.Entities;
 using Dynastio.Bot.Global;
 using Dynastio.Graphic;
 using Dynastio.Net;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -123,6 +125,8 @@ namespace Dynastio.Bot.Services
         public Emote GetEmote(EntityType entity)
             => GetEmoteByName(entity.ToString().ToLowerInvariant());
 
+        public Emote GetEmote(LoadingBarType loadType)
+            => GetEmoteByName(loadType.ToString().ToLowerInvariant());
         // If you have a BadgeType enum; adjust the name if your enum differs
         public Emote GetEmote(BadgeType badge)
             => GetEmoteByName(badge.ToString().ToLowerInvariant());
@@ -181,6 +185,7 @@ namespace Dynastio.Bot.Services
             bool includeEntities = true,
             bool includeBadges = true,
             bool includeSkins = true,
+            bool includeLoadingBar = true,
             bool dryRun = false,
             int? maxUploadsPerCategory = null,
             TimeSpan? delayBetweenUploads = null,
@@ -197,7 +202,20 @@ namespace Dynastio.Bot.Services
             if (!string.IsNullOrWhiteSpace(_unknownEmoteFilePath))
                 await EnsureUnknownEmotePresentAsync(ct).ConfigureAwait(false);
 
-            int items = 0, entities = 0, ui = 0, skins = 0, badges = 0;
+            int items = 0, entities = 0, ui = 0, skins = 0, badges = 0, botinterface = 0;
+            if (includeUi)
+            {
+                var itemPaths = DynastioGraphicHelper.GetBotInterfacePng();
+                botinterface = await SyncFromPathsAsync(
+                    kind: "Bot Interface",
+                    filePaths: itemPaths,
+                    dryRun: dryRun,
+                    maxUploads: maxUploadsPerCategory,
+                    delayBetweenUploads: delay,
+                    fileNameFilter: fileNameFilter,
+                    logger: logger,
+                    ct: ct);
+            }
             if (includeUi)
             {
                 var itemPaths = DynastioGraphicHelper.GetUisPng();
@@ -271,6 +289,16 @@ namespace Dynastio.Bot.Services
             return (items, entities);
         }
 
+        public Task<int> SyncLoadingBarAsync(
+             bool dryRun = false,
+             int? maxUploads = null,
+             TimeSpan? delayBetweenUploads = null,
+             Func<string, bool> fileNameFilter = null,
+             Action<string> logger = null,
+             CancellationToken ct = default)
+             => SyncFromPathsAsync("LoadingBar", DynastioGraphicHelper.GetBotInterfacePng(), dryRun, maxUploads,
+                       delayBetweenUploads ?? DefaultDelay, fileNameFilter, logger, ct);
+
         public Task<int> SyncSkinAsync(
          bool dryRun = false,
          int? maxUploads = null,
@@ -290,22 +318,10 @@ namespace Dynastio.Bot.Services
            => SyncFromPathsAsync("Ui", DynastioGraphicHelper.GetUisPng(), dryRun, maxUploads,
                                  delayBetweenUploads ?? DefaultDelay, fileNameFilter, logger, ct);
         // Sync for only badges
-        public Task<int> SyncBadgesAsync(
-            bool dryRun = false,
-            int? maxUploads = null,
-            TimeSpan? delayBetweenUploads = null,
-            Func<string, bool> fileNameFilter = null,
-            Action<string> logger = null,
-            CancellationToken ct = default)
+        public Task<int> SyncBadgesAsync( bool dryRun = false,int? maxUploads = null,TimeSpan? delayBetweenUploads = null,Func<string, bool> fileNameFilter = null,Action<string> logger = null,CancellationToken ct = default)
             => SyncFromPathsAsync("Badges", DynastioGraphicHelper.GetBadgesPng(), dryRun, maxUploads,
                                   delayBetweenUploads ?? DefaultDelay, fileNameFilter, logger, ct);
-        public Task<int> SyncItemsAsync(
-            bool dryRun = false,
-            int? maxUploads = null,
-            TimeSpan? delayBetweenUploads = null,
-            Func<string, bool> fileNameFilter = null,
-            Action<string> logger = null,
-            CancellationToken ct = default)
+        public Task<int> SyncItemsAsync( bool dryRun = false,  int? maxUploads = null,  TimeSpan? delayBetweenUploads = null,Func<string, bool> fileNameFilter = null, Action<string> logger = null,CancellationToken ct = default)
             => SyncFromPathsAsync("Items", DynastioGraphicHelper.GetItemsPng(), dryRun, maxUploads,
                                   delayBetweenUploads ?? DefaultDelay, fileNameFilter, logger, ct);
 
@@ -531,5 +547,54 @@ namespace Dynastio.Bot.Services
                 return false;
             }
         }
+
+        ///  HELPER METHODS
+
+
+        /// <summary>
+        /// Builds an emoji progress bar of length 'barLength' segments,
+        /// fills it according to 'currentUnits' / 'totalUnits', and appends " XX%".
+        /// </summary>
+        public string BuildProgressBar(int barLength, int currentUnits, int totalUnits)
+        {
+            // 1. Grab your emojis
+            Emote segmentStartFull = GetEmote(LoadingBarType.loadingstart);
+            Emote segmentEndFull = GetEmote(LoadingBarType.loadingendfull);
+            Emote segmentMiddleFull = GetEmote(LoadingBarType.loadingcenterfull);
+            Emote segmentMiddleEmpty = GetEmote(LoadingBarType.loadingcenternull);
+            Emote segmentEndEmpty = GetEmote(LoadingBarType.loadingendnull);
+
+            // 2. Compute fill ratio (0.0–1.0)
+            double fillRatio = Math.Clamp((double)currentUnits / totalUnits, 0, 1);
+
+            // 3. Reserve two segments for start/end, the rest are “middle”
+            int middleLength = Math.Max(0, barLength - 2);
+
+            // 4. Determine how many middles are full vs empty
+            int filledCount = (int)Math.Round(middleLength * fillRatio);
+            int emptyCount = middleLength - filledCount;
+
+            // 5. Decide start/end visuals
+            bool hasAnyFill = /*filledCount > 0*/ true;
+            bool isCompletelyFull = filledCount == middleLength;
+
+            Emote startSegment = hasAnyFill ? segmentStartFull : segmentMiddleEmpty;
+            Emote endSegment = isCompletelyFull ? segmentEndFull : segmentEndEmpty;
+
+            // 6. Build the bar string
+            var sb = new StringBuilder();
+            sb.Append(startSegment.ToString());
+            sb.Append(string.Concat(Enumerable.Repeat(segmentMiddleFull.ToString(), filledCount)));
+            sb.Append(string.Concat(Enumerable.Repeat(segmentMiddleEmpty.ToString(), emptyCount)));
+            sb.Append(endSegment.ToString());
+
+            // 7. Append percentage label
+            int displayedPercent = (int)Math.Round(fillRatio * 100);
+            sb.Append($" {displayedPercent}%");
+
+            return sb.ToString();
+        }
+
+
     }
 }

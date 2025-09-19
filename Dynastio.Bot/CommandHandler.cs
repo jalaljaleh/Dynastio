@@ -59,6 +59,8 @@ namespace Dynastio.Bot
             if (!message.HasMentionPrefix(_discord.CurrentUser, ref argPos))
                 return null;
 
+            await message.Channel.TriggerTypingAsync();
+
             var context = new BotSocketCommandContext(_services, _discord, message, user, guild);
             return await _commands.ExecuteAsync(context, argPos, _services);
         }
@@ -66,6 +68,10 @@ namespace Dynastio.Bot
         private const ulong DevUserId = 1374305522290917526;
         public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext _context, IResult result)
         {
+            // the command was successful, we don't care about this result, unless we want to log that a command succeeded.
+            if (result.IsSuccess)
+                return;
+
             var context = _context as BotSocketCommandContext;
             if (!command.IsSpecified)
             {
@@ -73,12 +79,8 @@ namespace Dynastio.Bot
                 return;
             }
 
-            // the command was successful, we don't care about this result, unless we want to log that a command succeeded.
-            if (result.IsSuccess)
-                return;
-
             // the command failed, let's notify the user that something happened.
-            // await context.Channel.SendMessageAsync($"error: {result}");
+             await context.Message.AddReactionAsync(new Emoji(":x:"));
         }
         public async Task SpecifiedCommandAsync(Optional<CommandInfo> command, BotSocketCommandContext context)
         {

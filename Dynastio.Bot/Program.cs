@@ -32,7 +32,7 @@ namespace Dynastio.Bot
 
         //    Environment.Exit(0);
         //}
-        
+        public static bool UnsafeCode = false;
         public static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
         public async Task MainAsync()
         {
@@ -161,7 +161,7 @@ namespace Dynastio.Bot
             await sp.GetRequiredService<CommandHandlerService>().InitializeAsync();
 
 
-            await sp.GetRequiredService<SupportBot>().InitializeAsync(config.Tokens["supportBotToken"]);
+          //  await sp.GetRequiredService<SupportBot>().InitializeAsync(config.Tokens["supportBotToken"]);
 
         }
 

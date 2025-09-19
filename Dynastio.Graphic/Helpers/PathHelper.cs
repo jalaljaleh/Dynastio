@@ -53,9 +53,17 @@ namespace Dynastio.Graphic.Helpers
         {
             return Path.Combine(CurrentDirectory, $@"{GetGameDirectory()}/skins/");
         }
+        public static string GetBotInterfaceDirectory()
+        {
+            return Path.Combine(CurrentDirectory, $@"{GetBotDirectory()}/interface/");
+        }
         public static string GetBadgesDirectory()
         {
             return Path.Combine(CurrentDirectory, $@"{GetGameDirectory()}/badges/");
+        }
+        public static string GetBotDirectory()
+        {
+            return Path.Combine(CurrentDirectory, @"assets/bot/");
         }
         public static string GetGameDirectory()
         {

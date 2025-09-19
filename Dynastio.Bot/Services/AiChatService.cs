@@ -138,7 +138,7 @@ namespace Dynastio.Bot
             {
             }
 
-            string systemPrompt = AiHelper.answer + $"data: {data}\n User Mention= {msg.Author.Mention}\n\n User Wrote= {msg.Content}";
+            string systemPrompt = $"data: {data}\n"+ AiHelper.answer + $"\n User Mention:\n {msg.Author.Mention}\n\n User Sent:\n {msg.Content}";
             Console.WriteLine("systemPrompt " + systemPrompt.Length);
             // 3) Query
             string aiResponse = await QueryAsync(null, systemPrompt);

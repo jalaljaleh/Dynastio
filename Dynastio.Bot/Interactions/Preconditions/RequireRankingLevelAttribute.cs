@@ -7,7 +7,7 @@ using Discord.WebSocket;
 using Discord.Interactions;
 using Discord;
 
-namespace Dynastio.Bot.Interactions.Precondinations
+namespace Dynastio.Bot.Interactions
 {
     public class RequireRankingLevelAttribute : BotPreconditionAttribute<BotSocketInteractionContext>
     {

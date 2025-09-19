@@ -37,5 +37,9 @@ namespace Dynastio.Graphic
         {
             return Directory.GetFiles(PathHelper.GetSkinDirectory());
         }
+        public static string[] GetBotInterfacePng()
+        {
+            return Directory.GetFiles(PathHelper.GetBotInterfaceDirectory());
+        }
     }
 }

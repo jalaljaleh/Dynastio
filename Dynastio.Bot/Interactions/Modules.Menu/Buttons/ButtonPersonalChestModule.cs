@@ -5,9 +5,9 @@ using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
 using Dynastio.Bot.Utilities;
+using Dynastio.Bot.Utilities.Helpers;
 using Dynastio.Net;
-using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
+
 
 namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 {
@@ -116,7 +116,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             await DeferAsync();
 
             var account = page == 0 ? Context.BotUser.GetDefaultAccount() : Context.BotUser.Accounts[page - 1] ?? Context.BotUser.GetDefaultAccount();
-          //  BotUser.SetDefaultAccount(account.Id);
+            //  BotUser.SetDefaultAccount(account.Id);
 
             var container = new ContainerBuilder()
               .WithAccentColor(Color.Green)
@@ -131,21 +131,48 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 
             var shape = new DynastioShapeGenerator(EmoteService).GeneratePersonalChest(chest);
 
+            List<ItemType> weapons = new(),
+                           utilities = new(),
+                           resources = new();
+
+            foreach (var item in chest.Items)
+            {
+                if (DynastioItemsCategory.Weapons.Contains(item.ItemType))
+                    weapons.Add(item.ItemType);
+                else if (DynastioItemsCategory.Utilities.Contains(item.ItemType))
+                    utilities.Add(item.ItemType);
+                else if (DynastioItemsCategory.Resources.Contains(item.ItemType))
+                    resources.Add(item.ItemType);
+
+            }
+            int Max10(int number) => number > 10 ? 10 : number;
+
+            int scoreSize = chest.Items.Count, scoreWeapons = Max10(weapons.Distinct().Count()), scoreUtilites = Max10(utilities.Distinct().Count()), scoreResources = Max10(resources.Distinct().Count());
+
             var sectionAccount = new SectionBuilder()
                            .WithAccessory(new ThumbnailBuilder(User.TryGetAvatarUrl()))
                         // .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmoteByName("privatechest").Url))
                         .WithTextDisplay(
-                          $"# {EmoteService.GetEmoteByName("privatechest")} Personal Chest {account.DisplayName} \n" +
-                          shape);
+                          $"## {EmoteService.GetEmoteByName("privatechest")} Personal Chest {account.DisplayName}\n" +
+                          $"\n## {EmoteService.GetEmoteByName("privatechest")} Chest Items" +
+                          $"\n" + shape +
+                          $"\n### Chest status" +
+                          $"\n [{chest.Items.Count}/{30}] slots of chest are full !" +
+                          $"\n### {EmoteService.GetEmoteByName("select_skin_button")} Size:             {EmoteService.BuildProgressBar(10, scoreSize, 10)}" +
+                          $"\n### {EmoteService.GetEmoteByName("goldore")} Resources: {EmoteService.BuildProgressBar(10, scoreResources, 10)}" +
+                          $"\n### {EmoteService.GetEmoteByName("goldenaxe")} Utilites:       {EmoteService.BuildProgressBar(10, scoreUtilites, 10)}" +
+                          $"\n### {EmoteService.GetEmoteByName("goldenkatana")} Weapons:     {EmoteService.BuildProgressBar(10, scoreWeapons, 10)}" +
+                          $"\n### {EmoteService.GetEmoteByName("privatechest")} Score:           {EmoteService.BuildProgressBar(10, (int)new int[] { (scoreSize * 100) / 30, scoreResources, scoreUtilites, scoreWeapons }.Average(), 40)}" +
+                          $"");
 
             container.WithSection(sectionAccount);
 
-                    // should separator ? add if you need it
+            // should separator ? add if you need it
             container.WithSeparator(SeparatorSpacingSize.Small, true);
 
 
             // Constants for easy tuning
-            const int TotalButtons = 20;
+            const int TotalButtons = 22;
             const int ButtonsPerRow = 5;
             int totalRows = TotalButtons / ButtonsPerRow;
 
@@ -162,7 +189,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 
                     items.TryGetValue(currentIndex, out PersonalChestItem item);
 
-                    var button = ButtonPersonalChestItemModule.BuildButton(this, item,page);
+                    var button = ButtonPersonalChestItemModule.BuildButton(this, item, page);
                     actionRow.WithButton(button);
                 }
 

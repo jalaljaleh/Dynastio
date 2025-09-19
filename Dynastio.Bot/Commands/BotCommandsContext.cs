@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Dynastio.Bot.Database;
+using Dynastio.Bot.Services;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -16,12 +17,15 @@ namespace Dynastio.Bot.Commands
     {
         public readonly IServiceProvider _services;
         public readonly DynastioBotDatabase Database;
+        public readonly ClientService ClientService;
 
         private User _user;
         private Guild _guild;
         public BotSocketCommandContext(IServiceProvider services, DiscordSocketClient client, SocketUserMessage msg, User user = null, Guild guild = null) : base(client, msg)
         {
             Database = services.GetRequiredService<DynastioBotDatabase>();
+            ClientService = services.GetRequiredService<ClientService>();
+
             _services = services;
 
             _user = user;

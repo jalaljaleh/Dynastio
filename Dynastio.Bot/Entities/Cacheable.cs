@@ -17,6 +17,12 @@ namespace Dynastio.Bot
             _time = millisecondsUpdateTime;
             _valueTime = DateTime.MinValue;
         }
+        public Cacheable(TimeSpan millisecondsUpdateTime, Func<T> updateFunc)
+        {
+            _updateFunc = () => Task.FromResult(updateFunc());
+            _time = millisecondsUpdateTime;
+            _valueTime = DateTime.MinValue;
+        }
         private DateTime _valueTime;
         private T _value;
         public T Value

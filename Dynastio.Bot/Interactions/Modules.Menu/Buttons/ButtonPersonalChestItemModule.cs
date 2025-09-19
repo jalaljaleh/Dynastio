@@ -21,7 +21,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         // SECTION: Constants
         // -----------------------------------------------------------------------------------
         public DynastioApi Dynastio { get; set; }
-
+        public DynastioItemsService ItemsService { get; set; }
         /// <summary>
         /// Prefix used on every custom ID for this module.
         /// Discord components with IDs starting with this value will be routed here.
@@ -107,13 +107,13 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         [RequireMessageComponentOwner]
         [RequireLinkedAccount]
         [RequireContext(ContextType.Guild)]
-        public async Task ExecuteAsync(ItemType item, int accountIndex, string trigger = "")
+        public async Task ExecuteAsync(ItemType itemtype, int accountIndex, string trigger = "")
         {
             await DeferAsync();
 
             var account = accountIndex == 0 ? Context.BotUser.GetDefaultAccount() : Context.BotUser.Accounts[accountIndex - 1];
             var chest = await account.GetCachedPersonalChestAsync(Dynastio);
-            var target = chest.Items.FirstOrDefault(a => a.ItemType == item);
+            var target = chest.Items.FirstOrDefault(a => a.ItemType == itemtype);
 
             string ownerMention = " Not Found ";
             if (!string.IsNullOrEmpty(target.OwnerId))
@@ -131,20 +131,51 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                     }
                 }
             }
+            var item = ItemsService.GetItem(target.ItemType.ToString().ToLower());
             var sectionAccount = new SectionBuilder()
-                           .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmote(item).Url))
+                           .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmote(itemtype).Url))
                         // .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmoteByName("privatechest").Url))
                         .WithTextDisplay(
-                          $"# {EmoteService.GetEmoteByName("privatechest")} Personal Chest {account.DisplayName} \n" +
-                          $"# {EmoteService.GetEmoteByName("privatechest")} Slot {target.Index + 1}  ` {target.ItemType} `" +
-                          $"\n## Slot: ` {target.Index.ToRegularCounter()} `     Count: ` {target.Count} `" +
-                          $"\n### Durability: ` {target.Durability} `" +
-                          $"\n### Details: ` {target.Details} `" +
-                          $"\n### Owner ` crafted by `: || {ownerMention} ||" +
-                          $"\nToken: ` {target.Token} `" +
+                          $"# {EmoteService.GetEmoteByName("zoom_in")} Slot {target.Index + 1}  ` {target.ItemType} `\n" +
+                          $"### {EmoteService.GetEmoteByName("privatechest")} Personal Chest {account.DisplayName} \n" +
+                          $"\n### Slot capacity: {EmoteService.BuildProgressBar(5, target.Count, item.Stack ?? 1)} **[{target.Count}/{item.Stack}]**" +
+                          $"\n### Item Durability: {EmoteService.BuildProgressBar(10, target.Durability, item.Durability ?? 0)}" +
                           $"" +
                           $"\n");
 
+            // Top‐level item properties
+            var contentSectionTopLevelItemProperties =
+                             $"Durability: `{NV(item.Durability)}`\n" +
+                             $"Repair Price: `{NV(item.RepairPrice)}`\n" +
+                             $"Weight: `{NV(item.Weight, d => d.ToString("0.##"))}`\n" +
+                             $"Grade: `{NV(item.Grade)}`\n" +
+                             $"Personal Only: {NV(item.Personal, b => b ? ":white_check_mark: " : ":x:")}\n";
+
+            var sectionTopLevelItemProperties = new SectionBuilder()
+               .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmoteByName("polarbowrecipe").Url))
+               .WithTextDisplay("## Item properties")
+               .WithTextDisplay(contentSectionTopLevelItemProperties);
+
+
+            // Items Action
+
+            var a = item.ItemAction;
+            var contentSectionItemActionProperties =
+                        $"Type: ` {a.Type} `\n" +
+                        $"Damage: ` {NV(a.Damage)} `\n" +
+                        $"Power: ` {NV(a.Power)} `\n" +
+                        $"Dodge: ` {NV(a.Dodge)} `\n" +
+                        $"Distance: ` {NV(a.Distance)} `\n" +
+                        $"Stamina: ` {NV(a.Stamina)} `\n" +
+                        $"Bullet Speed: ` {NV(a.BulletSpeed)} `\n" +
+                        $"Make Fire: {NV(a.MakeFire, b => b ? ":white_check_mark: " : ":x:")}\n" +
+                        $"Redirect: {NV(a.Redirect, b => b ? ":white_check_mark: " : ":x:")}\n";
+
+
+            var sectionItemActionProperties = new SectionBuilder()
+              .WithAccessory(new ThumbnailBuilder(EmoteService.GetEmoteByName("archermannequin").Url))
+              .WithTextDisplay("## Action properties")
+              .WithTextDisplay(contentSectionItemActionProperties);
 
             var container = new ContainerBuilder()
               .WithAccentColor(Color.Green)
@@ -152,8 +183,16 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
               .WithTextDisplay($"You logined as {account.DisplayName} !")
 
               .WithSeparator(SeparatorSpacingSize.Large, true)
-              .WithSection(sectionAccount);
-            //     .WithSeparator(SeparatorSpacingSize.Small, true)
+              .WithSection(sectionAccount)
+                .WithSeparator(SeparatorSpacingSize.Small, true)
+              .WithSection(sectionTopLevelItemProperties)
+                .WithSeparator(SeparatorSpacingSize.Small, true)
+              .WithSection(sectionItemActionProperties)
+                .WithSeparator(SeparatorSpacingSize.Small, true)
+              .WithTextDisplay(
+                          $"\n### Details: ` {target.Details} `" +
+                          $"\nOwner ` crafted by `: || {ownerMention} ||" +
+                          $"\nToken: ` {target.Token} `" );
 
             //    .WithActionRow([ButtonCloseModule.BuildButton(this)]);
 
@@ -161,6 +200,16 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 .WithContainer(container)
                 ;
             await ReplyOrModifyAsync(components: component.Build());
+        }
+
+        // ------------------------------------------------------
+        // Helper formatting methods
+        // ------------------------------------------------------
+        private static string NV<T>(T? value, Func<T, string>? format = null) where T : struct
+        {
+            if (value.HasValue)
+                return format != null ? format(value.Value) : value.Value.ToString()!;
+            return "—";
         }
 
     }

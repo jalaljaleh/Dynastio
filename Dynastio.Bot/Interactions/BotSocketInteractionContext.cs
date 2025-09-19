@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using Dynastio.Bot.Database;
 using Dynastio.Bot.Services;
 using Dynastio.Net;
+using Google.Apis.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dynastio.Bot.Interactions
@@ -24,6 +25,7 @@ namespace Dynastio.Bot.Interactions
         public readonly DynastioBotDatabase Database;
 
         public readonly DynastioApi Dynastio;
+        public readonly ClientService ClientService;
 
         private User _user;
         private Guild _guild;
@@ -37,6 +39,7 @@ namespace Dynastio.Bot.Interactions
             AssetUrlService = services.GetRequiredService<AssetUrlService>();
             Database = services.GetRequiredService<DynastioBotDatabase>();
             Dynastio = services.GetRequiredService<DynastioApi>();
+            ClientService = services.GetRequiredService<ClientService>();
 
             InteractionService = services.GetRequiredService<InteractionService>();
 
