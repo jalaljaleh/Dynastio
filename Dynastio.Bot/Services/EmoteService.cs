@@ -555,7 +555,7 @@ namespace Dynastio.Bot.Services
         /// Builds an emoji progress bar of length 'barLength' segments,
         /// fills it according to 'currentUnits' / 'totalUnits', and appends " XX%".
         /// </summary>
-        public string BuildProgressBar(int barLength, int currentUnits, int totalUnits)
+        public string BuildProgressBar(int barLength, long currentUnits, long totalUnits)
         {
             // 1. Grab your emojis
             Emote segmentStartFull = GetEmote(LoadingBarType.loadingstart);

@@ -124,10 +124,9 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             .WithSeparator(SeparatorSpacingSize.Large, true);
 
             string sectionAccountContent = 
-                $"# :crossed_swords: {account.DisplayName}\n" +
-                $"\n\n" +
-                $"# {EmoteService.GetEmoteByName("mainmenu_level_shield_premium")}  Level {profile.Profile.Level} \t{EmoteService.GetEmoteByName("coins3")} Coins {profile.Profile.Coins.ToMetric()} \n" +
-                $"## {EmoteService.GetEmoteByName("left_build_icon1")} ` {profile.Profile.Experience} Experience ` {EmoteService.GetEmoteByName("sign")} `{ profile.Profile.GetRequireExperienceForNewLevel()} to levelup ` \n" +
+                $"# {EmoteService.GetEmoteByName("mainmenu_level_shield_premium")}  Level {profile.Profile.Level} \n" +
+                $"## {EmoteService.GetEmoteByName("mainmenu_level_shield_premium")} Experience: {EmoteService.BuildProgressBar(10, profile.Profile.Experience,(int) profile.Profile.GetExperienceMax())}  \n" +
+                $"### {EmoteService.GetEmoteByName("coins3")} Coins: ` {profile.Profile.Coins.ToMetric()} `\n" +
                 $"### {EmoteService.GetEmoteByName("tab_profile_icon_active")} Last playing {profile.Profile.LastActiveAt.ToDiscordTimestamp()} in **{profile.Profile.LatestServer}**" +
                 "";
 

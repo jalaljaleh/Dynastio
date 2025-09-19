@@ -112,8 +112,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             var content = BotGuild.RankingSettings.IsEnabled == false
                 ? "This guild is not supporting the Ranking service module !"
                 : $"## {new Emoji(":first_place:")} **{account.DisplayName}** Xp Ranking \n" +
-                 $"### {EmoteService.GetEmoteByName("mainmenu_level_shield_premium")} Current Level \t  ` Level {guildProfile.Level} `\t\t ` Xp {guildProfile.Xp} `   \n" +
-                 $"### {EmoteService.GetEmoteByName("zoom_in")} Next Level  \t\t  `require {XpCalculator.GetLevelUpRequirementXp(guildProfile.Level, guildProfile.Xp)} Xp `\n" +
+                 $"### {EmoteService.GetEmoteByName("mainmenu_level_shield_premium")} Current Level \t  Level {guildProfile.Level} \t ` Xp {guildProfile.Xp} `   \n" +
+                 $"### {EmoteService.GetEmoteByName("mainmenu_level_shield_premium")} Experience: {EmoteService.BuildProgressBar(10,guildProfile.Xp, XpCalculator.GetCurrentLevelXpRequirement(guildProfile.Level))} \n" +
                  $"### {EmoteService.GetEmoteByName("shop_coins_icon_3")} Next Reward \t {EmoteService.GetEmoteByName("coin")} ` {XpCalculator.GetLevelCoinsReward(guildProfile.Level + 1)} Coins `  {EmoteService.GetEmoteByName("select_skin_button")} ` @{RoleHelper.GetNextRoleWithPrefix(User as IGuildUser, BotGuild.RankingSettings.Prefix)?.Name ?? "Not Found"} Role `\n" +
                  $"";
 
