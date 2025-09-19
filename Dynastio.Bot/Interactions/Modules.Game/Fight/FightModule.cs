@@ -70,7 +70,10 @@ namespace Dynastio.Bot.Interactions.Modules.Game.Fight
             var updated = new StringBuilder(ArenaIntro)
 
                 .AppendLine("\n---\n")
-                .AppendLine($"**Fighters ({fighters.Count}):**\n>>> {string.Join("\n", fighters.Select(u => $"{fighters.IndexOf(u).ToRegularCounter()}. {u.Mention}"))}")
+                .AppendLine(
+                $"**Fighters ({fighters.Count}):**\n" +
+                $">>> {string.Join("\n", fighters.Select(u => $"{fighters.IndexOf(u).ToRegularCounter()}. {u.Mention}"))}" +
+                $"")
                 .ToString();
 
             // Preserve original buttons
@@ -103,11 +106,13 @@ namespace Dynastio.Bot.Interactions.Modules.Game.Fight
                 return;
             }
 
-            // Countdown: 3 → 1
+            // Countdown
             await Task.Delay(1000);
-            for (int i = 3; i > 0; i--)
+            for (int i = 1; i < 5; i++)
             {
-                await ReplyOrModifyAsync($"#⏳ Tournament begins in **{i}**...");
+                await ReplyOrModifyAsync(
+                    $"\n# Preparing Tournament" +
+                    $"\n## {EmoteService.BuildProgressBar(10, i, 4)}");
                 await Task.Delay(3000);
             }
 
@@ -155,7 +160,7 @@ namespace Dynastio.Bot.Interactions.Modules.Game.Fight
                 string p21 = $"\n## {p2.Mention}:\n# {string.Join(" ", chest2.Items.DistinctBy(a => a.ItemType).Select(a => EmoteService.GetEmote(a.ItemType)))}  \n";
 
 
-                await ReplyOrModifyAsync(text: "", embeds:new Embed[] {p11.ToEmbed(null,p1.TryGetAvatarUrl()),p21.ToEmbed(null, p2.TryGetAvatarUrl()) });
+                await ReplyOrModifyAsync(text: "", embeds: new Embed[] { p11.ToEmbed(null, p1.TryGetAvatarUrl()), p21.ToEmbed(null, p2.TryGetAvatarUrl()) });
                 await Task.Delay(8000);
 
                 // Compute scores safely
@@ -190,7 +195,7 @@ namespace Dynastio.Bot.Interactions.Modules.Game.Fight
             var champ = eliminationQ.Dequeue();
             logBuilder.Clear()
                       .AppendLine("# 🎉 Tournament Concluded 🎉")
-                      .AppendLine($"**🏆 Champion: {champ.Mention}!**\n")
+                      .AppendLine($"## **🏆 Champion: {champ.Mention}!**\n")
                       .Append(fightHistory);
 
             await ReplyOrModifyAsync(logBuilder.ToString());
