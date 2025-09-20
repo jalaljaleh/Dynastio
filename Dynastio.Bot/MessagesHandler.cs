@@ -7,6 +7,7 @@ using Dynastio.Bot.Services;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -75,17 +76,19 @@ namespace Dynastio.Bot
         {
             _ = Task.Run(async () =>
              {
-                 // 1. Ignore system/bot messages, DMs, and non-text channels
-                 if (raw is not SocketUserMessage message || message.Source != MessageSource.User || message.Author.IsBot || message.Channel is not IGuildChannel guildChannel)
+                 // 1. Ignore system/bot messages
+                 if (raw.Source != MessageSource.User || raw is not SocketUserMessage message) return;
+                 if (raw.Channel is IDMChannel dMChannel)
+                 {
+                     await OnDmMessageAsync(message, dMChannel);
+                     return;
+                 }
+
+                 // 1. Ignore DMs, and non-text channels
+                 if (message.Channel is not IGuildChannel guildChannel)
                      return;
 
-                 Program.UnsafeCode = true;
-                 var text = message.Content.ToLowerInvariant();
-                 string[] triggers = { "jale", "1374305522290917526", "джалеху" };
-                 if (triggers.Any(trigger => text.Contains(trigger)))
-                 {
-                     await message.AddReactionAsync(new Emoji("👀"));
-                 }
+                 await OnTeamOwnerMentionedAsync(message);
 
                  try
                  {
@@ -106,7 +109,50 @@ namespace Dynastio.Bot
                  }
              });
         }
+        private async Task OnDmMessageAsync(SocketUserMessage dmMessage, IDMChannel dMChannel)
+        {        
+            var owner = _clientService.GetApplicationTeamOwner();
+            if (dmMessage.Author.Id == owner.Id)
+            {            
+                if (dmMessage.ReferencedMessage is null)
+                {
+                    await dmMessage.ReplyAsync("refrence message not found.");
+                    return;
+                }
+                if(TextMatching.TryGetUserId(dmMessage.ReferencedMessage.Content, out ulong userid) is false)
+                {
+                    await dmMessage.ReplyAsync("target user not found in refrence message.");
+                    return;
+                }    
 
+                var targetUser = await _discord.GetUserAsync(userid);
+                if (targetUser is null)
+                    await dmMessage.ReplyAsync("can't find user !");
+
+                var sendMe = await targetUser.SendMessageAsync(dmMessage.Content).TryAsync();
+                if (sendMe.isSuccessful is false)
+                    await dMChannel.SendMessageAsync("can't send message !");
+                else
+                    await dMChannel.SendMessageAsync("message sent to user !");
+
+                return;
+            }
+            await owner.SendMessageAsync($"# New message from: {dmMessage.Author.Mention}\n" + dmMessage.Content);
+        }
+        private async Task OnTeamOwnerMentionedAsync(SocketUserMessage message)
+        {
+            var owner = _clientService.GetApplicationTeamOwner();
+
+            var text = message.Content.ToLowerInvariant();
+
+            string[] triggers = { owner.GlobalName.ToLower(), owner.Mention.ToLower(), owner.Id.ToString(), "джалеху" };
+
+            if (triggers.Any(trigger => text.Contains(trigger)))
+                await message.AddReactionAsync(new Emoji("👀"));
+
+            else if (message.ReferencedMessage != null && message.ReferencedMessage.Author.Id == owner.Id)
+                await message.AddReactionAsync(new Emoji("👀"));
+        }
         /// <summary>
         /// Unsubscribe from events to prevent memory leaks.
         /// </summary>

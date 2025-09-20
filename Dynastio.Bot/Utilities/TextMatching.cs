@@ -8,6 +8,18 @@ namespace Dynastio.Bot
 {
     public static class TextMatching
     {
+
+        public static bool TryGetUserId(string input, out ulong output)
+        {
+            // Regex: look for <@ followed by digits, then >
+            var match = Regex.Match(input, @"<@(\d+)>");
+
+            if (match.Success && ulong.TryParse(match.Groups[1].Value, out output))
+                return true;
+
+            output = 0;
+            return false;
+        }
         /// <summary>
         /// Performs a SQL-style LIKE match using % and _ wildcards.
         /// % matches any sequence of characters.

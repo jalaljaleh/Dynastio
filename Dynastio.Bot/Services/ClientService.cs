@@ -22,7 +22,12 @@ namespace Dynastio.Bot.Services
 
             _application = new Cacheable<RestApplication>(TimeSpan.FromMinutes(10), async () => await _client.GetApplicationInfoAsync());
         }
-        public bool HasTeamRole(ulong userId,params string[] TeamRoles)
+        public IUser GetApplicationTeamOwner()
+        {
+            var application = _application.Value;
+            return  application.Team.TeamMembers.First(a => a.Role == TeamRole.Owner).User;
+        }
+        public bool HasTeamRole(ulong userId, params string[] TeamRoles)
         {
             var application = _application.Value;
 
