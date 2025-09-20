@@ -54,22 +54,7 @@ namespace Dynastio.Bot
             };
         }
 
-        /// <summary>
-        /// Posts system+user prompts to Binjie and returns the AI’s raw text.
-        /// </summary>
-        /// <param name="systemPrompt">Your system instructions.</param>
-        /// <param name="userPrompt">The user’s message.</param>
-        /// <param name="userId">Unique Chat ID (default “1”).</param>
-        /// 
-        public async Task<string> QueryAsync(string systemPrompt, string userPrompt, string userId = "1")
-        {
-            var aiReply = await PostQueryAsync(systemPrompt, userPrompt, userId).TryAsync();
-            if (aiReply.isSuccessful is false || string.IsNullOrWhiteSpace(aiReply.result) || aiReply.result.Contains(".com") || aiReply.result.Contains("https://"))
-            {
-                return "I can't answer to this !";
-            }
-            else return aiReply.result;
-        }
+
 
         // ── Rate-limiting state ───────────────────────────────────────────
         // Holds the UTC timestamps of the last 60 requests.
@@ -141,12 +126,28 @@ namespace Dynastio.Bot
             string systemPrompt = $"data: {data}\n"+ AiHelper.answer + $"\n User Mention:\n {msg.Author.Mention}\n\n User Sent:\n {msg.Content}";
             Console.WriteLine("systemPrompt " + systemPrompt.Length);
             // 3) Query
-            string aiResponse = await QueryAsync(null, systemPrompt);
+            string aiResponse = await QueryAsync(null, systemPrompt, user.Id.ToString());
 
             // 4) Send back
             await msg.ReplyAsync(aiResponse, allowedMentions: AllowedMentions.None);
         }
-        private async Task<string> PostQueryAsync(string systemPrompt, string userPrompt, string userId = "1")
+        /// <summary>
+        /// Posts system+user prompts to Binjie and returns the AI’s raw text.
+        /// </summary>
+        /// <param name="systemPrompt">Your system instructions.</param>
+        /// <param name="userPrompt">The user’s message.</param>
+        /// <param name="userId">Unique Chat ID (default “1”).</param>
+        /// 
+        public async Task<string> QueryAsync(string systemPrompt, string userPrompt, string userId)
+        {
+            var aiReply = await PostQueryAsync(systemPrompt, userPrompt, userId).TryAsync();
+            if (aiReply.isSuccessful is false || string.IsNullOrWhiteSpace(aiReply.result) || aiReply.result.Contains(".com") || aiReply.result.Contains("https://"))
+            {
+                return "I can't answer to this !";
+            }
+            else return aiReply.result;
+        }
+        private async Task<string> PostQueryAsync(string systemPrompt, string userPrompt, string userId)
         {
             // Pick a random Origin header per request
             string origin = _origins[Random.Shared.Next(_origins.Length)];
@@ -156,7 +157,7 @@ namespace Dynastio.Bot
             {
                 system = systemPrompt,
                 prompt = userPrompt,
-                userId = $"#/chat/{userId}{Common.Random.Next(99999999)}",
+                userId = $"#/chat/{userId}",
                 network = true,
                 stream = false
             };
