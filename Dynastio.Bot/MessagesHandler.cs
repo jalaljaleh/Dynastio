@@ -74,56 +74,60 @@ namespace Dynastio.Bot
 
         private async Task OnMessageReceivedAsync(SocketMessage raw)
         {
-            _ = Task.Run(async () =>
-             {
-                 // 1. Ignore system/bot messages
-                 if (raw.Source != MessageSource.User || raw is not SocketUserMessage message) return;
-                 if (raw.Channel is IDMChannel dMChannel)
-                 {
-                     await OnDmMessageAsync(message, dMChannel);
-                     return;
-                 }
 
-                 // 1. Ignore DMs, and non-text channels
-                 if (message.Channel is not IGuildChannel guildChannel)
-                     return;
 
-                 await OnTeamOwnerMentionedAsync(message);
+            // 1. Ignore system/bot messages
+            if (raw.Source != MessageSource.User || raw is not SocketUserMessage message) return;
+            if (raw.Channel is IDMChannel dMChannel)
+            {
+                await OnDmMessageAsync(message, dMChannel);
+                return;
+            }
 
-                 try
-                 {
-                     var guild = await _database.GetGuildAsync(guildChannel.GuildId).ConfigureAwait(false);
-                     var user = await _users.GetOrCreateUserAsync(message.Author.Id).ConfigureAwait(false);
+            // 1. Ignore DMs, and non-text channels
+            if (message.Channel is not IGuildChannel guildChannel)
+                return;
 
-                     var cmdResult = await _commandHandler.ExecuteCommandAsync(message, guild, user).ConfigureAwait(false);
-                     if (cmdResult is null)
-                     {
-                         await _ranker.TryAddMessageXpAsync(guild, user, message).ConfigureAwait(false);
-                         return;
-                     }
+            Program.UnsafeCode = true;
+            if (guildChannel.GuildId != 480416088312774657)
+                return;
 
-                 }
-                 catch (Exception ex)
-                 {
-                     Console.WriteLine("Error processing incoming message");
-                 }
-             });
+            await OnTeamOwnerMentionedAsync(message);
+
+            try
+            {
+                var guild = await _database.GetGuildAsync(guildChannel.GuildId).ConfigureAwait(false);
+                var user = await _users.GetOrCreateUserAsync(message.Author.Id).ConfigureAwait(false);
+
+                var cmdResult = await _commandHandler.ExecuteCommandAsync(message, guild, user).ConfigureAwait(false);
+                if (cmdResult is null)
+                {
+                    await _ranker.TryAddMessageXpAsync(guild, user, message).ConfigureAwait(false);
+                    return;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error processing incoming message");
+            }
+
         }
         private async Task OnDmMessageAsync(SocketUserMessage dmMessage, IDMChannel dMChannel)
-        {        
+        {
             var owner = _clientService.GetApplicationTeamOwner();
             if (dmMessage.Author.Id == owner.Id)
-            {            
+            {
                 if (dmMessage.ReferencedMessage is null)
                 {
                     await dmMessage.ReplyAsync("refrence message not found.");
                     return;
                 }
-                if(TextMatching.TryGetUserId(dmMessage.ReferencedMessage.Content, out ulong userid) is false)
+                if (TextMatching.TryGetUserId(dmMessage.ReferencedMessage.Content, out ulong userid) is false)
                 {
                     await dmMessage.ReplyAsync("target user not found in refrence message.");
                     return;
-                }    
+                }
 
                 var targetUser = await _discord.GetUserAsync(userid);
                 if (targetUser is null)
@@ -145,7 +149,7 @@ namespace Dynastio.Bot
 
             var text = message.Content.ToLowerInvariant();
 
-            string[] triggers = { owner.GlobalName.ToLower(), owner.Mention.ToLower(), owner.Id.ToString(), "джалеху" };
+            string[] triggers = { owner.GlobalName.ToLower(), owner.Mention.ToLower(), owner.Id.ToString(), "джалеху", "Жалех", "jale" };
 
             if (triggers.Any(trigger => text.Contains(trigger)))
                 await message.AddReactionAsync(new Emoji("👀"));

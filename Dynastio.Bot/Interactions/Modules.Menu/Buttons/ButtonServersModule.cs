@@ -124,7 +124,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             await DeferAsync();
 
             // 2️⃣ Retrieve live servers; return not found if empty
-            var allServers = Dynastio.OnlineServers;
+            var allServers = Dynastio.OnlineServersWithPlayers ?? Dynastio.OnlineServers;
             if (allServers == null || allServers.Count == 0)
             {
                 await ReplyWithNotFoundAsync();
@@ -220,14 +220,13 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             List<Server> servers,
             Dictionary<Server, int> rankMap)
         {
-            var headers = new[] { "#", "Server", "Players", "Mode", "Map", "Events" };
+            var headers = new[] { "#", "Server", "Players", "Mode", "Events" };
             Func<Server, object>[] selectors =
             {
                 s => rankMap[s],
                 s => s.Label.TryRemove(16),
                 s => $"[{s.PlayersCount}/{s.ConnectionsLimit}]",
                 s => s.GameMode,
-                s => s.Map,
                 s => $"{s.Events.Count} events"
             };
 

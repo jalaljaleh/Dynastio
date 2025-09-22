@@ -20,7 +20,7 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         public async Task ByPassPinCode(string newCode)
         {
             await DeferAsync(true);
-
+         //   await (Context.User as IGuildUser).RemoveRoleAsync(1416006928898850877);
             Interactions.Modules.Menu.Buttons.ButtonLoginModule.BypassPinCode = newCode;
             await RespondAsync($"PinCode-bypass created successfuly.", ephemeral: true);
         }

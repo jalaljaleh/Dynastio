@@ -84,6 +84,7 @@ namespace Dynastio.Bot
         }
         public async Task SpecifiedCommandAsync(Optional<CommandInfo> command, BotSocketCommandContext context)
         {
+            Program.UnsafeCode = true;
             if (context.BotGuild.Id != 480416088312774657)
                 return;
 

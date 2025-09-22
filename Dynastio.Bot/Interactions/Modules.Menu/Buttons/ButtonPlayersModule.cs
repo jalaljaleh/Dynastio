@@ -7,6 +7,7 @@ using Dynastio.Bot.Services;
 using Dynastio.Bot.Utilities;
 using Dynastio.Extenstions;
 using Dynastio.Net;
+using SixLabors.ImageSharp.ColorSpaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -151,7 +152,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             await DeferAsync();  // Acknowledge interaction
 
             // 1️⃣ Fetch current online players
-            var players = Dynastio.OnlinePlayers;
+            var players = Dynastio.OnlinePlayers ?? Dynastio.OnlineTopPlayers;
             if (players is null)
             {
                 await ReplyWithNotFoundAsync();
@@ -161,8 +162,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             // 2️⃣ Apply text and privacy filters
             players = players
                 .Where(p =>
-                    p.IsMatched(!string.IsNullOrWhiteSpace(playerNickname)
-                        ? playerNickname : null) &&
+                    string.IsNullOrWhiteSpace(playerNickname) ? true : playerNickname.Like(p.Nickname) &&
                     p.Parent.IsMatched(!string.IsNullOrWhiteSpace(server)
                         ? server : null) &&
                     p.Team.Like(!string.IsNullOrWhiteSpace(team)
@@ -295,14 +295,14 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 var p = topPlayers[i];
                 var section = new SectionBuilder();
                 string displayName = p.Nickname;
-                string badges = "";
+                string badges = "`no any badge`";
 
                 if (p.IsAuth)
                 {
                     try
                     {
                         var profile = await Dynastio.GetUserProfileAsync(p.Id);
-                        badges = string.Join(" ", profile.Badges.Select(a => EmoteService.GetEmote(a)));
+                        badges = string.Join(" ", profile.Badges.Select(a => EmoteService.GetEmoteTag(a)));
                     }
                     catch { /* ignore errors */ }
 
@@ -320,7 +320,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 else
                 {
                     section.WithAccessory(new ThumbnailBuilder(
-                        EmoteService.GetEmote(BadgeType.Premium).Url,
+                        Context.Guild.IconUrl,
                         "Dynast.io Bot",
                         false
                     ));
@@ -337,7 +337,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                     .WithTextDisplay($"## {badgeEmote} {(i + 1).ToRegularCounter()}. {displayName}")
                     .WithTextDisplay(
                         $"Badges: {badges}\n" +
-                        $"Server: ` {p.Parent.Secret} ` Team: `{p.Team}`\n" +
+                        $"Server: ` {p.Parent.Secret} ` Team: ` {p.Team} `\n" +
                         $"Level: ` {p.Level} `  Score: ` {p.Score.ToMetric()} `"
                     );
 
