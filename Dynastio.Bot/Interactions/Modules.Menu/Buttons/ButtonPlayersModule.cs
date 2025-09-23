@@ -180,11 +180,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 .Take(take)
                 .ToList();
 
-            // 5️⃣ Build ranking map for table display
-            var rankMap = CreateRankMap(players);
-
             // 6️⃣ Generate markdown table for visible page
-            string tableContent = BuildPlayersTable(pagedPlayers, rankMap)
+            string tableContent = pagedPlayers.ToTable((page - 1) * take)
                 .ToCodeBlock();
 
             // 7️⃣ Assemble menu container
@@ -200,12 +197,12 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             // 7a: Highlight top 3 on first page
             if (page == 1)
             {
-                var top3Sections = await BuildTopPlayersSectionsAsync(
-                    pagedPlayers.Take(3).ToList()
-                );
-                foreach (var sec in top3Sections)
+                var targetPlayers = pagedPlayers.Take(3).ToList();
+                var top3Sections = await BuildTopPlayersSectionsAsync(targetPlayers);
+                foreach (var player in targetPlayers)
                 {
-                    listContainer.WithSection(sec);
+                    listContainer.WithSection(top3Sections[targetPlayers.IndexOf(player)]);
+                    listContainer.WithActionRow([ButtonPlayerModule.BuildButton(this, player.InternalId.ToString())]);
                     listContainer.WithSeparator(SeparatorSpacingSize.Small, true);
                 }
             }
@@ -214,21 +211,26 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             listContainer.WithSeparator(SeparatorSpacingSize.Large, true);
 
             // 8️⃣ Add pagination controls
-            var pagingButtons = new PaginationControls(
-                EmoteService,
-                InteractionIdBase,
-                players.Count,
-                page,
-                take
-            )
+            var pagingButtons = new PaginationControls(EmoteService, InteractionIdBase, players.Count, page, take)
             {
                 MaxRowsRefreshPage = 20
-            }.Build();
+            }
+            .WithRefreshButton()
+            .WithSizeControlButtons()
+            .Build();
+
+            var b = ButtonPlayerModule.BuildSelectMenu(this, pagedPlayers.ToArray());
+            if(b !=null)
+            listContainer.WithActionRow([b]);
+
             listContainer.WithActionRow(pagingButtons);
+
+
 
             // 9️⃣ Render the updated message components
             var components = new ComponentBuilderV2()
                 .WithContainer(listContainer);
+
             await ReplyOrModifyAsync(components: components.Build());
         }
 
@@ -251,16 +253,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 _ => players
             };
 
-        /// <summary>
-        /// Creates a map of each player to its zero-based rank index.
-        /// </summary>
-        private Dictionary<Player, int> CreateRankMap(List<Player> sortedPlayers)
-        {
-            var map = new Dictionary<Player, int>(sortedPlayers.Count);
-            for (int i = 0; i < sortedPlayers.Count; i++)
-                map[sortedPlayers[i]] = i;
-            return map;
-        }
+
 
         /// <summary>
         /// Builds a markdown table of the visible players with headers.
@@ -272,7 +265,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             var headers = new[] { "#", "server", "score", "level", "team", "nickname" };
             Func<Player, object>[] selectors =
             {
-                p => RankIcon(rankMap[p]),
+                p => StringExtensions.RankingCounter(rankMap[p]),
                 p => p.Parent.Label.TryRemove(16),
                 p => p.Score.ToMetric(),
                 p => p.Level.ToMetric(),
@@ -306,7 +299,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                     }
                     catch { /* ignore errors */ }
 
-                    var user = await ResolveDiscordUserAsync(p);
+                    var user = await DiscordResolver.ResolveDiscordUserAsync(p, Context.Client, UsersService);
                     if (user != null)
                     {
                         displayName = user.Mention;
@@ -346,31 +339,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             return sections;
         }
 
-        /// <summary>
-        /// Returns a trophy emoji for top-3 or a regular counter otherwise.
-        /// </summary>
-        private string RankIcon(int index)
-            => index < 3
-                ? $"🏆{index + 1}"
-                : (index + 1).ToRegularCounter();
 
-        /// <summary>
-        /// Resolves a Discord user from a Player object,
-        /// either via direct Discord auth or account lookup.
-        /// </summary>
-        private async Task<IUser> ResolveDiscordUserAsync(Player player)
-        {
-            if (player.IsDiscordAuth)
-            {
-                var userId = ulong.Parse(player.Id.Replace("discord:", ""));
-                return await Context.Client.GetUserAsync(userId);
-            }
 
-            var botUser = await Context.UsersService.GetUserByAccountIdAsync(player.Id);
-            return botUser == null
-                ? null
-                : await Context.Client.GetUserAsync(botUser.Id);
-        }
 
         //--------------------------------------------------------------------------------
         // SECTION: Nested Types

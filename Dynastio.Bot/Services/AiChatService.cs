@@ -103,8 +103,8 @@ namespace Dynastio.Bot
                 if (user.HasLinkedAccount)
                 {
                     var profile = await user.GetDefaultAccount()?.GetCachedProfileCardAsync(_dynastio) ?? null;
-                    var killed = string.Join(", ", profile.Stat.Kill.OrderBy(a => a.Value).Take(4).Select(a => a.Key.ToString() + " " + a.Value));
-                    var killedFrom = string.Join(", ", profile.Stat.Death.OrderBy(a => a.Value).Take(4).Select(a => a.Key.ToString() + " " + a.Value));
+                    var killed = string.Join(", ", profile.Stat.Kill.OrderByDescending(a => a.Value).Take(10).Select(a => a.Key.ToString() + " " + a.Value));
+                    var killedFrom = string.Join(", ", profile.Stat.Death.OrderByDescending(a => a.Value).Take(6).Select(a => a.Key.ToString() + " " + a.Value));
                     data = profile is null ? data : JsonSerializer.Serialize(new
                     {
                         personal_chest_items = string.Join(", ", profile.Chest.Items.Select(a => a.ItemType.ToString() + " count " + a.Count)),

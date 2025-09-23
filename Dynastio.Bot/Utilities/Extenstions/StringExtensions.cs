@@ -1,14 +1,16 @@
 ﻿using Amazon.Runtime.Internal.Auth;
+using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
 using Discord;
+using Discord.Utils;
+using Dynastio.Extenstions;
+using Dynastio.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Discord.Utils;
-using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
-using System.Reflection.Emit;
 namespace Dynastio.Bot
 {
     /// <summary>
@@ -17,8 +19,6 @@ namespace Dynastio.Bot
     /// </summary>
     public static class StringExtensions
     {
-
-
         public static string StarIfNullFormat(this string format, params object[] value)
         {
             if (string.IsNullOrEmpty(format)) return "";
@@ -27,9 +27,47 @@ namespace Dynastio.Bot
         }
 
 
+        /// <summary>
+        /// Builds a markdown table of servers with rank and metadata.
+        /// </summary>
+        public static string ToTable(this Server server) => ToTable(new List<Server>() { server },0);
+        public static string ToTable(this List<Server> servers, int countFrom = 1)
+        {
+            var headers = new[] { "#", "Server", "Players", "Mode", "Events" };
+            Func<Server, object>[] selectors =
+            {
+                p => RankingCounter(servers.IndexOf(p) + countFrom),
+                s => s.Label.TryRemove(16),
+                s => $"[{s.PlayersCount}/{s.ConnectionsLimit}]",
+                s => s.GameMode,
+                s => $"{s.Events.Count} events"
+            };
+            return servers.ToFormattedTable(headers, selectors);
+        }
 
+        public static string ToTable(this Player player) => ToTable(new List<Player>() { player },0);
+        public static string ToTable(this List<Player> players, int countFrom = 1)
+        {
+            var headers = new[] { "#", "server", "score", "level", "team", "nickname" };
+            Func<Player, object>[] selectors =
+            {
+                p => RankingCounter(players.IndexOf(p) + countFrom),
+                p => p.Parent.Label.TryRemove(16),
+                p => p.Score.ToMetric(),
+                p => p.Level.ToMetric(),
+                p => p.Team.RemoveLines().TryRemove(6),
+                p => p.Nickname.RemoveLines().TryRemove(12)
+            };
+            return players.ToFormattedTable(headers, selectors);
+        }
 
-
+        /// <summary>
+        /// Returns a trophy emoji for top-3 or a regular counter otherwise.
+        /// </summary>
+        public static string RankingCounter(int index)
+            => index < 3
+                ? $"🏆{index + 1}"
+                : (index + 1).ToRegularCounter();
 
         #region Markdown & Text Formatting
 
@@ -54,7 +92,7 @@ namespace Dynastio.Bot
         /// <summary>
         /// Wraps the value in triple backticks (```value```), creating a Markdown code block.
         /// </summary>
-        public static string ToCodeBlock(this string value,string language = "md")
+        public static string ToCodeBlock(this string value, string language = "md")
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
             return $"```{language}\n{value}```";

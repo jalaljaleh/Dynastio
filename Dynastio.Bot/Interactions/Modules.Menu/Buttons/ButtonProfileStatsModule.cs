@@ -3,6 +3,7 @@ using Discord.Interactions;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
+using Dynastio.Bot.Utilities;
 using Dynastio.Net;
 using Microsoft.Extensions.DependencyInjection;
 using SixLabors.ImageSharp.Drawing;
@@ -32,13 +33,13 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// {0} = page, {1} = page size, {2} = trigger context.
         /// Allows you to pass parameters through the button’s CustomId.
         /// </summary>
-        public const string IdParameterFormat = ":{0}";
+        public const string IdParameterFormat = ":{0}:{1}";
 
         // -----------------------------------------------------------------------------------
         // SECTION: Builder Method
         // -----------------------------------------------------------------------------------
 
-        public static ButtonBuilder BuildButton(MenuModulesBase module, params string[] args)
+        public static ButtonBuilder BuildButton(MenuModulesBase module, int statType, params string[] args)
         {
             var stat = args.FirstOrDefault().ToString();
             var emote = stat switch
@@ -54,7 +55,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 .WithEmote(module.EmoteService.GetEmoteByName(emote))
                 .WithStyle(ButtonStyle.Secondary)
                 .WithDisabled(false)
-                .WithCustomId(BuildCustomId(trigger: stat));
+                .WithCustomId(BuildCustomId(statType, trigger: stat));
             return btn;
         }
 
@@ -70,12 +71,12 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// <param name="take">Items per page (default = 10).</param>
         /// <param name="trigger">Context label (default = empty).</param>
         /// <returns>Fully formatted CustomId for use with ComponentInteraction.</returns>
-        public static string BuildCustomId(string trigger = "")
+        public static string BuildCustomId(int type, string trigger = "")
         {
             // Concatenate base prefix + formatted parameters
             // .StarIfNullFormat ensures safe formatting even if trigger is null/empty
             return InteractionIdBase
-                 + IdParameterFormat.StarIfNullFormat(trigger);
+                 + IdParameterFormat.StarIfNullFormat(type, trigger);
         }
 
         // -----------------------------------------------------------------------------------
@@ -88,12 +89,12 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
         /// Copy-and-paste into your new module and adjust the attribute:
         /// [ComponentInteraction(YourBase + YourFormat)]
         /// </summary>
-        [ComponentInteraction(InteractionIdBase + ":*")]
+        [ComponentInteraction(InteractionIdBase + ":*:*")]
         [RequireMessageComponentTimeout]
         [RequireMessageComponentOwner]
         [RequireLinkedAccount]
         [RequireContext(ContextType.Guild)]
-        public async Task ExecuteAsync(string trigger = "")
+        public async Task ExecuteAsync(int statType = 1, string trigger = "")
         {
             await DeferAsync();
 
@@ -105,28 +106,21 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 return;
             }
 
-            string FormatStatRows<T>(Dictionary<T, int> data) where T : struct, Enum
-            {
-                return string.Concat(
-                    data
-                    .OrderByDescending(x => x.Value)
-                    .Select((x, idx) => new
-                    {
-                        Text =  EmoteService.GetEmote<T>(x.Key).ToString() + $" `{x.Value.ToMetric()}`",
-                        Group = idx / 3
-                    })
-                    .GroupBy(x => x.Group)
-                    .Select(g => "\n### " + string.Join(" | ", g.Select(e => e.Text)))
-                );
-            }
-
             // 2) Your original switch now becomes
-            string content = trigger switch
+            //string content = trigger switch
+            //{
+            //    "kill" => FormatStatRows(stat.Kill),
+            //    "gather" => FormatStatRows(stat.Gather),
+            //    "death" => FormatStatRows(stat.Death),
+            //    "craft" => FormatStatRows(stat.Craft),
+            //    _ => "not found"
+            //};
+            string content = statType switch
             {
-                "kill" => FormatStatRows(stat.Kill),
-                "gather" => FormatStatRows(stat.Gather),
-                "death" => FormatStatRows(stat.Death),
-                "craft" => FormatStatRows(stat.Craft),
+                1 => FormatStatRows(stat.Kill),
+                2 => FormatStatRows(stat.Gather),
+                3 => FormatStatRows(stat.Death),
+                4 => FormatStatRows(stat.Craft),
                 _ => "not found"
             };
 
@@ -143,11 +137,31 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             //    BuildButton(this,"death"),
             //    BuildButton(this,"craft")]);
 
+            var page = new PaginationControls(EmoteService, InteractionIdBase, 4, statType, 1)
+                .WithRefreshButton(false)
+                .WithSizeControlButtons(false)
+                .Build();
+
             ComponentBuilderV2 cb = new ComponentBuilderV2()
-                .WithContainer(containerb);
+                .WithContainer(containerb)
+                .WithActionRow(page);
 
             await ReplyOrModifyAsync(components: cb.Build());
 
+        }
+        string FormatStatRows<T>(Dictionary<T, int> data) where T : struct, Enum
+        {
+            return string.Concat(
+                data
+                .OrderByDescending(x => x.Value)
+                .Select((x, idx) => new
+                {
+                    Text = EmoteService.GetEmote<T>(x.Key).ToString() + $" `{x.Value.ToMetric()}`",
+                    Group = idx / 3
+                })
+                .GroupBy(x => x.Group)
+                .Select(g => "\n### " + string.Join(" | ", g.Select(e => e.Text)))
+            );
         }
     }
 }

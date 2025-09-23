@@ -9,6 +9,7 @@ using Dynastio.Bot.Services.GlobalizationService.Globally.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Authentication;
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
@@ -26,6 +27,7 @@ namespace Dynastio.Bot
         private readonly InteractionService _interactionService;
         private readonly DynastioBotDatabase _database;
         private readonly ConfigurationService _config;
+        private readonly UsersService _usersService;
 
         private readonly IServiceProvider _services;
 
@@ -39,6 +41,8 @@ namespace Dynastio.Bot
             _interactionService = services.GetRequiredService<InteractionService>();
             _database = services.GetRequiredService<DynastioBotDatabase>();
             _config = services.GetRequiredService<ConfigurationService>();
+            _usersService = services.GetRequiredService<UsersService>();
+
 
         }
 
@@ -75,7 +79,7 @@ namespace Dynastio.Bot
                 }
                 else
                 {
-                 //   await _discord.GetGuild(480416088312774657).DeleteApplicationCommandsAsync();
+                    //   await _discord.GetGuild(480416088312774657).DeleteApplicationCommandsAsync();
 
                     Common.Log("Insteraction Handler", " Registering commands globally");
                     await _interactionService
@@ -94,6 +98,7 @@ namespace Dynastio.Bot
         /// </summary>
         private async Task OnInteractionCreatedAsync(SocketInteraction interaction)
         {
+
             if (ShouldSkipInteraction(interaction))
                 return;
 
@@ -114,6 +119,13 @@ namespace Dynastio.Bot
 
             try
             {
+                var user = await this._usersService.GetOrCreateUserAsync(interaction.User.Id);
+                if (user.IsBanned)
+                {
+                    await interaction.RespondAsync("Create a soul stone first then use me !", ephemeral: false);
+                    return;
+                }
+
                 var ctx = new BotSocketInteractionContext(_discord, interaction, _services);
 
                 Common.Log("Insteraction Handler", $"Executing {interaction.Type} for {interaction.User.Id}");

@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 
 
 namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
@@ -110,9 +111,10 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             if (!Context.IsDeferred)
                 await DeferAsync(); // Acknowledge interaction early
 
+
             // 1️⃣ Header section
 
-          
+
 
             //var rankButtonSection = new SectionBuilder()
             //   .WithTextDisplay("Open your ranking menu !")
@@ -172,23 +174,20 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                    .WithActionRow([
                        ButtonProfileModule.BuildButton(this, "1"),
                        BUttonPersonalChestModule.BuildButton(this),
+                       ButtonProfileStatsModule.  BuildButton(this,1,"kill"),
                        ButtonRankModule.BuildButton(this)])
 
 
 
 
-                   .WithActionRow([
-                            ButtonProfileStatsModule.  BuildButton(this,"kill"),
-                            ButtonProfileStatsModule.  BuildButton(this,"gather"),
-                            ButtonProfileStatsModule.  BuildButton(this,"death"),
-                            ButtonProfileStatsModule.  BuildButton(this,"craft")])
+            
 
 
 
                 .WithSeparator(SeparatorSpacingSize.Large, true)
 
 
-               .WithActionRow([ButtonLoginModule.BuildButton(this),ButtonSwitchAccountModule.BuildButton(this)])
+               .WithActionRow([ButtonLoginModule.BuildButton(this), ButtonSwitchAccountModule.BuildButton(this)])
                .WithSeparator(SeparatorSpacingSize.Large, true)
                 ;
             }

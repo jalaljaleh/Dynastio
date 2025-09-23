@@ -140,17 +140,9 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 .Take(pageSize)
                 .ToList();
 
-            // 5️⃣ Build a rank lookup dictionary
-            var rankLookup = new Dictionary<Server, int>(allServers.Count);
-            for (int i = 0; i < allServers.Count; i++)
-            {
-                // +1 for human-friendly ranking
-                rankLookup[allServers[i]] = i + 1;
-            }
 
             // 6️⃣ Render table markdown
-            string tableContent = BuildServersTable(visibleServers, rankLookup)
-                .ToCodeBlock();
+            string tableContent = visibleServers.ToTable((page - 1) * pageSize);
 
             // 7️⃣ Assemble header section
             var headerSection = new SectionBuilder()
@@ -175,7 +167,8 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 IncreaseStep = 5
             }
             .WithSizeControlButtons()
-                .Build(sort.ToString());
+            .WithRefreshButton()
+            .Build(sort.ToString());
 
             container.WithActionRow(pagingControls);
 
@@ -213,25 +206,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 _ => servers
             };
 
-        /// <summary>
-        /// Builds a markdown table of servers with rank and metadata.
-        /// </summary>
-        private static string BuildServersTable(
-            List<Server> servers,
-            Dictionary<Server, int> rankMap)
-        {
-            var headers = new[] { "#", "Server", "Players", "Mode", "Events" };
-            Func<Server, object>[] selectors =
-            {
-                s => rankMap[s],
-                s => s.Label.TryRemove(16),
-                s => $"[{s.PlayersCount}/{s.ConnectionsLimit}]",
-                s => s.GameMode,
-                s => $"{s.Events.Count} events"
-            };
 
-            return servers.ToFormattedTable(headers, selectors);
-        }
 
         /// <summary>
         /// Sample server list for offline/testing scenarios.

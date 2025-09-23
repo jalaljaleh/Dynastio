@@ -5,6 +5,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Dynastio.Bot.Global.Helper;
 using Dynastio.Net;
+using Google.Apis.Util;
 using Microsoft.VisualBasic;
 using MongoDB.Bson.IO;
 using System.Text.Json;
@@ -20,11 +21,23 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
         public async Task ByPassPinCode(string newCode)
         {
             await DeferAsync(true);
-         //   await (Context.User as IGuildUser).RemoveRoleAsync(1416006928898850877);
+            //   await (Context.User as IGuildUser).RemoveRoleAsync(1416006928898850877);
             Interactions.Modules.Menu.Buttons.ButtonLoginModule.BypassPinCode = newCode;
             await RespondAsync($"PinCode-bypass created successfuly.", ephemeral: true);
         }
+        [SlashCommand("ban", "ban a user from using the bot")]
+        public async Task BanUser(IUser user, [Choice("Ban", 1), Choice("Unban", 2)] int action)
+        {
+            await DeferAsync(true);
 
+            var buser = await UsersService.GetOrCreateUserAsync(user.Id);
+
+            buser.AsBannedUser(action == 1 ? true : false);
+
+            await UsersService.UpdateUserAsync(buser);
+
+            await FollowupAsync($"User ban status has been updated to ` {(buser.IsBanned ? "Banned" : "Unbanned")} `.", ephemeral: true);
+        }
         public enum ShapeType { Items, Entities }
         [SlashCommand("shape", "description")]
         public async Task shape(int width, int height, ShapeType type)
@@ -69,30 +82,30 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
             if (type != AlertType.None)
             {
                 var (title, color, iconUrl) = GetEmbedStyle(type);
-            (string Title, Color Color, string IconUrl) GetEmbedStyle(AlertType type) =>
-                type switch
-                {
-                    AlertType.Success => (
-                        "✅ You have an unread message !",
-                        Color.Green,
-                        EmoteService.GetEmoteByName("left_build_icon").Url
-                    ),
-                    AlertType.Error => (
-                        "❌ Error",
-                        Color.Red,
-                        EmoteService.GetEmoteByName("robot").Url
-                    ),
-                    AlertType.Warning => (
-                        "⚠️ Warning",
-                        Color.Orange,
-                        EmoteService.GetEmoteByName("premium").Url
-                    ),
-                    _ => (
-                        string.Empty,
-                        Color.Default,
-                        string.Empty
-                    )
-                };
+                (string Title, Color Color, string IconUrl) GetEmbedStyle(AlertType type) =>
+                    type switch
+                    {
+                        AlertType.Success => (
+                            "✅ You have an unread message !",
+                            Color.Green,
+                            EmoteService.GetEmoteByName("left_build_icon").Url
+                        ),
+                        AlertType.Error => (
+                            "❌ Error",
+                            Color.Red,
+                            EmoteService.GetEmoteByName("robot").Url
+                        ),
+                        AlertType.Warning => (
+                            "⚠️ Warning",
+                            Color.Orange,
+                            EmoteService.GetEmoteByName("premium").Url
+                        ),
+                        _ => (
+                            string.Empty,
+                            Color.Default,
+                            string.Empty
+                        )
+                    };
 
                 var embed = new EmbedBuilder()
                     .WithTitle(title)
@@ -112,63 +125,6 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
 
             await FollowupAsync("✉️ Your message has been sent!", ephemeral: true);
         }
-
-
-
-
-        public DynastioItemsService ItemsService { get; set; }
-        public AiChatService Ai { get; set; }
-
-
-        [MessageCommand("Answer")]
-        public async Task AnswerAsync(IMessage message)
-        {
-            await RespondAsync("I am thinking ..", ephemeral: true);
-
-            SocketUserMessage msg = message as SocketUserMessage;
-            var buser = await this.Context.UsersService.GetOrCreateUserAsync(msg.Author.Id);
-
-            await Ai.ReplyMessageAsync(msg, buser);
-        }
-
-        //        [SlashCommand("items", "items config")]
-        //        public async Task items(string item)
-        //        {
-        //            await DeferAsync();
-        //            // 1) Lookup
-        //            if (!ItemsService.TryGetItem(item.ToLowerInvariant().Trim(), out var target))
-        //            {
-        //                await FollowupAsync($"❌ Cannot find item `{item}`.", ephemeral: true);
-        //                return;
-        //            }
-
-
-        //            string systemPrompt = @"
-        //Important:
-        //- You are Dynast.io Bot, the official AI assistant on our Dynast.io Discord server.
-        //- Always base your answers on the Dynast.io game data provided.
-        //- Use clear, non-technical language so all members can understand.
-        //- Apply Discord Markdown for formatting and use @Mentions instead of raw IDs.
-
-        //Analyze this Dynast.io game item and explain it clearly:
-        //";
-
-        //            // 3) Query
-        //            string aiResponse = await Ai.QueryAsync(null, systemPrompt + Newtonsoft.Json.JsonConvert.SerializeObject(target));
-
-        //            // 4) Send back
-        //            await FollowupAsync(aiResponse);
-        //        }
-
-        //[SlashCommand("RunTime", "runtime")]
-        //public async Task RunTime()
-        //{
-        //    await Loading(10);
-        //    await DeferAsync(true);
-
-        //    await RespondAsync($"done.", ephemeral: true);
-        //}
-
 
 
     }

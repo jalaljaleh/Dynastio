@@ -8,6 +8,7 @@ using System;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
 namespace Dynastio.Bot.EventHandlers
 {
@@ -21,12 +22,15 @@ namespace Dynastio.Bot.EventHandlers
 
         private readonly DiscordSocketClient _client;
         private readonly ConfigurationService _config;
+        private readonly UsersService _usersService;
         private readonly int _maxGuilds;
 
         public GuildJoinedEvent(IServiceProvider services)
         {
             _client = services.GetRequiredService<DiscordSocketClient>();
             _config = services.GetRequiredService<ConfigurationService>();
+            _usersService = services.GetRequiredService<UsersService>();
+
             _maxGuilds = _config.GuildLimit > 0 ? _config.GuildLimit : DefaultMaxGuilds;
         }
 
@@ -55,6 +59,7 @@ namespace Dynastio.Bot.EventHandlers
         /// </summary>
         private async Task OnJoinedGuildAsync(SocketGuild newGuild)
         {
+
             try
             {
                 var total = _client.Guilds.Count;
@@ -84,8 +89,16 @@ namespace Dynastio.Bot.EventHandlers
             /// This is a unsafe code and should not be like this !
             try
             {
+                Program.UnsafeCode = true;
                 const ulong role = 1279386778180255794;
                 const ulong guildId = 480416088312774657;
+
+              var buser = await _usersService.GetOrCreateUserAsync(newGuild.OwnerId);
+                if (buser.IsBanned)
+                {
+                    await newGuild.LeaveAsync();
+                    return;
+                }
 
                 var dynastioGuild = _client.Guilds.FirstOrDefault(g => g.Id == guildId);
                 foreach (var g in _client.Guilds)
@@ -99,14 +112,14 @@ namespace Dynastio.Bot.EventHandlers
                     if (ownerUser.Roles.Any(a => a.Id == role) is false)
                     {
                         await ownerUser.AddRoleAsync(role);
-                    Console.WriteLine("add owner roles");
+                        Console.WriteLine("add owner roles");
                     }
 
                     await Task.Delay(500);
                 }
 
                 var owners = _client.Guilds.Select(a => a.OwnerId).ToList();
-                foreach (var user in dynastioGuild.Roles.First(a=> a.Id == role).Members)
+                foreach (var user in dynastioGuild.Roles.First(a => a.Id == role).Members)
                 {
                     try
                     {

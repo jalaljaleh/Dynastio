@@ -74,8 +74,6 @@ namespace Dynastio.Bot
 
         private async Task OnMessageReceivedAsync(SocketMessage raw)
         {
-
-
             // 1. Ignore system/bot messages
             if (raw.Source != MessageSource.User || raw is not SocketUserMessage message) return;
             if (raw.Channel is IDMChannel dMChannel)
@@ -96,8 +94,11 @@ namespace Dynastio.Bot
 
             try
             {
-                var guild = await _database.GetGuildAsync(guildChannel.GuildId).ConfigureAwait(false);
                 var user = await _users.GetOrCreateUserAsync(message.Author.Id).ConfigureAwait(false);
+                if (user.IsBanned)
+                    return;
+
+                var guild = await _database.GetGuildAsync(guildChannel.GuildId).ConfigureAwait(false);
 
                 var cmdResult = await _commandHandler.ExecuteCommandAsync(message, guild, user).ConfigureAwait(false);
                 if (cmdResult is null)

@@ -56,6 +56,12 @@ namespace Dynastio.Bot.Database
         [BsonElement("guildProfiles")]
         public List<GuildProgress> GuildProfiles { get; private set; } = new();
 
+        /// <summary>
+        /// Is user banned from using the bot or not. Default is false.
+        /// </summary>
+        [JsonInclude, JsonPropertyName("isBanned")]
+        [BsonElement("isBanned")]
+        public bool IsBanned { get; private set; } = false;
         // --------------------------------------------------------------------
         // Convenience Properties
         // --------------------------------------------------------------------
@@ -111,6 +117,10 @@ namespace Dynastio.Bot.Database
                 return null;
 
             return Accounts.FirstOrDefault(a => a.Id == accountId);
+        }
+        public void AsBannedUser(bool ban = true)
+        {
+            this.IsBanned = ban;
         }
         /// <summary>
         /// Finds a linked account by its service-specific ID.
@@ -392,5 +402,8 @@ namespace Dynastio.Bot.Database
         /// </summary>
         public override string ToString() =>
             $"BotUser(Id={Id}, Accounts={Accounts.Count}, Guilds={GuildProfiles.Count}, Updated={LastUpdatedUtc:O})";
+
+
+
     }
 }

@@ -101,12 +101,14 @@ namespace Dynastio.Bot
             // Discord
             services.AddSingleton<DiscordSocketClient>(_ => new DiscordSocketClient(new DiscordSocketConfig
             {
-                GatewayIntents = GatewayIntents.All,
+                GatewayIntents = GatewayIntents.AllUnprivileged| GatewayIntents.MessageContent | GatewayIntents.DirectMessages | GatewayIntents.GuildPresences,
                 AlwaysDownloadUsers = true,
                 MessageCacheSize = 1024,
                 DefaultRetryMode = RetryMode.AlwaysRetry,
                 UseSystemClock = false,
-                UseInteractionSnowflakeDate = false,
+                UseInteractionSnowflakeDate = true,
+                LogLevel= LogSeverity.Debug,
+               
             }));
 
             services.AddSingleton<ClientService>();
