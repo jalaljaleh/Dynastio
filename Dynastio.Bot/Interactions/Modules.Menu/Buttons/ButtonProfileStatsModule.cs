@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 using Dynastio.Bot.Interactions.Precondinations;
 using Dynastio.Bot.Services;
 using Dynastio.Bot.Services.GlobalizationService.Globally;
@@ -58,7 +59,28 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 .WithCustomId(BuildCustomId(statType, trigger: stat));
             return btn;
         }
+        private static readonly List<string> types = new() { "Kill", "Death", "Gather", "Craft" };
+        public static SelectMenuBuilder BuildSelectMenu(MenuModulesBase module)
+        {
+            var statType = types.Select(a => new SelectMenuOptionBuilder()
+                                    .WithLabel(a + " Stat")
+                                    .WithDescription($"Your {types}'s stat")
+                                    .WithDefault(false)
+                                    .WithValue((types.IndexOf(a) + 1).ToString())
+                                    .WithEmote(module.EmoteService.GetEmoteByName("left_team_icon")))
+                    .ToList();
 
+            var accountsBuilder = new SelectMenuBuilder()
+            {
+                IsDisabled = false,
+                MinValues = 1,
+                MaxValues = 1,
+                Options = statType,
+                CustomId = BuildCustomId(Common.Random.Next(0, 4)),
+                Placeholder = "Select Stat Type !"
+            };
+            return accountsBuilder;
+        }
         // -----------------------------------------------------------------------------------
         // SECTION: Custom ID Factory
         // -----------------------------------------------------------------------------------
@@ -115,6 +137,9 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
             //    "craft" => FormatStatRows(stat.Craft),
             //    _ => "not found"
             //};
+            var targetType = (Context.Interaction as SocketMessageComponent)?.Data?.Values?.First() ?? statType.ToString();
+            statType = int.Parse(targetType);
+
             string content = statType switch
             {
                 1 => FormatStatRows(stat.Kill),
@@ -123,21 +148,22 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 4 => FormatStatRows(stat.Craft),
                 _ => "not found"
             };
-            string contentType = statType switch
-            {
-                1 =>"Kill",
-                2 => "Gather",
-                3 => "Death",
-                4 => "Craft",
-                _ => "not found"
-            };
+            string contentType = types[statType - 1];
+
             if (content.Length > 3800)
                 content = content.Substring(0, 3800);
+
+            var section = new SectionBuilder()
+                .WithTextDisplay($"# {contentType} Stats" +
+                $"\nYou are logined as **{profile.DisplayName}**, here you can see your game stats sorted and filtered by kills, death, geathers and craft !")
+                .WithAccessory(new ThumbnailBuilder(User.TryGetAvatarUrl()));
 
             var containerb = new ContainerBuilder()
               .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
             //  .WithAccentColor(Color.Green)
-              .WithTextDisplay($"# {contentType} Stats \n#" + content);
+              .WithSection(section)
+              .WithActionRow([BuildSelectMenu(this)])
+              .WithTextDisplay( content);
             //.WithActionRow([
             //    BuildButton(this,"kill"),
             //    BuildButton(this,"gather"),
@@ -163,11 +189,11 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 .OrderByDescending(x => x.Value)
                 .Select((x, idx) => new
                 {
-                    Text = EmoteService.GetEmote<T>(x.Key).ToString() + $" `{x.Value.ToMetric()}`",
-                    Group = idx / 5
+                    Text = EmoteService.GetEmote<T>(x.Key).ToString() + $"x{x.Value.ToMetric()}",
+                    Group = idx / 6
                 })
                 .GroupBy(x => x.Group)
-                .Select(g => "\n### " + string.Join(" | ", g.Select(e => e.Text)))
+                .Select(g => "\n# " + string.Join(" , ", g.Select(e => e.Text)))
             );
         }
     }
