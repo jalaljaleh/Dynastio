@@ -101,7 +101,7 @@ namespace Dynastio.Bot
             // Discord
             services.AddSingleton<DiscordSocketClient>(_ => new DiscordSocketClient(new DiscordSocketConfig
             {
-                GatewayIntents = GatewayIntents.AllUnprivileged| GatewayIntents.MessageContent | GatewayIntents.DirectMessages | GatewayIntents.GuildPresences,
+                GatewayIntents = GatewayIntents.AllUnprivileged,
                 AlwaysDownloadUsers = true,
                 MessageCacheSize = 1024,
                 DefaultRetryMode = RetryMode.AlwaysRetry,

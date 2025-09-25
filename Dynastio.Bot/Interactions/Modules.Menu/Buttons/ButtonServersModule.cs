@@ -142,7 +142,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
 
 
             // 6️⃣ Render table markdown
-            string tableContent = visibleServers.ToTable((page - 1) * pageSize);
+            string tableContent = visibleServers.ToTable((page - 1) * pageSize).ToCodeBlock();
 
             // 7️⃣ Assemble header section
             var headerSection = new SectionBuilder()

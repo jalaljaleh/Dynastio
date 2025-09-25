@@ -123,14 +123,21 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 4 => FormatStatRows(stat.Craft),
                 _ => "not found"
             };
-
+            string contentType = statType switch
+            {
+                1 =>"Kill",
+                2 => "Gather",
+                3 => "Death",
+                4 => "Craft",
+                _ => "not found"
+            };
             if (content.Length > 3800)
                 content = content.Substring(0, 3800);
 
             var containerb = new ContainerBuilder()
               .WithMediaGallery(AssetUrlService[AssetType.banner_dynastio])
             //  .WithAccentColor(Color.Green)
-              .WithTextDisplay($"# {trigger} Stats \n#" + content);
+              .WithTextDisplay($"# {contentType} Stats \n#" + content);
             //.WithActionRow([
             //    BuildButton(this,"kill"),
             //    BuildButton(this,"gather"),
@@ -157,7 +164,7 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 .Select((x, idx) => new
                 {
                     Text = EmoteService.GetEmote<T>(x.Key).ToString() + $" `{x.Value.ToMetric()}`",
-                    Group = idx / 3
+                    Group = idx / 5
                 })
                 .GroupBy(x => x.Group)
                 .Select(g => "\n### " + string.Join(" | ", g.Select(e => e.Text)))
