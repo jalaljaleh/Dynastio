@@ -199,9 +199,9 @@ namespace Dynastio.Bot.Database
         /// </summary>
         /// <param name="accountId">The external account identifier.</param>
         /// <returns>True if removed; otherwise false.</returns>
-        public bool RemoveAccount(string accountId)
+        public bool TryRemoveAccount(string accountId,out GameAccount account)
         {
-            var account = GetAccount(accountId);
+            account = GetAccount(accountId);
             return account != null && Accounts.Remove(account);
         }
 

@@ -107,7 +107,7 @@ namespace Dynastio.Bot
                 DefaultRetryMode = RetryMode.AlwaysRetry,
                 UseSystemClock = false,
                 UseInteractionSnowflakeDate = true,
-                LogLevel= LogSeverity.Debug,
+                LogLevel= LogSeverity.Info,
                
             }));
 

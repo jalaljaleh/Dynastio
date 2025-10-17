@@ -189,11 +189,11 @@ namespace Dynastio.Bot.Interactions.Modules.Menu.Buttons
                 .OrderByDescending(x => x.Value)
                 .Select((x, idx) => new
                 {
-                    Text = EmoteService.GetEmote<T>(x.Key).ToString() + $"x{x.Value.ToMetric()}",
-                    Group = idx / 6
+                    Text = EmoteService.GetEmote<T>(x.Key).ToString() + $" `x{x.Value.ToMetric()}`",
+                    Group = idx / 5
                 })
                 .GroupBy(x => x.Group)
-                .Select(g => "\n# " + string.Join(" , ", g.Select(e => e.Text)))
+                .Select(g => "\n## " + string.Join(" , ", g.Select(e => e.Text)))
             );
         }
     }

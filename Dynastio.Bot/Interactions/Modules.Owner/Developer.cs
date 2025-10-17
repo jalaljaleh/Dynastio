@@ -3,6 +3,7 @@ using Amazon.Runtime;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Dynastio.Bot.Database;
 using Dynastio.Bot.Global.Helper;
 using Dynastio.Net;
 using Google.Apis.Util;
@@ -25,18 +26,44 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
             Interactions.Modules.Menu.Buttons.ButtonLoginModule.BypassPinCode = newCode;
             await RespondAsync($"PinCode-bypass created successfuly.", ephemeral: true);
         }
-        [SlashCommand("ban", "ban a user from using the bot")]
-        public async Task BanUser(IUser user, [Choice("Ban", 1), Choice("Unban", 2)] int action)
+
+        [Group("users", "users commands")]
+        public class UsersModule : MenuModulesBase
         {
-            await DeferAsync(true);
+            [SlashCommand("data", "user data")]
+            public async Task UnlinkAccount(IUser user)
+            {
+                await DeferAsync(true);
 
-            var buser = await UsersService.GetOrCreateUserAsync(user.Id);
+                var buser = await UsersService.GetOrCreateUserAsync(user.Id);
 
-            buser.AsBannedUser(action == 1 ? true : false);
+                await FollowupAsync(embed: JsonSerializer.Serialize(buser).ToEmbed("user data"), ephemeral: true);
+            }
+            [SlashCommand("update", "update user data")]
+            public async Task Update(IUser user, string json)
+            {
+                await DeferAsync(true);
 
-            await UsersService.UpdateUserAsync(buser);
+                var buser = await UsersService.GetOrCreateUserAsync(user.Id);
+                buser = JsonSerializer.Deserialize<User>(json);
 
-            await FollowupAsync($"User ban status has been updated to ` {(buser.IsBanned ? "Banned" : "Unbanned")} `.", ephemeral: true);
+                await UsersService.UpdateUserAsync(buser);
+
+                await FollowupAsync($"user updated", ephemeral: true);
+            }
+            [SlashCommand("ban", "ban a user from using the bot")]
+            public async Task BanUser(IUser user, [Choice("Ban", 1), Choice("Unban", 2)] int action)
+            {
+                await DeferAsync(true);
+
+                var buser = await UsersService.GetOrCreateUserAsync(user.Id);
+
+                buser.AsBannedUser(action == 1 ? true : false);
+
+                await UsersService.UpdateUserAsync(buser);
+
+                await FollowupAsync($"User ban status has been updated to ` {(buser.IsBanned ? "Banned" : "Unbanned")} `.", ephemeral: true);
+            }
         }
         public enum ShapeType { Items, Entities }
         [SlashCommand("shape", "description")]
@@ -77,8 +104,12 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
             await DeferAsync(ephemeral: true);
 
             // Determine target: either specified channel or a DM
-            var target = (IMessageChannel)channel ?? await user?.CreateDMChannelAsync() ?? Context.Channel as IMessageChannel;
-
+            var target = (IChannel)channel ?? await user?.CreateDMChannelAsync() ?? null;
+            if (target == null)
+            {
+                await FollowupAsync("target not found, select a channel or a user !", ephemeral: true);
+                return;
+            }
             if (type != AlertType.None)
             {
                 var (title, color, iconUrl) = GetEmbedStyle(type);
@@ -91,12 +122,12 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
                             EmoteService.GetEmoteByName("left_build_icon").Url
                         ),
                         AlertType.Error => (
-                            "❌ Error",
+                            "❌ Error,  You have an unread message !",
                             Color.Red,
                             EmoteService.GetEmoteByName("robot").Url
                         ),
                         AlertType.Warning => (
-                            "⚠️ Warning",
+                            "⚠️ Warning,  You have an unread message !",
                             Color.Orange,
                             EmoteService.GetEmoteByName("premium").Url
                         ),
@@ -116,14 +147,14 @@ namespace Dynastio.Bot.Interactions.Modules.Owner
                     .WithTimestamp(DateTimeOffset.UtcNow)
                     .Build();
 
-                await target.SendMessageAsync(user.Mention, embed: embed);
+                await ((ITextChannel)target).SendMessageAsync(user.Mention, embed: embed);
             }
             else
             {
-                await target.SendMessageAsync($"{user.Mention} {message}");
+                await ((ITextChannel)target).SendMessageAsync($"{user.Mention} {message}");
             }
 
-            await FollowupAsync("✉️ Your message has been sent!", ephemeral: true);
+            await FollowupAsync("✉️ Your message has been sent !", ephemeral: true);
         }
 
 

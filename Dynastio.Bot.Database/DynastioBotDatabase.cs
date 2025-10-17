@@ -259,5 +259,7 @@ namespace Dynastio.Bot.Database
         {
             _users.Add(user);
         }
+
+
     }
 }
